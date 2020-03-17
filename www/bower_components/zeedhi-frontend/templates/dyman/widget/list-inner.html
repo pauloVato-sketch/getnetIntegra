@@ -1,0 +1,50 @@
+<div zh-scroller class="container" ng-controller="ListController as controller">
+	<div zh-scroller data-zh-infinity-scroll="widget.searchCriteria" data-widget="widget" class="container zh-list-container">
+		<ul zh-widget-events
+			class="zh-template-list" data-ng-class="{'with-search': !controller.widget.hideSearchField}">
+			<li id="pullUp">
+				<div class="row">
+					<div class="col-xs-12">
+						<ul class="zh-loading">
+							<li>
+								<i class="zh-loading-icon"></i>
+								<p data-zh-bind-translate="'atualizando...'"></p>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</li>
+			<li data-ng-if="Util.objectHasAnyValue(widget.searchCriteria) && filtered.length == 0">
+				<div class="row">
+					<div class="col-xs-12">
+						<p class="text-center zh-text-search-not-find" data-ng-bind="controller.widget.noMatchText || 'nenhum registro encontrado'"> </p>
+					</div>
+				</div>
+			</li>
+			<li class="zh-text-default-sans zh-inner-list-row row"
+				zh-click="openRowInnerList(row, widget);scrollTo($event);" zh-long-tap="controller.onLongTap(row)"
+				ng-repeat="row in filtered = (controller.widget.dataSource.data | filter:controller.search)"
+				data-ng-class="{'row-selected' : row.__isSelected, 'opened': controller.widget.widgets.length > 0 && controller.widget.currentRow.__index == $index}"
+				zh-post-repeat="templateManager.container.refresh()">
+				<span zh-inner-template>
+					<div ng-repeat="column in controller.widget.fields|filter: {showOnList : true} | orderBy: 'sequenceInList'"
+						data-ng-class="{'zh-first-large' : $first}" class="zh-list-inner-field"
+						data-ng-if="column.aclIsVisible && column.isVisible">
+						<div class="col-xs-{{column.class}}">
+							<span data-ng-show="column.label" data-zh-bind-translate="column.label"></span>
+							<span data-ng-bind="row[column.name]|columnFormat:column" data-ng-class="{'align-right' : column.mask && column.mask.align == 'right'}"></span>
+						</div>
+					</div>
+				</span>
+				<span data-ng-if='controller.widget.widgets.length > 0 && controller.widget.currentRow.__index == $index'>
+					<aside data-ng-controller="GroupListController">
+						<div class="zh-workaround-grid-float zh-list-inner-item" ng-include src="templateManager.getTemplateURL(widget.template)">
+						</div>
+					</aside>
+				</span>
+			</li>
+		</ul>
+	</div>
+
+	<div data-ng-show="widget.isFloatingControlVisible()" data-ng-include="templateManager.getFrameworkTemplateURL('component/floating-control.html')"></div>
+</div>

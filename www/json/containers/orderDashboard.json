@@ -1,0 +1,111 @@
+{
+    "id": "52813945320617537911539",
+    "name": "orderDashboard",
+    "label": "Dashboard",
+    "showHeader": true,
+    "showMenu": true,
+    "showBack": false,
+    "showFooter": true,
+    "events": [
+        {
+            "id": "63955918233802052711547",
+            "name": "ContainerBeforeinit",
+            "code": "OrderController.setDashboardHeader(args.owner);OrderController.prepareOrderCloseAccountLabels(args.owner.getWidget('orderCloseAccount'));"
+        }
+    ],
+    "footer": "component/footer.html",
+    "template": "container/dashboard.html",
+    "popup": "component/popup.html",
+    "widgets": [
+        {
+            "id": "63955918242078571211540",
+            "width": "50%",
+            "height": 1,
+            "color": 1,
+            "name": "orderMenu",
+            "label": "Fazer Pedido",
+            "windowName": "orderMenu",
+            "isVisible": true,
+            "image_class": "dashboard-img-orderMenu",
+            "image": "../mobile/images/icons/order/icon_make_order_v2.png",
+            "template": "../../../../templates/widget/menu_shortcut_image.html",
+            "fields": []
+        },
+        {
+            "id": "63955918214808512921541",
+            "width": "100%",
+            "height": 1,
+            "color": 16,
+            "name": "orderCloseAccount",
+            "label": "Solicitar Conta",
+            "windowName": "orderCloseAccount",
+            "isVisible": true,
+            "icon": "",
+            "grid_class": "dashboard-orderCloseAccount",
+            "showHeader": false,
+            "events": [
+                {
+                    "id": "63955918232986256401543",
+                    "name": "WidgetOnEnter",
+                    "code": "OrderController.prepareOrderCloseAccountLabels(args.owner)"
+                }
+            ],
+            "template": "../../../../templates/widget/dashboard-grid.html",
+            "fields": [
+                {
+                    "id": "63955918222216371381542",
+                    "label": "",
+                    "class": "8 dashboard-grid-label",
+                    "name": "LABEL",
+                    "align": "right"
+                }
+            ],
+            "dataSource": {
+                "memoryStorage": true,
+                "rest": false,
+                "name": "/AccountGetAccountDetails"
+            }
+        },
+        {
+            "id": "63955918215753707821544",
+            "width": "50%",
+            "height": 1,
+            "color": 3,
+            "name": "callWaiter",
+            "label": "Chamar Garçom",
+            "windowName": "callWaiter",
+            "isVisible": true,
+            "image_class": "dashboard-img-callwaiter",
+            "image": "../mobile/images/icons/order/icon_call_waiter.png",
+            "template": "../../../../templates/widget/menu_shortcut_image.html",
+            "fields": []
+        },
+        {
+            "id": "6395591827637335191545",
+            "width": "100%",
+            "height": 1,
+            "color": 13,
+            "name": "orderAccountDetails",
+            "label": "Pedidos Relizados",
+            "windowName": "orderAccountDetails",
+            "isVisible": true,
+            "showHeader": true,
+            "icon": "",
+            "template": "widget/dashboard/grid.html",
+            "fields": [
+                {
+                    "id": "63955918238997465121546",
+                    "label": "",
+                    "class": "8 dashboard-grid-label",
+                    "name": "LABEL",
+                    "align": "right"
+                }
+            ],
+            "dataSource": {
+                "memoryStorage": true,
+                "rest": false,
+                "name": "/AccountGetAccountDetails"
+            }
+        }
+    ]
+}

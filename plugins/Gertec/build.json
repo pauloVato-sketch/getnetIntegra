@@ -1,0 +1,18 @@
+{
+    "android": {
+        "debug": {
+            "keystore": "./Development_Teknisa_EnhancedAPP.jks",
+            "storePassword": "Development@Teknisa2018",
+            "alias": "developmentteknisa_enhancedapp",
+            "password" : "Development@Teknisa2018",
+            "keystoreType": ""
+        },
+        "release": {
+            "keystore": "./Development_Teknisa_EnhancedAPP.jks",
+            "storePassword": "Development@Teknisa2018",
+            "alias": "developmentteknisa_enhancedapp",
+            "password" : "Development@Teknisa2018",
+            "keystoreType": ""
+        }
+    }
+}

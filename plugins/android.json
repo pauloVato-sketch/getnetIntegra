@@ -1,0 +1,41 @@
+{
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {}
+  },
+  "installed_plugins": {
+    "cordova-plugin-android-permissions": {
+      "PACKAGE_NAME": "com.odhen.POS"
+    },
+    "cordova-plugin-androidx": {
+      "PACKAGE_NAME": "com.odhen.POS"
+    },
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "com.odhen.POS"
+    },
+    "cordova-plugin-keyboard": {
+      "PACKAGE_NAME": "com.odhen.POS"
+    },
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "com.odhen.POS"
+    },
+    "phonegap-plugin-barcodescanner": {
+      "ANDROID_SUPPORT_V4_VERSION": "27.+",
+      "PACKAGE_NAME": "com.odhen.POS"
+    },
+    "cordova-plugin-androidx-adapter": {
+      "PACKAGE_NAME": "com.odhen.POS"
+    },
+    "cordova-android-movetasktoback": {
+      "PACKAGE_NAME": "com.odhen.POS"
+    }
+  },
+  "dependent_plugins": {
+    "com.odhen.POS": {
+      "PACKAGE_NAME": "com.odhen.POS"
+    }
+  }
+}

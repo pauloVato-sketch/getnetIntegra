@@ -1,0 +1,49 @@
+{
+    "id": "102508092715501447681074",
+    "name": "callWaiter",
+    "showHeader": false,
+    "showMenu": false,
+    "label": "",
+    "showBack": false,
+    "events": [],
+    "showFooter": false,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "widgets": [
+        {
+            "id": "102073092224461140611075",
+            "name": "widgetCall",
+            "label": "",
+            "template": "widget/form-center-top.html",
+            "isVisible": true,
+            "actions": [],
+            "events": [
+                {
+                    "id": "102073092242793381631077",
+                    "name": "WidgetOnEnter",
+                    "code": "OrderController.callWaiter('C');"
+                }
+            ],
+            "dataSource": {},
+            "fields": [
+                {
+                    "id": "102073092241888680001076",
+                    "name": "call",
+                    "label": "",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "sameLine": true,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                }
+            ]
+        }
+    ]
+}

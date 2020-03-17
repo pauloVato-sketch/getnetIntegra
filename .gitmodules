@@ -1,0 +1,3 @@
+[submodule "OdhenDeviceIntegration"]
+	path = OdhenDeviceIntegration
+	url = https://github.com/werikgpaula/OdhenDeviceIntegration

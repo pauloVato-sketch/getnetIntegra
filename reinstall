@@ -1,0 +1,2 @@
+plugman uninstall --platform android --project platforms/android --plugin ../GertecSitef/ &&
+plugman install --platform android --project platforms/android --plugin ../GertecSitef/

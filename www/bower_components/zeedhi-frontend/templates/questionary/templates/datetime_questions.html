@@ -1,0 +1,21 @@
+<div>
+  <label class="label_questionary zh-label">
+    <span data-ng-bind='question.seqno'></span>
+    <span data-zh-bind-translate='question.description'></span>
+  </label>
+  <input
+    class="datetime-target input-text form-input-margin-bottom"
+    zh-date-time
+    id="{{question.name}}"
+    name="{{question.name}}"
+    data-ng-model='questionary.answer[question.name]["value"]'
+    maxlength="{{question.maxlength}}"
+  >
+  <span class="help-block"
+    data-ng-if="question.error"
+    data-ng-hide="!!questionary.answer[question.name]['value']">
+    <span class="error">
+      Preencha a questão
+    </span>
+  </span>
+</div>

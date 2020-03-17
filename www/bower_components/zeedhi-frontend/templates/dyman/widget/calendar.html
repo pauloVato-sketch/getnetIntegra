@@ -1,0 +1,105 @@
+<div class="zh-calendar-widget" id="zh-calendar-{{widget.name}}" zh-widget-events>
+	<section zh-scroller zh-calendar>
+
+		<nav class="calendar-navigation">
+			<header>
+				<div
+					class="arrow-left"
+					zh-icon="previous no-border"
+					zh-click="navigateCalendar(-1)"
+				></div>
+				<h3
+					class="calendar-heading"
+					zh-click="changeCalendarMode(calendarMode)"
+					ng-bind="getCalendarHeading(calendarMode)"
+				></h3>
+				<div
+					class="arrow-right"
+					zh-icon="forward no-border"
+					zh-click="navigateCalendar(+1)"
+				></div>
+			</header>
+
+			<ul class="week-days" ng-class="{ 'shrink': calendarMode !== 'day' }">
+				<li
+					class="day"
+					ng-repeat="wday in weekDays"
+					ng-bind="wday|i18n"
+					ng-class="{ 'highlighted': $first }"
+				></li>
+			</ul>
+		</nav>
+
+		<!-- Calendar -->
+		<div class="calendar">
+
+			<div class="day grid" ng-if="calendarMode === 'day'">
+				<div class="week" ng-repeat="week in weeks">
+					<div
+						class="day"
+						data-zh-style="day"
+						ng-repeat="day in week.days"
+						zh-click="dayClick(day)"
+						data-today-text="{{todayText}}"
+						data-date="{{day.date}}"
+						ng-class="{
+							'today': day.today,
+							'disabled': isBlockedDate(day.date),
+							'selected': day.selected,
+							'has-events': day.events.length,
+							'next-month': day.nextMonth,
+							'previous-month': day.lastMonth,
+						}">
+
+						<div
+							class="content"
+							ng-bind="day.day"
+						></div>
+					</div>
+				</div>
+			</div>
+
+			<div class="month grid" ng-if="calendarMode === 'month'">
+				<div class="month-row" ng-repeat="row in monthRows">
+					<div
+						class="month"
+						ng-repeat="month in row.months"
+						zh-click="monthClick(month)"
+						data-date="{{month.date}}"
+						ng-class="{
+							'disabled': isBlockedMonth(month.date),
+							'selected': month.selected,
+						}">
+
+						<div
+							class="content"
+							ng-bind="month.name"
+						></div>
+					</div>
+				</div>
+			</div>
+
+			<div class="year grid" ng-if="calendarMode === 'year'">
+				<div class="year-row" ng-repeat="row in yearRows">
+					<div
+						class="year"
+						ng-repeat="year in row.years"
+						zh-click="yearClick(year)"
+						data-date="{{year.number}}"
+						ng-class="{
+							'disabled': isBlockedYear(year.number),
+							'selected': year.selected,
+							'last-decade': year.lastDecade,
+							'next-decade': year.nextDecade
+						}">
+
+						<div
+							class="content"
+							ng-bind="year.number"
+						></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>

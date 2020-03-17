@@ -1,0 +1,21 @@
+<li ng-repeat="menu in _menu.menus" 
+	data-ng-if='menu.aclIsVisible || !templateManager.project.aclEnable' 
+	data-ng-show="menu.isVisible" 
+	class="menu-item" 
+	data-ng-class="{ 'closed': !menu.opened, 'sub-menu-item': submenuItem, 'has-child': menu.menus.length > 0 || menu.historyMenu, 'history-menu': menu.historyMenu, 'disabled': menu.disabled, 'visible': _menu.opened || Util.isUndefined(_menu.parent)}"> 
+	<span class="menu-link" ng-click="menuClick(menu)">
+		<span class="menu-expand-icon" zh-icon="forward no-border icon-white" data-ng-if="menu.menus.length > 0 || menu.historyMenu"></span>
+		<span class="menu-icon" zh-icon="{{menu.icon}} no-border icon-white" data-ng-class="{'empty-icon': !menu.icon }"></span>
+		<span 
+			class="menu-title" 
+			data-zh-bind-translate="menu.label" 
+			data-zh-menu-tooltip
+			data-ng-class="{'has-submenu': menu.menus.length > 0 || menu.historyMenu}">
+		</span>
+	</span>
+	<ul class="sub-menu" 
+		data-ng-init="_menu = menu; submenuItem = true;" 
+		data-ng-if="Util.isDesktop && menu.menus.length > 0"
+		data-ng-include="templateManager.getFrameworkTemplateURL('component/menu-item.html')"> 
+	</ul>
+</li>

@@ -1,0 +1,32 @@
+<section class="zh-widget" data-zh-widget-events>
+	<div data-zh-scroller class="container" data-ng-controller="KanbanController as controller">
+		<div class="container zh-kanban-container" data-zh-scroller>
+			<div class="zh-kanban-column-container">
+				<div class="kanban-column" column-id="{{ column.id }}"
+					 data-ng-repeat="column in widget.columns | orderBy:'id'">
+					<span data-ng-if="widget.showCheckbox" class="kanban-column-checkbox" data-zh-stop-propagation-click data-zh-touchstart="controller.toggleAll(column);">
+						<svg x="0px" y="0px" width="16px" height="16px" viewBox="0 0 16 16">
+							<rect class="box" x="0.5" y="0.5" stroke-miterlimit="10" width="15" height="15"/>
+							<path data-ng-if="controller.hasCheckedRows(column)" class="check" d="M13.361,3.323c-0.3-0.246-0.78-0.198-1.027,0.104L6.115,11.01L3.632,8.403 C3.37,8.123,2.863,8.076,2.597,8.376C2.345,8.66,2.281,9.047,2.572,9.407l3.05,3.2c0.137,0.149,0.332,0.234,0.536,0.234h0.016h0.007 c0.208-0.007,0.405-0.104,0.541-0.267l6.746-8.226C13.718,4.039,13.672,3.58,13.361,3.323z"/>
+						</svg>
+					</span>
+					<span class="kanban-column-label" data-ng-bind="column.label"></span>
+					<ul ui-sortable="sortableOptions" class="kanban-item-container" ng-model="column.items">
+						<li class="kanban-item" data-ng-repeat="item in controller.getColumnItems(column)"
+								data-ng-include="templateManager.getTemplateURL(widget.itemTemplate)"
+								data-zh-style="item"
+								data-ng-class="{movable: item.movable !== false}">
+						</li>
+					</ul>
+				</div>
+				<div class="row" ng-if="widget.dataSource.data.length == 0">
+					<div class="col-xs-12">
+						<ng-include src="templateManager.getFrameworkTemplateURL('component/empty-data-message.html')"></ng-include>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div data-ng-show="widget.floatingControl !== false" data-ng-include="templateManager.getFrameworkTemplateURL('component/floating-control.html')"></div>
+	</div>
+</section>

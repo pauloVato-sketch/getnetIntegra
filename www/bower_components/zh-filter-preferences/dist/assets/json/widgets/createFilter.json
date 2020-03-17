@@ -1,0 +1,56 @@
+{
+    "name": "zhFilterPreferencesNewFilter",
+    "label": "Create a new filter",
+    "template": "widget/form.html",
+    "isVisible": true,
+    "showAsModal": true,
+    "showDescriptionOrder": false,
+    "floatingControl": {
+        "customizationAction": {
+            "layout": false,
+            "filter": false,
+            "view": false
+        },
+        "actions": []
+    },
+    "fields": [
+        {
+            "label": "Name",
+            "name": "LABEL",
+            "class": "12",
+            "showOnForm": true,
+            "template": "field/text-edit.html",
+            "events": [],
+            "validations": {
+                "required": {}
+            }
+        }
+    ],
+    "actions": [
+        {
+            "name": "back",
+            "label": "Cancel",
+            "showAsAction": "back",
+            "hideIcon": true,
+            "isVisible": true,
+            "events": [
+                {
+                    "name": "ActionEvent",
+                    "code": "ScreenService.closePopup();"
+                }
+            ]
+        },
+        {
+            "name": "never",
+            "label": "Continue",
+            "showAsAction": "never",
+            "isVisible": true,
+            "events": [
+                {
+                    "name": "ActionEvent",
+                    "code": "ZhFilterCreateFilterController.proceedCreatingFilter(args.owner.widget)"
+                }
+            ]
+        }
+    ]
+}

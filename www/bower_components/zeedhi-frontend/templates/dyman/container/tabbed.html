@@ -1,0 +1,27 @@
+<section
+	class="zh-content zh-container-{{templateManager.container.name}}"
+	ng-controller="Tabbed as tabbie">
+
+	<div class="container">
+		<header class="zh-header row">
+			<div class="zh-tab-wrapper" tab-widget="widget" tab-widgets="widgets">
+				<div class="zh-tab-scroller">
+					<ul>
+						<li ng-repeat="tabWidget in tabbie.widgets">
+							<label class="zh-tab-cell" zh-click="tabbie.tabClick(tabWidget)">
+								<a href="" ng-bind="tabWidget.label|i18n" ng-class="{'active' : tabWidget == widget}">
+								 </a>
+							</label>
+						</li>
+					</ul>
+					<div class="zh-tab-line"></div>
+				</div>
+			</div>
+		</header>
+
+		<section 
+			data-ng-if='widget.isVisible && widget.aclIsVisible' 
+			data-ng-include="templateManager.getTemplateURL(widget.template)">
+		</section>
+	</div>
+</section>

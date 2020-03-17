@@ -1,0 +1,15 @@
+{
+  "name": "Zeedhi FrontEnd",
+  "version": "1.62.6",
+  "description": "Zeedhi dependencies",
+  "license": "MIT",
+  "ignore": [
+    "**/*",
+    "!assets/css/**/*",
+    "!assets/dist/**/*",
+    "!assets/fonts/**/*",
+    "!assets/images/**/*",
+    "!assets/json/**/*",
+    "!templates/**/*"
+  ]
+}

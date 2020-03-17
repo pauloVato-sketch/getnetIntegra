@@ -1,0 +1,289 @@
+{
+    "id": "8099900826997580421862",
+    "name": "transfers",
+    "label": "Transferências",
+    "showHeader": true,
+    "showMenu": true,
+    "showBack": true,
+    "showFooter": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "events": [
+        {
+            "id": "15152539065394351341888",
+            "name": "ContainerAfterinit",
+            "code": "UtilitiesService.setHeader(args.owner);"
+        },
+        {
+            "id": "151525390640980763471889",
+            "name": "ContainerOnBack",
+            "code": "UtilitiesService.handleBack(args.owner.name);"
+        }
+    ],
+    "template": "container/tabbed.html",
+    "popup": "component/popup.html",
+    "widgets": [
+        {
+            "id": "151525390640376037911863",
+            "name": "product",
+            "label": "Produtos",
+            "allowMultiSelect": true,
+            "template": "widget/form.html",
+            "isVisible": true,
+            "dataSource": {},
+            "actions": [
+                {
+                    "id": "151525390636322648461869",
+                    "label": "Voltar",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "151525390642111344361870",
+                            "name": "ActionEvent",
+                            "code": "ScreenService.goBack()"
+                        }
+                    ]
+                },
+                {
+                    "id": "15152539065294832441871",
+                    "label": "Transferir Produto",
+                    "name": "transferirProduto",
+                    "isVisible": true,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "id": "151525390617918560831872",
+                            "name": "ActionEvent",
+                            "code": "TableController.transferItemActionEvent(args.owner.widget);"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "id": "151525390617653893531873",
+                    "name": "WidgetOnEnter",
+                    "code": "TableController.handleTransferWidget(args.owner);"
+                },
+                {
+                    "id": "151525390630085554441874",
+                    "name": "WidgetOnEnterTab",
+                    "code": "TableController.positionsTransferControl(args.owner.getField('positions'));"
+                }
+            ],
+            "fields": [
+                {
+                    "id": "15152539066751719891864",
+                    "name": "lblTable",
+                    "class": 12,
+                    "label": "Mesa destino",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label-static.html"
+                },
+                {
+                    "id": "151525390621481096861865",
+                    "name": "btnTableListProduto",
+                    "_label": "Escolher Mesa",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "id": "151525390621922264051866",
+                            "name": "FieldOnClick",
+                            "code": "TableController.prepareTableList(args.owner.field.widget.container.getWidget('tableList'));"
+                        }
+                    ]
+                },
+                {
+                    "name": "NRPOSICAOMESA",
+                    "label": "Quantidade de Pessoas",
+                    "isVisible": false,
+                    "class": 12,
+                    "template": "field/number-custom.html",
+                    "defaultValue": 2,
+                    "minValue": 1,
+                    "maxValue": 99,
+                    "spin": true,
+                    "blockInputEdit": true,
+					"events": [
+                        {
+                            "name": "FieldOnChange",
+                            "code": "TableController.setMaxPosition(args.owner.field.widget.getField('positions'), args.owner.field.value());"
+                        }
+                    ]
+				},
+                {
+                    "id": "15152539066949495881867",
+                    "name": "lblPos",
+                    "class": 12,
+                    "label": "Posição destino",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label-static.html"
+                },
+                {
+                    "id": "15152539065468744041868",
+                    "name": "positions",
+                    "label": "Posição",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "../../../../templates/field/waiter_position.html",
+                    "fields": [],
+                    "position": 0,
+                    "actions": [],
+                    "events": [],
+                    "dataSource": {
+                        "rest": false,
+                        "memoryStorage": true,
+                        "name": "/TableActiveTable"
+                    }
+                },
+                {
+                    "id": "15152539065468744041869",
+                    "name": "product",
+                    "label": "",
+                    "template": "../../../../templates/field/list-grouped-position.html",
+                    "isVisible": true,
+                    "allowSelectOnLongTap": true,
+                    "groupProp": "posicao",
+                    "detailPriceProp": "preco",
+                    "detailDescProp": "DSBUTTON",
+                    "detailSubDescProp": "TXPRODCOMVEN",
+                    "orderDate": "DTHRINCOMVEN",
+                    "addDisplay": "",
+                    "events": [],
+                    "dataSource": {}
+                }
+            ],
+            "widgets": []
+        },
+        {
+            "id": "151525390620348113111876",
+            "name": "table",
+            "label": "Mesa",
+            "template": "widget/form.html",
+            "isVisible": true,
+            "dataSource": {},
+            "actions": [
+                {
+                    "id": "151525390640468463961883",
+                    "label": "Voltar",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "15152539065059325531884",
+                            "name": "ActionEvent",
+                            "code": "ScreenService.goBack()"
+                        }
+                    ]
+                },
+                {
+                    "id": "151525390620419195311885",
+                    "label": "Transferir Mesa",
+                    "name": "transferirMesa",
+                    "isVisible": true,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "id": "151525390629984925851886",
+                            "name": "ActionEvent",
+                            "code": "TableController.transferTable(args.owner.widget);"
+                        }
+                    ]
+                }
+            ],
+            "events": [],
+            "fields": [
+                {
+                    "id": "151525390633116918981880",
+                    "name": "lblAllTable",
+                    "class": 12,
+                    "label": "Mesa destino",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label-static.html"
+                },
+                {
+                    "id": "151525390641303944911881",
+                    "name": "btnTableListMesa",
+                    "label": "Escolher Mesa",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": false,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "id": "151525390640368315181882",
+                            "name": "FieldOnClick",
+                            "code": "TableController.prepareTableList(args.owner.field.widget.container.getWidget('tableList'));"
+                        }
+                    ]
+                }
+            ],
+            "widgets": [
+                {
+                    "id": "15152539065814682331877",
+                    "name": "tableList",
+                    "label": "Mesas",
+                    "template": "../../../../templates/widget/waiter_list.html",
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "id": "151525390611880348811878",
+                            "label": "Voltar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "151525390635085664251879",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": []
+                }
+            ]
+        }
+    ]
+}

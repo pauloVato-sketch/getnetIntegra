@@ -1,0 +1,74 @@
+{
+  "cordova-plugin-whitelist": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-whitelist@1"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-compat": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-compat@^1.0.0"
+    },
+    "is_top_level": false,
+    "variables": {}
+  },
+  "cordova-plugin-keyboard": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-keyboard"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-android-permissions": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-android-permissions"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "phonegap-plugin-barcodescanner": {
+    "source": {
+      "type": "registry",
+      "id": "phonegap-plugin-barcodescanner@8.1.0"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-device": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-device"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-androidx": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-androidx@^1.0.2"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-androidx-adapter": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-androidx-adapter"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-android-movetasktoback": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-android-movetasktoback"
+    },
+    "is_top_level": true,
+    "variables": {}
+  }
+}

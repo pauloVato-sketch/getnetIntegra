@@ -1,0 +1,68 @@
+
+<div id="footer" class="zh-custom-footer navbar zh-navbar-footer navbar-fixed-bottom" ng-controller="FooterListForm">
+	<div class="zh-footer-left">
+		<ul>
+			<li class="previous" zh-back ng-show="menuBack && templateManager.historyItems.length">
+				<a>
+					<span zh-icon="previous icon-black"></span>
+					<span class="zh-footer-title-sprit">Voltar</span>
+				</a>
+			</li>
+			<li class="previous" zh-click="goBack()" ng-show="!menuBack">
+				<a>
+					<span zh-icon="previous icon-black"></span>
+					<span class="zh-footer-title-sprit">Voltar</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+
+	<div class="zh-footer-center">
+		<ul>
+			<li
+				ng-repeat="action in templateManager.container.getActionsByVisibility('always') | filter:showOnFooter"
+				data-zh-click="actionClick(action, action.widget)"
+				data-zh-owner-element="action">
+				<a data-zh-title-tooltip="{{ action.tooltip }}">
+					<span zh-icon="{{action.icon}} icon-black"></span>
+					<!-- The following div is only used for testing purposes, please do not remove it -->
+					<div class="zh-test-box"></div>
+				</a>
+			</li>
+		</ul>
+	</div>
+
+	<div class="zh-footer-right" data-zh-click="$root.footerOpen = !$root.footerOpen"
+		zh-update-scroller="100"
+		ng-show="templateManager.container.countActionsByVisibility('never') > 0">
+		<ul>
+			<li>
+				<a>
+					<span zh-icon="more no-border icon-black"></span>
+					<span class="zh-footer-title-sprit"></span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<aside class="zh-menu-never" zh-scroller>
+	<ul class="action-never" ng-hide="!widget.displayFilter">
+		<li class="sprite more"
+			data-ng-repeat="action in templateManager.container.getActionsByVisibility('never')">
+			<a
+				href=""
+				data-zh-title-tooltip="{{ action.tooltip }}"
+				ng-bind="action.label"
+				zh-click="actionClick(action, action.widget)"
+				data-zh-owner-element="action">
+			</a>
+		</li>
+	</ul>
+
+
+
+	<div ng-show="!widget.displayFilter" ng-include src="templateManager.getTemplateURL($root._currentFilter.template)">
+
+	</div>
+</aside>

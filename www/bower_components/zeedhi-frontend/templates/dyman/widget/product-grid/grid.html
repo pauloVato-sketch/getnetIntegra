@@ -1,0 +1,76 @@
+<section class="zh-widget" data-zh-widget-events>
+	<div class="container zh-product-grid-container" zh-product-grid data-zh-scroller data-ng-controller="ProductGridController as controller">
+		<div class="product-grid-content" data-ng-class="{'show-cart': widget.showCart !== false}">
+			<ul class="product-groups">
+				<li class="no-image" data-ng-repeat="(group, data) in widget.dataSource.data | groupBy:widget.groupCodeField" data-ng-class="{opened: widget.expandGroups !== false }" data-group-code="{{ group }}">
+					<span class="collapse" data-zh-click="toggleGroup($event);">
+						<span data-zh-icon="forward no-border"></span>
+						<span class="group-desc" data-ng-bind="data[0][widget.groupNameField]"></span>
+					</span>
+					<div class="group-img" data-ng-show="Util.isUndefined(searchList) || searchList.length == 0">
+						<span data-ng-init="loadGroupImage($index, data[0][widget.groupImageField])"></span>
+					</div>
+					<ul class="product-items">
+						<li data-zh-ripple-effect="grey" data-ng-repeat="item in data | orderBy:widget.productCodeField | filter:controller.productSearch " data-zh-click="controller.addItem(item)">
+							<div class="product-item-content">
+								<div class="product-price" data-ng-bind="controller.currencyFormat(item[widget.productPriceField])"></div>
+								<div class="product-name" data-ng-bind="item[widget.productNameField]"></div>
+								<div class="product-desc" data-ng-if="item[widget.productDescField]" data-ng-bind="item[widget.productDescField]"></div>
+							</div>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<div class="product-grid-header">
+				<select zh-new-select class="header-shortcut input-text">
+					<option data-placeholder>{{ "go to"|i18n }}</option>
+					<option data-ng-repeat="(group, data) in widget.dataSource.data | groupBy:widget.groupCodeField" data-ng-bind="data[0][widget.groupNameField]" value="{{ group }}"></option>
+				</select>
+				<span class="header-search">
+					<input class="input-text" placeholder="{{ 'search'|i18n }}" data-ng-model="searchList">
+					<span data-ng-show="!Util.isUndefined(searchList) && searchList.length > 0" data-zh-icon="close-x no-border" data-zh-click="controller.clearSearch()"></span>
+					<span data-ng-show="Util.isUndefined(searchList) || searchList.length == 0" data-zh-icon="search no-border"></span>
+				</span>
+			</div>
+			<div class="cart">
+				<div class="cart-header">
+					<span data-zh-icon="cart no-border icon-white"></span>
+					<span data-zh-click="toggleCartItems($event)">
+						<span data-zh-icon="forward no-border icon-white"></span>
+						<span class="cart-title">{{ "My order"|i18n }}</span>
+					</span>
+					<span data-zh-icon="trash" data-ng-if="widget.shoppingCart.items.length > 0" data-zh-click="controller.clearShoppingCart()"></span>
+				</div>
+				<div class="cart-empty" data-ng-if="widget.shoppingCart.items.length == 0">
+					<span data-zh-icon="bag no-border icon-white"></span>
+					{{ "Your order is empty"|i18n }}
+				</div>
+				<ul class="cart-items">
+					<li class="cart-item" data-ng-repeat="item in widget.shoppingCart.items track by $index" data-zh-click="controller.updateCartItem(item)">
+						<span class="cart-item-price" data-ng-bind="controller.currencyFormat(item.total)"></span>
+						<span class="cart-item-qtty" data-ng-bind="item.qtty"></span>
+						<span class="cart-item-name" data-ng-bind="item[widget.productNameField]"></span>
+						<span class="cart-item-details" data-ng-repeat="page in item.detailPages">
+							<span data-ng-repeat="option in page.selectItems" data-ng-bind="option[{{widget.observationDescriptionField}}]"></span>
+						</span>
+					</li>
+				</ul>
+				<ul class="cart-summary">
+					<li class="cart-line">
+						<span class="cart-item-price" data-ng-bind="controller.currencyFormat(widget.shoppingCart.subtotal)"></span>
+						<span class="cart-item-name">{{ "SUBTOTAL"|i18n }}</span>
+					</li>
+					<li class="cart-delivery-fee">
+						<span class="cart-item-price" data-ng-bind="controller.currencyFormat(widget.shoppingCart.deliveryFee)"></span>
+						<span class="cart-item-name">{{ "DELIVERY FEE"|i18n }}</span>
+					</li>
+					<li class="cart-line cart-total">
+						<span class="cart-item-price" data-ng-bind="controller.currencyFormat(widget.shoppingCart.total)"></span>
+						<span class="cart-item-name">{{ "TOTAL"|i18n }}</span>
+					</li>
+				</ul>
+				<button data-zh-ripple-effect="grey" class="confirm-order" data-ng-class="{enabled: widget.shoppingCart.items.length > 0}" data-zh-click="controller.confirmOrder()">{{ "Confirm order"|i18n }}</button>
+			</div>
+		</div>
+	</div>
+</section>

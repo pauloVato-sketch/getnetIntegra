@@ -1,0 +1,20 @@
+{
+  "name": "zeedhi-webview-requests",
+  "main": "dist/webview-request.min.js",
+  "contributors": [
+    {
+      "name": "Lucas Lacerda",
+      "email": "lucas.lacerda@teknisa.com"
+    }
+  ],
+  "dependencies": {
+    "jQuery": "^3.2.1"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

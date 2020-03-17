@@ -1,0 +1,114 @@
+<div zh-scroller class="container" ng-controller="ListController as controller" zh-schema-validator="widget/list.html.json">
+
+	<div zh-scroller
+		data-zh-infinity-scroll="widget.searchCriteria" data-widget="widget"
+		class="container zh-list-container zh-virtual-scroll-list"
+		zh-swipe-tip
+		zh-virtual-scroll-list
+		id="list-{{ widget.id }}">
+
+		<ul zh-widget-events class="zh-template-list"
+		data-ng-controller="DecodeValueField as decode">
+			<div class="list-top-scroll-area"></div>
+			
+			<li id="pullUp">
+				<div class="row">
+					<div clas=s"col-xs-12">
+						<ul class="zh-loading">
+							<li>
+								<i class="zh-loading-icon"></i>
+								<p data-zh-bind-translate="'atualizando...'"></p>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</li>
+			
+			<li data-ng-if="filtered.length == 0">
+				<div class="row">
+					<div class="col-xs-12">
+						<p data-ng-if="!Util.objectHasAnyValue(widget.searchCriteria)"
+							class="text-center zh-text-search-not-found"
+							data-zh-bind-translate="widget.noMatchText || ('There are no records') "
+						></p>
+						<p data-ng-if="Util.objectHasAnyValue(widget.searchCriteria)"
+							class="text-center zh-text-search-not-found"
+							data-zh-bind-translate="widget.searchNoMatchText || ('No records were found') "
+						></p>
+					</div>
+				</div>
+				<div class="row" data-ng-if="filtered.length == 0 && widget.showAddButtonAs == 'button'"
+					data-zh-touchstart="widget.onAdd()">
+					<div class="col-xs-12">
+						<p class="text-center zh-text-search-not-found zh-add-when-empty">
+							<span zh-icon="plus"></span>
+							<span data-zh-bind-translate="widget.addButtonText || ('Adicionar um registro')"></span>
+						</p>
+					</div>
+				</div>
+			</li>
+			
+			<!-- zh-scope-getter is used here to redirect all $scope.row accesses to $scope.controller._rows[$scope.rowIndex] -->
+			<li class="zh-text-default-sans zh-list-item-label"
+				data-ng-repeat="rowIndex in filtered = controller.getVisibleRowCount()"
+				data-ng-class="{'row-selected' : row.__isSelected, 'list-checkbox': controller.widget.showCheckbox, 'row-editing currentRow': $index == widget.currentRow.__index, closed: controller.getClosedStatus(row)}"
+				data-ng-style="{ height: widget.rowHeight + 'px' }"
+				zh-scope-getter
+				zh-post-repeat="templateManager.container.refresh()"
+				zh-style>
+
+				<!-- Checkbox -->
+				<div ng-if="controller.widget.showCheckbox && !row.__group" class="zh-checkbox zh-list-item-checkbox">
+					<input type="checkbox" id="check-list-{{$index}}" ng-change='controller.toggle(row)' data-ng-model="row.__isSelected">
+					<label for="check-list-{{$index}}" class="zh-box-label">
+						<div zh-ripple-effect="grey" class="zh-box">
+							<span zh-icon="no-border checked"  data-ng-show="row.__isSelected"></span>
+						</div>
+					</label>
+				</div>
+
+				<!-- List item  -->
+				<div ng-repeat="column in controller.widget.fields|filter: {showOnList : true} | orderBy: 'sequenceInList'"
+					data-ng-class="{'zh-first-large' : $first}" class="row"
+					data-ng-if="column.aclIsVisible && column.isVisible && !row.__group">
+					<div class="col-xs-{{column.class}}"
+						zh-click="openRow(row, widget);"
+						zh-long-tap="controller.onLongTap(row);">
+						<span data-ng-show="column.label" data-zh-bind-translate="column.label"></span>
+						<span data-ng-bind="decode.model(column, row[column.name])|columnFormat:column" ng-class="{'zh-desc-small' : !$first}"></span>
+					</div>
+				</div>
+
+				<!-- row group header -->
+				<div data-zh-ripple-effect="grey" class="list-group-header row"
+					data-ng-if="row.__groupHeader"
+					style="left: {{ row.__groupIndex * 20 }}px"
+					data-ng-class="{opened: row.__groupOpened}"
+					data-zh-touchstart="controller.toggleGroup(row)">
+					<span data-zh-icon="forward no-border"></span>
+					<span class="list-group-header-text" data-ng-bind="controller.getGroupHeaderText(row)"></span>
+				</div>
+
+				<!-- row group footer -->
+				<div class="list-group-footer row"
+					ng-repeat="column in controller.widget.fields|filter: {showOnList : true} | orderBy: 'sequenceInList'"
+					style="padding-left: {{ row.__groupIndex * 20 + 10 }}px"
+					data-ng-if="row.__groupFooter && column.aclIsVisible && column.isVisible && column.expression"
+					data-ng-class="{'grid-group-summary': row.__groupSummary}">
+					<div class="col-xs-{{column.class}}">
+						<span data-ng-show="column.label" data-zh-bind-translate="(column.label) + ' - '"></span>
+						<span data-ng-bind="row[column.name]"></span>
+					</div>
+				</div>
+			</li>
+			
+			<div class="list-bottom-scroll-area"></div>
+		</ul>
+		
+		
+	</div>
+
+	<div data-ng-show="widget.isFloatingControlVisible()" data-ng-include="templateManager.getFrameworkTemplateURL('component/floating-control.html')"></div>
+</div>
+
+

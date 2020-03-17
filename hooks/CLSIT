@@ -1,0 +1,36 @@
+[CliSiTef]
+; Nao esquecer de habilitar no AndroidManifest.xml:
+; <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+DiretorioTrace=/sdcard
+HabilitaTrace=1
+TraceRotativo=10
+
+[CliSiTefI]
+DiretorioTrace=/sdcard
+HabilitaTrace=1
+TraceRotativo=10
+
+[PinPad]
+; Validade de 31/08/2018 a 30/09/2018
+ChaveTrace=BA9277CC7CBBC9C2
+HabilitaTrace=1
+TraceRotativo=10
+NivelTrace=5
+HabilitaTraceStatusPinPad=1
+
+[Geral]
+;TransacoesDesabilitadas=41;3014;3321;3322;3323
+;TransacoesAdicionaisHabilitadas=20;42;3006;3027;3028;3029;3030;3031;3203;3343;3344;3345
+TransacoesAdicionaisHabilitadas=20;42;3006;3014;3027;3028;3029;3030;3031;3203;3321;3322;3323;3343;3344;3345
+PermiteTrnCartaoGift=1
+
+[Gift]
+NovasTransacoesGift=1
+QtdeMaximaCartoesPorAtivacao=1
+DevolveMensagemConsulta=0
+
+[TabTraducao]
+NomeArqTraducao=Mens.txt
+
+[Redes]
+HabilitaRedeBancoIbi=1

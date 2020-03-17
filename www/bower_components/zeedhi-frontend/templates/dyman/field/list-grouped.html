@@ -1,0 +1,29 @@
+<div class="" ng-show="field.isVisible">
+    <label class="zh-label" ng-bind="field.label"></label>
+    
+    <div class="col-xs-12 col-sm-12">
+        <ul class="zh-container-groups">
+            <li 
+                ng-repeat="(category, data) in field.dataSource.data | groupBy:field.groupProp:field" 
+                data-ng-show="filtered.length > 0" 
+                zh-update-scroller="250"
+                class="zh-list-group"
+                >
+                <span class="zh-group-desc">{{category}}</span>
+                <ul class="zh-products-container">
+                    <li ng-repeat="row in filtered = (data)" data-zh-style>
+                        <div>
+                            <div>
+                                <span class="zh-product-price" data-ng-bind='row[field.detailPriceProp]'></span>
+                                <span class="zh-product-desc">
+                                    <p data-ng-bind='row[field.detailDescProp]'></p>
+                                    <span class="zh-product-sub-desc" data-ng-bind='row[field.detailSubDescProp]'></span>
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>

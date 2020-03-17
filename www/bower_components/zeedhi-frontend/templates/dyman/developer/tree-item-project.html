@@ -1,0 +1,13 @@
+<span class="tree-item wrapper {{getFileSystemType(item)}}" zh-click="toggleItem(item, DevToolsCtrl)">
+	<span class="icon">
+		<svg width="35px" height="35px">
+			<use xlink:href="" ng-href="{{templateManager.getFrameworkTemplateURL('../../assets/images/icons/sprite-zeedhi-developer.svg#' + getFileSystemType(item))}}"></use>
+		</svg>
+	</span>
+	<span class="item-label" ng-bind="item.label || '(' + getTypeCapitalized(item) + ' ' + (item.name || item.id) + ')'"></span>
+</span>
+
+<!-- Subitems -->
+<ul class="subitems" ng-show="item._opened" x-value="{{ item._opened }}" ng-class="{ 'opened': item._opened }">
+	<li zh-tree-item ng-repeat="item in getSubitems(item)" ng-include="templateManager.getFrameworkTemplateURL('developer/tree-item-project.html')"></li>
+</ul>

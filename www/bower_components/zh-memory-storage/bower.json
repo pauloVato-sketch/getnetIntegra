@@ -1,0 +1,14 @@
+{
+  "name": "zh-memory-storage",
+  "version": "1.0.3",
+  "description": "zh-memory-storage",
+  "license": "Comercial",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {}
+}

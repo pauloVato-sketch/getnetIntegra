@@ -1,0 +1,64 @@
+{
+  "_from": "cordova-android-movetasktoback",
+  "_id": "cordova-android-movetasktoback@0.1.4",
+  "_inBundle": false,
+  "_integrity": "sha1-6OTvfq2kh/tiZcFBbOuxmvD0c+I=",
+  "_location": "/cordova-android-movetasktoback",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "cordova-android-movetasktoback",
+    "name": "cordova-android-movetasktoback",
+    "escapedName": "cordova-android-movetasktoback",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/cordova-android-movetasktoback/-/cordova-android-movetasktoback-0.1.4.tgz",
+  "_shasum": "e8e4ef7eada487fb6265c1416cebb19af0f473e2",
+  "_spec": "cordova-android-movetasktoback",
+  "_where": "/home/werikpaula/dev/Germano/Util/Projetos Build/SITEF/odhenPOS",
+  "author": {
+    "name": "Christian Speckner"
+  },
+  "bugs": {
+    "url": "https://github.com/mayflower/cordova-android-movetasktoback/issues"
+  },
+  "bundleDependencies": false,
+  "cordova": {
+    "id": "cordova-android-movetasktoback",
+    "platforms": [
+      "android"
+    ]
+  },
+  "deprecated": false,
+  "description": "\n        Exposes Activity::moveTaskToBack to cordova. Allows to return to the previous activity programatically.\n    ",
+  "engines": [
+    {
+      "name": "cordova-android",
+      "version": ">=4.0.0"
+    }
+  ],
+  "homepage": "https://github.com/mayflower/cordova-android-movetasktoback#readme",
+  "keywords": [
+    "android",
+    "activity",
+    "close",
+    "exit",
+    "background",
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "license": "Apache 2.0",
+  "name": "cordova-android-movetasktoback",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mayflower/cordova-android-movetasktoback.git"
+  },
+  "version": "0.1.4"
+}

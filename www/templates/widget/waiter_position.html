@@ -1,0 +1,32 @@
+<section ng-controller="WaiterOrdersProdCtrl" zh-widget-events data-ng-init='init()'>
+	<div class="row">
+		<div class="zh-waiter-positions">
+			<div class="col-xs-12">
+				<ul class="zh-positions-container">
+					<li>Posição</li>
+					<li class="odh-button-space">
+						<a data-zh-touchstart='prev();' data-ng-show="startWith > 0">
+							<div>
+								...
+							</div>
+						</a>
+					</li>
+					<li class="odh-button-space" ng-repeat="i in buildPositionsArray(widget.dataSource.data[0]['NRPOSICAOMESA'], startWith)">
+						<a zh-touchstart="widget.position = i" href="">
+							<div ng-class="{'zh-positions-active' : widget.position === i}"
+								 ng-bind="i+1">
+							</div>
+						</a>
+					</li>
+					<li class="odh-button-space">
+						<a data-zh-touchstart='next();' data-ng-show="widget.dataSource.data[0]['NRPOSICAOMESA'] > finishWith + 1">
+							<div>
+								...
+							</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>

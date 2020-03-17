@@ -1,0 +1,165 @@
+{
+    "id": "210012759442764465761450",
+    "name": "openRegister",
+    "label": "Abertura de Caixa",
+    "height": "100%",
+    "isVisible": true,
+    "showFooter": true,
+    "showHeader": true,
+    "showMenu": false,
+    "showBack": true,
+    "showForm": true,
+    "addToHistory": false,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "template": "container/window.html",
+    "widgets": [
+        {
+            "id": "121616863429036410741451",
+            "name": "openRegisterWidget",
+            "label": "Abertura de Caixa",
+            "template": "widget/form-login.html",
+            "isVisible": true,
+            "showDescriptionOrder": false,
+            "actions": [
+                {
+                    "id": "12161686343374519701454",
+                    "label": "Confirmar Abertura",
+                    "name": "confirm",
+                    "isVisible": true,
+                    "readOnly": false,
+                    "showOnForm": true,
+                    "showOnList": false,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "id": "12161686348822641661455",
+                            "name": "ActionEvent",
+                            "code": "RegisterController.openRegister(args.owner.widget);"
+                        }
+                    ]
+                },
+                {
+                    "id": "12161686346608707841456",
+                    "label": "Voltar",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": false,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "12161686349379472961457",
+                            "name": "ActionEvent",
+                            "code": "UtilitiesService.backLoginScreen();"
+                        }
+                    ]
+                }
+            ],
+            "dataSource": {},
+            "events": [
+                {
+                    "id": "12161686342771350591458",
+                    "name": "WidgetOnEnter",
+                    "code": "args.owner.moveToFirst();"
+                }
+            ],
+            "fields": [
+                {
+                    "id": "121616863422456682521452",
+                    "class": "12 center-text-align-field fundoDeTroco-label",
+                    "name": "labelFundoDeTroco",
+                    "align": "center",
+                    "label": "O caixa se encontra fechado, para efetuar a abertura, insira o valor do fundo de troco.",
+                    "isVisible": true,
+                    "readOnly": true,
+                    "defaultValue": null,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "121616863417768513501453",
+                    "name": "VRMOVIVEND",
+                    "label": "Fundo de Troco",
+                    "showOnForm": true,
+                    "validations": {
+                        "required": true
+                    },
+                    "events": [
+                        {
+                            "id": "15995324232638265591635",
+                            "name": "FieldOnKeydown",
+                            "code": "RegisterController.handleEnterButton(args);"
+                        }
+                    ],
+                    "focused": true,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "template": "field/text-number.html",
+                    "class": 12,
+                    "descriptionField": "VALOR",
+                    "mask": {
+                        "type": "currency",
+                        "params": {
+                            "showSymbol": false,
+                            "precision": 2,
+                            "thousands": "",
+                            "decimal": ",",
+                            "allowNegative": false
+                        }
+                    }
+                }
+            ],
+            "widgets": [
+                {
+                    "name": "report",
+                    "label": "Relatório de Abertura",
+                    "isVisible": true,
+                    "template": "widget/form.html",
+                    "actions": [
+                        {
+                            "name": "print",
+                            "label": "Imprimir e Continuar",
+                            "showAsAction": "always|view|edit",
+                            "icon": "printer",
+                            "isVisible": true,
+                            "events": [
+                                {
+                                    "id": "29208878614401171721309",
+                                    "name": "ActionEvent",
+                                    "code": "RegisterController.printOpenRegister();"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "continue",
+                            "label": "Continuar",
+                            "showAsAction": "never",
+                            "isVisible": true,
+                            "events": [
+                                {
+                                    "id": "29208878614401171721309",
+                                    "name": "ActionEvent",
+                                    "code": "RegisterController.handleOpenRegister(true);"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "name": "report",
+                            "class": 12,
+                            "isVisible": true,
+                            "readOnly": true,
+                            "defaultValue": null,
+                            "template": "field/textarea.html",
+                            "textRows": 15,
+                            "events": []
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

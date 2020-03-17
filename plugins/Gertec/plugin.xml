@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="com.odhen.POS" version="0.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>Gertec</name>
+    <js-module name="Gertec" src="www/Gertec.js">
+        <clobbers target="cordova.plugins.Gertec" />
+    </js-module>
+    <platform name="android">
+        <config-file parent="/*" target="res/xml/config.xml">
+            <feature name="Gertec">
+                <param name="android-package" value="com.odhen.POS.Gertec" />
+            </feature>
+        </config-file>
+        <config-file parent="/*" target="AndroidManifest.xml"></config-file>
+
+        <!-- Java Files -->
+        <source-file src="src/android/Gertec.java" target-dir="src/com/odhen/POS/" />
+        <source-file src="src/android/GertecPrinter.java" target-dir="src/com/odhen/POS/" />
+
+        <!-- Lib Files -->
+        <source-file src="src/android/libs/payment.jar" target-dir="libs/"/>
+    </platform>
+</plugin>

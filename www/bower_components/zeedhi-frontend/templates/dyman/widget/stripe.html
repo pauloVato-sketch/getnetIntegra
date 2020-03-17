@@ -1,0 +1,86 @@
+<!-- Stripe -->
+<aside class="zh-stripe"
+	zh-stripe
+	ng-class="{ 'collapsible': widget.collapsible && shouldCollapse, 'actionable': widget.actions.length, 'opened': !collapsed, 'navigation': widget.navigation || widget.actions.length == 2 }"
+	ng-controller="StripeController as stripeCrtl"
+	zh-widget-events
+	zh-schema-validator="widget/stripe.html.json">
+
+	<!-- Left part -->
+	<section class="left-side">
+		<!-- Icon to collapse the stripe fields -->
+		<div class="collapsible-icon"
+			ng-if="shouldCollapse && widget.collapsible">
+			<button
+				ng-show="collapsed"
+				zh-icon="icon-white no-border plus"
+				zh-touchstart="collapseRows()"
+			></button>
+			<button
+				ng-hide="collapsed"
+				zh-icon="icon-white no-border less"
+				zh-touchstart="collapseRows()"
+			></button>
+		</div>
+
+		<!-- Stripe fields -->
+		<form ng-if="!widget.directInput" class="stripe-fields">
+			<div class="stripe-row" ng-repeat="row in stripeRows">
+				<div ng-repeat="field in row.fields"
+					class="stripe-field col-xs-{{field.class}} zh-text-align-{{field.align || 'left'}}"
+ 					ng-style="getAdjustedMaxWidth()"
+					ng-if="field.isVisible"
+					zh-style
+					zh-events>
+					<span data-zh-bind-translate="field.label"></span>
+					<span ng-bind="field.value()" class="stripe-value-{{field.name}}"></span>
+				</div>
+			</div>
+		</form>
+
+		<!-- Direct input fields -->
+		<form ng-if="widget.directInput" class="stripe-fields">
+			<div class="direct-input-field col-xs-{{fieldWidth}}"
+				ng-repeat="field in widget.fields"
+				ng-include="templateManager.getTemplateURL(field.template)">
+			</div>
+		</form>
+	</section>
+
+	<!-- Right actions -->
+	<section class="right-side">
+		<a
+			data-zh-ripple-effect
+			ng-repeat="action in widget.getActionsByVisibility('stripe').slice(0,2)"
+			data-zh-touchstart="actionClick(action, action.widget)"
+			data-zh-owner-element="action"
+			ng-if="!widget.navigation || widget.directInput"
+			data-zh-title-tooltip="{{ action.tooltip }}">
+			<span class="action-icon" data-ng-class="{'has-label': action.label}">
+				<span zh-icon="{{action.icon}} icon-white"></span>
+			</span>
+			<span class='zh-action-label' data-ng-show='action.label' data-zh-bind-translate='action.label'></span>
+		</a>
+		<a
+			data-zh-ripple-effect
+			ng-if="widget.navigation && !widget.directInput"
+			zh-icon="icon-white back"
+			zh-touchstart="widget.moveToPrev()">
+			<span class="action-icon" data-ng-class="{'has-label': action.label}">
+				<span zh-icon="{{action.icon}} icon-white"></span>
+			</span>
+			<span class='zh-action-label' data-ng-show='action.label' data-zh-bind-translate='action.label'></span>
+		</a>
+		<a
+			data-zh-ripple-effect
+			ng-if="widget.navigation && !widget.directInput"
+			zh-icon="icon-white next"
+			zh-touchstart="widget.moveToNext()">
+			<span class="action-icon" data-ng-class="{'has-label': action.label}">
+				<span zh-icon="{{action.icon}} icon-white"></span>
+			</span>
+			<span class='zh-action-label' data-ng-show='action.label' data-zh-bind-translate='action.label'></span>
+		</a>
+	</section>
+
+</aside>

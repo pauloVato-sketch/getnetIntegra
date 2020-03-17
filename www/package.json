@@ -1,0 +1,36 @@
+{
+  "name": "POS",
+  "version": "6.0.0",
+  "authors": [
+    "Victor Tostes <victor.barbosa@teknisa.com>",
+    "Hugo Souza <hugo.souza@teknisa.com>",
+    "Jarolim <joao.martins@teknisa.com>",
+    "Marcus Soares <marcus.soares@teknisa.com>",
+    "Lua <gabriel.braz@teknisa.com>",
+    "Matheus Nogueira <matheus.nogueira@teknisa.com>"
+  ],
+  "description": "An ordering app",
+  "contributors": [],
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {},
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "growl": "^1.10.3",
+    "grunt": "^1.0.4",
+    "grunt-contrib-clean": "*",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-copy": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-mocha": "^1.0.4",
+    "grunt-zh-id-generator": "git+http://192.168.122.56/zeedhi/grunt-zh-id-generator.git",
+    "mocha": "^4.0.1"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "jquery": "^3.4.1"
+  }
+}

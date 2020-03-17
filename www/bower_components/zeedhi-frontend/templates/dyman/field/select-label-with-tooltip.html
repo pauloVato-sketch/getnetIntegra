@@ -1,0 +1,19 @@
+<!-- Select label with tooltip -->
+<label
+	class="zh-label"
+	data-ng-show="field.label"
+	data-zh-bind-translate="field.label"
+	data-zh-click="maintainWindow(field)"
+	zh-stop-propagation-click
+	data-ng-style="{'cursor': (field.maintainWindow ? 'pointer' : 'initial')}">
+</label>
+<div
+	class="zh-required-icon"
+	ng-if="field.validations.required">*</div>
+<div
+	class="zh-help-icon"
+	ng-if="field.help">?</div>
+
+<!-- Tooltip -->
+<div class="zh-tooltip-arrow" data-ng-if="field.help"></div>
+<div class="zh-tooltip-text"  data-ng-if="field.help" data-ng-bind-html="field.help|i18n"></div>

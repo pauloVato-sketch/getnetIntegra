@@ -1,0 +1,7 @@
+<section
+	ng-if="widget.aclIsVisible && !widget.showAsPopup && !widget.showAsModal"
+	ng-show="widget.isVisible"
+	ng-repeat="widget in templateManager.container.widgets"
+	ng-include="templateManager.getTemplateURL(widget.formTemplate)"
+	class="zh-content zh-container-{{templateManager.container.name}} {{ widget.class }}"
+></section>
