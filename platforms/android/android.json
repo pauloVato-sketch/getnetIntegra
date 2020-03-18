@@ -1,0 +1,183 @@
+{
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {
+      "res/xml/config.xml": {
+        "parents": {
+          "/*": [
+            {
+              "xml": "<feature name=\"IntegrationService\"><param name=\"android-package\" value=\"com.odhen.POS.IntegrationService\" /></feature>",
+              "count": 1
+            },
+            {
+              "xml": "<feature name=\"Permissions\"><param name=\"android-package\" value=\"com.android.plugins.Permissions\" /></feature>",
+              "count": 1
+            },
+            {
+              "xml": "<feature name=\"Device\"><param name=\"android-package\" value=\"org.apache.cordova.device.Device\" /></feature>",
+              "count": 1
+            },
+            {
+              "xml": "<feature name=\"Whitelist\"><param name=\"android-package\" value=\"org.apache.cordova.whitelist.WhitelistPlugin\" /><param name=\"onload\" value=\"true\" /></feature>",
+              "count": 1
+            },
+            {
+              "xml": "<feature name=\"BarcodeScanner\"><param name=\"android-package\" value=\"com.phonegap.plugins.barcodescanner.BarcodeScanner\" /></feature>",
+              "count": 1
+            },
+            {
+              "xml": "<feature name=\"MoveTaskToBack\"><param name=\"android-package\" value=\"de.mayflower.cordova.movetasktoback.MoveTaskToBack\" /></feature>",
+              "count": 1
+            }
+          ]
+        }
+      },
+      "config.xml": {
+        "parents": {
+          "/*": [
+            {
+              "xml": "<feature name=\"Keyboard\"><param name=\"android-package\" onload=\"true\" value=\"org.apache.cordova.labs.keyboard.Keyboard\" /></feature>",
+              "count": 1
+            }
+          ]
+        }
+      },
+      "AndroidManifest.xml": {
+        "parents": {
+          "/manifest/application": [
+            {
+              "xml": "<activity android:clearTaskOnLaunch=\"true\" android:configChanges=\"orientation|keyboardHidden|screenSize\" android:exported=\"false\" android:name=\"com.google.zxing.client.android.CaptureActivity\" android:theme=\"@android:style/Theme.NoTitleBar.Fullscreen\" android:windowSoftInputMode=\"stateAlwaysHidden\" />",
+              "count": 1
+            },
+            {
+              "xml": "<activity android:label=\"Share\" android:name=\"com.google.zxing.client.android.encode.EncodeActivity\" />",
+              "count": 1
+            }
+          ],
+          "/manifest": [
+            {
+              "xml": "<uses-permission android:name=\"android.permission.CAMERA\" />",
+              "count": 1
+            },
+            {
+              "xml": "<uses-permission android:name=\"android.permission.FLASHLIGHT\" />",
+              "count": 1
+            },
+            {
+              "xml": "<uses-feature android:name=\"android.hardware.camera\" android:required=\"true\" />",
+              "count": 1
+            }
+          ]
+        }
+      }
+    }
+  },
+  "installed_plugins": {
+    "com.odhen.POS": {
+      "PACKAGE_NAME": "com.odhen.POS"
+    },
+    "cordova-plugin-android-permissions": {
+      "PACKAGE_NAME": "com.odhen.POS"
+    },
+    "cordova-plugin-androidx": {
+      "PACKAGE_NAME": "com.odhen.POS"
+    },
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "com.odhen.POS"
+    },
+    "cordova-plugin-keyboard": {
+      "PACKAGE_NAME": "com.odhen.POS"
+    },
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "com.odhen.POS"
+    },
+    "phonegap-plugin-barcodescanner": {
+      "ANDROID_SUPPORT_V4_VERSION": "27.+",
+      "PACKAGE_NAME": "com.odhen.POS"
+    },
+    "cordova-plugin-androidx-adapter": {
+      "PACKAGE_NAME": "com.odhen.POS"
+    },
+    "cordova-android-movetasktoback": {
+      "PACKAGE_NAME": "com.odhen.POS"
+    }
+  },
+  "dependent_plugins": {},
+  "modules": [
+    {
+      "id": "com.odhen.POS.Gertec",
+      "file": "plugins/com.odhen.POS/www/Gertec.js",
+      "pluginId": "com.odhen.POS",
+      "clobbers": [
+        "cordova.plugins.Gertec"
+      ]
+    },
+    {
+      "id": "com.odhen.POS.GertecSitef",
+      "file": "plugins/com.odhen.POS/www/GertecSitef.js",
+      "pluginId": "com.odhen.POS",
+      "clobbers": [
+        "cordova.plugins.GertecSitef"
+      ]
+    },
+    {
+      "id": "cordova-plugin-android-permissions.Permissions",
+      "file": "plugins/cordova-plugin-android-permissions/www/permissions.js",
+      "pluginId": "cordova-plugin-android-permissions",
+      "clobbers": [
+        "cordova.plugins.permissions"
+      ]
+    },
+    {
+      "id": "cordova-plugin-device.device",
+      "file": "plugins/cordova-plugin-device/www/device.js",
+      "pluginId": "cordova-plugin-device",
+      "clobbers": [
+        "device"
+      ]
+    },
+    {
+      "id": "cordova-plugin-keyboard.keyboard",
+      "file": "plugins/cordova-plugin-keyboard/www/keyboard.js",
+      "pluginId": "cordova-plugin-keyboard",
+      "clobbers": [
+        "window.Keyboard"
+      ]
+    },
+    {
+      "id": "phonegap-plugin-barcodescanner.BarcodeScanner",
+      "file": "plugins/phonegap-plugin-barcodescanner/www/barcodescanner.js",
+      "pluginId": "phonegap-plugin-barcodescanner",
+      "clobbers": [
+        "cordova.plugins.barcodeScanner"
+      ]
+    },
+    {
+      "id": "cordova-android-movetasktoback.tsd",
+      "file": "plugins/cordova-android-movetasktoback/js/typescript_deferred.js",
+      "pluginId": "cordova-android-movetasktoback"
+    },
+    {
+      "id": "cordova-android-movetasktoback.plugin",
+      "file": "plugins/cordova-android-movetasktoback/js/plugin.js",
+      "pluginId": "cordova-android-movetasktoback",
+      "clobbers": [
+        "mayflower"
+      ]
+    }
+  ],
+  "plugin_metadata": {
+    "com.odhen.POS": "0.0.1",
+    "cordova-plugin-android-permissions": "1.0.0",
+    "cordova-plugin-androidx": "1.0.2",
+    "cordova-plugin-device": "2.0.3",
+    "cordova-plugin-keyboard": "1.2.0",
+    "cordova-plugin-whitelist": "1.3.3",
+    "phonegap-plugin-barcodescanner": "8.1.0",
+    "cordova-plugin-androidx-adapter": "1.1.0",
+    "cordova-android-movetasktoback": "0.1.4"
+  }
+}

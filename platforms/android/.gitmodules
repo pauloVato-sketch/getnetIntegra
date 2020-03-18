@@ -1,0 +1,6 @@
+[submodule "odhenPOS"]
+	path = odhenPOS
+	url = http://code.zeedhi.com/odhen/waiter.git
+[submodule "getnetintegration"]
+	path = getnetintegration
+	url = git@github.com:werikgpaula/getnetIntegration.git

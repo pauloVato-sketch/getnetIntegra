@@ -1,0 +1,4 @@
+// GENERATED FILE - DO NOT EDIT
+include ":", ':deviceintegrationfacade', ':getnetintegration'
+include ":CordovaLib"
+include ":app"
