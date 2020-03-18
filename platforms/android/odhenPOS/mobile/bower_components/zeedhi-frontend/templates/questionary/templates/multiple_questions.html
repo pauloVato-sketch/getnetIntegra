@@ -1,0 +1,26 @@
+<label class="label_questionary zh-label"
+  data-ng-init="questionary.answer[question.name] = {'options' : {}};">
+  <span data-ng-bind='question.seqno'></span>
+  <span data-zh-bind-translate='question.description'></span>
+</label>
+
+<span data-ng-if="question.error" >
+    <span class="error">Preencha a questão</span>
+</span>
+
+<div class="fields_container" data-ng-repeat='option in question.options'>
+  <div class="zh-checkbox">
+    <input type="checkbox"
+      name="{{question.name}}"
+      id="{{question.name}}checkbox{{option.id}}"
+      data-ng-model="questionary.answer[question.name]['options'][option.id]">
+    <label
+      class="zh-box-label"
+      for="{{question.name}}checkbox{{option.id}}">
+      <div class="zh-box">
+        <span zh-icon="no-border checked"></span>
+      </div>
+      <span data-ng-bind="option.description"></span>
+    </label>
+  </div>
+</div>

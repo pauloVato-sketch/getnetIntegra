@@ -1,0 +1,109 @@
+<div class="row zh-side-menu" ng-controller="MenuController as controller">
+	<aside class="zh-menu-container zh-business-color-menu-slide" zh-slide-menu data-ng-class="{'sub-menu': showSubMenu && !menuFilter}">
+
+		<!-- User information -->
+		<section class="col-xs-12 zh-user-data" data-ng-show="!!templateManager.showUserData">
+			<img class="zh-user-photo"
+				data-ng-src="{{templateManager.userData.image}}"
+				data-ng-hide="!!templateManager.hideUserData"
+				data-zh-touchstart="templateManager.clickUserData()">
+			<div class="zh-user-info">
+				<span class="zh-user-name"
+				data-ng-bind="templateManager.userData.name"
+				data-zh-touchstart="templateManager.clickUserData()"
+				></span>
+				<span class="zh-user-desc"
+				data-ng-repeat="text in templateManager.userData.descriptions"
+				data-ng-bind="text"></span>
+				<span data-zh-ripple-effect class="zh-user-action"
+				data-ng-repeat="action in templateManager.project.userDataActions"
+				data-zh-touchstart="userDataActionClick(action)"
+				data-zh-owner-element="action">
+					<span zh-icon="{{ action.icon }} icon-black"></span>
+					<span class="zh-user-action-label" data-zh-bind-translate="action.label"></span>
+				</span>
+			</div>
+		</section>
+
+		<!-- Search box -->
+		<div class="col-xs-12" ng-show="templateManager.project.showMenuSearch">
+			<section class="zh-container-search-menu">
+				<input class="zh-input-search-menu mousetrap" ng-model="menuFilter" type="text" placeholder="{{ 'Search'|i18n }}"/>
+				<span ng-show="menuFilter" class="clear-button" zh-touchstart="menuFilter = '';"><svg><polygon fill="#B75520" points="14,1.243 12.756,0 7,5.756 1.244,0 0,1.243 5.756,7 0,12.756 1.244,14 7,8.244 12.756,14 14,12.756 8.243,7"></polygon></svg></span>
+			</section>
+		</div>
+
+		<div class="col-xs-12">
+			<nav data-ng-if="!menuFilter">
+				<ul class="zh-main-menu" ng-show="!showSubMenu"> <!-- STATIC LIST (MAIN MENU) -->
+					<li class="menu-group"
+						ng-repeat="groupMenu in templateManager.project.groupMenu"
+						data-ng-if='groupMenu.aclIsVisible || !templateManager.project.aclEnable'
+						data-ng-show='groupMenu.isVisible'> <!--GROUP MENU-->
+						<span class="menu-group-title" data-zh-bind-translate="groupMenu.label"></span>
+						<ul class="menu-group-items"
+							data-ng-init="_menu = groupMenu"
+							data-ng-include="templateManager.getFrameworkTemplateURL('component/menu-item.html')">
+						</ul>
+					</li>
+				</ul>
+				<ul ng-if="!Util.isDesktop()" ng-show="showSubMenu" class="zh-main-menu">
+					<li class="menu-group">
+						<span class="sub-menu-breadcrumb">
+							<span
+								data-ng-repeat="breadcrumbItem in breadcrumb"
+								data-ng-bind="breadcrumbItem.label"
+								zh-click="menuBackClick(breadcrumbItem)">
+							</span>
+						</span>
+						<span class="menu-group-title" data-zh-bind-translate="labelMenu"></span>
+						<ul>
+							<li ng-repeat="menu in subMenu"
+								data-ng-if='menu.aclIsVisible || !templateManager.project.aclEnable'
+								data-ng-show='menu.isVisible'
+								data-ng-class="{ 'has-child': menu.menus.length > 0, 'disabled': menu.disabled }"
+								class="menu-item sub-menu-item closed">
+								<span class="menu-link" zh-click="menuClick(menu)">
+									<span class="menu-expand-icon" zh-icon="forward no-border icon-white" data-ng-if="menu.menus.length > 0"></span>
+									<span class="menu-icon" zh-icon="{{menu.icon}} no-border icon-white" data-ng-class="{'empty-icon': !menu.icon }"></span>
+									<span class="menu-title" data-zh-bind-translate="menu.label"></span>
+								</span>
+							</li>
+						</ul>
+					</li>
+
+				</ul>
+			</nav>
+			<nav data-ng-if="!!menuFilter">
+				<ul class="zh-main-menu zh-main-menu-search">
+					<li data-ng-repeat="menu in plainMenuData | filter:controller.menuSearch"
+						class="menu-item visible"
+						data-ng-class="{'no-parent': !menu.parentLabel, 'disabled': menu.disabled }">
+						<span class="menu-link" data-ng-class="{'with-parent': menu.parentLabel}" zh-click="menuClick(menu)">
+							<span class="menu-icon" zh-icon="{{menu.icon}} no-border icon-white" data-ng-class="{'empty-icon': !menu.icon }"></span>
+							<span class="menu-title" data-zh-bind-translate="menu.label"></span>
+							<span class="menu-title menu-title-parent" data-zh-bind-translate="menu.parentLabel"></span>
+						</span>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</aside>
+
+	<div data-ng-if="showSubMenu && !menuFilter" zh-click="menuBackClick()" class="menu-item-back">
+		<span class="menu-link">
+			<span zh-icon="previous icon-white no-border"></span>
+			<span class="title-sprit" data-zh-bind-translate="'Back'"></span>
+		</span>
+	</div>
+
+	<div id="menu-tooltip-content" class="zh-tooltip-content"></div>
+
+	<footer class="zh-footer-menu zh-business-color-footer-menu {{ lang }}">
+		<span class="menu-about" zh-icon="information icon-black" zh-click="menuAboutClick()" zh-title-tooltip="{{ 'About'|i18n }}"></span>
+		<span ng-controller="ReportBugController as ReportBugCtrl" class="menu-issue" zh-icon="issue icon-white no-border" zh-click="menuReportIssueClick()" zh-title-tooltip="{{ 'Report bugs'|i18n }}"></span>
+	</footer>
+
+	<div class="menu-overlay" data-ng-class="{ 'menu-hidden': !$root.menuOpen }" data-zh-click="$root.menuOpen = false"></div>
+</div>
+

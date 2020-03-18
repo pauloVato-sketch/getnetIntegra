@@ -1,0 +1,30 @@
+<div data-zh-floating-control class="zh-floating-control opened" data-ng-class="getFloatingStatusClass()">
+	<div class="control-menu">
+		<ul>
+			<li class="float-action refresh-action" data-ng-if="widget.floatingControl.refreshAction">
+				<span class="action-icon" data-zh-icon="refresh no-border icon-white" data-zh-touchstart="refreshWidget()"></span>
+				<span class="tool-tip" data-zh-bind-translate="'Refresh'"></span>
+			</li>
+			<li class="float-action" data-ng-class="{ expandable: action.template && action.expandable }" data-ng-repeat="action in widget.floatingControl.actions">
+				<span data-ng-if="!action.template">
+					<span class="action-icon" data-zh-icon="{{action.icon}} no-border icon-white" data-zh-touchstart="actionClick(action, widget)"></span>
+					<span class="tool-tip" data-zh-bind-translate="action.label"></span>
+				</span>
+				<span data-ng-if="action.template">
+					<div data-ng-include="templateManager.getTemplateURL(action.template)"></div>
+				</span>
+			</li>
+			<li class="float-action" data-ng-repeat="action in getCustomActions()"
+				data-ng-class="{ expandable: action.expandable }"
+				data-ng-if="action.isVisible(widget)">
+				<div data-ng-include="templateManager.getTemplateURL(action.template)"></div>
+			</li>
+		</ul>
+	</div>
+	<div class="control-info"></div>
+	<div class="control-handle" data-zh-touchstart="toggleActionMenu()">
+		<span class="open" data-zh-icon="more no-border icon-white"></span>
+		<span class="status" ng-if="getFloatingStatusIcon()" data-zh-icon="{{ getFloatingStatusIcon() }} no-border icon-white"></span>
+		<span class="close" data-zh-icon="down no-border icon-white"></span>
+	</div>
+</div>

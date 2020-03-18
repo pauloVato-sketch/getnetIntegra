@@ -1,0 +1,51 @@
+<div zh-scroller class="container" ng-controller="ListController as controller">
+	<div zh-scroller data-zh-infinity-scroll="widget.searchCriteria" data-widget="widget" class="container zh-list-container">
+		<ul zh-widget-events
+			class="zh-template-list" data-ng-class="{'with-search': !controller.widget.hideSearchField}">
+			<li id="pullUp">
+				<div class="row">
+					<div class="col-xs-12">
+						<ul class="zh-loading">
+							<li>
+								<i class="zh-loading-icon"></i>
+								<p data-zh-bind-translate="'atualizando...'"></p>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</li>
+			<li data-ng-if="Util.objectHasAnyValue(widget.searchCriteria) && filtered.length == 0">
+				<div class="row">
+					<div class="col-xs-12">
+						<p class="text-center zh-text-search-not-find" data-zh-bind-translate="controller.widget.noMatchText || 'nenhum registro encontrado'"> </p>
+					</div>
+				</div>
+			</li>
+			<li class="zh-text-default-sans zh-list-item-label"
+				ng-repeat="row in filtered = (controller.widget.dataSource.data | filter:controller.search)"
+				data-ng-class="{'row-selected' : row.__isSelected, 'list-checkbox': controller.widget.showCheckbox, 'row-editing': $index == widget.currentRow.__index}"
+				zh-post-repeat="templateManager.container.refresh()">
+				<!-- Checkbox -->
+				<div ng-if="controller.widget.showCheckbox" class="zh-checkbox zh-list-item-checkbox">
+					<input type="checkbox" id="check-list-{{$index}}" data-ng-model="row.__isSelected" ng-change='controller.toggle(row)'>
+					<label for="check-list-{{$index}}" class="zh-box-label">
+						<div class="zh-box">
+							<span zh-icon="no-border checked" data-ng-show="row.__isSelected"></span>
+						</div>
+					</label>
+				</div>
+				<!-- List item  -->
+				<div ng-repeat="column in controller.widget.fields|filter: {showOnList : true} | orderBy: 'sequenceInList'"
+					data-ng-class="{'zh-first-large' : $first}" class="row"
+					data-ng-if="column.aclIsVisible && column.isVisible">
+					<div class="col-xs-{{column.class}}" zh-click="openRow(row, widget)" zh-long-tap="controller.toggle(row)">
+						<span data-ng-show="column.label" data-zh-bind-translate="column.label"></span>
+						<span data-ng-bind="row[column.name]" ng-class="{'zh-desc-small' : $odd}"></span>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div data-ng-show="widget.isFloatingControlVisible()" data-ng-include="templateManager.getFrameworkTemplateURL('component/floating-control.html')"></div>
+</div>

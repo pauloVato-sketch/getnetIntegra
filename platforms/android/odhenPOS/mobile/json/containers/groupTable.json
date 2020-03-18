@@ -1,0 +1,124 @@
+{
+    "id": "15981274673802687381274",
+    "name": "groupTable",
+    "label": "Agrupamentos",
+    "showHeader": true,
+    "showMenu": true,
+    "showFooter": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "events": [
+        {
+            "id": "8985828911173215721288",
+            "name": "ContainerAfterinit",
+            "code": "UtilitiesService.setHeader(args.owner);"
+        },
+        {
+            "id": "8985828913231216121289",
+            "name": "ContainerOnBack",
+            "code": "UtilitiesService.handleBack(args.owner.name);"
+        }
+    ],
+    "template": "container/tabbed.html",
+    "widgets": [
+        {
+            "id": "89858289124808430371275",
+            "name": "agrupar",
+            "label": "Agrupar Mesas",
+            "template": "../../../../templates/widget/waiter_group.html",
+            "isVisible": true,
+            "actions": [
+                {
+                    "id": "8985828916489624061276",
+                    "label": "Voltar",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "8985828913229430241277",
+                            "name": "ActionEvent",
+                            "code": "ScreenService.goBack()"
+                        }
+                    ]
+                },
+                {
+                    "id": "89858289139339772931278",
+                    "label": "Agrupar Mesas",
+                    "name": "agrupar",
+                    "isVisible": true,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "id": "89858289124637633931279",
+                            "name": "ActionEvent",
+                            "code": "TableController.groupTables(args.owner.widget);"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "id": "89858289120912101531280",
+                    "name": "WidgetOnEnter",
+                    "code": "TableController.prepareGrouping(args.owner);"
+                },
+                {
+                    "id": "89858289110690107601281",
+                    "name": "WidgetOnEnterTab",
+                    "code": "TableController.prepareGrouping(args.owner);"
+                }
+            ],
+            "dataSource": {},
+            "fields": []
+        },
+        {
+            "id": "89858289141650261071282",
+            "name": "separar",
+            "label": "Separar Mesas",
+            "template": "../../../../templates/widget/waiter_group.html",
+            "isVisible": true,
+            "actions": [
+                {
+                    "id": "89858289138356360531283",
+                    "label": "Voltar",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "89858289115141538911284",
+                            "name": "ActionEvent",
+                            "code": "ScreenService.goBack()"
+                        }
+                    ]
+                },
+                {
+                    "id": "89858289112612381351285",
+                    "label": "Separar Mesas",
+                    "name": "separar",
+                    "isVisible": true,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "id": "89858289121478414651286",
+                            "name": "ActionEvent",
+                            "code": "TableController.splitTables(args.owner.widget);"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "id": "8985828912290251211287",
+                    "name": "WidgetOnEnterTab",
+                    "code": "TableController.prepareSplitting(args.owner);"
+                }
+            ],
+            "dataSource": {},
+            "fields": []
+        }
+    ]
+}

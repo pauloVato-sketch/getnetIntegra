@@ -1,0 +1,37 @@
+<div ng-show="field.isVisible"
+	class="zh-checkbox"
+	zh-checkbox
+	zh-events
+	zh-schema-validator="field/checkbox.html.json"
+	>
+
+	<!-- Hidden checkbox input -->
+	<input type="checkbox"
+		id="zh-checkbox-{{field.name}}"
+		name="{{field.name}}"
+		ng-model="fieldRow"
+		ng-checked="field.checked"
+		ng-true-value="'{{field.valueToTrue}}'"
+		ng-false-value="'{{field.valueToFalse}}'"
+		ng-readonly="field.isReadOnly()"
+		ng-disabled="field.isReadOnly()"
+		class="mousetrap"
+		>
+
+	<!-- Visible checkbox that is actually a label for the checkbox above -->
+	<label for="zh-checkbox-{{field.name}}" zh-touchstart="toggleValue()" class="zh-box-label"
+		ng-class="{'zh-readonly-checkbox': field.isReadOnly()}">
+		<div title="{{field.title}}"
+			zh-ripple-effect="grey"
+			class="zh-box mousetrap"
+			data-zh-contenteditable="{{ !field.isReadOnly() }}"
+			>
+			<span
+				zh-icon="checked no-border"
+				ng-show="(fieldRow == field.valueToTrue)">
+			</span>
+		</div>
+		<span data-zh-bind-translate="field.label"></span>
+
+	</label>
+</div>

@@ -1,0 +1,708 @@
+{
+    "id": "721423672121802261290",
+    "name": "loginContainer",
+    "events": [
+        {
+            "id": "29208878615398079701330",
+            "name": "ContainerAfterinit",
+            "code": "UtilitiesService.setupPoynt(templateManager.container.getWidget('loginWidget'));"
+        }
+    ],
+    "showHeader": true,
+    "showMenu": false,
+    "showFooter": false,
+    "showBack": false,
+    "showHomeButton": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "widgets": [
+        {
+            "id": "29208878610859998781291",
+            "name": "loginWidget",
+            "isVisible": true,
+            "template": "widget/form-login.html",
+            "actions": [],
+            "events": [
+                {
+                    "id": "29208878612996277871329",
+                    "name": "WidgetOnEnter",
+                    "code": " UtilitiesService.changeIndex(args.owner); UtilitiesService.setVersionLabel(args.owner); args.owner.reload(); UtilitiesService.loginOnEnter(args);"
+                },
+                {
+                    "id": "29208878612996277871329",
+                    "name": "WidgetAfterLoadDataSource",
+                    "code": "OperatorController.loadLoginData(args.owner);"
+                }
+            ],
+            "dataSource": {
+                "rest": false,
+                "memoryStorage": true,
+                "lazyLoad": true,
+                "name": "/nothing"
+            },
+            "fields": [
+                {
+                    "id": "29208878623093899791310",
+                    "class": "12 login-logo-img",
+                    "name": "logo-waiter",
+                    "label": "logo-waiter",
+                    "isVisible": true,
+                    "readOnly": true,
+                    "source": "../mobile/images/logos/odhen_pos.png",
+                    "sourceWaiter": "../mobile/images/logos/odhen_pos.png",
+                    "sourceFastPass": "../mobile/images/logos/fastpass.png",
+                    "template": "field/image-static.html",
+                    "events": []
+                },
+                {
+                    "id": "2920887861994431401311",
+                    "class": 6,
+                    "name": "FILIAL",
+                    "label": "Filial",
+                    "hasPagination": true,
+                    "isVisible": true,
+                    "readOnly": false,
+                    "defaultValue": null,
+                    "itemsPerPage": 20,
+                    "placeholder": null,
+                    "template": "field/select.html",
+                    "showSelectAs": "grid" ,
+                    "dataSource": {
+                        "memoryStorage": false,
+                        "rest": true,
+                        "lazyLoad": true,
+                        "name": "/FiliaisLogin"
+                    },
+                    "descriptionField": "FILIAL",
+                    "outData": {
+                        "FILIAL": "FILIAL",
+                        "CDFILIAL": "CDFILIAL",
+                        "NMFILIAL": "NMFILIAL"
+                    },
+                    "events": [
+                        {
+                            "id": "29208878635159772761312",
+                            "name": "FieldOnChange",
+                            "code": "OperatorController.handleFilialChange(args.owner.field, args.owner.field.widget.currentRow.CDFILIAL);"
+                        }
+                    ],
+                    "fields": [
+                        {
+                            "name": "CDFILIAL",
+                            "label": "Código",
+                            "template": "field/text-edit.html",
+                            "isVisible": true,
+                            "showOnList": true
+                        },
+                        {
+                            "name": "NMFILIAL",
+                            "label": "Nome",
+                            "template": "field/text-edit.html",
+                            "isVisible": true,
+                            "showOnList": true
+                        }
+                    ]
+                },
+                {
+                    "id": "29208878632955169071313",
+                    "class": 6,
+                    "name": "CAIXA",
+                    "isVisible": true,
+                    "readOnly": true,
+                    "hasPagination": true,
+                    "defaultValue": null,
+                    "itemsPerPage": 20,
+                    "label": "Caixa",
+                    "template": "field/select.html",
+                    "showSelectAs": "grid" ,
+                    "dataSource": {
+                        "memoryStorage": false,
+                        "rest": true,
+                        "lazyLoad": true,
+                        "name": "/CaixasLogin"
+                    },
+                    "dataSourceFilter": [
+                        {
+                            "name": "CDFILIAL",
+                            "operator": "=",
+                            "value": "@ApplicationContext.templateManager.container.getWidget('loginWidget').currentRow['CDFILIAL']@"
+                        }
+                    ],
+                    "descriptionField": "CAIXA",
+                    "outData": {
+                        "CAIXA": "CAIXA",
+                        "CDCAIXA": "CDCAIXA"
+                    },
+                    "events": [],
+                    "fields": [
+                        {
+                            "name": "CDCAIXA",
+                            "label": "Código",
+                            "template": "field/text-edit.html",
+                            "isVisible": true,
+                            "showOnList": true
+                        },
+                        {
+                            "name": "NMCAIXA",
+                            "label": "Nome",
+                            "template": "field/text-edit.html",
+                            "isVisible": true,
+                            "showOnList": true
+                        }
+                    ]
+                },
+                {
+                    "id": "2920887867303397671315",
+                    "class": 12,
+                    "name": "OPERADOR",
+                    "isVisible": true,
+                    "readOnly": false,
+                    "defaultValue": null,
+                    "label": "Operador",
+                    "template": "field/text-number.html",
+                    "maxlength": 12,
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "FieldOnInput",
+                            "code": "UtilitiesService.toNumber(args.owner.field); OperatorController.setVendedorLogin(args.owner.field.widget);"
+                        }
+                    ]
+                },
+                {
+                    "id": "2920887869450319741317",
+                    "class": 12,
+                    "name": "senha",
+                    "isVisible": true,
+                    "readOnly": true,
+                    "defaultValue": null,
+                    "label": "Senha",
+                    "template": "field/password.html",
+                    "events": [
+                        {
+                            "id": "15995324232638265591635",
+                            "name": "FieldOnKeydown",
+                            "code": "OperatorController.handleEnterButton(args);"
+                        }
+                    ]
+                },
+                {
+                    "id": "29208878617986864291318",
+                    "class": 12,
+                    "name": "entrar",
+                    "label": "Entrar",
+                    "isVisible": true,
+                    "readOnly": true,
+                    "defaultValue": null,
+                    "template": "field/button.html",
+                    "defaultButton": true,
+                    "events": [
+                        {
+                            "id": "29208878610803356481319",
+                            "name": "FieldOnClick",
+                            "code": "OperatorController.login(args.row, args.owner.field.widget.container.getWidget('errorConsole'));"
+                        }
+                    ]
+                },
+                {
+                    "id": "29208878630279769261320",
+                    "class": 12,
+                    "name": "testeCieloMobile",
+                    "label": "TESTAR CIELO MOBILE",
+                    "isVisible": false,
+                    "readOnly": false,
+                    "defaultValue": null,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "id": "29208878624725953221321",
+                            "name": "FieldOnClick",
+                            "code": "CieloTestController.testCieloMobile();"
+                        }
+                    ]
+                },
+                {
+                    "id": "29208878626680855491322",
+                    "class": 12,
+                    "name": "servidor",
+                    "label": "Configurar IP do servidor",
+                    "isVisible": true,
+                    "readOnly": false,
+                    "defaultValue": null,
+                    "icon": "global",
+                    "template": "field/label-with-icon.html",
+                    "events": [
+                        {
+                            "id": "2920887863094857061323",
+                            "name": "FieldOnClick",
+                            "code": "UtilitiesService.prepareServerForm(args.owner.field.widget.container.getWidget('serverIpWidget'));"
+                        }
+                    ]
+                },
+                {
+                    "id": "2920887867797883211324",
+                    "class": 12,
+                    "name": "version",
+                    "label": "Versão x.x.x",
+                    "isVisible": true,
+                    "readOnly": true,
+                    "defaultValue": null,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "2920887867122305541325",
+                    "class": 12,
+                    "name": "blank",
+                    "label": "",
+                    "isVisible": true,
+                    "readOnly": true,
+                    "defaultValue": null,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "2920887861407560891326",
+                    "class": 12,
+                    "name": "poynt_email",
+                    "label": "E-mail: contato@teknisa.com",
+                    "isVisible": false,
+                    "readOnly": true,
+                    "defaultValue": null,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "29208878634980228751327",
+                    "class": 12,
+                    "name": "poynt_phone",
+                    "label": "Telefone: +55 31 2122-2300",
+                    "isVisible": false,
+                    "readOnly": true,
+                    "defaultValue": null,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "29208878616403538661328",
+                    "class": 12,
+                    "name": "poynt_website",
+                    "label": "Site: www.teknisa.com",
+                    "isVisible": false,
+                    "readOnly": true,
+                    "defaultValue": null,
+                    "template": "field/label-static.html",
+                    "events": []
+                }
+            ],
+            "widgets": [
+                {
+                    "id": "29208878626660401121292",
+                    "name": "serverIpWidget",
+                    "label": "Configurar IP do servidor",
+                    "isVisible": true,
+                    "template": "widget/form.html",
+                    "actions": [
+                        {
+                            "id": "29208878637163130811295",
+                            "name": "back",
+                            "label": "Voltar",
+                            "showAsAction": "back",
+                            "isVisible": true,
+                            "events": [
+                                {
+                                    "id": "2920887863843316541296",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup()"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "29208878622807181851297",
+                            "name": "ok",
+                            "label": "Confirmar",
+                            "showAsAction": "never",
+                            "isVisible": true,
+                            "events": [
+                                {
+                                    "id": "29208878615213205731298",
+                                    "name": "ActionEvent",
+                                    "code": "UtilitiesService.setServerIp(args.row, templateManager.container.getWidget('loginWidget'))"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "id": "29208878642191943921293",
+                            "class": 12,
+                            "name": "ip",
+                            "placeholder": "IP do servidor",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "defaultValue": null,
+                            "template": "field/text.html",
+                            "events": [
+                                {
+                                    "id": "15995324232638265591635",
+                                    "name": "FieldOnKeydown",
+                                    "code": "OperatorController.handleEnterButton(args);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "29208878625900471061294",
+                            "class": 12,
+                            "name": "porta",
+                            "placeholder": "Porta (opcional)",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "defaultValue": null,
+                            "template": "field/text-number.html",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "FieldOnInput",
+                                    "code": "UtilitiesService.toNumber(args.owner.field);"
+                                },
+                                {
+                                    "id": "15995324232638265591635",
+                                    "name": "FieldOnKeydown",
+                                    "code": "OperatorController.handleEnterButton(args);"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "29208878627415108131299",
+                    "name": "validateSupervisorWidget",
+                    "label": "Validar Supervisor",
+                    "isVisible": false,
+                    "template": "widget/form.html",
+                    "actions": [
+                        {
+                            "id": "29208878637334466381302",
+                            "name": "liberar",
+                            "label": "Liberar acesso",
+                            "showAsAction": "never",
+                            "isVisible": true,
+                            "events": [
+                                {
+                                    "id": "29208878611451326311303",
+                                    "name": "ActionEvent",
+                                    "code": "PermissionService.validateSupervisorPass(args.row);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "29208878630115607521304",
+                            "name": "btnBack",
+                            "label": "Cancelar",
+                            "showAsAction": "back",
+                            "isVisible": true,
+                            "events": [
+                                {
+                                    "id": "29208878633057955941305",
+                                    "name": "ActionEvent",
+                                    "code": "PermissionService.cancelSupervisorValidation();"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "id": "2920887861566545161300",
+                            "class": 6,
+                            "name": "supervisor",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "defaultValue": null,
+                            "placeholder": "supervisor",
+                            "template": "field/text.html",
+                            "events": [],
+                            "maxlength": 12,
+                            "mask": {
+                                "type": "zerofill"
+                            },
+                            "events": [
+                                {
+                                    "name": "FieldOnKeydown",
+                                    "code": "OperatorController.handleEnterButton(args);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "29208878619964103621301",
+                            "class": 6,
+                            "name": "pass",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "defaultValue": null,
+                            "placeholder": "senha",
+                            "template": "field/password.html",
+                            "events": [
+                                {
+                                    "name": "FieldOnKeydown",
+                                    "code": "OperatorController.handleEnterButton(args);"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "29208878627455108131304",
+                    "name": "consumerPasswordWidget",
+                    "label": "Informe a senha do consumidor",
+                    "isVisible": false,
+                    "template": "widget/form.html",
+                    "actions": [
+                        {
+                            "id": "1",
+                            "name": "btnBack",
+                            "label": "Cancelar",
+                            "showAsAction": "back",
+                            "isVisible": true,
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "ActionEvent",
+                                    "code": "PermissionService.cancelConsumerPassword(args.owner.widget);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "2",
+                            "name": "confirmPassword",
+                            "label": "OK",
+                            "showAsAction": "never",
+                            "isVisible": true,
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "ActionEvent",
+                                    "code": "PermissionService.checkConsumerPassword(args.row, args.owner.widget);"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "id": "1",
+                            "class": 12,
+                            "name": "pass",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "defaultValue": null,
+                            "placeholder": "Senha",
+                            "template": "field/password.html",
+                            "events": [
+                                {
+                                    "name": "FieldOnKeydown",
+                                    "code": "OperatorController.handleEnterButton(args);"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "29208878629163182851306",
+                    "name": "errorConsole",
+                    "label": "Log de Erros",
+                    "isVisible": false,
+                    "template": "widget/form.html",
+                    "actions": [
+                        {
+                            "id": "2920887862701006341308",
+                            "name": "error",
+                            "label": "Fechar",
+                            "showAsAction": "never",
+                            "isVisible": true,
+                            "events": [
+                                {
+                                    "id": "29208878614401171721309",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "id": "29208878640391184761307",
+                            "class": 12,
+                            "name": "erro",
+                            "isVisible": true,
+                            "readOnly": true,
+                            "defaultValue": null,
+                            "placeholder": "Não há erros...",
+                            "template": "field/textarea.html",
+                            "textRows": 15,
+                            "events": []
+                        }
+                    ]
+                },
+                {
+                    "id": "292088786274151081312991",
+                    "name": "unlockDeviceWidget",
+                    "label": "Desbloquear Dispositivo",
+                    "isVisible": false,
+                    "template": "widget/form.html",
+                    "actions": [
+                        {
+                            "id": "29208878637334466381302",
+                            "name": "desbloquear",
+                            "label": "Desbloquear",
+                            "showAsAction": "never",
+                            "isVisible": true,
+                            "events": [
+                                {
+                                    "id": "292088786114513263113034",
+                                    "name": "ActionEvent",
+                                    "code": "GeneralFunctions.handleUnlockDevice(args.row);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "29208878630115607521304",
+                            "name": "btnBack",
+                            "label": "Cancelar",
+                            "showAsAction": "back",
+                            "isVisible": true,
+                            "events": [
+                                {
+                                    "id": "292088786330579559413054",
+                                    "name": "ActionEvent",
+                                    "code": "GeneralFunctions.closeUnlockPopup();"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "id": "292088786199641036213012",
+                            "class": 6,
+                            "name": "supervisor",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "defaultValue": null,
+                            "placeholder": "supervisor",
+                            "template": "field/text.html",
+                            "maxlength": 12,
+                            "validations": {
+                                "required": {}
+                            },
+                            "mask": {
+                                "type": "zerofill"
+                            },
+                            "events": [
+                                {
+                                    "name": "FieldOnKeydown",
+                                    "code": "GeneralFunctions.handleEnterButton(args);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "292088786199641036213013",
+                            "class": "6" ,
+                            "name": "pass",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "defaultValue": null,
+                            "placeholder": "senha",
+                            "validations": {
+                                "required": {}
+                            },
+                            "template": "field/password.html",
+                            "events": [
+                                {
+                                    "name": "FieldOnKeydown",
+                                    "code": "GeneralFunctions.handleEnterButton(args);"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "sitefPayment",
+                    "label": "SiTEF",
+                    "isVisible": false,
+                    "showAsModal": true,
+                    "template": "widget/form.html",
+                    "actions": [
+                        {
+                            "id": "1",
+                            "label": "Cancelar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "ActionEvent",
+                                    "code": "IntegrationSiTEF.abortSitefProcess();"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "2",
+                            "label": "Confirmar",
+                            "name": "btnConfirm",
+                            "showAsAction": "never",
+                            "isVisible": false,
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "ActionEvent",
+                                    "code": "IntegrationSiTEF.continueSitefProcess(args.owner.widget.currentRow.userInput)"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "name": "userInterface",
+                            "class": "12 sitef-field",
+                            "label": "",
+                            "align": "center",
+                            "showOnForm": true,
+                            "isVisible": true,
+                            "readOnly": true,
+                            "template": "field/textarea.html",
+                            "events": []
+                        },
+                        {
+                            "name": "userInput",
+                            "class": 12,
+                            "label": "",
+                            "showOnForm": true,
+                            "isVisible": false,
+                            "readOnly": false,
+                            "template": "field/text-edit.html",
+                            "events": [
+                                {
+                                    "name": "FieldOnKeydown",
+                                    "code": "GeneralFunctions.handleEnterButton(args);"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

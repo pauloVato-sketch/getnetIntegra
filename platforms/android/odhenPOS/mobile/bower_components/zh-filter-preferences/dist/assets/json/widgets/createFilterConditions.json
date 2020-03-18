@@ -1,0 +1,77 @@
+{
+    "name": "zhFilterPreferencesSelectConditions",
+    "isVisible": true,
+    "template": "widget/form.html",
+    "showDescriptionOrder": false,
+    "orderFieldsBySequenceInForm": true,
+    "floatingControl": {
+        "customizationAction": {
+            "layout": false,
+            "filter": false,
+            "view": false
+        },
+        "actions": []
+    },
+    "fieldGroups": [
+        {
+            "name": "COLUMNS_FILTER",
+            "opened": false,
+            "collapsible": true,
+            "label": "More fields"
+        }
+    ],
+    "events": [],
+    "fields": [],
+    "actions": [
+        {
+            "name": "back",
+            "label": "Back",
+            "showAsAction": "back",
+            "hideIcon": false,
+            "isVisible": true,
+            "events": [
+                {
+                    "name": "ActionEvent",
+                    "code": "ScreenService.closePopup();"
+                }
+            ]
+        },
+        {
+            "name": "never",
+            "showAsAction": "never",
+            "label": "Apply filter",
+            "isVisible": true,
+            "events": [
+                {
+                    "name": "ActionEvent",
+                    "code": "ZhFilterCreateFilterConditionsController.applyFilter(args.owner.widget)"
+                }
+            ]
+        },
+        {
+            "name": "back_create",
+            "label": "Back",
+            "showAsAction": "back",
+            "hideIcon": false,
+            "isVisible": true,
+            "events": [
+                {
+                    "name": "ActionEvent",
+                    "code": "ScreenService.closePopup();"
+                }
+            ]
+        },
+        {
+            "name": "never",
+            "showAsAction": "never",
+            "label": "Save & Apply",
+            "isVisible": true,
+            "events": [
+                {
+                    "name": "ActionEvent",
+                    "code": "ZhFilterCreateFilterConditionsController.saveAndApplyFilter(args.owner.widget)"
+                }
+            ]
+        }
+    ]
+}

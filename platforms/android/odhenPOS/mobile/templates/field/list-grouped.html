@@ -1,0 +1,37 @@
+<div class="" ng-show="field.isVisible">
+    <label class="zh-label" ng-bind="field.label"></label>
+<div
+    zh-events
+    data-ng-controller="WaiterListGroupedController"
+    >
+    <div class="col-xs-12 col-sm-12">
+        <ul class="zh-container-groups">
+            <li
+                ng-repeat="category in getCategoriesByGroup(field.dataSource.data, field.groupProp)"
+                data-ng-show="filtered.length > 0"
+                zh-update-scroller="250"
+                class="zh-list-group"
+                >
+                <span class="zh-group-desc">{{category}}</span>
+                <ul class="zh-products-container">
+                    <li ng-repeat="row in filtered = (field.dataSource.data)"
+                        data-ng-if="row[field.groupProp] === category"
+                        >
+
+                        <div data-ng-controller='WaiterFieldListGroupedController'>
+                            <div data-zh-touchstart="lineClick();" data-zh-stop-propagation-click='true'>
+                                <span class="zh-product-price" data-ng-bind='row[field.detailPriceProp]'></span>
+                                <span class="zh-product-desc">
+                                    <p data-ng-bind='row[field.detailDescProp]'></p>
+                                    <p class="zh-product-sub-desc" data-ng-bind='row[field.orderDate]'></p>
+                                    <p class="zh-product-sub-desc" data-ng-bind='row[field.addDisplay]'></p>
+                                    <span class="zh-product-sub-desc" data-ng-bind='row[field.detailSubDescProp]'></span>
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>

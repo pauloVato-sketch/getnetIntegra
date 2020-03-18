@@ -1,0 +1,15 @@
+ <!-- Label with tooltip -->
+<label
+	class="zh-label"
+	ng-show="field.label">
+	<span data-zh-bind-translate="field.label"></span>
+	<div
+		class="zh-required-icon"
+		ng-if="field.validations.required">*</div>
+	<div
+		class="zh-help-icon"
+		ng-if="field.help">?</div>
+	<!-- Tooltip -->
+	<div class="zh-tooltip-arrow" data-ng-if="field.help"></div>
+	<div class="zh-tooltip-text"  data-ng-if="field.help" data-ng-bind-html="field.help|i18n"></div>
+</label>

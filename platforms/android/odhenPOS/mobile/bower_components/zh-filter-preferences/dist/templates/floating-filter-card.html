@@ -1,0 +1,52 @@
+<div ng-controller="ZhFilterFloatingCardController" zh-customization-action
+    class="search-action">
+    <span class="action-icon search-action-icon" zh-icon="{{ action.icon }} no-border icon-white" zh-touchstart="togglePreferencesCard($event || $evt || evt)"></span>
+    <span class="tool-tip" ng-bind="action.label|i18n"></span>
+    <div class="floating-card floating-filter-card" ng-class="{'no-filter-selection': widget.floatingControl.customizationAction && widget.floatingControl.customizationAction.filter === false}">
+        <div class="floating-card-header">
+            <p class="floating-card-label" ng-bind="customizationCard.label|i18n"></p>
+            <span class="footer-floating-card-actions action-icon" data-zh-title-tooltip="{{ 'Config'|i18n }}" ng-click="customizationCard.openFilterConfiguration()" zh-icon="settings no-border icon-white"></span>
+            <span class="footer-floating-card-actions action-icon" data-zh-title-tooltip="{{ 'Refresh'|i18n }}" ng-click="customizationCard.refreshFilters()" zh-icon="refresh no-border icon-white"></span>
+            <span class="footer-floating-card-actions action-icon action-icon-right" data-zh-title-tooltip="{{ 'Open Filter Dialog'|i18n }}" ng-click="customizationCard.openFilterWidget()" zh-icon="filter no-border icon-white"></span>
+        </div>
+        <div class="floating-card-list scroller-preferences-card">
+            <div class="floating-preferences-options-container">
+                <div ng-click="customizationCard.applyOriginalFilter()" class="floating-preferences-options">
+                    <span data-zh-bind-translate="'Original'"></span>
+                    <span ng-if="appliedPreference.ID === 'ORIGINAL'" class="check-in-use-customization">✓</span>
+                </div>
+            </div>
+            <div ng-repeat="customization in customizationCard.dataSource.data" class="floating-preferences-options-container">
+                <div ng-click="customizationCard.applyFilter(customization)" class="floating-preferences-options">
+                    <span ng-bind="customization.LABEL"></span>
+                    <span ng-if="customization.ID === appliedPreference.ID" class="check-in-use-customization">✓</span>
+                </div>
+            </div>
+        </div>
+        <div class="floating-card-input">
+            <span class="floating-card-search-field" ng-click="toggleSearchFieldsList($event || $evt || evt)"><span data-zh-tooltip-overflow data-zh-bind-translate="searchField ? searchField.label : 'All fields'"></span></span>
+            <input ng-if="!isSearchFieldSelect(searchField)" class="mousetrap zh-input-search-floating" type="text" placeholder="{{ 'Search'|i18n }}" data-ng-model="widget.searchCriteria[searchField ? searchField.name : '_ALL']">
+            <span ng-if="!isSearchFieldSelect(searchField)" class="clear-button" data-zh-icon="close-x no-border icon-white" data-zh-touchstart="clearSearch($event || $evt || evt, searchField ? searchField.name : '_ALL')"
+                data-ng-class="{ searching: !Util.isEmptyOrBlank(widget.searchCriteria[searchField ? searchField.name : '_ALL']) }"></span>
+            <span ng-if="isSearchFieldSelect(searchField)" ng-click="toggleSelectFieldValueList($event || $evt || evt)" class="zh-select-search-floating" ng-init="field = prepareField(searchField)" data-zh-bind-translate="getSearchFieldValue(widget)"></span>
+        </div>
+        <div class="floating-card-search-field-select">
+            <ul>
+                <li>
+                    <span data-zh-icon="close-x no-border icon-white" data-zh-touchstart="clearSearch('_ALL')" data-ng-show="!Util.isUndefined(widget.searchCriteria['_ALL'])"></span>
+                    <span data-zh-bind-translate="'All fields'" ng-click="selectSearchField()"></span>
+                </li>
+                <li data-ng-repeat="field in widget.fields | filter:filterFields">
+                    <span data-zh-icon="close-x no-border icon-white" data-zh-touchstart="clearSearch($event || $evt || evt, field.name)" data-ng-show="!Util.isUndefined(widget.searchCriteria[field.name])"></span>
+                    <span data-zh-bind-translate="field.label" ng-click="selectSearchField(field)"></span>
+                </li>
+            </ul>
+        </div>
+        <div ng-if="isSearchFieldSelect(searchField)" class="floating-card-select-field-options" ng-init="field = prepareField(searchField)">
+            <ul>
+                <li class="option" data-value="" ng-click="selectSearchFieldValue(widget, $event || $evt || evt)"></li>
+                <li class="option" data-ng-repeat="item in field.dataSource.data" data-value="{{ $index }}" data-zh-bind-translate="item[field.descriptionField]" ng-click="selectSearchFieldValue(widget, $event || $evt || evt)"></li>
+            </ul>
+        </div>
+    </div>
+</div>

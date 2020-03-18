@@ -1,0 +1,30 @@
+<div
+  ng-controller="CalendarController"
+  ng-show="field.isVisible"
+  class="zh-stripe-select">
+
+  <!-- Label -->
+  <label class="zh-label" data-zh-bind-translate="field.label"></label>
+
+	<!-- Field -->
+	<div
+    id="{{field.name}}"
+    name="{{field.name}}"
+    class="zh-select-multiple mousetrap zh-field-{{field.name}"
+    data-zh-select
+    data-zh-events
+    data-zh-validate
+    data-ng-model="fieldRow"
+    zh-click="openField(field)"
+    ng-keypress="$event.preventDefault(); openField(field); blurInput();"
+    ng-attr-tabindex="{{ (field.isReadOnly()) ? -1 : '' }}"
+    data-zh-contenteditable="{{ !field.isReadOnly() }}">
+    <span class="zh-select-text" data-zh-bind"></span>
+    <span zh-icon="no-border close-x"
+      zh-stop-propagation-click
+      zh-touchstart="clearField(field)"
+      data-ng-show="fieldRow"></span>
+    <span zh-icon="no-border calendar"
+      data-ng-hide="fieldRow"></span>
+  </div>
+</div>

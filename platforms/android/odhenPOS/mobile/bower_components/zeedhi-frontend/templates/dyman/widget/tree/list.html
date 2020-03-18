@@ -1,0 +1,116 @@
+<section class="zh-widget" data-zh-widget-events>
+	<div class="container"
+		data-ng-controller="TreeController as controller"
+		data-zh-scroller>
+
+		<!-- List -->
+		<div class="container zh-list-container zh-tree-list-container"
+			data-zh-scroller
+			data-ng-controller="DecodeValueField as decode">
+
+			<ul class="zh-template-list" data-ng-class="{'list-checkbox': controller.widget.showCheckbox}">
+				<li id="pullUp">
+					<div class="row">
+						<div class="col-xs-12">
+							<ul class="zh-loading">
+								<li>
+									<i class="zh-loading-icon"></i>
+									<p data-zh-bind-translate="'atualizando...'"></p>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</li>
+				<li data-ng-if="filtered.length == 0">
+					<div class="row">
+						<div class="col-xs-12">
+							<ng-include src="templateManager.getFrameworkTemplateURL('component/empty-data-message.html')"></ng-include>
+						</div>
+					</div>
+					<div class="row" data-ng-if="filtered.length == 0 && widget.showAddButtonAs == 'button'"
+						data-zh-touchstart="widget.onAdd()">
+						<div class="col-xs-12">
+							<p class="text-center zh-text-search-not-found zh-add-when-empty">
+								<span zh-icon="plus"></span>
+								<span data-zh-bind-translate="widget.addButtonText || 'Adicionar um registro'"></span>
+							</p>
+						</div>
+					</div>
+				</li>
+				<li class="zh-text-default-sans zh-list-item-label {{'zh-row-lvl-' + controller.getRowLevel(row, widget.searchCriteria)}}"
+					ng-repeat="row in filtered = (widget.plainTreeData | filter:controller.repeatFilter)"
+					data-ng-class="{'row-selected' : row.__isSelected, 'row-editing': $index == widget.currentRow.__index}"
+					zh-post-repeat="templateManager.container.refresh()"
+					zh-style>
+					<!-- Checkbox -->
+					<div ng-if="controller.widget.showCheckbox && !row.__group" class="zh-checkbox zh-list-item-checkbox">
+						<input type="checkbox" id="check-list-{{$index}}" ng-change='controller.toggle(row)' data-ng-model="row.__isSelected">
+						<label for="check-list-{{$index}}" class="zh-box-label">
+							<div zh-ripple-effect="grey" class="zh-box">
+								<span zh-icon="no-border checked"  data-ng-show="row.__isSelected"></span>
+							</div>
+						</label>
+					</div>
+
+					<!-- Parent icon -->
+					<span class="tree-list-expand-icon {{ controller.parentIconContent(row) }}"
+						data-zh-toggle-tree data-zh-stop-propagation-click
+						data-ng-if="!Util.objectHasAnyValue(widget.searchCriteria)">
+						<span data-zh-icon="forward no-border"></span>
+					</span>
+
+					<span class="tree-line parent-tree-line-{{ i }}"
+						data-ng-repeat="i in levelRange(controller.getRowLevel(row, widget.searchCriteria))"
+						data-ng-class="{last: $last}">
+					</span>
+
+					<div class="list-columns">
+						<div class="search-breadcrumb"
+							data-ng-if="row._breadcrumb && Util.objectHasAnyValue(widget.searchCriteria)">
+							<span data-ng-bind="row._breadcrumb"></span>
+						</div>
+
+						<!-- First column  -->
+						<div data-ng-init="firstColumn = (controller.widget.fields|filter: {aclIsVisible: true, isVisible: true, showOnList: true, sideColumn: '!true'} | orderBy: 'sequenceInList')[0]"
+							class="row zh-first-large">
+							<div class="col-xs-{{firstColumn.class}}"
+								data-zh-click="openRow(row, widget);"
+								zh-long-tap="controller.onLongTap(row);"
+								zh-swipe-tip>
+								<span data-ng-show="firstColumn.label" data-ng-bind="(firstColumn.label|i18n) + widget.columnLabelSuffix"></span>
+								<span data-ng-bind="decode.model(firstColumn, row[firstColumn.name])|columnFormat:firstColumn"></span>
+							</div>
+						</div>
+
+						<!-- side columns  -->
+						<div class="row">
+							<div data-ng-repeat="column in controller.widget.fields|filter: {aclIsVisible: true, isVisible: true, showOnList: true, sideColumn: true} | orderBy: 'sequenceInList'"
+								class="col-xs-{{column.class}}"
+								data-zh-click="openRow(row, widget);"
+								zh-long-tap="controller.onLongTap(row);"
+								zh-swipe-tip>
+								<span data-ng-show="column.label" data-ng-bind="(column.label|i18n) + widget.columnLabelSuffix"></span>
+								<span data-ng-bind="decode.model(column, row[column.name])|columnFormat:column"></span>
+							</div>
+						</div>
+
+						<!-- columns  -->
+						<div class="row">
+							<div data-ng-repeat="column in controller.widget.fields|filter: {aclIsVisible: true, isVisible: true, showOnList: true, sideColumn: '!true'} | orderBy: 'sequenceInList'"
+								data-ng-if="column != firstColumn"
+								class="col-xs-{{column.class}}"
+								data-zh-click="openRow(row, widget);"
+								zh-long-tap="controller.onLongTap(row);"
+								zh-swipe-tip>
+								<span data-ng-show="column.label" data-ng-bind="(column.label|i18n) + widget.columnLabelSuffix"></span>
+								<span data-ng-bind="decode.model(column, row[column.name])|columnFormat:column"></span>
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+
+		<div data-ng-show="widget.isFloatingControlVisible()" data-ng-include="templateManager.getFrameworkTemplateURL('component/floating-control.html')></div>
+	</div>
+</section>

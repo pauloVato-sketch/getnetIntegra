@@ -1,0 +1,32 @@
+<section data-ng-show='field.isVisible' ng-controller="WaiterOrdersProdCtrl" data-ng-init='startWith = 0'>
+	<div class="row">
+		<div class="zh-waiter-positions lower-margin">
+			<div class="col-xs-12 col-sm-12 col-md-12">
+				<ul class="zh-positions-container">
+					<li>Posição</li>
+					<li class="odh-button-space">
+						<a data-zh-touchstart='prev();' data-ng-show="startWith>0">
+							<div>
+								...
+							</div>
+						</a>
+					</li>
+					<li class="odh-button-space" ng-repeat="i in buildPositionsArray(field.dataSource.data[0]['NRPOSICAOMESA'], startWith)">
+						<a data-zh-events data-position='{{i}}' data-zh-touchstart="field.position = i" href="">
+							<div ng-class="{'zh-positions-active' : field.position === i}"
+								 ng-bind="i+1">
+							</div>
+						</a>
+					</li>
+					<li class="odh-button-space">
+						<a data-zh-touchstart='next();' data-ng-show="field.dataSource.data[0]['NRPOSICAOMESA'] > finishWith + 1">
+							<div>
+								...
+							</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>

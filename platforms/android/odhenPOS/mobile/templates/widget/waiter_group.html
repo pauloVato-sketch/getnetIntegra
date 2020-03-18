@@ -1,0 +1,22 @@
+<section  ng-controller="WaiterGroupController" zh-widget-events>
+	<div zh-scroller class="container table-list">
+		<div class="row">
+			<nav class="col-xs-12 col-sm-12">
+				<ul class="wt-tables">
+					<li
+						ng-repeat="table in widget.dataSource.data"
+						ng-click="selectTable(table, widget.parent.container.widgets[0].fields[1])">
+						<a href="">
+							<img
+								data-ng-src="{{getImage(table.sprite)}}"
+								class="img-responsive">
+							<span class="title-tables" ng-bind="table.NMMESA"></span>
+							<span class="title-tables" ng-bind="table.NRJUNMESA"></span>
+							<img ng-src="{{getImage(table.checked)}}" class="wt-timer-table">
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</section>

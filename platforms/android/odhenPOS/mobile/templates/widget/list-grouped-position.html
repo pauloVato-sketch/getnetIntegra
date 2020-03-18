@@ -1,0 +1,63 @@
+<div ng-include src="templateManager.getTemplateDefaultFolder()+'widget/form-without-scroller.html'"
+    data-ng-if="widget.aclIsVisible && widget.isVisible"> </div>
+<div
+    data-zh-widget-events
+    data-zh-scroller
+    class="row container zh-widget-{{widget.name}}"
+    data-ng-if="widget.aclIsVisible && widget.isVisible"
+    data-ng-controller="WaiterListGroupedController"
+    >
+    <div class="col-xs-12 col-sm-12">
+        <ul class="zh-container-groups">
+            <li
+                ng-repeat="category in getCategoriesByPosition(widget.dataSource.data, 'POS')"
+                data-ng-show="filtered.length > 0"
+                zh-update-scroller="250"
+                class="zh-list-group"
+                data-ng-controller='ListController as controller'
+                >
+                <span class="zh-group-desc">{{category}}</span>
+                <ul class="zh-products-container">
+                    <li ng-repeat="row in filtered = (widget.dataSource.data | filter:searchInput)"
+                        data-ng-if="row[widget.groupProp] === category"
+                        zh-long-tap="controller.onLongTap(row)"
+                        ng-class="{  'zh-row-selected' :  (widget.currentRow == row && widget.widgets && widget.widgets.length > 0), 'zh-mult-selected-row': row.__isSelected }"
+                        class="zh-sub-list-group"
+                        data-zh-style
+                        >
+
+                        <div>
+                            <div
+                            ng-click="openRowInnerList(row, widget)"
+                            ng-class="(widget.currentRow == row && widget.widgets && widget.widgets.length > 0) ? 'zh-row-selected-panel-line' : ''" style="">
+                                <span class="zh-product-desc">
+                                    <p data-ng-bind='row[widget.detailDescProp]'>
+                                        <b>
+                                            <span class="zh-product-desc" data-ng-bind='row[widget.boldText]'>
+                                            </span>
+                                        </b>
+                                    </p>
+                                    <span class="subdisplay">
+                                        <p ng-show="row.NMVENDEDOR" class="zh-product-sub-desc">
+                                            Pedido por {{row.NMVENDEDOR}} ({{row[widget.orderDate]}})
+                                        </p>
+                                        <p ng-hide="row.NMVENDEDOR" class="zh-product-sub-desc" data-ng-bind='row[widget.orderDate]'></p>
+                                        <p class="zh-product-sub-desc" data-ng-bind='row[widget.addDisplay]'></p>
+                                    </span>
+                                    <span class="zh-product-sub-desc" data-ng-bind='row[widget.detailSubDescProp]'></span>
+                                </span>
+                                <span class="zh-product-price" data-ng-bind='row[widget.detailPriceProp]'></span>
+                            </div>
+                            <span data-ng-if='widget.widgets.length > 0 && widget.currentRow == row'>
+                                <aside data-ng-controller="GroupListController">
+                                    <div class="zh-workaround-grid-float" ng-include src="templateManager.getTemplateDefaultFolder()+widget.template">
+                                    </div>
+                                </aside>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>

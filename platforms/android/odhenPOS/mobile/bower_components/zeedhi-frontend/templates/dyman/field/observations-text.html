@@ -1,0 +1,16 @@
+
+<input
+	type="text"
+	placeholder="{{field.placeholder|i18n}}"
+	name="{{field.name}}"
+	id="{{field.name}}"
+	class="input-text form-control mousetrap zh-field-{{field.name}}"
+	maxlength="{{field.maxlength}}"
+	ng-model="fieldRow"
+	ng-disabled="field.isReadOnly()"
+	ng-show="field.isVisible"
+	zh-style
+	zh-mask
+	zh-events
+	zh-validate
+/>

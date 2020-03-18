@@ -1,0 +1,191 @@
+{
+    "id": "151880631125827491261258",
+    "name": "delayedProducts",
+    "label": "Liberar Produto",
+    "events": [],
+    "showHeader": true,
+    "showMenu": true,
+    "showBack": true,
+    "showFooter": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "widgets": [
+        {
+            "id": "152649877114108090981259",
+            "name": "delayedProducts",
+            "label": "Pedidos Atrasados",
+            "isVisible": true,
+            "template": "widget/grid.html",
+            "showCheckbox": true,
+            "order": "POSITION",
+            "floatingControl": false,
+            "actions": [
+                {
+                    "id": "15264987718991524811269",
+                    "label": "Voltar",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "152649877130206568541270",
+                            "name": "ActionEvent",
+                            "code": "ScreenService.goBack();"
+                        }
+                    ]
+                },
+                {
+                    "id": "152649877115792302151271",
+                    "label": "Liberar Seleção",
+                    "name": "releaseSelection",
+                    "isVisible": true,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "id": "152649877125826588421272",
+                            "name": "ActionEvent",
+                            "code": "TableController.showPrinters(args.owner.widget.dataSource.checkedRows, args.owner.widget.container.getWidget('sendMessage'));"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "id": "15264987712117419271273",
+                    "name": "WidgetOnEnter",
+                    "code": "TableController.setDelayedProducts(args.owner);"
+                },
+                {
+                    "id": "2",
+                    "name": "WidgetBeforeSelectRow",
+                    "code": "TableController.toggleDelayedProduct(args.owner);"
+                },
+                {
+                    "id": "3",
+                    "name": "WidgetBeforeUnselectRow",
+                    "code": "TableController.toggleDelayedProduct(args.owner);"
+                }
+            ],
+            "dataSource": {
+                "memoryStorage": true,
+                "name": "/DelayedProductsRepository"
+            },
+            "fields": [
+                {
+                    "id": "15264987711596852101265",
+                    "name": "POSITION",
+                    "label": "Posição",
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnGrid": true,
+                    "defaultValue": "",
+                    "class": "2"
+                },
+                {
+                    "id": "152649877128119900571266",
+                    "name": "DSBUTTON",
+                    "label": "Produto",
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnGrid": true,
+                    "defaultValue": "",
+                    "class": "4"
+                },
+                {
+                    "id": "15264987716018238061267",
+                    "name": "NMPRODPROMOCAO",
+                    "label": "Promoção",
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnGrid": true,
+                    "defaultValue": "",
+                    "class": "4"
+                },
+                {
+                    "id": "152649877141634020361268",
+                    "name": "DTHRINCOMVEN",
+                    "label": "Hora Pedido",
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnGrid": true,
+                    "defaultValue": "",
+                    "class": "2"
+                }
+            ],
+            "widgets": [
+                {
+                    "id": "15264987719149631691260",
+                    "name": "sendMessage",
+                    "label": "Escolha de Impressora",
+                    "template": "widget/form.html",
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "id": "15264987713622314741263",
+                            "label": "Voltar",
+                            "isVisible": true,
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "152649877120878694821264",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "15264987713622314741263",
+                            "label": "Liberar",
+                            "isVisible": true,
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "id": "152649877118278136811262",
+                                    "name": "ActionEvent",
+                                    "code": "TableController.releaseMultipleProducts(args.owner.widget.parent.dataSource.checkedRows, args.owner.widget.currentRow.NRSEQIMPRLOJA, args.owner.widget.parent);"
+                                }
+                            ]
+                        }
+                    ],
+                    "dataSource": {},
+                    "events": [],
+                    "fields": [
+                        {
+                            "id": "152649877131636064961261",
+                            "name": "NRSEQIMPRLOJA",
+                            "valueField": "NRSEQIMPRLOJA",
+                            "label": "NMIMPRLOJA",
+                            "class": 12,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "events": [
+                                {
+                                    "id": "152649877118278136811262",
+                                    "name": "FieldOnClick",
+                                    "code": "TableController.selectReleasePrinter(args.owner.field.widget);"
+                                }
+                            ],
+                            "showOnList": true,
+                            "newLine": false,
+                            "template": "field/observations.html",
+                            "dataSource": {
+                                "rest": false,
+                                "memoryStorage": true,
+                                "name": "/ParamsPrinterRepository"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,8 @@
+{ 	
+	"product": { 		
+		"devOpsId": 1914, 		
+		"version" : "0.0.0",
+		"ip": "localHost",
+		"host": "hostName"	
+	}
+}

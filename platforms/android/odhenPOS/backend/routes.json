@@ -1,0 +1,880 @@
+[
+	{
+		"uri": "/OperatorLogout",
+		"controller": "\\Controller\\Operator",
+		"controllerMethod": "logout",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/AccountOrder",
+		"controller": "\\Controller\\Account",
+		"controllerMethod": "order",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/FiliaisLogin",
+		"controller": "\\Controller\\Operator",
+		"controllerMethod": "getFiliaisLogin",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/CaixasLogin",
+		"controller": "\\Controller\\Operator",
+		"controllerMethod": "getCaixasLogin",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/VendedoresLogin",
+		"controller": "\\Controller\\Operator",
+		"controllerMethod": "getVendedoresLogin",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/GetTransactionCode",
+		"controller": "\\Controller\\Payment",
+		"controllerMethod": "getTransactioncode",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/AccountCancelProduct",
+		"controller": "\\Controller\\Account",
+		"controllerMethod": "cancelProduct",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/AccountGetAccountItems",
+		"controller": "\\Controller\\Account",
+		"controllerMethod": "getAccountItems",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/AccountGetAccountItemsWithoutCombo",
+		"controller": "\\Controller\\Account",
+		"controllerMethod": "getAccountItemsWithoutCombo",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/AccountGetOriginalAccountItems",
+		"controller": "\\Controller\\Account",
+		"controllerMethod": "getAccountOriginalItems",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/AccountGetAccountDetails",
+		"controller": "\\Controller\\Account",
+		"controllerMethod": "getAccountDetails",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/OperatorRepository",
+		"controller": "\\Controller\\Operator",
+		"controllerMethod": "login",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/OperatorValidateSupervisor",
+		"controller": "\\Controller\\Operator",
+		"controllerMethod": "validateSupervisor",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/TableActiveTable",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "validateOpening",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/TableOpen",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "open",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/TableCancelOpen",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "cancelOpen",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/TableReopen",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "reopen",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/TableCloseAccount",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "closeAccount",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/TableGroup",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "group",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/TableSplit",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "split",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/TableRepository",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "getTables",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/TableGetMessageHistory",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "getMessageHistory",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/TableTransferTable",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "transferTable",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/TableTransferItem",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "transferItem",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/TableSendMessage",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "sendMessage",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/TableSetPositions",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "setPositions",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/BillRepository",
+		"controller": "\\Controller\\Bill",
+		"controllerMethod": "getBills",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/BillOpenBill",
+		"controller": "\\Controller\\Bill",
+		"controllerMethod": "openBill",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/BillValidateBill",
+		"controller": "\\Controller\\Bill",
+		"controllerMethod": "validateBill",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/OrderBlockedIps",
+		"controller": "\\Controller\\Order",
+		"controllerMethod": "getBlockedIps",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/OrderCheckBlockedUsers",
+		"controller": "\\Controller\\Order",
+		"controllerMethod": "checkBlockedUsers",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/OrderCheckAccess",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "checkAccess",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/OrderRequestLoginRepository",
+		"controller": "\\Controller\\Order",
+		"controllerMethod": "requestLogin",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/OrderGetAccessRepository",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "getAccess",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/OrderAllowUserAccessRepository",
+		"controller": "\\Controller\\Order",
+		"controllerMethod": "allowUserAccess",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/OrderControlUserAccessRepository",
+		"controller": "\\Controller\\Order",
+		"controllerMethod": "controlUserAccess",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/OrderLoginUserRepository",
+		"controller": "\\Controller\\Order",
+		"controllerMethod": "loginUser",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/OrderReturnAccess",
+		"controller": "\\Controller\\Order",
+		"controllerMethod": "returnAccess",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/OrderReturnTablesRepository",
+		"controller": "\\Controller\\Order",
+		"controllerMethod": "findAllTables",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/OrderCallWaiterRepository",
+		"controller": "\\Controller\\Order",
+		"controllerMethod": "callWaiter",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/OrderGetCallRepository",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "getCall",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/OrderAnswerTableRepository",
+		"controller": "\\Controller\\Order",
+		"controllerMethod": "answerTable",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/UtilitiesTest",
+		"controller": "\\Util\\Util",
+		"controllerMethod": "testConnection",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/UtilitiesRequestsRepository",
+		"controller": "\\Util\\Util",
+		"controllerMethod": "saveRequests",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/UtilitiesRequestsRepository",
+		"controller": "\\Controller\\Bill",
+		"controllerMethod": "setTheTable",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/ConsumerRepository",
+		"controller": "\\Controller\\Params",
+		"controllerMethod": "getConsumersByClient",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/SetTableRepository",
+		"controller": "\\Controller\\Bill",
+		"controllerMethod": "setTheTable",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/DelayedProductsRepository",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "getDelayedProducts",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/ReleaseProductRepository",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "releaseTheProduct",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/SplitProductsRepository",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "splitProducts",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/CancelSplitedProductsRepository",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "cancelSplitedProducts",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/NewConsumerRepository",
+		"controller": "\\Controller\\Order",
+		"controllerMethod": "newConsumer",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/ConsumerLoginRepository",
+		"controller": "\\Controller\\Order",
+		"controllerMethod": "login",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/AccountPaymentBegin",
+		"controller": "\\Controller\\Account",
+		"controllerMethod": "beginPaymentAccount",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/AccountPaymentFinish",
+		"controller": "\\Controller\\Account",
+		"controllerMethod": "finishPaymentAccount",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/AccountPaymentTypedCredit",
+		"controller": "\\Controller\\Account",
+		"controllerMethod": "typedCreditPayment",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/TransactionsRepository",
+		"controller": "\\Controller\\Transactions",
+		"controllerMethod": "buscaTransacoes",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/SendEmailTransaction",
+		"controller": "\\Controller\\Transactions",
+		"controllerMethod": "sendTransactionEmail",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/UpdateTransactionEmail",
+		"controller": "\\Controller\\Transactions",
+		"controllerMethod": "updateTransactionEmail",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/AccountGetTrasanctions",
+		"controller": "\\Controller\\Transactions",
+		"controllerMethod": "buscaTrasacoesMesa",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/AccountGetTableTrasanctions",
+		"controller": "\\Controller\\Transactions",
+		"controllerMethod": "buscaPagamentoMesa",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/FindRowToCancel",
+		"controller": "\\Controller\\Transactions",
+		"controllerMethod": "buscaLinhaCancelamento",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/UpdateCanceledTransaction",
+		"controller": "\\Controller\\Transactions",
+		"controllerMethod": "updateCanceledTransaction",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/TransactionsMoveTransactions",
+		"controller": "\\Controller\\Transactions",
+		"controllerMethod": "moveTransactions",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/CheckRefilRepository",
+		"controller": "\\Controller\\Account",
+		"controllerMethod": "checkRefil",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/ParamsCustomerRepository",
+		"controller": "\\Controller\\Params",
+		"controllerMethod": "getPagedConsumers",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/PositionCodeRepository",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "generatePositionCode",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/RegisterOpen",
+		"controller": "\\Controller\\Register",
+		"controllerMethod": "openRegister",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/RegisterClose",
+		"controller": "\\Controller\\Register",
+		"controllerMethod": "closeRegister",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/RegisterClosingPayments",
+		"controller": "\\Controller\\Register",
+		"controllerMethod": "getClosingPayments",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/TableChangeStatus",
+		"controller": "\\Controller\\Table",
+		"controllerMethod": "changeTableStatus",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/PaymentPayAccount",
+		"controller": "\\Controller\\Payment",
+		"controllerMethod": "preparePayAccount",
+		"methods": ["POST"]
+	},
+    {
+        "uri": "/ChargePersonalCredit",
+        "controller": "\\Controller\\Consumer",
+        "controllerMethod": "chargePersonalCredit",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/CancelCreditRepository",
+        "controller": "\\Controller\\Consumer",
+        "controllerMethod": "cancelPersonalCredit",
+        "methods": ["POST"]
+    },
+	{
+		"uri": "/AccountChangeClientConsumer",
+		"controller": "\\Controller\\Account",
+		"controllerMethod": "changeClientConsumer",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/SaleCancelRepository",
+		"controller": "\\Controller\\Account",
+		"controllerMethod": "saleCancel",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/GetConsumerLimit",
+		"controller": "\\Controller\\Payment",
+		"controllerMethod": "getConsumerLimit",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/PrintTEFVoucher",
+		"controller": "\\Controller\\Payment",
+		"controllerMethod": "printTEFVoucher",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/ChangeProductDiscount",
+		"controller": "\\Controller\\Account",
+		"controllerMethod": "changeProductDiscount",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/TrocaModoCaixa",
+		"controller": "\\Controller\\Operator",
+		"controllerMethod": "trocaModoCaixa",
+		"methods": ["POST"]
+	},
+    {
+        "uri": "/CartPricesRepository",
+        "controller": "\\Controller\\Account",
+        "controllerMethod": "updateCartPrices",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/ConsumerSearchRepository",
+        "controller": "\\Controller\\Account",
+        "controllerMethod": "consumerSearch",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/ReprintSaleCoupon",
+        "controller": "\\Controller\\GeneralFunctions",
+        "controllerMethod": "reprintSaleCoupon",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/ParamsMenuRepository",
+        "controller": "\\Controller\\Params",
+        "controllerMethod": "buscaCardapio",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/HomologacaoSitef",
+        "controller": "\\Controller\\GeneralFunctions",
+        "controllerMethod": "homologacaoSitef",
+        "methods": ["POST"]
+	},
+    {
+        "uri": "/SelectProducts",
+        "controller": "\\Controller\\GeneralFunctions",
+        "controllerMethod": "selectUnblockedProducts",
+        "methods": ["POST"]
+	},
+    {
+        "uri": "/SelectBlockedProducts",
+        "controller": "\\Controller\\GeneralFunctions",
+        "controllerMethod": "selectBlockedProducts",
+        "methods": ["POST"]
+	},
+    {
+        "uri": "/BlockProducts",
+        "controller": "\\Controller\\GeneralFunctions",
+        "controllerMethod": "blockProducts",
+        "methods": ["POST"]
+	},
+    {
+        "uri": "/UnblockProducts",
+        "controller": "\\Controller\\GeneralFunctions",
+        "controllerMethod": "unblockProducts",
+        "methods": ["POST"]
+	},
+    {
+        "uri": "/VerificaProdutosBloqueados",
+        "controller": "\\Controller\\Account",
+        "controllerMethod": "verificaProdutosBloqueados",
+        "methods": ["POST"]
+	},
+	{
+        "uri": "/ImpressaoLeituraX",
+        "controller": "\\Controller\\GeneralFunctions",
+        "controllerMethod": "impressaoLeituraX",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/ParamsCardsRepository",
+        "controller": "\\Controller\\Account",
+        "controllerMethod": "searchCard",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/TransferCreditRepository",
+        "controller": "\\Controller\\Consumer",
+        "controllerMethod": "transferPersonalCredit",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/ConsumerBalanceRepository",
+        "controller": "\\Controller\\Consumer",
+        "controllerMethod": "getPersonalCredit",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/FindTefSSLConnectionId",
+        "controller": "\\Controller\\Operator",
+        "controllerMethod": "findTefSSLConnectionId",
+        "methods": ["POST"]
+	},
+    {
+        "uri": "/lib_buildMenu",
+        "controller": "\\Controller\\Menu",
+        "controllerMethod": "buildMenu",
+        "methods": ["POST"],
+        "requestType": ""
+    },
+    {
+        "uri": "/lib_requestToken",
+        "controller": "\\Controller\\Menu",
+        "controllerMethod": "requestToken",
+        "methods": ["POST"],
+        "requestType": ""
+    },
+    {
+        "uri": "/QRCodeSaleRepository",
+        "controller": "\\Controller\\Payment",
+        "controllerMethod": "processQRCodeSale",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/GetNrControlTef",
+        "controller": "\\Controller\\GeneralFunctions",
+        "controllerMethod": "getNrControlTef",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/FilterProducts",
+        "controller": "\\Controller\\Account",
+        "controllerMethod": "filterProducts",
+        "methods": ["POST"]
+	},
+    {
+        "uri": "/TransferPositionRepository",
+        "controller": "\\Controller\\Account",
+        "controllerMethod": "transferPosition",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/UltimasVendasDesc",
+        "controller": "\\Controller\\GeneralFunctions",
+        "controllerMethod": "ultimasVendasDesc",
+        "methods": ["POST"]
+	},
+    {
+        "uri": "/FidelityDetailsRepository",
+        "controller": "\\Controller\\Consumer",
+        "controllerMethod": "getFidelityCredit",
+        "methods": ["POST"]
+    },
+   	{
+        "uri": "/SelectVendedores",
+        "controller": "\\Controller\\Account",
+        "controllerMethod": "selectVendedores",
+        "methods": ["POST"]
+	},
+    {
+        "uri": "/ValidatePassword",
+        "controller": "\\Controller\\Account",
+        "controllerMethod": "validatePassword",
+        "methods": ["POST"]
+	},
+    {
+        "uri": "/SelectComandaProducts",
+        "controller": "\\Controller\\Account",
+        "controllerMethod": "selectComandaProducts",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/UpdateComandaProducts",
+        "controller": "\\Controller\\Account",
+        "controllerMethod": "updateComandaProducts",
+        "methods": ["POST"]
+    },
+	{
+        "uri": "/UltimosPagamentosDesc",
+        "controller": "\\Controller\\GeneralFunctions",
+        "controllerMethod": "ultimosPagamentosDesc",
+        "methods": ["POST"]
+	},
+    {
+        "uri": "/PositionControlRepository",
+        "controller": "\\Controller\\Table",
+        "controllerMethod": "positionControl",
+        "methods": ["POST"]
+    },
+	{
+        "uri": "/SetDiscountFidelity",
+        "controller": "\\Controller\\Account",
+        "controllerMethod": "setDiscountFidelity",
+        "methods": ["POST"]
+	},
+	{
+        "uri": "/TipoRecebimento",
+        "controller": "\\Controller\\GeneralFunctions",
+        "controllerMethod": "tipoRecebimento",
+        "methods": ["POST"]
+	},
+	{
+        "uri": "/TipoSangria",
+        "controller": "\\Controller\\GeneralFunctions",
+        "controllerMethod": "tipoSangria",
+        "methods": ["POST"]
+	},
+    {
+        "uri": "/SaveSangria",
+        "controller": "\\Controller\\GeneralFunctions",
+        "controllerMethod": "saveSangria",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/ValidateConsumerPass",
+        "controller": "\\Controller\\Operator",
+        "controllerMethod": "validateConsumerPass",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/DeliveryRepository",
+        "controller": "\\Controller\\Delivery",
+        "controllerMethod": "getDeliveryOrders",
+        "methods": ["POST"]
+    },
+    {
+    	"uri": "/DeliveryControlRepository",
+        "controller": "\\Controller\\Delivery",
+        "controllerMethod": "getDeliveryOrdersControl",
+ 		"methods": ["POST"]
+    },
+	{
+        "uri": "/GetCampanhaRepo",
+        "controller": "\\Controller\\Account",
+        "controllerMethod": "getCampanha",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/CalculaDescontoSubgrupo",
+        "controller": "\\Controller\\Account",
+        "controllerMethod": "calculaDescontoSubgrupo",
+        "methods": ["POST"]
+    },
+    {
+    	"uri": "/DeliveryServiceVendedoresRepository",
+    	"controller": "\\Controller\\Delivery",
+    	"controllerMethod": "getVendedores",
+    	"methods": ["POST"]
+    },
+    {
+    	"uri": "/DeliverySendOrders",
+    	"controller": "\\Controller\\Delivery",
+    	"controllerMethod": "sendOrders",
+    	"methods": ["POST"]
+    },
+    {
+    	"uri": "/DeliveryServiceVendedoresChegadaRepository",
+    	"controller": "\\Controller\\Delivery",
+    	"controllerMethod": "getVendedoresChegada",
+    	"methods": ["POST"]
+    },
+    {
+    	"uri": "/DeliveryCheckOutOrders",
+    	"controller": "\\Controller\\Delivery",
+    	"controllerMethod": "checkOutOrders",
+    	"methods": ["POST"]
+    },
+    {
+    	"uri": "/PedidosEntreguesRepository",
+    	"controller": "\\Controller\\Delivery",
+    	"controllerMethod": "checkOrdersEntregadorDlv",
+    	"methods": ["POST"]
+    },
+    {
+    	"uri": "/DeliveryPrint",
+    	"controller": "\\Controller\\Delivery",
+    	"controllerMethod": "printDeliveryOrders",
+    	"methods": ["POST"]
+    },
+    {
+		"uri": "/ProdutosDesistencia",
+		"controller": "\\Controller\\Account",
+		"controllerMethod": "produtosDesistencia",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/Movcaixadlv",
+		"controller": "\\Controller\\Delivery",
+		"controllerMethod": "saveMovcaixadlv",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/DeliveryReprintCupomFiscal",
+		"controller": "\\Controller\\Delivery",
+		"controllerMethod": "deliveryReprintCupomFiscal",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/CancelDeliveryProduct",
+		"controller": "\\Controller\\Delivery",
+		"controllerMethod": "cancelDeliveryProduct",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/CancelDeliveryOrder",
+		"controller": "\\Controller\\Delivery",
+		"controllerMethod": "cancelDeliveryOrder",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/ConcludeOrderDlv",
+		"controller": "\\Controller\\Delivery",
+		"controllerMethod": "concludeOrderDlv",
+		"methods": ["POST"]
+	},
+    {
+        "uri": "/UpdateServiceTax",
+        "controller": "\\Controller\\Account",
+        "controllerMethod": "updateServiceTax",
+        "methods": ["POST"]
+    },
+    {
+		"uri": "/BillCancelOpen",
+		"controller": "\\Controller\\Bill",
+		"controllerMethod": "closeBill",
+		"methods": ["POST"]
+    },
+	{
+		"uri": "/ExportLogs",
+		"controller": "\\Service\\Log",
+		"controllerMethod": "exportLogs",
+		"methods": ["POST"]
+	},
+    {
+		"uri": "/auth",
+		"controller": "\\Controller\\Operator",
+		"controllerMethod": "auth",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/operator/logout",
+		"controller": "\\Controller\\Operator",
+		"controllerMethod": "logout",
+		"methods": ["POST"]
+	},
+    {
+        "uri": "/CountryRepository",
+        "controller": "\\Controller\\Consumer",
+        "controllerMethod": "getCountries",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/StateRepository",
+        "controller": "\\Controller\\Consumer",
+        "controllerMethod": "getStates",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/CityRepository",
+        "controller": "\\Controller\\Consumer",
+        "controllerMethod": "getCities",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/NeighborhoodRepository",
+        "controller": "\\Controller\\Consumer",
+        "controllerMethod": "getNeighborhoods",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/SaleTypesRepository",
+        "controller": "\\Controller\\Consumer",
+        "controllerMethod": "getSaleTypes",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/ConsumerTypeRepository",
+        "controller": "\\Controller\\Consumer",
+        "controllerMethod": "getConsumerTypes",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/AddconsumerRepository",
+        "controller": "\\Controller\\Consumer",
+        "controllerMethod": "addConsumer",
+        "methods": ["POST"]
+    },
+    {
+		"uri": "/SavePayment",
+		"controller": "\\Controller\\Payment",
+		"controllerMethod": "savePayment",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/RemovePayment",
+		"controller": "\\Controller\\Payment",
+		"controllerMethod": "removePayment",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/FindPendingPayments",
+		"controller": "\\Controller\\Operator",
+		"controllerMethod": "findPendingPayments",
+		"methods": ["POST"]
+	},
+	{
+		"uri": "/GetPayments",
+		"controller": "\\Controller\\Payment",
+		"controllerMethod": "getPayments",
+		"methods": ["POST"]
+	}
+]

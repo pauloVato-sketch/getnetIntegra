@@ -1,0 +1,25 @@
+<aside data-zh-alert class="zh-background-loading">
+	<section class="zh-container-alert">
+
+		<aside class="zh-container-text-alert">
+ 			<span zh-icon="{{ alertIcon }} icon-white" class="center-block no-float-icon"></span>
+
+ 			<div class="zh-alert-scroll" >
+				<p class="zh-text-alert" data-ng-bind-html="alertText"></p>
+			</div>
+		</aside>
+
+		<footer class="zh-footer-alert">
+			<button 
+				data-ng-repeat="button in buttons" 
+				type="submit" 
+				class="zh-alert-button" 
+				data-ng-class="{horizontal: horizontal}" 				
+				data-zh-click="alertButtonClick(evt, button)"
+				data-zh-focus-field="{{ button.default }}">
+				<span data-ng-bind="button.label"></span>
+			</button>
+		</footer>
+
+	</section>
+</aside>

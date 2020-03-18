@@ -1,0 +1,91 @@
+<section class="zh-widget" data-zh-widget-events>
+	<div class="container"
+		data-ng-controller="CrosstabController as controller"
+		data-zh-scroller>
+
+		<!-- Grid -->
+		<div class="container zh-grid-container"
+			data-zh-scroller>
+
+			<div zh-new-grid class="zh-new-grid" id="grid-{{ widget.id }}">
+				<div class="header">
+					<div class="header-content">
+						<div class="tr">
+
+							<!-- Y AXIS -->
+							<div class="th grid-align-{{ widget.yAxisAlign || 'left' }}"
+								data-ng-class="{fixed: !Util.isPhone()}"
+								data-zh-field-name="{{widget.yAxisProperty}}">
+
+								<!-- Label text -->
+								<span data-zh-bind-translate="widget.yAxisLabel" class="label-text"></span>
+							</div>
+
+							<!-- columns -->
+							<div data-ng-repeat="column in widget.crosstabColumns"
+								data-ng-if="column.key !== widget.yAxisProperty"
+								class="th grid-align-{{ widget.columnProperties.align || 'left' }}"
+								data-ng-class="{fixed: $index <= widget.fixedColumns && !Util.isPhone()}"
+								data-zh-field-name="{{widget.xAxisProperty + '_' + $index}}">
+
+								<!-- Label text -->
+								<span data-zh-bind-translate="column.label" class="label-text"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="body" data-zh-swipe-tip>
+					<div class="crosstab-body-content">
+						<div class="tr cell{{$index%2 +1}}"
+							data-ng-repeat="rowGroup in filtered = (widget.crosstabData | filter:controller.search)"
+							data-ng-class="{'row-selected' : row.__isSelected}"
+							data-zh-long-tap="controller.onLongTap(row);">
+
+							<!-- y axis -->
+							<div data-ng-init="row = rowGroup[widget.yAxisProperty]"
+								data-ng-class="{fixed: !Util.isPhone()}"
+								data-zh-style
+								data-zh-grid-row
+								class="td zh-standard-column grid-align-{{ widget.yAxisAlign || 'left' }}"
+								data-zh-field-name="{{widget.yAxisProperty}}">
+								<span data-ng-bind="row.label"></span>
+							</div>
+
+							<!-- Row data -->
+							<div data-ng-init="row = rowGroup[column.key].__row"
+								data-ng-repeat="column in widget.crosstabColumns"
+								data-ng-if="column.key !== widget.yAxisProperty"
+								data-zh-style
+								data-zh-grid-row
+								data-ng-class="{fixed: $index <= widget.fixedColumns && !Util.isPhone()}"
+								class="td zh-standard-column grid-align-{{ widget.columnProperties.align || 'left' }}"
+								data-zh-field-name="{{widget.xAxisProperty + '_' + $index}}">
+								<span data-ng-bind="rowGroup[column.key].label"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="body-scroll-control">
+					<div></div>
+				</div>
+
+				<div class="row" data-ng-if="filtered.length == 0">
+					<div class="col-xs-12">
+						<p data-ng-if="!Util.objectHasAnyValue(widget.searchCriteria)"
+							class="text-center zh-text-search-not-found"
+							data-zh-bind-translate="widget.noMatchText || 'There are no records' "
+						></p>
+						<p data-ng-if="Util.objectHasAnyValue(widget.searchCriteria)"
+							class="text-center zh-text-search-not-found"
+							data-zh-bind-translate="widget.searchNoMatchText || 'No records were found' "
+						></p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div data-ng-show="widget.isFloatingControlVisible()" data-ng-include="templateManager.getFrameworkTemplateURL('component/floating-control.html')"></div>
+	</div>
+</section>

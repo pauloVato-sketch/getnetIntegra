@@ -1,0 +1,35 @@
+<section class="color-container" ng-controller="ColorController as Ctrl" zh-color-picker zh-widget-events>
+
+  <div class="wrapper">
+    <div class="color-selection">
+      <img class="color-wheel" ng-src="{{ templateManager.getFrameworkTemplateURL('../../assets/images/color-wheel.png') }}"/>
+      <svg class="wheel-pointer" x="0px" y="0px" width="36px" height="50px" viewBox="0 0 28 40" enable-background="new 0 0 28 40" xml:space="preserve">
+        <path fill="#FFFFFF" d="M14,39.479l10.951-17.267c1.687-2.261,2.684-5.063,2.684-8.096c0-7.504-6.104-13.588-13.635-13.588c-7.53,0-13.635,5.744-13.635,13.248c0,2.382,1.236,6.229,2.54,8.07L14,39.479z"/>
+        <path fill="#999999" d="M13.999,40.164L2.596,22.041C1.243,20.131,0,16.184,0,13.777C0,6.143,6.15,0.164,14,0.164c7.72,0,14,6.26,14,13.953c0,3.022-0.953,5.897-2.756,8.314L13.999,40.164z M14,0.894c-7.441,0-13.27,5.659-13.27,12.883c0,2.285,1.179,6.031,2.473,7.859l10.798,17.16l10.641-16.778c1.725-2.313,2.627-5.037,2.627-7.901C27.27,6.826,21.316,0.894,14,0.894z"/>
+        <ellipse stroke-width="0.25" stroke="#999999" fill="currentColor" class="inner-color" cx="14" cy="13.954" rx="10.775" ry="10.74"/>
+      </svg>
+    </div>
+
+    <div class="brightness-slider">
+      <svg class="brightness-pointer" x="0px" y="0px" width="50px" height="36px" viewBox="0 0 40 28" enable-background="new 0 0 40 28" xml:space="preserve">
+        <path fill="#FFFFFF" d="M39.314,14L22.048,3.049c-2.261-1.688-5.063-2.684-8.096-2.684C6.448,0.365,0.364,6.469,0.364,14c0,7.529,5.744,13.635,13.248,13.635c2.382,0,6.229-1.236,8.07-2.539L39.314,14z"/>
+        <path fill="#999999" d="M40,14.001L21.877,25.404C19.967,26.757,16.02,28,13.613,28C5.979,28,0,21.85,0,14C0,6.279,6.26,0,13.953,0c3.021,0,5.896,0.953,8.314,2.756L40,14.001z M0.73,14c0,7.441,5.659,13.27,12.883,13.27c2.286,0,6.032-1.179,7.859-2.473l17.16-10.798L21.854,3.357c-2.313-1.725-5.037-2.627-7.9-2.627C6.662,0.73,0.73,6.684,0.73,14z"/>
+        <ellipse stroke-width="0.25" stroke="#999999" fill="currentColor" class="inner-color" cx="13.79" cy="14" rx="10.74" ry="10.775"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="sugested-colors" ng-if="hasSugestedColors()">
+    <div
+      ng-repeat="color in getSugestedColors()"
+      zh-click="setColor(color)"
+      zh-fill-color
+    ></div>
+  </div>
+
+  <div class="selected-colors" ng-class="{ 'full-width': !hasSugestedColors() }">
+    <div class="old-color"></div>
+    <div class="current-color"></div>
+  </div>
+
+</section>

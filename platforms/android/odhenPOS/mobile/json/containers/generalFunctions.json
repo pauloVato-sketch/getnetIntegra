@@ -1,0 +1,1339 @@
+    {
+    "name": "generalFunctions",
+    "label": "Funções Gerais",
+    "showHeader": true,
+    "showMenu": true,
+    "showBack": false,
+    "showFooter": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "events": [],
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "widgets": [
+        {
+            "name": "generalFunctions",
+            "label": "",
+            "template": "widget/form.html",
+            "isVisible": true,
+            "actions": [
+                {
+                    "name": "back",
+                    "label":"Voltar",
+                    "isVisible": true,
+                    "icon": "back icon-black",
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": "UtilitiesService.backMainScreen();"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "name": "WidgetOnEnter",
+                    "code": "GeneralFunctions.generalFunctionsOnEnter(args.owner);"
+                }
+            ],
+            "dataSource": {},
+            "fields": [
+                {
+                    "name": "reprintOfTheSaleCoupon",
+                    "class": 6,
+                    "label": "Reimpressão - Fiscal",
+                    "showOnForm": true,
+                    "isVisible": true,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "name": "FieldOnClick",
+                            "code": "GeneralFunctions.verificaAcessoSupervisor(args.owner.field.widget.container.getWidget('reprintSaleCouponPopup'), 'reimpressaoFiscal')"
+                        },
+                        {
+                            "name": "FieldOnClick",
+                            "code": "GeneralFunctions.handleReprintPopup(args.owner.field.widget.container.getWidget('reprintSaleCouponPopup'));"
+                        }
+                    ]
+                },
+                {
+                    "name": "comunicateTest",
+                    "class": 6,
+                    "label": "Teste Comunicação SiTef",
+                    "showOnForm": true,
+                    "isVisible": false,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "name": "FieldOnClick",
+                            "code": "GeneralFunctions.sitefComunicateTest()"
+                        }
+                    ]
+                },
+                {
+                    "name": "reprintOfTEFCoupon",
+                    "class": 6,
+                    "label": "Reimpressão - SiTef",
+                    "showOnForm": true,
+                    "isVisible": false,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "name": "FieldOnClick",
+                            "code": "GeneralFunctions.openPopupReprintTef(args.owner.field.widget.container.getWidget('reprintTefCouponPopup'))"
+                        }
+                    ]
+                },
+                {
+                    "name": "tableLoad",
+                    "class": 6,
+                    "label": "Carregar Tabelas SiTef",
+                    "showOnForm": true,
+                    "isVisible": false,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "name": "FieldOnClick",
+                            "code": "GeneralFunctions.supervisorCarregamentoTabSitef(args.owner.field.widget)"
+                        }
+                    ]
+                },
+                {
+                    "name": "reversalPayment",
+                    "class": 6,
+                    "label": "Estorno SiTef",
+                    "showOnForm": true,
+                    "isVisible": true,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "name": "FieldOnClick",
+                            "code": "GeneralFunctions.openPopupReversalTef(args.owner.field.widget.container.getWidget('reversalPaymentPopup'))"
+                        }
+                    ]
+                },
+                {
+                    "name": "sendSitefLog",
+                    "class": 6,
+                    "label": "Envio Log SiTef",
+                    "showOnForm": true,
+                    "isVisible": true,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "name": "FieldOnClick",
+                            "code": "GeneralFunctions.sendSitefLog()"
+                        }
+                    ]
+                },
+                {
+                    "name": "blockProduct",
+                    "class": 6,
+                    "label": "Bloquear Produto",
+                    "showOnForm": true,
+                    "isVisible": true,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "name": "FieldOnClick",
+                            "code": "args.owner.field.widget.container.getWidget('BlockProductPopup').getField('selectProducts').reload(); GeneralFunctions.verificaAcessoSupervisor(args.owner.field.widget.container.getWidget('BlockProductPopup'), 'bloqueiaProduto');"
+                        },
+                        {
+                            "name": "FieldOnClick",
+                            "code": "GeneralFunctions.clearChecked(); GeneralFunctions.clearFilter(args.owner.field.widget.container.getWidget('BlockProductPopup'));"
+                        }
+                    ]
+                },
+                {
+                    "name": "unblockProduct",
+                    "class": 6,
+                    "label": "Desbloquear Produto",
+                    "showOnForm": true,
+                    "isVisible": true,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "name": "FieldOnClick",
+                            "code": "args.owner.field.widget.container.getWidget('UnblockProductPopup').getField('selectBlockedProducts').reload(); GeneralFunctions.verificaAcessoSupervisor(args.owner.field.widget.container.getWidget('UnblockProductPopup'), 'bloqueiaProduto');"
+                        },
+                        {
+                            "name": "FieldOnClick",
+                            "code": "GeneralFunctions.clearChecked();"
+                        }
+                    ]
+                },
+                {
+                    "name": "impressaoLeituraX",
+                    "class": 6,
+                    "label": "Impressão da Leitura X",
+                    "showOnForm": true,
+                    "isVisible": true,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "name": "FieldOnClick",
+                            "code": "GeneralFunctions.impressaoLeituraX(args.owner.field.widget)"
+                        }
+                    ]
+                },
+                {
+                    "name": "sangriaCaixa",
+                    "class": 6,
+                    "label": "Sangria de Caixa",
+                    "showOnForm": true,
+                    "isVisible": true,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "name": "FieldOnClick",
+                            "code": "GeneralFunctions.clearPopUpSangria(args.owner.field.widget.container.getWidget('sangriaCaixaPopUp'), true); GeneralFunctions.verificaAcessoSupervisor(args.owner.field.widget.container.getWidget('sangriaCaixaPopUp'), 'sangria');"
+                        }
+                    ]
+                },
+                {
+                    "name": "qrCodeSale",
+                    "class": 6,
+                    "label": "Venda QR Code",
+                    "showOnForm": true,
+                    "isVisible": true,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "name": "FieldOnClick",
+                            "code": "GeneralFunctions.scanSaleCode(args.owner.field.widget)"
+                        }
+                    ]
+                },
+                {
+                    "name": "sendLogs",
+                    "class": 6,
+                    "label": "Envio de Logs (Teknisa)",
+                    "showOnForm": true,
+                    "isVisible": true,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "name": "FieldOnClick",
+                            "code": "GeneralFunctions.exportLogs()"
+                        }
+                    ]
+                },
+                {
+                    "name": "reprintOfRedeTEFCoupon",
+                    "class": 6,
+                    "label": "Reimpressão - Rede",
+                    "showOnForm": true,
+                    "isVisible": false,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "name": "FieldOnClick",
+                            "code": "GeneralFunctions.reprintRedeCoupom()"
+                        }
+                    ]
+                },
+                {
+                    "name": "redeReversalPayment",
+                    "class": 6,
+                    "label": "Estorno - Rede",
+                    "showOnForm": true,
+                    "isVisible": false,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "name": "FieldOnClick",
+                            "code": "GeneralFunctions.redeReversalPayment()"
+                        }
+                    ]
+                },
+                {
+                    "name": "checkPendindPayments",
+                    "class": 6,
+                    "label": "Pagamentos Pendentes",
+                    "showOnForm": true,
+                    "isVisible": false,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "name": "FieldOnClick",
+                            "code": "GeneralFunctions.checkPendingPayment()"
+                        }
+                    ]
+                }
+            ],
+            "widgets": [
+                {
+                    "name": "reprintSaleCouponPopup",
+                    "label": "Reimpressão - Cupom Fiscal",
+                    "template": "widget/form.html",
+                    "showAsModal": false,
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "label": "Cancelar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Imprimir",
+                            "name": "print",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "GeneralFunctions.reprintSaleCoupon(args.owner.widget);"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "name": "radioReprintSaleCoupon",
+                            "label": "",
+                            "class": 12,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "template": "field/radio-group.html",
+                            "events": [
+                                {
+                                    "name": "FieldOnChange",
+                                    "code": "GeneralFunctions.handleReprintType(args.owner.widget);"
+                                }
+                            ],
+                            "valueField": "value",
+                            "descriptionField": "name",
+                            "defaultOption": 0,
+                            "dataSource": {
+                                "data": [
+                                    {
+                                        "name": "Última venda realizada",
+                                        "value": "U"
+                                    },
+                                    {
+                                        "name": "Por número do Cupom Fiscal",
+                                        "value": "C"
+                                    },
+                                    {
+                                        "name": "Pesquisar Venda",
+                                        "value": "V"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "saleCode",
+                            "class": 6,
+                            "template": "field/text-number.html",
+                            "isVisible": false,
+                            "readOnly": false,
+                            "isVisibleForm": true,
+                            "maxlength": 9,
+                            "events": [
+                                {
+                                    "name": "FieldOnInput",
+                                    "code": "UtilitiesService.toNumber(args.owner.field);"
+                                },
+                                {
+                                    "name": "FieldOnKeydown",
+                                    "code": "GeneralFunctions.handleEnterButton(args);"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "searchSales",
+                            "class": 6,
+                            "template": "field/select.html",
+                            "isVisible": false,
+                            "readOnly": false,
+                            "isVisibleForm": true,
+                            "maxlength": 9,
+                            "showSelectAs": "grid",
+                            "events": [
+                                {
+                                    "name": "WidgetAfterMoveRow",
+                                    "code": "GeneralFunctions.setSale(args.row, args.owner);"
+                                },
+                                {
+                                    "name": "FieldBeforeSelectOpen",
+                                    "code": "args.owner.field.reload();"
+                                }
+                            ],
+                            "dataSource": {
+                                        "name": "/UltimasVendasDesc",
+                                        "rest": true,
+                                        "lazyLoad": true
+                                    },
+                            "fields": [
+                                {
+                                    "name": "NRNOTAFISCALCE",
+                                    "label": "Nota Fiscal",
+                                    "class": 4,
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "name": "DTVENDA",
+                                    "label": "Horário",
+                                    "class": 4,
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "name": "VRTOTVENDA",
+                                    "label": "Valor",
+                                    "class": 4,
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        }
+                    ],
+                    "widgets": []
+                },
+                {
+                    "name": "reprintTefCouponPopup",
+                    "label": "Reimpressão - Cupom TEF",
+                    "template": "widget/form.html",
+                    "showAsModal": false,
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "label": "Cancelar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "GeneralFunctions.handleCancelReprintTef(args.owner.widget)"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Imprimir",
+                            "name": "print",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "GeneralFunctions.reprintTEFVoucher(args.owner.widget);"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [
+                        {
+                            "name": "WidgetOnEnterOnce",
+                            "code": "GeneralFunctions.handleReprintTefType(args.owner, true);"
+                        }
+                    ],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "name": "radioReprintTefCoupon",
+                            "label": "",
+                            "class": 12,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "template": "field/radio-group.html",
+                            "events": [
+                                {
+                                    "name": "FieldOnChange",
+                                    "code": "GeneralFunctions.handleReprintTefType(args.owner.widget, false)"
+                                }
+                            ],
+                            "valueField": "value",
+                            "descriptionField": "name",
+                            "defaultOption": 0,
+                            "dataSource": {
+                                "data": [
+                                    {
+                                        "name": "Último cupom",
+                                        "value": "U"
+                                    },
+                                    {
+                                        "name": "Cupom Específico",
+                                        "value": "C"
+                                    },
+                                    {
+                                        "name": "Pesquisar Cupons",
+                                        "value": "P"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "nsuSitef",
+                            "class": 6,
+                            "label": "NSU Host",
+                            "template": "field/text-number.html",
+                            "isVisible": false,
+                            "readOnly": false,
+                            "isVisibleForm": true,
+                            "minlength": 5,
+                            "maxlength": 9,
+                            "events": [
+                                {
+                                    "name": "FieldOnInput",
+                                    "code": "UtilitiesService.toNumber(args.owner.field);"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "transactionDate",
+                            "class": 6,
+                            "label": "Data da Transação",
+                            "template": "field/text-number.html",
+                            "isVisible": false,
+                            "readOnly": false,
+                            "isVisibleForm": true,
+                            "maxlength": 10,
+                            "events": [
+                                {
+                                    "name": "FieldOnInput",
+                                    "code": "UtilitiesService.toNumber(args.owner.field);GeneralFunctions.maskDate(args.owner.field);"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "searchPayments",
+                            "class": 12,
+                            "label": "Pesquisar",
+                            "template": "field/select.html",
+                            "isVisible": false,
+                            "readOnly": false,
+                            "isVisibleForm": true,
+                            "maxlength": 9,
+                            "showSelectAs": "grid",
+                            "events": [
+                                {
+                                    "name": "WidgetOnEnter",
+                                    "code": "GeneralFunctions.hideSearchButton(args.owner);"
+                                }
+                            ],
+                            "dataSource": {
+                                "name": "/UltimosPagamentosDesc",
+                                "rest": true,
+                                "lazyLoad": true
+                            },
+                            "outData": {
+                                "LABELFIELD": "searchPayments",
+                                "CDNSUHOSTTEF": "nsuSitef",
+                                "DTHRINCMOV": "transactionDate",
+                                "VRMOVIVEND": "VRMOVIVEND",
+                                "LABELGRID": "LABELGRID"
+                            },
+                            "fields": [
+                                {
+                                    "name": "LABELGRID",
+                                    "label": "Recebimento",
+                                    "class": 12,
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "transactionAuth",
+                            "class": 6,
+                            "label": "Autorizador",
+                            "template": "field/select-native.html",
+                            "isVisible": false,
+                            "readOnly": false,
+                            "isVisibleForm": true,
+                            "hideEmptyValue": true,
+                            "defaultValue": "1",
+                            "events": [
+                                {
+                                    "name": "FieldOnChange",
+                                    "code": "GeneralFunctions.transactionAuthOnChange(args.owner.field.widget);"
+                                }
+                            ],
+                            "dataSource": {
+                                "data": [
+                                    {
+                                        "name": "Rede",
+                                        "value": "1"
+                                    },
+                                    {
+                                        "name": "Cielo",
+                                        "value": "2"
+                                    },
+                                    {
+                                        "name": "Outros",
+                                        "value": "3"
+                                    }
+                                ]
+                            },
+                            "descriptionField": "name",
+                            "valueField" : "value",
+                            "outData": {
+                                "nome": "name",
+                                "value": "value"
+                            }
+                        },
+                        {
+                            "name": "transactionVia",
+                            "class": 6,
+                            "label": "Via",
+                            "template": "field/select-native.html",
+                            "isVisible": false,
+                            "readOnly": true,
+                            "isVisibleForm": true,
+                            "defaultValue": "",
+                            "events": [],
+                            "dataSource": {
+                                "data": [
+                                    {
+                                        "name": "Via Lojista",
+                                        "value": "1"
+                                    },
+                                    {
+                                        "name": "Via Portador",
+                                        "value": "2"
+                                    },
+                                    {
+                                        "name": "Todos",
+                                        "value": "3"
+                                    }
+                                ]
+                            },
+                            "descriptionField": "name",
+                            "valueField" : "value",
+                            "outData": {
+                                "nome": "name",
+                                "value": "value"
+                            }
+                        }
+                    ],
+                    "widgets": []
+                },
+                {
+                    "name": "BlockProductPopup",
+                    "label": "Bloquear Produto(s)",
+                    "template": "widget/form.html",
+                    "showAsModal": false,
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "label": "Cancelar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "GeneralFunctions.clearField(args.owner.widget, 'selectProducts'); ScreenService.closePopup();"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Bloquear",
+                            "name": "blockProduct",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "GeneralFunctions.blockProducts(args.owner.widget);"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [
+                        {
+                            "name": "WidgetOnEnter",
+                            "code": "GeneralFunctions.updateSelectField(args.owner.getField('selectProducts'));"
+                        }
+                    ],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "name": "filterProducts",
+                            "label": "Pesquisar",
+                            "isVisible": true,
+                            "class": 3,
+                            "template": "field/text-edit.html",
+                            "showOnForm": true,
+                            "events": [
+                                {
+                                    "name": "FieldOnInput",
+                                    "code": "AccountController.timerSearch(args.owner.field.widget, args.row.selectProducts, 1000);"
+                                },
+                                {
+                                    "name": "FieldOnKeydown",
+                                    "code": "AccountController.handleEnterButton(args);"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "selectProducts",
+                            "label": "Produtos",
+                            "isVisible": true,
+                            "itemsPerPage": 30,
+                            "class": 9,
+                            "floatingControl": false,
+                            "template": "field/select-multiple.html",
+                            "showSelectAs": "grid",
+                            "dataSource": {
+                                "name": "/SelectProducts",
+                                "rest": true,
+                                "memoryStorage": false,
+                                "lazyLoad": true
+                            },
+                            "order": "CDPRODUTO",
+                            "descriptionField": "NMPRODUTO",
+                            "valueField": "CDPRODUTO",
+                            "fields": [
+                                {
+                                    "name": "CDPRODUTO",
+                                    "label": "Código",
+                                    "class": 4,
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "name": "NMPRODUTO",
+                                    "label": "Produto",
+                                    "class": 8,
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ],
+                            "events": [
+                                {
+                                    "name": "WidgetAfterLoadDataSource",
+                                    "code": "GeneralFunctions.getChecked(args.owner);"
+                                },
+                                {
+                                    "name": "WidgetAfterSelectRow",
+                                    "code": "GeneralFunctions.checkControl(args.owner);"
+                                },
+                                {
+                                    "name": "WidgetAfterUnselectRow",
+                                    "code": "GeneralFunctions.checkControl(args.owner);"
+                                },
+                                {
+                                    "name": "FieldOnClick",
+                                    "code": "args.owner.field.reload();"
+                                }
+                            ]
+                        }
+                    ],
+                    "widgets": []
+                },
+                {
+                    "name": "UnblockProductPopup",
+                    "label": "Desbloquear Produto(s)",
+                    "template": "widget/form.html",
+                    "showAsModal": false,
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "label": "Cancelar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "GeneralFunctions.clearField(args.owner.widget, 'selectBlockedProducts'); ScreenService.closePopup();"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Desbloquear",
+                            "name": "unblockProduct",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "GeneralFunctions.unblockProducts(args.owner.widget);"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [
+                        {
+                            "name": "WidgetOnEnter",
+                            "code": "GeneralFunctions.updateSelectField(args.owner.getField('selectBlockedProducts'));"
+                        }
+                    ],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "name": "selectBlockedProducts",
+                            "label": "Produtos Bloqueados",
+                            "skipPreference": true,
+                            "hasPagination": true,
+                            "searchWithPagination": true,
+                            "template": "field/select-multiple.html",
+                            "dataSource": {
+                                "name": "/SelectBlockedProducts",
+                                "lazyLoad": false,
+                                "rest": true,
+                                "localStorage": false,
+                                "data": []
+                            },
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "sequenceInForm": 4,
+                            "isVisible": true,
+                            "order": "CDPRODUTO",
+                            "descriptionField": "NMPRODUTO",
+                            "valueField": "CDPRODUTO",
+                            "events": [
+                                {
+                                    "name": "WidgetAfterLoadDataSource",
+                                    "code": "GeneralFunctions.getChecked(args.owner);"
+                                },
+                                {
+                                    "name": "WidgetAfterSelectRow",
+                                    "code": "GeneralFunctions.checkControl(args.owner);"
+                                },
+                                {
+                                    "name": "WidgetAfterUnselectRow",
+                                    "code": "GeneralFunctions.checkControl(args.owner);"
+                                },
+                                {
+                                    "name": "FieldOnClick",
+                                    "code": "args.owner.field.reload();"
+                                }
+                            ],
+                            "readOnly": false,
+                            "class": 12,
+                            "fields": [
+                                {
+                                    "name": "CDPRODUTO",
+                                    "label": "Código",
+                                    "class": 4,
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "name": "NMPRODUTO",
+                                    "label": "Produto",
+                                    "class": 8,
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        }
+                    ],
+                    "widgets": []
+                },
+                {
+                    "name": "cpfPopup",
+                    "label": "",
+                    "template": "widget/form.html",
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "label": "Cancelar",
+                            "name": "back",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "OK",
+                            "name": "confirm",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "GeneralFunctions.qrCodeSale(args.row, args.owner.widget.container.getWidget('generalFunctions'));"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "id": "1",
+                            "name": "CPF",
+                            "label": "CPF/CNPJ (somente números)",
+                            "isVisible": true,
+                            "class": 12,
+                            "template": "field/text-number.html",
+                            "events": [],
+                            "maxlength": 14
+                        }
+                    ],
+                    "widgets": []
+                },
+                {
+                    "name": "reversalPaymentPopup",
+                    "label": "Realizar Estorno",
+                    "template": "widget/form.html",
+                    "showAsModal": false,
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "label": "Cancelar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Estorno",
+                            "name": "print",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "GeneralFunctions.reversalPayment(args.owner.widget)"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "name": "IDTIPORECE",
+                            "class": 6,
+                            "label": "Tipo de Recebimento",
+                            "template": "field/select-native.html",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "isVisibleForm": true,
+                            "hideEmptyValue": true,
+                            "minValue": "1",
+                            "maxValue": "2",
+                            "defaultValue": "1",
+                            "validations": {
+                                "required": {}
+                            },
+                            "events": [],
+                            "dataSource": {
+                                "data": [
+                                    {
+                                        "name": "Crédito",
+                                        "value": "1"
+                                    },
+                                    {
+                                        "name": "Débito",
+                                        "value": "2"
+                                    }
+                                ]
+                            },
+                            "descriptionField": "name",
+                            "valueField" : "value",
+                            "outData": {
+                                "nome": "name",
+                                "value": "value"
+                            }
+                        },
+                        {
+                            "name": "VRMOVIVEND",
+                            "label": "Valor",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "class": "6",
+                            "validations": {
+                                "required": {}
+                            },
+                            "range": {
+                                "max": null,
+                                "min": 0.01
+                            },
+                            "template": "field/text-number.html",
+                            "events": [],
+                            "mask": {
+                                "type": "currency",
+                                "params": {
+                                    "showSymbol": false,
+                                    "precision": 2,
+                                    "thousands": "",
+                                    "decimal": ",",
+                                    "allowNegative": false
+                                }
+                            }
+                        },
+                        {
+                            "name": "CDNSUHOSTTEF",
+                            "class": 6,
+                            "label": "NSU Host",
+                            "template": "field/text-number.html",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "isVisibleForm": true,
+                            "validations": {
+                                "required": {}
+                            },
+                            "minlength": 5,
+                            "maxlength": 9,
+                            "events": [
+                                {
+                                    "name": "FieldOnInput",
+                                    "code": "UtilitiesService.toNumber(args.owner.field);"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "TRANSACTIONDATE",
+                            "class": 6,
+                            "label": "Data da Transação",
+                            "template": "field/text-number.html",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "isVisibleForm": true,
+                            "validations": {
+                                "required": {}
+                            },
+                            "maxlength": 10,
+                            "events": [
+                                {
+                                    "name": "FieldOnChange",
+                                    "code": "GeneralFunctions.validateDate(args.owner.field.widget);"
+                                },
+                                {
+                                    "name": "FieldOnKeyup",
+                                    "code": "GeneralFunctions.maskDate(args.owner.field);"
+                                }
+                            ]
+                        }
+                    ],
+                    "widgets": []
+                },
+                {
+                    "name": "report",
+                    "label": "Relatório Leitura X",
+                    "isVisible": true,
+                    "template": "widget/form.html",
+                    "actions": [
+                        {
+                            "name": "print",
+                            "label": "Imprimir e Continuar",
+                            "showAsAction": "always|view|edit",
+                            "icon": "printer",
+                            "isVisible": true,
+                            "events": [
+                                {
+                                    "id": "29208878614401171721309",
+                                    "name": "ActionEvent",
+                                    "code": "GeneralFunctions.printXReport();"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Continuar",
+                            "label": "Sair",
+                            "showAsAction": "never",
+                            "isVisible": true,
+                            "events": [
+                                {
+                                    "id": "29208878614401171721309",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "name": "report",
+                            "class": 12,
+                            "isVisible": true,
+                            "readOnly": true,
+                            "defaultValue": null,
+                            "template": "field/textarea.html",
+                            "textRows": 15,
+                            "events": []
+                        }
+                    ]
+                },
+                {
+                    "name": "sangriaCaixaPopUp",
+                    "label": "Sangria de Caixa",
+                    "template": "widget/tabbedWidget.html",
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "label": "Cancelar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Finalizar",
+                            "name": "btnFinish",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "GeneralFunctions.saveSangria(args.owner.widget);"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [
+                        {
+                            "name": "WidgetOnEnter",
+                            "code": "GeneralFunctions.handleRequires(args.owner);"
+                        }
+                    ],
+                    "fields": [
+                        {
+                            "name": "tipoRecebimento",
+                            "label": "Tipos de Recebimento",
+                            "class": 6,
+                            "template": "field/select.html",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "isVisibleForm": true,
+                            "maxlength": 9,
+                            "showSelectAs": "grid",
+                            "events": [
+                                {
+                                    "name": "FieldOnClick",
+                                    "code": "args.owner.field.reload();"
+                                }
+                            ],
+                            "valueField": "CDTIPORECE",
+                            "descriptionField": "NMTIPORECE",
+                            "validations": {
+                                "required": {}
+                            },
+                            "dataSource": {
+                                "name": "/TipoRecebimento",
+                                "lazyLoad": true,
+                                "rest": true,
+                                "localStorage": false
+                            },
+                            "outData" : {
+                                "NMTIPORECE": "tipoRecebimento",
+                                "CDTIPORECE": "CDTIPORECE"
+                            },
+                            "fields": [
+                                {
+                                    "name": "CDTIPORECE",
+                                    "label": "Código",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "name": "NMTIPORECE",
+                                    "label": "Recebimento",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "tipoSangria",
+                            "label": "Tipos de Sangria",
+                            "class": 6,
+                            "template": "field/select.html",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "isVisibleForm": true,
+                            "maxlength": 9,
+                            "showSelectAs": "grid",
+                            "events": [
+                                {
+                                    "name": "FieldOnClick",
+                                    "code": "args.owner.field.reload();"
+                                }
+                            ],
+                            "valueField": "CDTPSANGRIA",
+                            "descriptionField": "NMTPSANGRIA",
+                            "validations": {
+                                "required": {}
+                            },
+                            "dataSource": {
+                                "name": "/TipoSangria",
+                                "lazyLoad": true,
+                                "rest": true,
+                                "localStorage": false
+                            },
+                            "outData" : {
+                                "NMTPSANGRIA": "tipoSangria",
+                                "CDTPSANGRIA": "CDTPSANGRIA"
+                            },
+                            "fields": [
+                                {
+                                    "name": "CDTPSANGRIA",
+                                    "label": "Código",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "name": "NMTPSANGRIA",
+                                    "label": "Nome",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "obsSangria",
+                            "label": "Observações",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": false,
+                            "newLine": true,
+                            "sameLine": true,
+                            "class": 12,
+                            "focused": true,
+                            "events": [],
+                            "defaultValue": null,
+                            "maxlength": 100,
+                            "template": "field/textarea.html",
+                            "textRows": 1
+                        },
+                        {
+                            "name": "valorSangria",
+                            "label": "Valor",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": false,
+                            "newLine": true,
+                            "sameLine": true,
+                            "class": 6,
+                            "focused": true,
+                            "validations": {
+                                "required": {}
+                            },
+                            "range": {
+                                "max": null,
+                                "min": 0.01
+                            },
+                            "events": [],
+                            "defaultValue": null,
+                            "template": "field/text-number.html",
+                            "mask": {
+                                "type": "currency",
+                                "params": {
+                                    "showSymbol": false,
+                                    "precision": 2,
+                                    "thousands": "",
+                                    "decimal": ",",
+                                    "allowNegative": false
+                                }
+                            }
+                        },
+                        {
+                            "name": "btnAdicionar",
+                            "label": "Adicionar",
+                            "class": 6,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "defaultValue": null,
+                            "template": "field/button.html",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "GeneralFunctions.addSangria(args.owner.field.widget);"
+                                }
+                            ]
+                        }
+                    ],
+                    "widgets": [
+                        {
+                            "name": "itensSangria",
+                            "label": "Itens Selecionados",
+                            "template": "../../../../templates/widget/list-grouped-default.html",
+                            "isVisible": true,
+                            "allowSelectOnLongTap": false,
+                            "actions": [],
+                            "groupProp": "tipoRecebimento",
+                            "detailPriceProp": "valorSangria",
+                            "detailDescProp": "tipoSangria",
+                            "orderDate": "obsSangria",
+                            "events": [
+                                {
+                                    "name": "WidgetAfterMoveRow",
+                                    "code": "GeneralFunctions.saveRow(args.owner);"
+                                }
+                            ],
+                            "dataSource": {},
+                            "fields": [],
+                            "widgets": [
+                                {
+                                    "name": "itemSangria",
+                                    "template": "widget/form-without-scroller.html",
+                                    "isVisible": true,
+                                    "actions": [],
+                                    "events": [],
+                                    "fields": [
+                                        {
+                                            "name": "exclude",
+                                            "class": 8,
+                                            "label": "Excluir",
+                                            "readOnly": false,
+                                            "isVisible": true,
+                                            "isVisibleForm": true,
+                                            "isVisibleGrid": true,
+                                            "newLine": false,
+                                            "defaultValue": null,
+                                            "template": "field/label-with-icon.html",
+                                            "icon": "trash icon-black",
+                                            "events": [
+                                                {
+                                                    "name": "FieldOnClick",
+                                                    "code": "GeneralFunctions.removeItemSangria(args);"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

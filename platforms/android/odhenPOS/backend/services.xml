@@ -1,0 +1,327 @@
+<?xml version="1.0"?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <parameters>
+        <parameter key="baseUri">backend/service/index.php</parameter>
+        <parameter key="IMAGESPATH">images/</parameter>
+        <parameter key="route_file_name">../routes.json</parameter>
+        <parameter key="is_dev_mode">true</parameter>
+        <parameter key="dcm_path" type="collection">
+            <parameter>../src/Model/dcm</parameter>
+        </parameter>
+    </parameters>
+
+    <services>
+        <service id="connection" class="\Odhen\API\Util\MultipleDatabaseConnection" factory-class="\Odhen\API\Util\ConnectionFactoryAPI" factory-method="factoryWithEncryptedPassword">
+            <argument>%connection_params%</argument>
+            <argument id="oracleDecrypt">rt6hHy8jajjaA</argument>
+            <argument type="service" id="entityMetaDataConfig"/>
+            <argument type="service" id="eventManager"/>
+            <argument type="service" id="session"/>
+            <call method="setDataBaseDriver">
+                <argument>%database_driver%</argument>
+            </call>
+            <call method="setAditionalQueryClasses">
+                <argument>\Util\MSDEQuery</argument>
+                <argument>\Util\OracleQuery</argument>
+            </call>
+        </service>
+
+        <service id="eventManager" class="%eventManager.class%">
+            <call method="addEventSubscriber">
+                <argument type="service" id="sessionInit"/>
+            </call>
+        </service>
+        <service id="\Service\RequestLog" class="\Service\RequestLog"/>
+
+        <!-- SERVICES OLDBACKEND -->
+        <service id="\Service\Bill" class="\Service\Bill">
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Util\Date" />
+            <argument type="service" id="\Util\WaiterMessage" />
+        </service>
+        <service id="\Service\Params" class="\Service\Params">
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Util\Date" />
+            <argument type="service" id="\Odhen\API\Service\Parametros" />
+        </service>
+        <service id="\Service\CallWaiter" class="\Service\CallWaiter">
+            <argument type="service" id="entityManager"/>
+        </service>
+        <service id="\Service\Order" class="\Service\Order">
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Service\Table" />
+            <argument type="service" id="\Service\Bill" />
+            <argument type="service" id="\Service\Impressao" />
+            <argument type="service" id="\Service\KDS" />
+        </service>
+        <service id="\Service\Detalhe" class="\Service\Detalhe">
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Service\Table" />
+            <argument type="service" id="\Service\Bill"/>
+        </service>
+        <service id="\Service\Impressao" class="\Service\Impressao">
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Odhen\API\Lib\ImpressaoUtil" />
+            <argument type="service" id="\Service\Table" />
+            <argument type="service" id="\Service\Bill" />
+            <argument type="service" id="\Util\Date" />
+            <argument type="service" id="instanceManager" />
+        </service>
+        <service id="\Service\KDS" class="\Service\KDS">
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Util\Util" />
+        </service>
+        <service id="\Service\Operator" class="\Service\Operator">
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Odhen\API\Service\Preco" />
+            <argument type="service" id="\Odhen\API\Service\Login" />
+            <argument type="service" id="\Odhen\API\Service\Operador" />
+            <argument type="service" id="\Odhen\API\Service\Caixa" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+            <argument type="service" id="\Odhen\API\Util\Database" />
+            <argument type="service" id="instanceManager" />
+        </service>
+        <service id="\Service\Pedido" class="\Service\Pedido">
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Service\Bill"/>
+            <argument type="service" id="\Service\Table" />
+            <argument type="service" id="\Odhen\API\Service\Preco"/>
+            <argument type="service" id="\Odhen\API\Service\ImpressaoPedido" />
+            <argument type="service" id="\Odhen\API\Lib\ImpressaoDelphi" />
+            <argument type="service" id="instanceManager" />
+        </service>
+        <service id="\Service\ProdutoOriginal" class="\Service\ProdutoOriginal">
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Service\Table" />
+            <argument type="service" id="\Service\Bill"/>
+        </service>
+        <service id="\Service\Produto" class="\Service\Produto">
+            <argument type="service" id="\Odhen\API\Service\Preco" />
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Service\Table" />
+            <argument type="service" id="\Service\Bill"/>
+        </service>
+        <service id="\Service\Consumer" class="\Service\Consumer">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Util\Util" />
+        </service>
+        <service id="\Service\SMTP" class="\Service\SMTP">
+            <argument type="service" id="entityManager"/>
+        </service>
+        <service id="\Service\PositionCode" class="\Service\PositionCode">
+            <argument type="service" id="entityManager"/>
+        </service>
+        <service id="\Service\Payment" class="\Service\Payment">
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Util\WaiterMessage"/>
+            <argument type="service" id="\Util\Util"/>
+            <argument type="service" id="\Service\Table" />
+            <argument type="service" id="\Odhen\API\Lib\ImpressaoUtil" />
+            <argument type="service" id="\Odhen\API\Service\ImpressaoPedido" />
+            <argument type="service" id="\Odhen\API\Util\Database" />
+        </service>
+        <service id="\Service\Register" class="\Service\Register">
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Util\Util" />
+        </service>
+        <service id="\Service\Transactions" class="\Service\Transactions">
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Service\Table" />
+            <argument type="service" id="\Util\Util" />
+        </service>
+        <service id="\Service\Account" class="\Service\Account">
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Odhen\API\Service\Preco" />
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Odhen\API\Service\Venda" />
+            <argument type="service" id="\Service\Table"/>
+            <argument type="service" id="\Service\Pedido"/>
+            <argument type="service" id="\Util\WaiterMessage" />
+            <argument type="service" id="\Service\Bill"/>
+            <argument type="service" id="\Service\Impressao" />
+            <argument type="service" id="\Service\Transactions" />
+            <argument type="service" id="\Util\Date" />
+            <argument type="service" id="\Service\Register" />
+            <argument type="service" id="\Odhen\API\Service\Caixa" />
+            <argument type="service" id="\Odhen\API\Service\Extratocons" />
+            <argument type="service" id="\Odhen\API\Service\Parametros" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+            <argument type="service" id="\Odhen\API\Service\Consumidor"/>
+        </service>
+        <service id="\Service\Table" class="\Service\Table">
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Util\WaiterMessage" />
+            <argument type="service" id="\Service\Bill" />
+            <argument type="service" id="\Service\Params" />
+            <argument type="service" id="\Odhen\API\Service\Preco" />
+            <argument type="service" id="\Odhen\API\Service\Venda" />
+            <argument type="service" id="\Service\Register" />
+        </service>
+        <service id="\Service\GeneralFunctions" class="\Service\GeneralFunctions">
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Odhen\API\Service\NotaFiscal"/>
+            <argument type="service" id="\Odhen\API\Service\ImpressaoNFCE"/>
+            <argument type="service" id="\Odhen\API\Service\Caixa" />
+            <argument type="service" id="\Odhen\API\Util\Database" />
+            <argument type="service" id="\Odhen\API\Service\ImpressaoSAT"/>
+            <argument type="service" id="\Odhen\API\Service\Venda" />
+        </service>
+        <service id="\Service\Delivery" class="\Service\Delivery">
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Util\WaiterMessage" />
+        </service>
+        <service id="\Service\Log" class="\Service\Log">
+            <argument type="service" id="\Util\Util"/>
+        </service>
+
+        <!-- CONTROLLERS -->
+        <service id="\Controller\Menu" class="\Controller\Menu" />
+        <service id="\Controller\Account" class="\Controller\Account">
+            <argument type="service" id="\Util\WaiterMessage" />
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Service\Pedido" />
+            <argument type="service" id="\Service\Order"/>
+            <argument type="service" id="\Service\Produto" />
+            <argument type="service" id="\Service\ProdutoOriginal" />
+            <argument type="service" id="\Service\Params" />
+            <argument type="service" id="\Service\Account" />
+            <argument type="service" id="\Service\Table" />
+            <argument type="service" id="entityManager"/>
+        </service>
+        <service id="\Controller\Bill" class="\Controller\Bill">
+            <argument type="service" id="\Util\WaiterMessage" />
+            <argument type="service" id="\Service\Bill" />
+            <argument type="service" id="\Service\Table" />
+            <argument type="service" id="\Service\Params" />
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Service\Comanda" />
+            <argument type="service" id="\Util\Util" />
+        </service>
+        <service id="\Controller\Operator" class="\Controller\Operator">
+            <argument type="service" id="\Util\WaiterMessage" />
+            <argument type="service" id="\Controller\Params" />
+            <argument type="service" id="\Service\Operator" />
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="session"/>
+        </service>
+        <service id="\Controller\Order" class="\Controller\Order">
+            <argument type="service" id="\Util\WaiterMessage" />
+            <argument type="service" id="\Controller\Params" />
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Service\CallWaiter"/>
+            <argument type="service" id="\Service\Consumer"/>
+        </service>
+        <service id="\Controller\Params" class="\Controller\Params">
+            <argument type="service" id="instanceManager" />
+            <argument type="service" id="\Util\WaiterMessage" />
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Service\Params" />
+        </service>
+        <service id="\Controller\Table" class="\Controller\Table">
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Util\WaiterMessage" />
+            <argument type="service" id="\Service\Table" />
+            <argument type="service" id="\Service\Consumer" />
+            <argument type="service" id="\Service\CallWaiter" />
+            <argument type="service" id="\Service\Impressao" />
+            <argument type="service" id="\Service\Params" />
+            <argument type="service" id="\Service\Account" />
+            <argument type="service" id="\Service\KDS" />
+            <argument type="service" id="\Service\PositionCode" />
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Service\Order" />
+        </service>
+        <service id="\Controller\Transactions" class="\Controller\Transactions">
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Util\Util"/>
+            <argument type="service" id="\Service\Transactions"/>
+            <argument type="service" id="\Service\SMTP"/>
+            <argument type="service" id="\Util\Date"/>
+        </service>
+        <service id="\Controller\Register" class="\Controller\Register">
+            <argument type="service" id="\Odhen\API\Service\Caixa" />
+            <argument type="service" id="\Odhen\API\Util\Database" />
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Service\Register" />
+        </service>
+        <service id="\Controller\Payment" class="\Controller\Payment">
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Service\Payment" />
+            <argument type="service" id="\Service\Register" />
+            <argument type="service" id="\Odhen\API\Service\Venda" />
+            <argument type="service" id="\Service\Table"/>
+            <argument type="service" id="\Odhen\API\Service\Consumidor"/>
+            <argument type="service" id="\Odhen\API\Util\Util"/>
+            <argument type="service" id="\Odhen\API\Service\Caixa"/>
+            <argument type="service" id="\Service\Delivery" />
+        </service>
+        <service id="\Controller\Consumer" class="\Controller\Consumer">
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Odhen\API\Service\Consumidor" />
+            <argument type="service" id="\Odhen\API\Service\Caixa" />
+            <argument type="service" id="\Odhen\API\Service\VendaValidacao" />
+            <argument type="service" id="\Service\Impressao" />
+            <argument type="service" id="\Service\Consumer" />
+        </service>
+        <service id="\Controller\GeneralFunctions" class="\Controller\GeneralFunctions">
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Service\GeneralFunctions" />
+            <argument type="service" id="\Odhen\API\Service\Caixa" />
+        </service>
+        <service id="\Controller\Delivery" class="\Controller\Delivery">
+            <argument type="service" id="\Util\Util" />
+            <argument type="service" id="\Util\WaiterMessage" />
+            <argument type="service" id="\Service\Delivery" />
+            <argument type="service" id="\Odhen\API\Service\ImpressaoDelivery" />
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Service\GeneralFunctions" />
+            <argument type="service" id="\Service\Order" />
+            <argument type="service" id="\Odhen\API\Service\Venda" />
+            <argument type="service" id="\Service\Register" />
+            <argument type="service" id="\Service\Payment" />
+            <argument type="service" id="\Odhen\API\Service\Comanda" />
+        </service>
+
+
+        <!-- HELPERS -->
+        <service id="\Helpers\Environment" class="\Helpers\Environment">
+            <argument type="service" id="session"/>
+        </service>
+
+        <!-- LISTENERS -->
+		<service id="PreDispatcher" class="\Listeners\PreDispatcher">
+			<argument type="service" id="entityManager" />
+			<argument type="service" id="\Helpers\Environment"/>
+		</service>
+
+		<service id="preDispatchEvent" class="%preDispatchEvent.class%">
+			<call method="addListener">
+				<argument type="service" id="PreDispatcher"/>
+			</call>
+		</service>
+
+        <!-- UTILITIES -->
+        <service id="\Util\Util" class="\Util\Util">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Helpers\Environment" />
+        </service>
+        <service id="\Util\WaiterMessage" class="\Util\WaiterMessage"/>
+        <service id="\Util\Date" class="\Util\Date"/>
+
+    </services>
+
+</container>

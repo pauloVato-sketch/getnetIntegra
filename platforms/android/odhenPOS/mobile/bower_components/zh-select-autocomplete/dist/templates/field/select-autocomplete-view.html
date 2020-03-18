@@ -1,0 +1,47 @@
+<!-- ABOUT THIS:
+-	The span-field.html is used on form widgets in the view mode.
+-	It is included and shows a different visualization for
+-->
+
+<div
+	zh-style="field.widget.currentRow"
+	ng-show="field.isVisible"
+	class="zh-span-field"
+	id="span-field-{{ field.name }}"
+	ng-controller="DecodeValueField as decode">
+
+	 <!-- Label with tooltip -->
+	<label
+		ng-if="!decode.isCheckbox(field) && !decode.isButton(field) && !decode.isImage(field) && !decode.isLabelWithIcon(field) && !decode.isFieldImageType(field)"
+		class="zh-label"
+		ng-show="field.label">
+		<span data-zh-bind-translate="field.label"></span>
+		<div
+			class="zh-help-icon"
+			ng-if="field.help">?</div>
+		<!-- Tooltip -->
+		<div class="zh-tooltip-arrow" data-ng-if="field.help"></div>
+		<div class="zh-tooltip-text"  data-ng-if="field.help" data-ng-bind-html="field.help|i18n"></div>
+	</label>
+
+
+	<!-- Label with icon -->
+	<div
+		ng-include="templateManager.getTemplateURL(field.template )"
+		ng-if="decode.isLabelWithIcon(field)"
+	></div>
+
+	<!-- Tooltip -->
+	<div class="zh-tooltip-arrow" ng-if="field.help"></div>
+	<div class="zh-tooltip-text"  ng-if="field.help" ng-bind-html="field.help|i18n"></div>
+
+	<!-- Value for general fields -->
+	<p
+		ng-controller="ZhSelectAutoCompleteController"
+		class="zh-field-value zh-text-align-{{field.align || 'left'}}"
+		ng-if="!decode.isCheckbox(field) && !decode.isButton(field) && !decode.isRadioGroup(field) && !decode.isImage(field) && !decode.isLabelWithIcon(field) && !decode.isFieldImageType(field) && !decode.isColor(field) && !decode.isLabelStaticType(field)"
+		data-ng-class="{'zh-field-value-textarea': decode.isTextarea(field)}"
+		ng-bind="decode.model(field, fieldRow)"
+	></p>
+
+</div>

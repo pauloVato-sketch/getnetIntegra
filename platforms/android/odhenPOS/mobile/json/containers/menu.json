@@ -1,0 +1,1587 @@
+{
+    "id": "169754180217161321521331",
+    "name": "menu",
+    "label": "Fazer Pedido",
+    "events": [
+        {
+            "id": "68159823419305822911437",
+            "name": "ContainerAfterinit",
+            "code": "UtilitiesService.setHeader(args.owner); args.owner.getWidget('menu').activate();"
+        }
+    ],
+    "showHeader": true,
+    "showMenu": true,
+    "showFooter": true,
+    "showBack": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "popup": "component/popup.html",
+    "template": "container/window.html",
+    "widgets": [
+        {
+            "id": "6815982342458536411332",
+            "template": "waiter#widget/waiter_position.html",
+            "fields": [],
+            "name": "positionsWidget",
+            "label": "Posição",
+            "position": 0,
+            "isVisible": true,
+            "actions": [],
+            "events": [],
+            "dataSource": {
+                "rest": false,
+                "memoryStorage": true,
+                "name": "/TableActiveTable"
+            }
+        },
+        {
+            "id": "68159823426258813701333",
+            "name": "menu",
+            "label": "Fazer Pedido",
+            "template": "../../../../templates/widget/waiter_orders.html",
+            "isVisible": true,
+            "fields": [],
+            "actions": [
+                {
+                    "name": "filter",
+                    "isVisible": true,
+                    "icon": "filter",
+                    "showAsAction": "always|edit",
+                    "activeOnMode": null,
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": "ScreenService.openPopup(args.owner.widget.container.getWidget('filterProductsPopup')); AccountController.resetValues(args.owner.widget.container.getWidget('filterProductsPopup'));"
+                        }
+                    ]
+                },
+                {
+                    "id": "68159823411830425111428",
+                    "name": "cart",
+                    "isVisible": true,
+                    "icon": "cart",
+                    "showAsAction": "always|edit",
+                    "activeOnMode": null,
+                    "events": [
+                        {
+                            "id": "68159823425359733731429",
+                            "name": "ActionEvent",
+                            "code": "AccountController.showCart();AccountController.setNewOrders(true);"
+                        }
+                    ]
+                },
+                {
+                    "id": "68159823427609305551430",
+                    "label": "Voltar",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "hideIcon": true,
+                    "showAsAction": "back",
+                    "activeOnMode": [
+                        "M",
+                        "O",
+                        "C"
+                    ],
+                    "events": [
+                        {
+                            "id": "68159823441622742831431",
+                            "name": "ActionEvent",
+                            "code": "AccountController.validateCart(args);"
+                        }
+                    ]
+                },
+                {
+                    "id": "68159823427741770571432",
+                    "label": "Funções",
+                    "name": "functions",
+                    "isVisible": true,
+                    "showAsAction": "never",
+                    "activeOnMode": [
+                        "M",
+                        "O",
+                        "C"
+                    ],
+                    "events": [
+                        {
+                            "id": "6815982347946112781433",
+                            "name": "ActionEvent",
+                            "code": "AccountController.showFunctions(args.owner.widget.widgets[0].widgets[1]);"
+                        }
+                    ]
+                },
+                {
+                    "id": "68159823425512933411434",
+                    "label": "Receber",
+                    "name": "pagamento",
+                    "isVisible": true,
+                    "showAsAction": "never",
+                    "activeOnMode": "B",
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": "AccountController.verificaSenhaProd(args.owner.widget.container.getWidget('menu'), null);"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "id": "68159823415763435381436",
+                    "name": "WidgetOnEnter",
+                    "code": "AccountController.prepareMenu(args.owner.widgets); AccountController.loadCartData(args.owner.container.getWidget('categories')); TableController.preparePositions(args.owner.container.getWidget('positionsWidget')); AccountController.resetCartLabel(args.owner.container.actions[1]); UtilitiesService.hideFunctions(args.owner);"
+                }
+            ],
+            "widgets": [
+                {
+                    "id": "68159823410347188321334",
+                    "colorProperty": "COLOR",
+                    "labelProperty": "NMGRUPO",
+                    "categoryProperty": "CDGRUPO",
+                    "lines": 3,
+                    "events": [
+                        {
+                            "id": "68159823415240600911426",
+                            "name": "FieldAfterMoveRow",
+                            "code": "ScreenService.filterWidget(args.owner, args.owner.parent.widgets)"
+                        }
+                    ],
+                    "fields": [],
+                    "name": "categories",
+                    "class": "col-md-3",
+                    "readOnly": false,
+                    "template": "waiter#field/waiter-categories.html",
+                    "valueField": "CDGRUPO",
+                    "dataSource": {
+                        "id": "1",
+                        "name": "/ParamsGroupRepository",
+                        "memoryStorage": true,
+                        "rest": false
+                    },
+                    "widgets": [
+                        {
+                            "id": "68159823438035150261335",
+                            "name": "addProduct",
+                            "label": "Adicionar Produto",
+                            "template": "widget/form.html",
+                            "isVisible": true,
+                            "events": [],
+                            "actions": [
+                                {
+                                    "id": "68159823438210840261350",
+                                    "name": "desfazer",
+                                    "label": "Cancelar",
+                                    "showAsAction": "back",
+                                    "isVisible": true,
+                                    "icon": "undo",
+                                    "events": [
+                                        {
+                                            "id": "6815982348421759201351",
+                                            "name": "ActionEvent",
+                                            "code": "AccountController.undoOrder(args.row, args.owner.widget.container.actions[1]);"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "6815982346461794711352",
+                                    "name": "cart",
+                                    "isVisible": false,
+                                    "icon": "cart",
+                                    "showAsAction": "always|edit",
+                                    "events": [
+                                        {
+                                            "id": "68159823418551639441353",
+                                            "name": "ActionEvent",
+                                            "code": "AccountController.doNothing();"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "68159823417506978981354",
+                                    "label": "Adicionar",
+                                    "name": "ok",
+                                    "isVisible": true,
+                                    "icon": "",
+                                    "showAsAction": "never",
+                                    "events": [
+                                        {
+                                            "id": "68159823441001547711355",
+                                            "name": "ActionEvent",
+                                            "code": "AccountController.closeProductPopup(args.owner.widget);"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "dataSource": {},
+                            "popupNoBlock": false,
+                            "fields": [
+                                {
+                                    "id": "68159823434970640061336",
+                                    "name": "product",
+                                    "class": 4,
+                                    "label": "",
+                                    "readOnly": true,
+                                    "isVisible": false,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/label.html",
+                                    "events": []
+                                },
+                                {
+                                    "id": "68159823435868805351337",
+                                    "name": "txtAdicionado",
+                                    "class": 6,
+                                    "label": " para a ",
+                                    "readOnly": true,
+                                    "isVisible": false,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/label.html",
+                                    "events": []
+                                },
+                                {
+                                    "id": "68159823422431342981338",
+                                    "name": "position",
+                                    "class": 2,
+                                    "label": "",
+                                    "readOnly": true,
+                                    "isVisible": false,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/label.html",
+                                    "events": []
+                                },
+                                {
+                                    "id": "68159823433895705351339",
+                                    "name": "QTPRODCOMVEN",
+                                    "class": 6,
+                                    "label": "Quantidade",
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "blockInputEdit": false,
+                                    "newLine": true,
+                                    "defaultValue": 1,
+                                    "minValue": 0,
+                                    "spin": true,
+                                    "template": "field/number-custom.html",
+                                    "events": [
+                                        {
+                                            "id": "68159823436425894821340",
+                                            "name": "FieldOnChange",
+                                            "code": "AccountController.updateObservations(args.owner.field.widget);"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "68159823417778789081341",
+                                    "name": "CDOCORR",
+                                    "valueField": "CDOCORR",
+                                    "label": "DSOCORR",
+                                    "color": "NRCORSINAL",
+                                    "complement": "NRCORSINALC",
+                                    "class": 12,
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": [],
+                                    "template": "field/observations.html",
+                                    "events": [
+                                        {
+                                            "id": "68159823436286045341342",
+                                            "name": "FieldOnClick",
+                                            "code": "AccountController.updateObservations(args.owner.field.widget);"
+                                        }
+                                    ],
+                                    "dataSource": {
+                                        "data": []
+                                    }
+                                },
+                                {
+                                    "id": "68159823418533960541343",
+                                    "name": "DSOCORR_CUSTOM",
+                                    "class": 12,
+                                    "placeholder": "Observação Personalizada",
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/text.html",
+                                    "events": [
+                                        {
+                                            "id": "68159823438229374221344",
+                                            "name": "FieldOnBlur",
+                                            "code": "AccountController.updateObservations(args.owner.field.widget);"
+                                        },
+                                        {
+                                            "id": "6815982343185233221345",
+                                            "name": "FieldOnKeyup",
+                                            "code": "AccountController.updateObservations(args.owner.field.widget);"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "68159823432057730341346",
+                                    "class": 6,
+                                    "name": "ATRASOPROD",
+                                    "label": "Segura",
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/checkbox.html",
+                                    "checked": false,
+                                    "events": [
+                                        {
+                                            "id": "6815982343403708381347",
+                                            "name": "FieldOnChange",
+                                            "code": "AccountController.updateObservations(args.owner.field.widget);"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "68159823432057730341346",
+                                    "class": 6,
+                                    "name": "TOGO",
+                                    "label": "Para Viagem",
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/checkbox.html",
+                                    "checked": false,
+                                    "events": [
+                                        {
+                                            "id": "6815982343403708343347",
+                                            "name": "FieldOnChange",
+                                            "code": "AccountController.updateObservations(args.owner.field.widget);"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "6815982345638769651348",
+                                    "name": "NRSEQIMPRLOJA",
+                                    "label": "NMIMPRLOJA",
+                                    "valueField": "NRSEQIMPRLOJA",
+                                    "class": 12,
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/observations.html",
+                                    "events": [
+                                        {
+                                            "id": "6815982341627262041349",
+                                            "name": "FieldOnClick",
+                                            "code": "AccountController.updateObservations(args.owner.field.widget);"
+                                        }
+                                    ],
+                                    "dataSource": {
+                                        "data": []
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "id": "6815982344385130051356",
+                            "name": "functions",
+                            "label": "Funções",
+                            "template": "widget/form.html",
+                            "isVisible": true,
+                            "actions": [
+                                {
+                                    "id": "68159823428878262431387",
+                                    "label": "Voltar",
+                                    "name": "btnBack",
+                                    "isVisible": true,
+                                    "showAsAction": "back",
+                                    "events": [
+                                        {
+                                            "id": "6815982348031988021388",
+                                            "name": "ActionEvent",
+                                            "code": "ScreenService.closePopup();"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "dataSource": {},
+                            "fields": [
+                                {
+                                    "id": "68159823438583572801357",
+                                    "name": "btnAccountDetails",
+                                    "label": "Parcial da Conta",
+                                    "class": 4,
+                                    "icon": "printer",
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": false,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/big-button.html",
+                                    "events": [
+                                        {
+                                            "id": "68159823421717545561358",
+                                            "name": "FieldOnClick",
+                                            "code": "MenuFunctionsController.showParcial();AccountController.setCloseBill(false);"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "68159823410904474951359",
+                                    "name": "btnSendMessage",
+                                    "label": "Mensagem Produção",
+                                    "class": 4,
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "icon": "letter",
+                                    "isVisibleForm": false,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/big-button.html",
+                                    "events": [
+                                        {
+                                            "id": "6815982345765912951360",
+                                            "name": "FieldOnClick",
+                                            "code": "MenuFunctionsController.showMsgProducao();"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "68159823439449319341361",
+                                    "name": "btnCloseAccount",
+                                    "label": "Fechar Conta",
+                                    "class": 4,
+                                    "readOnly": false,
+                                    "icon": "file-ok",
+                                    "isVisible": true,
+                                    "isVisibleForm": false,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/big-button.html",
+                                    "events": [
+                                        {
+                                            "id": "68159823410512341081362",
+                                            "name": "FieldOnClick",
+                                            "code": "MenuFunctionsController.showFecharConta();"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "68159823419769608021363",
+                                    "name": "btnBillPayment",
+                                    "label": "Receber Comanda",
+                                    "class": 4,
+                                    "readOnly": false,
+                                    "icon": "file-ok",
+                                    "isVisible": false,
+                                    "isVisibleForm": false,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/big-button.html",
+                                    "events": [
+                                        {
+                                            "id": "68159823411678304031364",
+                                            "name": "FieldOnClick",
+                                            "code": "MenuFunctionsController.showParcial();AccountController.setCloseBill(true);"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "68159823415971303981365",
+                                    "name": "btnCancelProduct",
+                                    "label": "Cancelar Produto",
+                                    "icon": "close-x",
+                                    "class": 4,
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": false,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/big-button.html",
+                                    "events": [
+                                        {
+                                            "id": "68159823412885421521366",
+                                            "name": "FieldOnClick",
+                                            "code": " AccountController.resetCartLabel(args.owner.field.widget.container.actions[1]); MenuFunctionsController.showCancelarProduto();"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "68159823415071857381367",
+                                    "name": "btnChangePositions",
+                                    "label": "Posições",
+                                    "class": 4,
+                                    "readOnly": false,
+                                    "icon": "number-of-people",
+                                    "isVisible": true,
+                                    "isVisibleForm": false,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/big-button.html",
+                                    "events": [
+                                        {
+                                            "id": "68159823427334823441368",
+                                            "name": "FieldOnClick",
+                                            "code": "MenuFunctionsController.showAlterarQtPessoas(args.owner.field.widget.container.getWidget('changePositions'));"
+                                        }
+                                    ],
+                                    "maxlength": 2
+                                },
+                                {
+                                    "id": "68159823441344531791369",
+                                    "name": "btnGroupTables",
+                                    "label": "Agrupamentos",
+                                    "class": 4,
+                                    "icon": "grouping",
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": false,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/big-button.html",
+                                    "events": [
+                                        {
+                                            "id": "68159823410186202141370",
+                                            "name": "FieldOnClick",
+                                            "code": "MenuFunctionsController.showAgrupamentos();"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "6815982348968337351371",
+                                    "name": "btnTransfer",
+                                    "label": "Transferências",
+                                    "class": 4,
+                                    "icon": "transfer",
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": false,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/big-button.html",
+                                    "events": [
+                                        {
+                                            "id": "68159823411823593511372",
+                                            "name": "FieldOnClick",
+                                            "code": "MenuFunctionsController.showTransferencias();"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "68159823413367403861373",
+                                    "name": "btnCancelTableOpening",
+                                    "label": "Cancelar Abertura",
+                                    "class": 4,
+                                    "readOnly": false,
+                                    "icon": "undo",
+                                    "isVisible": true,
+                                    "isVisibleForm": false,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/big-button.html",
+                                    "events": [
+                                        {
+                                            "id": "681598234432819811374",
+                                            "name": "FieldOnClick",
+                                            "code": "MenuFunctionsController.showCancelarAbertura(args.owner.field.widget.container);"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "68159823414191856731375",
+                                    "name": "btnChangeTable",
+                                    "label": "Alterar Mesa",
+                                    "class": 4,
+                                    "readOnly": false,
+                                    "icon": "settings",
+                                    "isVisible": true,
+                                    "isVisibleForm": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/big-button.html",
+                                    "events": [
+                                        {
+                                            "id": "68159823439817560701376",
+                                            "name": "FieldOnClick",
+                                            "code": "MenuFunctionsController.showChangeTable(args.owner.field.widget.container.getWidget('tableList'));"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "6815982343676225201377",
+                                    "name": "btnReleaseProduct",
+                                    "label": "Liberar Produto",
+                                    "class": 4,
+                                    "readOnly": false,
+                                    "icon": "import",
+                                    "isVisible": true,
+                                    "isVisibleForm": false,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/big-button.html",
+                                    "events": [
+                                        {
+                                            "id": "68159823421581261381378",
+                                            "name": "FieldOnClick",
+                                            "code": "MenuFunctionsController.showReleaseProduct(args.owner.field.widget.parent.widgets[4]);"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "6815982344679847151379",
+                                    "name": "btnAccountPayment",
+                                    "label": "Receber Mesa",
+                                    "class": 4,
+                                    "icon": "money-sign",
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": false,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/big-button.html",
+                                    "events": [
+                                        {
+                                            "id": "68159823429778693881380",
+                                            "name": "FieldOnClick",
+                                            "code": "MenuFunctionsController.showPagarConta();"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "6815982343519250791381",
+                                    "name": "btnAnticipatePayment",
+                                    "label": "Adiantar Recebimento",
+                                    "class": 4,
+                                    "icon": "money-sign",
+                                    "readOnly": false,
+                                    "isVisible": false,
+                                    "isVisibleForm": false,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/big-button.html",
+                                    "events": [
+                                        {
+                                            "id": "68159823427581392241382",
+                                            "name": "FieldOnClick",
+                                            "code": "MenuFunctionsController.showPagarConta();"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "6815982345909314471383",
+                                    "name": "btnSplitProducts",
+                                    "label": "Dividir Produtos",
+                                    "class": 4,
+                                    "icon": "money-charge",
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": false,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/big-button.html",
+                                    "events": [
+                                        {
+                                            "id": "68159823435428583111384",
+                                            "name": "FieldOnClick",
+                                            "code": "MenuFunctionsController.showDividirProdutos();"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "68159823435214414551385",
+                                    "name": "btnPositionCode",
+                                    "label": "Gerar Código de Posição",
+                                    "class": 4,
+                                    "icon": "qrcode",
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": false,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/big-button.html",
+                                    "events": [
+                                        {
+                                            "id": "6815982348350990281386",
+                                            "name": "FieldOnClick",
+                                            "code": "MenuFunctionsController.showGenerateCode(args.owner.field.widget.container.getWidget('positionCode'));"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "btnTransferProductComanda",
+                                    "label": "Transferir Produtos",
+                                    "class": 4,
+                                    "icon": "duplicate",
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": false,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/big-button.html",
+                                    "events": [
+                                        {
+                                            "name": "FieldOnClick",
+                                            "code": "MenuFunctionsController.openTransferProduct(args.owner.field.widget.container.getWidget('transferProductComanda'));"
+                                        },
+                                        {
+                                            "name": "FieldOnClick",
+                                            "code": "MenuFunctionsController.prepareBillListSelect(args.owner.field.widget.container.getWidget('transferProductComanda').getField('selectComandas'));"
+                                        },
+                                        {
+                                            "name": "FieldOnClick",
+                                            "code": "MenuFunctionsController.selectComandaProducts(args.owner.field.widget.container.getWidget('transferProductComanda').getField('selectComandaProducts'));"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "68159823413044955311389",
+                            "name": "changePositions",
+                            "label": "Posições",
+                            "isVisible": true,
+                            "template": "widget/form.html",
+                            "actions": [
+                                {
+                                    "id": "68159823416514709861403",
+                                    "label": "Confirmar",
+                                    "name": "btnOpenTable",
+                                    "showAsAction": "never",
+                                    "isVisible": true,
+                                    "events": [
+                                        {
+                                            "id": "6815982343202856811404",
+                                            "name": "ActionEvent",
+                                            "code": "TableController.setPositions(args.owner.widget, args.owner.widget.getField('positionsField'), args.owner.widget.getField('radioTablePositions'), args.owner.widget.container.getWidget('positionsWidget'));"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "2",
+                                    "label": "QR Code",
+                                    "name": "qrcode",
+                                    "isVisible": true,
+                                    "icon": "qrcode",
+                                    "showAsAction": "always|edit",
+                                    "events": [
+                                        {
+                                            "id": "1",
+                                            "name": "ActionEvent",
+                                            "code": "TableController.scanConsumerQrCode(args.owner.widget);"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "68159823422959995401405",
+                                    "label": "Cancelar",
+                                    "name": "btnBack",
+                                    "isVisible": true,
+                                    "showAsAction": "back",
+                                    "events": [
+                                        {
+                                            "id": "6815982344769367341406",
+                                            "name": "ActionEvent",
+                                            "code": "ScreenService.closePopup();"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "events": [
+                                {
+                                    "id": "68159823424349649991407",
+                                    "name": "WidgetOnEnter",
+                                    "code": "TableController.handleShowPositions(args.owner, true);"
+                                }
+                            ],
+                            "dataSource": {},
+                            "fields": [
+                                {
+                                    "id": "6815982347909691131390",
+                                    "class": 6,
+                                    "name": "NRPOSICAOMESA",
+                                    "label": "Quantidade de Pessoas",
+                                    "isVisible": true,
+                                    "defaultValue": null,
+                                    "spin": true,
+                                    "minValue": 1,
+                                    "maxValue": 99,
+                                    "template": "field/number.html",
+                                    "events": [
+                                        {
+                                            "id": "68159823415222115621391",
+                                            "name": "FieldOnChange",
+                                            "code": "TableController.updatePositionsField(args.owner.field, args.owner.field.widget.getField('positionsField'));"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "68159823422821221081392",
+                                    "name": "radioTablePositions",
+                                    "label": "",
+                                    "class": 12,
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "template": "field/radio-group.html",
+                                    "events": [
+                                        {
+                                            "id": "68159823425179129911393",
+                                            "name": "FieldOnChange",
+                                            "code": "TableController.handlePositionsRadioChange(args.owner, args.owner.widget.getField('positionsField'), args.owner.widget.getField('NMRAZSOCCLIE'), args.owner.widget.getField('NMCONSUMIDOR'), args.owner.widget.getField('DSCONSUMIDOR'), args.owner.widget.getField('NRPOSICAOMESA'), true);"
+                                        }
+                                    ],
+                                    "valueField": "value",
+                                    "descriptionField": "name",
+                                    "defaultOption": 1,
+                                    "dataSource": {
+                                        "data": [
+                                            {
+                                                "name": "Controlar Cliente/Consumidor por Mesa",
+                                                "value": "M"
+                                            },
+                                            {
+                                                "name": "Controlar Cliente/Consumidor por Posição",
+                                                "value": "P"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "id": "6815982342307846651394",
+                                    "name": "positionsField",
+                                    "label": "Posições",
+                                    "class": 12,
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": true,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "../../../../templates/field/waiter_position_multiple_named.html",
+                                    "fields": [],
+                                    "position": [],
+                                    "forceFunction": true,
+                                    "customFunction": "TableController.handleOpenTablePositionChange",
+                                    "newPosition": 0,
+                                    "dataSource": {
+                                        "data": [
+                                            {
+                                                "NRPOSICAOMESA": 2,
+                                                "clientMapping": {},
+                                                "consumerMapping": {},
+                                                "positionNamedMapping": {}
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "id": "68159823430285407841395",
+                                    "class": 6,
+                                    "name": "NMRAZSOCCLIE",
+                                    "label": "Cliente (Opcional)",
+                                    "isVisible": true,
+                                    "readOnly": false,
+                                    "breakline": true,
+                                    "valueField": "CDCLIENTE",
+                                    "descriptionField": "NMRAZSOCCLIE",
+                                    "outData": {
+                                        "NMRAZSOCCLIE": "NMRAZSOCCLIE",
+                                        "CDCLIENTE": "CDCLIENTE"
+                                    },
+                                    "template": "field/select.html",
+                                    "showSelectAs": "grid",
+                                    "events": [
+                                        {
+                                            "id": "68159823439502861131397",
+                                            "name": "FieldOnChange",
+                                            "code": "TableController.prepareCustomers(args.owner.field.widget.getField('NMCONSUMIDOR'), args.row.CDCLIENTE);"
+                                        },
+                                        {
+                                            "id": "68159823436848335521398",
+                                            "name": "FieldOnClick",
+                                            "code": "TableController.doBlockPopupOnEnterEvent();"
+                                        }
+                                    ],
+                                    "dataSource": {
+                                        "memoryStorage": true,
+                                        "name": "/ParamsClientRepository"
+                                    },
+                                    "fields": [
+                                        {
+                                            "id": "68159823419685146241396",
+                                            "name": "NMRAZSOCCLIE",
+                                            "label": "Nome",
+                                            "isVisible": true,
+                                            "showOnList": true,
+                                            "template": "field/text-edit.html"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "6815982343336539031399",
+                                    "name": "NMCONSUMIDOR",
+                                    "label": "Consumidor (Opcional)",
+                                    "class": 6,
+                                    "readOnly": true,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": true,
+                                    "itemsPerPage": 30,
+                                    "defaultValue": null,
+                                    "descriptionField": "NMCONSUMIDOR",
+                                    "valueField": "CDCONSUMIDOR",
+                                    "dataSource": {
+                                        "name": "/ParamsCustomerRepository",
+                                        "lazyLoad": true,
+                                        "rest": true,
+                                        "memoryStorage": true,
+                                        "timeout": 90000
+                                    },
+                                    "dataSourceFilter": [
+                                        {
+                                            "name": "CDCLIENTE",
+                                            "value": "",
+                                            "operator": "="
+                                        }
+                                    ],
+                                    "template": "field/select.html",
+                                    "showSelectAs": "grid",
+                                    "outData": {
+                                        "NMCONSUMIDOR": "NMCONSUMIDOR",
+                                        "CDCONSUMIDOR": "CDCONSUMIDOR",
+                                        "CDCLIENTE": "CDCLIENTE",
+                                        "NMRAZSOCCLIE": "NMRAZSOCCLIE",
+                                        "IDSITCONSUMI": "IDSITCONSUMI",
+                                        "IDSOLSENHCONS": "IDSOLSENHCONS",
+                                        "CDSENHACONS": "CDSENHACONS"
+                                    },
+                                    "events": [
+                                        {
+                                            "id": "6815982342164373211401",
+                                            "name": "FieldOnChange",
+                                            "code": "TableController.handleSetConsumer(args.owner.field);"
+                                        },
+                                        {
+                                            "id": "68159823434714951121402",
+                                            "name": "FieldOnClick",
+                                            "code": "TableController.doBlockPopupOnEnterEvent();"
+                                        }
+                                    ],
+                                    "fields": [
+                                        {
+                                            "id": "14185299781787661713997",
+                                            "name": "NMRAZSOCCLIE",
+                                            "label": "Cliente",
+                                            "isVisible": true,
+                                            "showOnList": true,
+                                            "template": "field/text-edit.html"
+                                        },
+                                        {
+                                            "id": "6815982343196654221400",
+                                            "name": "NMCONSUMIDOR",
+                                            "label": "Nome",
+                                            "isVisible": true,
+                                            "showOnList": true,
+                                            "template": "field/text-edit.html"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "DSCONSUMIDOR",
+                                    "label": "Nome do Consumidor (Opcional)",
+                                    "class": 12,
+                                    "isVisible": false,
+                                    "readOnly": true,
+                                    "template": "field/text-edit.html",
+                                    "maxlength": 50,
+                                    "events": [
+                                        {
+                                            "name": "FieldOnInput",
+                                            "code": "TableController.handleSetConsumer(args.owner.field)"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "6815982347195045381414",
+                            "name": "tableList",
+                            "label": "Mesas",
+                            "template": "../../../../templates/widget/change_table.html",
+                            "isVisible": true,
+                            "actions": [
+                                {
+                                    "id": "68159823421654916751415",
+                                    "label": "Voltar",
+                                    "name": "btnBack",
+                                    "isVisible": true,
+                                    "showAsAction": "back",
+                                    "events": [
+                                        {
+                                            "id": "68159823431887693091416",
+                                            "name": "ActionEvent",
+                                            "code": "ScreenService.closePopup();"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "events": [],
+                            "dataSource": {},
+                            "fields": []
+                        },
+                        {
+                            "id": "68159823412618087431417",
+                            "name": "pendingProductsList",
+                            "label": "Produtos Pendentes",
+                            "template": "../../../../templates/widget/list-grouped-position.html",
+                            "isVisible": true,
+                            "allowSelectOnLongTap": false,
+                            "groupProp": "POSITION",
+                            "detailPriceProp": "PRECO",
+                            "detailDescProp": "DSBUTTON",
+                            "detailSubDescProp": "TXPRODCOMVEN",
+                            "actions": [
+                                {
+                                    "id": "68159823426749975371418",
+                                    "label": "Voltar",
+                                    "name": "btnBack",
+                                    "isVisible": true,
+                                    "showAsAction": "back",
+                                    "events": [
+                                        {
+                                            "id": "68159823420732964201419",
+                                            "name": "ActionEvent",
+                                            "code": "ScreenService.closePopup();"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "events": [
+                                {
+                                    "id": "6815982346163294291420",
+                                    "name": "WidgetOnEnter",
+                                    "code": "MenuFunctionsController.setProducts(args.owner);"
+                                }
+                            ],
+                            "dataSource": {
+                                "memoryStorage": true,
+                                "name": "/EmptyRepository"
+                            },
+                            "fields": []
+                        },
+                        {
+                            "id": "68159823410926901551421",
+                            "name": "positionCode",
+                            "label": "Gerar Código de Posição",
+                            "template": "widget/form.html",
+                            "isVisible": true,
+                            "actions": [
+                                {
+                                    "id": "68159823427443248501424",
+                                    "label": "Voltar",
+                                    "name": "btnBack",
+                                    "isVisible": true,
+                                    "showAsAction": "back",
+                                    "events": [
+                                        {
+                                            "id": "68159823421271036651425",
+                                            "name": "ActionEvent",
+                                            "code": "ScreenService.closePopup();"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "events": [],
+                            "dataSource": {},
+                            "fields": [
+                                {
+                                    "id": "68159823419143624201422",
+                                    "name": "positionCode",
+                                    "label": "Gerar Código",
+                                    "class": 12,
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "waiter#field/waiter_position.html",
+                                    "fields": [],
+                                    "position": 0,
+                                    "actions": [],
+                                    "events": [
+                                        {
+                                            "id": "68159823439408825521423",
+                                            "name": "FieldOnClick",
+                                            "code": "TableController.generatePositionCode(args);"
+                                        }
+                                    ],
+                                    "dataSource": {}
+                                }
+                            ]
+                        },
+                        {
+                            "name": "filterProductsPopup",
+                            "label": "Produtos",
+                            "template": "widget/form.html",
+                            "isVisible": true,
+                            "actions": [
+                                {
+                                    "label": "Voltar",
+                                    "name": "btnBack",
+                                    "isVisible": true,
+                                    "showAsAction": "back",
+                                    "hideIcon": true,
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "ScreenService.closePopup();"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "label": "Ler Código",
+                                    "name": "qrcode",
+                                    "isVisible": true,
+                                    "icon": "qrcode",
+                                    "showAsAction": "always|edit|checked_rows|view",
+                                    "activeOnMode": null,
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "AccountController.scanProductQrCode(args.owner.widget.container.getWidget('filterProductsPopup'));"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "label": "Adicionar",
+                                    "name": "btnAdd",
+                                    "isVisible": true,
+                                    "showAsAction": "never",
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "AccountController.checkAdd(args.owner.widget, args.owner.widget.currentRow, args.owner.container.getWidget('positionsWidget').position+1);"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "events": [],
+                            "fields": [
+                                {
+                                    "name": "filterProducts",
+                                    "label": "Pesquisar",
+                                    "isVisible": true,
+                                    "class": 3,
+                                    "template": "field/text-edit.html",
+                                    "showOnForm": true,
+                                    "events": [
+                                        {
+                                            "name": "FieldOnInput",
+                                            "code": "AccountController.timerSearch(args.owner.field.widget, args.row.selectProducts, 1000);"
+                                        },
+                                        {
+                                            "name": "FieldOnKeydown",
+                                            "code": "AccountController.handleEnterButton(args);"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "selectProducts",
+                                    "label": "Produtos ",
+                                    "isVisible": true,
+                                    "itemsPerPage": 30,
+                                    "class": 9,
+                                    "template": "field/select.html",
+                                    "showSelectAs": "grid",
+                                    "dataSource": {
+                                        "name": "/FilterProducts",
+                                        "rest": true,
+                                        "memoryStorage": false,
+                                        "lazyLoad": true
+                                     },
+                                    "fields": [
+                                        {
+                                            "name": "CDARVPROD",
+                                            "label": "Código",
+                                            "isVisible": true,
+                                            "showOnList": true,
+                                            "template": "field/text-edit.html",
+                                            "mask": {
+                                                "type": "fix",
+                                                "params": {
+                                                    "mask": "99.99.99.99"
+                                                }
+                                            },
+                                            "events": []
+                                        },
+                                        {
+                                            "name": "DSBUTTON",
+                                            "label": "Produto",
+                                            "isVisible": true,
+                                            "showOnList": true,
+                                            "template": "field/text-edit.html",
+                                            "events": []
+                                        }
+                                    ],
+                                    "events": [
+                                        {
+                                            "name": "WidgetAfterMoveRow",
+                                            "code": "AccountController.handleSelectedProduct(args.owner, args.owner.currentRow, args.owner.container.getWidget('positionsWidget').position+1);"
+                                        },
+                                        {
+                                            "name": "WidgetOnEnter",
+                                            "code": "AccountController.setMask(args.owner);"
+                                        },
+                                        {
+                                            "name": "FieldOnClick",
+                                            "code": "AccountController.resetValues(args.owner.field.widget);"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "transferProductComanda",
+                            "label": "Transferência de Produtos",
+                            "template": "widget/form.html",
+                            "isVisible": true,
+                            "actions": [
+                                {
+                                    "label": "Voltar",
+                                    "name": "btnBack",
+                                    "isVisible": true,
+                                    "showAsAction": "back",
+                                    "hideIcon": true,
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "ScreenService.closePopup();"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "label": "Transferir",
+                                    "name": "btnAdd",
+                                    "isVisible": true,
+                                    "showAsAction": "never",
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "MenuFunctionsController.updateComandaProducts(args.owner.widget);"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "events": [],
+                            "fields": [
+                                {
+                                    "name": "selectComandas",
+                                    "label": "Selecione a comanda de destino",
+                                    "isVisible": true,
+                                    "itemsPerPage": 30,
+                                    "class": 12,
+                                    "template": "field/select.html",
+                                    "showSelectAs": "grid",
+                                    "dataSource": {},
+                                    "outData":{
+                                        "LABELDSCOMANDA": "selectComandas",
+                                        "DSCOMANDA": "DSCOMANDA"
+                                    },
+                                    "validations": {
+                                        "required": {}
+                                    },
+                                    "fields": [
+                                        {
+                                            "name": "LABELDSCOMANDA",
+                                            "label": "Comanda",
+                                            "isVisible": true,
+                                            "showOnList": true,
+                                            "template": "field/text-edit.html",
+                                            "events": []
+                                        }
+                                    ],
+                                    "events": [
+                                        {
+                                            "name": "FieldOnClick",
+                                            "code": "MenuFunctionsController.prepareBillListSelect(args.owner.field);"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "selectComandaProducts",
+                                    "label": "Selecione os produtos",
+                                    "skipPreference": true,
+                                    "hasPagination": true,
+                                    "searchWithPagination": true,
+                                    "template": "field/select-multiple.html",
+                                    "dataSource": {},
+                                    "showOnList": true,
+                                    "showOnForm": true,
+                                    "isVisible": true,
+                                    "order": "CDARVPROD",
+                                    "descriptionField": "NMPRODUTO",
+                                    "valueField": "VALOR",
+                                    "events": [
+                                        {
+                                            "name": "WidgetBeforeSelectRow",
+                                            "code": "MenuFunctionsController.handleCheckedPromo(args, true);"
+                                        },
+                                        {
+                                            "name": "WidgetBeforeUnselectRow",
+                                            "code": "MenuFunctionsController.handleCheckedPromo(args, false);"
+                                        },
+                                        {
+                                            "name": "WidgetAfterSelectRow",
+                                            "code": "MenuFunctionsController.controlPromo(args);"
+                                        },
+                                        {
+                                            "name": "WidgetAfterUnselectRow",
+                                            "code": "MenuFunctionsController.controlPromo(args);"
+                                        },
+                                        {
+                                            "name": "WidgetAfterSelectAll",
+                                            "code": "MenuFunctionsController.controlPromo(args);"
+                                        },
+                                        {
+                                            "name": "WidgetAfterUnselectAll",
+                                            "code": "MenuFunctionsController.controlPromo(args);"
+                                        },
+                                        {
+                                            "name": "FieldOnChange",
+                                            "code": "MenuFunctionsController.removePromoItens(args, args.owner.field);"
+                                        }
+                                    ],
+                                    "readOnly": false,
+                                    "class": 12,
+                                    "validations": {
+                                        "required": {}
+                                    },
+                                    "outData": {
+                                        "CDPRODUTO": "CDPRODUTO",
+                                        "CDARVPROD": "CDARVPROD",
+                                        "NMPRODUTO": "NMPRODUTO",
+                                        "NRPRODCOMVEN": "NRPRODCOMVEN",
+                                        "CDPRODPROMOCAO": "CDPRODPROMOCAO",
+                                        "NRSEQPRODCOM": "NRSEQPRODCOM",
+                                        "VALOR": "VALOR"
+                                    },
+                                    "fields": [
+                                        {
+                                            "name": "CDARVPROD",
+                                            "label": "Código",
+                                            "class": 4,
+                                            "isVisible": true,
+                                            "showOnList": true,
+                                            "template": "field/text-edit.html"
+                                        },
+                                        {
+                                            "name": "NMPRODUTO",
+                                            "label": "Produto",
+                                            "class": 8,
+                                            "isVisible": true,
+                                            "showOnList": true,
+                                            "template": "field/text-edit.html"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "setSaleNumber",
+                            "label": "Digite o número da Senha/Pager de produção",
+                            "isVisible": true,
+                            "showAsModal": false,
+                            "template": "widget/form.html",
+                            "actions": [
+                                {
+                                    "name": "cancel",
+                                    "label": "Cancelar",
+                                    "showAsAction":"back",
+                                    "isVisible": true,
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "ScreenService.closePopup();"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "confirm",
+                                    "label": "Transmitir",
+                                    "showAsAction":"never",
+                                    "isVisible": true,
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "AccountController.applySalePass(args.owner.widget.container.getWidget('menu'));"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "dataSource": [
+                                {
+                                    "value": ""
+                                }
+                            ],
+                            "fields": [
+                                {
+                                    "name": "prodSaleNumber",
+                                    "label": "Senha/Pager de produção: ",
+                                    "class": 12,
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "defaultValue": null,
+                                    "validations": {
+                                        "required": true
+                                    },
+                                    "maxlength": 5,
+                                    "template": "field/number-custom.html",
+                                    "type": "tel",
+                                    "dataSource": {}
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "68159823442903956651427",
+                    "colorProperty": "COLOR",
+                    "labelProperty": "DSBUTTON",
+                    "name": "products",
+                    "fields": [],
+                    "class": "",
+                    "sameLine": true,
+                    "isVisible": true,
+                    "readOnly": false,
+                    "template": "waiter#field/waiter-products.html",
+                    "events": [],
+                    "dataSource": {
+                        "id": "1",
+                        "memoryStorage": true,
+                        "name": "/ParamsMenuRepository"
+                    },
+                    "widgets":[{
+                        "id": "6815982344290395665152",
+                        "name": "popupDetalhesProduto",
+                        "class": "",
+                        "label": "Detalhes do Produto",
+                        "sameLine": true,
+                        "isVisible": true,
+                        "readOnly": false,
+                        "template": "widget/form.html",
+                        "events": [],
+                        "dataSource": {},
+                        "actions": [
+                            {
+                                "id": "68159823427609305551430",
+                                "label": "Voltar",
+                                "isVisible": true,
+                                "showOnForm": true,
+                                "showOnList": true,
+                                "showAsAction": "back",
+                                "events": [
+                                    {
+                                        "id": "68159823441622742831431",
+                                        "name": "ActionEvent",
+                                        "code": "ScreenService.closePopup();"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": "68159823427741770571432",
+                                "label": "Adicionar ao Pedido",
+                                "name": "functions",
+                                "isVisible": true,
+                                "showAsAction": "never",
+                                "events": [
+                                    {
+                                        "id": "6815982347946112781433",
+                                        "name": "ActionEvent",
+                                        "code": "ScreenService.closePopup(); AccountController.handleSelectedProduct(args.owner.widget, args.owner.widget.currentRow, args.owner.widget.container.getWidget('positionsWidget').position+1);"
+                                    }
+                                ]
+                            }
+                        ],
+                        "fields": [
+                            {
+                                "id": "68159823434970640061336",
+                                "name": "DSBUTTON",
+                                "class": 8,
+                                "label": "Produto",
+                                "readOnly": true,
+                                "isVisible": true,
+                                "isVisibleForm": true,
+                                "isVisibleGrid": true,
+                                "defaultValue": null,
+                                "template": "field/text.html",
+                                "events": []
+                            },
+                            {
+                                "id": "68159823434970640061336",
+                                "name": "PRECO",
+                                "class": 4,
+                                "label": "Preço",
+                                "readOnly": true,
+                                "isVisible": true,
+                                "isVisibleForm": true,
+                                "isVisibleGrid": true,
+                                "newLine": false,
+                                "defaultValue": null,
+                                "template": "field/text.html",
+                                "events": []
+                            },
+                            {
+                                "id": "68159823434970640061336",
+                                "name": "DSPRODVENDA",
+                                "class": 12,
+                                "label": "Detalhes",
+                                "readOnly": true,
+                                "isVisible": true,
+                                "isVisibleForm": true,
+                                "isVisibleGrid": true,
+                                "newLine": true,
+                                "defaultValue": null,
+                                "template": "field/textarea.html",
+                                "events": []
+                            }
+                        ]
+                    }]
+                }
+            ]
+        }
+    ]
+}

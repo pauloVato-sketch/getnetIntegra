@@ -1,0 +1,43 @@
+<div class="container" zh-widget-events>
+	<section class="calendar month-picker zh-calendar-widget" zh-month-picker>
+		<nav class="calendar-navigation">
+			<header>
+				<div
+					class="arrow-left"
+					zh-icon="previous no-border"
+					zh-click="navigateDate(-1)"
+				></div>
+				<h3
+					class="calendar-heading"
+					ng-bind="currentYear"
+				></h3>
+				<div
+					class="arrow-right"
+					zh-icon="forward no-border"
+					zh-click="navigateDate(+1)"
+				></div>
+			</header>
+		</nav>
+
+	<!-- Calendar -->
+	<div class="calendar">
+
+			<div class="month grid">
+				<div class="month-row" ng-repeat="monthRow in monthRows">
+					<div
+						class="month"
+						ng-repeat="month in monthRow.months"
+						zh-click="monthClick(month)"
+						data-date="{{month.date}}"
+						ng-class="{'selected': month.selected, 'disabled': month.blocked}">
+
+						<div
+							class="content"
+							data-zh-bind-translate="month.name"
+						></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>

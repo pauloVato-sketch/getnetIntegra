@@ -1,0 +1,19 @@
+<div zh-scroller class="container">
+	<div zh-scroller class="container">
+		<ul zh-widget-events class="zh-actions-list">
+			<li ng-repeat="action in widget.sourceWidget.getActionsByVisibility('never')"
+				class="zh-text-default-sans zh-list-item-label"
+				data-ng-class="{disabled: action.readOnly}"
+				zh-click="actionClick(action, action.widget)"
+				data-zh-owner-element="action"
+				zh-post-repeat="templateManager.container.refresh()" data-ng-if="action.aclIsVisible" data-ng-show="action.isVisible" data-zh-title-tooltip="{{ action.tooltip }}">
+				<!-- List item  -->
+				<div class="zh-first-large row">
+					<div class="col-xs-12">
+						<span data-ng-show="action.label" data-zh-bind-translate="action.label"></span>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+</div>

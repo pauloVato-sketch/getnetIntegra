@@ -1,0 +1,45 @@
+<section zh-scroller
+  data-ng-if="widget.aclIsVisible"
+  data-ng-show="widget.isVisible"
+  class="container zh-widget zh-graph-container" data-zh-widget-events>
+  <div style="height:100%;" zh-chart-column-and-line>
+
+    <!-- Bar chart -->
+    <div zh-morris
+      class="zh-graph zh-bar-chart"
+      data-type="bar"
+      data-xkey="{{widget.chartXkey}}"
+      data-ykeys="{{widget.barYkeys.concat(widget.lineYkeys)}}"
+      data-chart-data="widget.dataSource"
+      data-labels="{{widget.chartLabels}}"
+      data-bar-colors="{{widget.barColors}}"
+      data-stacked="{{widget.chartStacked || null}}"
+    ></div>
+
+    <!-- Line chart -->
+    <div zh-morris
+      class="zh-graph zh-line-chart"
+      data-type="line"
+      data-xkey="{{widget.chartXkey}}"
+      data-ykeys="{{widget.lineYkeys.concat(widget.barYkeys)}}"
+      data-chart-data="widget.dataSource"
+      data-labels="{{widget.chartLabels}}"
+      data-line-colors="{{widget.lineColors}}"
+      data-stacked="{{widget.chartStacked || null}}"
+      style="opacity: 0;"
+    ></div>
+
+    <!-- General caption -->
+    <div class="chart-caption" data-ng-if="widget.chartType != 'donut'">
+      <div ng-repeat="row in (widget.barLabels && widget.barLabels.length ? widget.barLabels : widget.barYKeys)" class="caption">
+        <span class="caption-color" style="background-color: {{ widget.barColors[$index] }}"></span>
+        <span class="caption-text" data-zh-bind-translate="row"></span>
+      </div>
+      <div ng-repeat="row in (widget.lineLabels && widget.lineLabels.length ? widget.lineLabels : widget.lineYKeys)" class="caption">
+        <span class="caption-color" style="background-color: {{ widget.lineColors[$index] }}"></span>
+        <span class="caption-text" data-zh-bind-translate="row"></span>
+      </div>
+    </div>
+
+  </div>
+</section>

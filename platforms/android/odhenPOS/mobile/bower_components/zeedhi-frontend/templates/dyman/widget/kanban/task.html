@@ -1,0 +1,28 @@
+<div zh-kanban-task class="kanban-task" zh-click="taskClick()">
+	<span class="kanban-task-handle" data-ng-class="{ 'kanban-handle': item.movable !== false }">
+		<span data-ng-if="widget.showCheckbox" class="kanban-task-checkbox" data-zh-stop-propagation-click data-zh-touchstart="controller.toggle(item);">
+			<svg x="0px" y="0px" width="16px" height="16px" viewBox="0 0 16 16">
+				<rect class="box" x="0.5" y="0.5" stroke-miterlimit="10" width="15" height="15"/>
+				<path data-ng-if="item.__isSelected" class="check" d="M13.361,3.323c-0.3-0.246-0.78-0.198-1.027,0.104L6.115,11.01L3.632,8.403 C3.37,8.123,2.863,8.076,2.597,8.376C2.345,8.66,2.281,9.047,2.572,9.407l3.05,3.2c0.137,0.149,0.332,0.234,0.536,0.234h0.016h0.007 c0.208-0.007,0.405-0.104,0.541-0.267l6.746-8.226C13.718,4.039,13.672,3.58,13.361,3.323z"/>
+			</svg>
+		</span>
+		<span class="kanban-task-label" data-ng-bind="item.label"></span>
+		<span class="kanban-task-ribbon">
+			<span class="before"></span>
+			<span zh-icon="move-cursor icon-white no-border"></span>
+			<span class="after"></span>
+		</span>
+	</span>
+
+	<span ng-if="widget.shouldParse !== false" class="kanban-task-desc" data-ng-bind-html="item.description"></span>
+	<span ng-if="widget.shouldParse === false" class="kanban-task-desc" data-ng-bind="item.description"></span>
+
+	<span class="kanban-task-due-date" data-ng-if="item['due-date']">
+		Entrega: <span data-ng-bind="item['due-date']"></span>
+	</span>
+	<span class="kanban-task-resources" data-ng-if="item.resources.length > 0">
+		<span data-ng-repeat="resource in item.resources" class="kanban-task-photo">
+			<img data-ng-src="{{ resource.photo }}" alt="{{ resource.name }}" title="{{ resource.name }}">
+		</span>
+	</span>
+</div>

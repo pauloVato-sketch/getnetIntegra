@@ -1,0 +1,323 @@
+{
+    "id": "18374076293910347431686",
+    "name": "smartPromo",
+    "label": "Promoção Inteligente",
+    "events": [
+        {
+            "id": "52636494639372856091710",
+            "name": "ContainerAfterinit",
+            "code": "UtilitiesService.setHeader(args.owner);"
+        }
+    ],
+    "showHeader": true,
+    "showMenu": true,
+    "showBack": true,
+    "showFooter": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "popup": "component/popup.html",
+    "template": "container/window.html",
+    "widgets": [
+        {
+            "id": "52636494631545988601687",
+            "name": "smartPromo",
+            "label": "Promoção Inteligente",
+            "template": "waiter#widget/waiter_orders.html",
+            "isVisible": true,
+            "fields": [],
+            "actions": [
+                {
+                    "id": "52636494612879038891705",
+                    "label": "Voltar",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "5263649463581540771706",
+                            "name": "ActionEvent",
+                            "code": "AccountController.backSmartPromo(args.owner.widget.widgets[0]);"
+                        }
+                    ]
+                },
+                {
+                    "id": "5263649463612639681707",
+                    "label": "Confirmar",
+                    "name": "confirmar",
+                    "isVisible": true,
+                    "icon": "",
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "id": "52636494619010202441708",
+                            "name": "ActionEvent",
+                            "code": "AccountController.confirmSmartPromo(args.owner.widget.widgets[0]);"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "id": "5263649463535080031709",
+                    "name": "WidgetOnEnter",
+                    "code": "AccountController.initSmartPromo(args.owner.widgets[0]);"
+                }
+            ],
+            "widgets": [
+                {
+                    "id": "52636494611478909601688",
+                    "colorProperty": "COLOR",
+                    "labelProperty": "DISPLAY",
+                    "categoryProperty": "CDGRUPO",
+                    "lines": 3,
+                    "events": [
+                        {
+                            "id": "52636494627705741501703",
+                            "name": "FieldAfterMoveRow",
+                            "code": "AccountController.filterPromoProducts(args);"
+                        }
+                    ],
+                    "fields": [],
+                    "name": "categories",
+                    "class": "col-md-3",
+                    "readOnly": false,
+                    "template": "waiter#field/waiter-categories.html",
+                    "valueField": "CDGRUPO",
+                    "dataSource": {
+                        "id": "1",
+                        "name": "/SmartPromoGroups",
+                        "memoryStorage": true
+                    },
+                    "widgets": [
+                        {
+                            "id": "52636494632981328281689",
+                            "name": "addProduct",
+                            "label": "Adicionar Produto",
+                            "template": "widget/form.html",
+                            "isVisible": true,
+                            "actions": [
+                                {
+                                    "id": "52636494638948988741699",
+                                    "label": "Cancelar",
+                                    "name": "desfazer",
+                                    "isVisible": true,
+                                    "showAsAction": "back",
+                                    "icon": "",
+                                    "events": [
+                                        {
+                                            "id": "52636494630218927291700",
+                                            "name": "ActionEvent",
+                                            "code": "AccountController.undoPromoAdd(args);"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "52636494612995328591701",
+                                    "label": "Remover produtos",
+                                    "name": "clearProducts",
+                                    "isVisible": true,
+                                    "showAsAction": "edit",
+                                    "icon": "trash",
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "AccountController.clearTrayProduct(args.owner.widget);"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "52636494612995328591701",
+                                    "label": "Confirmar",
+                                    "name": "conferir",
+                                    "isVisible": true,
+                                    "showAsAction": "never",
+                                    "icon": "",
+                                    "events": [
+                                        {
+                                            "id": "5263649466985037511702",
+                                            "name": "ActionEvent",
+                                            "code": "AccountController.closePromoPopup(args.owner.widget);"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "events": [],
+                            "dataSource": {},
+                            "popupNoBlock": false,
+                            "fields": [
+                                {
+                                    "id": "5263649461390540911690",
+                                    "name": "product",
+                                    "class": 4,
+                                    "label": "",
+                                    "readOnly": true,
+                                    "isVisible": false,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/label.html",
+                                    "events": []
+                                },
+                                {
+                                    "id": "52636494636881103251691",
+                                    "name": "txtAdicionado",
+                                    "class": 6,
+                                    "label": " adicionado à ",
+                                    "readOnly": true,
+                                    "isVisible": false,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/label.html",
+                                    "events": []
+                                },
+                                {
+                                    "id": "52636494635298491121692",
+                                    "name": "bandeja",
+                                    "class": 3,
+                                    "label": "bandeja",
+                                    "readOnly": true,
+                                    "isVisible": false,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/label.html",
+                                    "events": []
+                                },
+                                {
+                                    "id": "68159823433895705351339",
+                                    "name": "QTPRODCOMVEN",
+                                    "class": 6,
+                                    "label": "Quantidade (kg)",
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": true,
+                                    "defaultValue": "",
+                                    "minValue": 0,
+                                    "spin": true,
+                                    "template": "field/number-custom.html",
+                                    "type": "tel",
+                                    "allowScientificNotation": false,
+                                    "events": [
+                                        {
+                                            "id": "68159823436425894821340",
+                                            "name": "FieldOnChange",
+                                            "code": "AccountController.updatePromoObservations(args.owner.field.widget);"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "52636494620408555891693",
+                                    "name": "CDOCORR",
+                                    "valueField": "CDOCORR",
+                                    "label": "DSOCORR",
+                                    "color": "NRCORSINAL",
+                                    "complement": "NRCORSINALC",
+                                    "class": 12,
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "template": "field/observations.html",
+                                    "events": [
+                                        {
+                                            "id": "52636494624868807841694",
+                                            "name": "FieldOnClick",
+                                            "code": "AccountController.updatePromoObservations(args.owner.field.widget);"
+                                        }
+                                    ],
+                                    "dataSource": {}
+                                },
+                                {
+                                    "id": "52636494612510139791695",
+                                    "name": "DSOCORR_CUSTOM",
+                                    "class": 12,
+                                    "placeholder": "Observação Personalizada",
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/text.html",
+                                    "events": [
+                                        {
+                                            "id": "52636494628912049981696",
+                                            "name": "FieldOnInput",
+                                            "code": "AccountController.updatePromoObservations(args.owner.field.widget, args.row);"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "52636494631775627291697",
+                                    "class": 6,
+                                    "name": "ATRASOPROD",
+                                    "label": "Segura",
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/checkbox.html",
+                                    "events": [
+                                        {
+                                            "id": "52636494633605271721698",
+                                            "name": "FieldOnChange",
+                                            "code": "AccountController.togglePromoDelay(args.owner.field.widget);"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "51236494631732127291697",
+                                    "class": 6,
+                                    "name": "TOGO",
+                                    "label": "Para Viagem",
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/checkbox.html",
+                                    "events": [
+                                        {
+                                            "id": "52636495433605271721698",
+                                            "name": "FieldOnChange",
+                                            "code": "AccountController.togglePromoDelay(args.owner.field.widget);"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "5263649466232120451704",
+                    "colorProperty": "COLOR",
+                    "labelProperty": "DSBUTTON",
+                    "name": "products",
+                    "fields": [],
+                    "class": "",
+                    "sameLine": true,
+                    "isVisible": true,
+                    "readOnly": false,
+                    "template": "waiter#field/waiter-products.html",
+                    "events": [],
+                    "dataSource": {
+                        "id": "1",
+                        "memoryStorage": true,
+                        "name": "/SmartPromoProds"
+                    }
+                }
+            ]
+        }
+    ]
+}
