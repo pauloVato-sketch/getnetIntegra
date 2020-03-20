@@ -1,0 +1,26 @@
+<section ng-controller="WaiterOrdersCatCtrl" zh-widget-events>
+	<ul class="zh-sub-categories" ng-show="Util.isUndefined($rootScope.searchList) || $rootScope.searchList.length == 0">
+		<li ng-repeat="category in widget.dataSource.data"
+			style="{{category.selected ? 'background-color:white' : 'color:' + idealTextColor(category[widget.colorProperty]) + ';background-color:' + category[widget.colorProperty]}}"
+			ng-show="category.visible"
+			data-zh-touchstart="openRow(category)"
+			ng-class="{'zh-message-production-bg-selected' : category.selected}"
+			class="{{category.class}}">
+			<span>
+				<p
+					ng-bind="category[widget.labelProperty]"
+					ng-class="category.class"
+				>
+				</p>
+			</span>
+		</li>
+	</ul>
+	<!-- workaround -->
+	<div
+		class="clearfixwaiter"
+		style="
+		height: 20px;
+		clear: both;
+	">
+	</div>
+</section>

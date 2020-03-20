@@ -1,0 +1,230 @@
+<section class="zh-widget" data-zh-widget-events data-ng-controller="GridController as controller">
+	<div class="container"
+		data-zh-scroller
+		zh-schema-validator="widget/grid.html.json"
+		data-ng-class="{'has-stripe-footer': !Util.isUndefined(controller.stripeFooter())}">
+
+		<!-- Grid -->
+		<div class="container zh-grid-container"
+			data-zh-scroller
+			data-ng-controller="DecodeValueField as decode">
+			<div zh-new-grid class="zh-new-grid zh-new-grid-{{widget.name}}" id="grid-{{ widget.id }}">
+				<div class="header">
+					<div class="header-content">
+						<div class="tr">
+							<!-- Checkbox for checking rows without long tap -->
+							<div data-ng-if="widget.showCheckbox"
+								class="th grid-checkbox-column fixed"
+								data-zh-field-name="__CHECKBOX">
+								<div zh-ripple-effect class="zh-theader" zh-click="controller.toggleAll(widget)">
+									<svg x="0px" y="0px" width="16px" height="16px" viewBox="0 0 16 16">
+										<rect class="box" x="0.5" y="0.5" stroke-miterlimit="10" width="15" height="15"/>
+										<path data-ng-if="controller.getVisibleCheckedRows().length > 0" class="check" d="M13.361,3.323c-0.3-0.246-0.78-0.198-1.027,0.104L6.115,11.01L3.632,8.403 C3.37,8.123,2.863,8.076,2.597,8.376C2.345,8.66,2.281,9.047,2.572,9.407l3.05,3.2c0.137,0.149,0.332,0.234,0.536,0.234h0.016h0.007 c0.208-0.007,0.405-0.104,0.541-0.267l6.746-8.226C13.718,4.039,13.672,3.58,13.361,3.323z"/>
+									</svg>
+								</div>
+							</div>
+
+							<!-- left actions -->
+							<div class="th left-grid-actions"
+								data-ng-class="{fixed: !Util.isPhone()}"
+								data-ng-if="visibleLeftActions > 0"
+								data-zh-field-name="__LEFT_ACTIONS">
+							</div>
+
+							<!-- columns -->
+							<div data-ng-repeat="column in widget._filteredFields"
+								class="th grid-align-{{ column.align || 'left' }}"
+								data-ng-class="{fixed: column.fixed && !Util.isPhone()}"
+								data-ng-if="column.aclIsVisible && column.isVisible && !column.grouped"
+								data-zh-field-name="{{column.name}}">
+
+								<!-- checkbox editable -->
+								<span class="grid-checkbox-column" data-ng-if="column.inlineEditable === 'checkbox' && !column.hideCheckAllButton">
+									<span zh-ripple-effect class="inline-checkbox-header"
+										data-zh-click="controller.onClickCheckboxHeader(column, $event)"
+										data-ng-class="{checked: controller.columnHasCheckedRows(column)}">
+									</span>
+								</span>
+
+								<!-- Label text -->
+								<span zh-ripple-effect data-zh-click="controller.changeOrder(column);" class="label-text"
+									data-ng-class="{'label-text-checkbox': column.inlineEditable === 'checkbox' && !column.hideCheckAllButton}">
+									<span data-zh-tooltip-overflow data-zh-bind-translate="column.label"></span>
+									<span class="order-arrow" ng-if="widget.reverse && widget.order==column.name"> ▼ </span>
+									<span class="order-arrow" ng-if="!widget.reverse && widget.order==column.name"> ▲ </span>
+								</span>
+							</div>
+
+							<!-- right actions -->
+							<div class="th right-grid-actions" data-ng-if="visibleRightActions > 0" data-zh-field-name="__RIGHT_ACTIONS"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="body" data-zh-swipe-tip="grid-vertical-scroll-control">
+					<div class="body-content" data-widget="widget" data-zh-infinity-scroll="widget.searchCriteria">
+						<div class="tr cell{{$index%2 +1}}"
+							data-ng-repeat="rowIndex in filtered = controller.getVisibleRowCount()"
+							zh-scope-getter
+							data-ng-class="{'row-selected' : row.__isSelected, 'row-editing currentRow': row == widget.currentRow, 'group-footer': row.__groupFooter}"
+							data-zh-long-tap="controller.onLongTap(row); "
+							data-ng-if="!row.__group || !Util.objectHasAnyValue(widget.searchCriteria)"
+							data-zh-click="openRow(row, widget);"
+							data-zh-style>
+
+							<div class="group-footer-title" ng-if="row.__groupFooter" data-ng-bind="controller.getGroupFooterTitle(row)"></div>
+
+							<!-- Checkbox for checking rows without long tap -->
+							<div zh-ripple-effect="grey"
+								data-ng-if="widget.showCheckbox"
+								ng-show="!row.__groupHeader"
+								class="td grid-checkbox-column zh-side-column fixed"
+								data-zh-click="controller.toggle(row); $event.stopPropagation();"
+								data-ng-class="{'grid-group-footer': row.__groupFooter}"
+								data-zh-field-name="__CHECKBOX">
+								<span data-ng-show="!row.__group">
+									<svg x="0px" y="0px" width="16px" height="16px" viewBox="0 0 16 16">
+										<rect class="box" x="0.5" y="0.5" stroke-miterlimit="10" width="15" height="15"/>
+										<path data-ng-if="row.__isSelected" class="check" d="M13.361,3.323c-0.3-0.246-0.78-0.198-1.027,0.104L6.115,11.01L3.632,8.403 C3.37,8.123,2.863,8.076,2.597,8.376C2.345,8.66,2.281,9.047,2.572,9.407l3.05,3.2c0.137,0.149,0.332,0.234,0.536,0.234h0.016h0.007 c0.208-0.007,0.405-0.104,0.541-0.267l6.746-8.226C13.718,4.039,13.672,3.58,13.361,3.323z"/>
+									</svg>
+								</span>
+							</div>
+
+							<!-- Left actions -->
+							<div class="td left-grid-actions"
+								data-ng-class="{'grid-group-footer': row.__groupFooter, fixed: !Util.isPhone()}"
+								data-ng-if="visibleLeftActions > 0"
+								ng-show="!row.__groupHeader"
+								data-zh-field-name="__LEFT_ACTIONS">
+								<div class="zh-grid-actions" data-ng-show="!row.__group">
+									<span zh-ripple-effect data-ng-repeat="action in row.__leftActions || leftActions"
+										class="zh-grid-icon"
+										zh-icon="{{action.icon}} inline-block"
+										data-zh-touchstart="actionClick(action, widget, row)"
+										data-zh-owner-element="action"
+										data-zh-stop-propagation-click
+										data-zh-title-tooltip="{{ action.tooltip }}"
+									></span>
+								</div>
+							</div>
+
+							<!-- Row content -->
+							<div data-ng-repeat="column in widget._filteredFields | markLastInlineEditable"
+								data-ng-if="column.aclIsVisible && column.isVisible"
+								ng-show="!column.grouped && !row.__group"
+								class="td zh-standard-column {{column.gridClass}} grid-align-{{ column.align || 'left' }}"
+								zh-events="column"
+								data-zh-style
+								data-zh-style-component="column"
+								data-ng-class="{'edited': row.hasOwnProperty('changed_'+column.name), fixed: column.fixed && !Util.isPhone()}"
+								data-zh-field-name="{{column.name}}">
+
+								<!-- Pencil icon when value was modified on row -->
+								<span data-ng-if="row.hasOwnProperty('changed_'+column.name)" class="edit-icon" zh-icon="pencil no-border inline-block"></span>
+
+								<!-- Checkbox inline editable -->
+								<div data-ng-if="controller.isInlineEditableCheckboxType(column)"
+									class="grid-checkbox-column">
+
+									<span zh-ripple-effect class="inline-checkbox"
+										data-zh-click="controller.onClickCheckboxColumn(row, column, $event)"
+										data-ng-class="{checked: row[column.name] === column.valueToTrue}">
+									</span>
+								</div>
+
+								<!-- Row value -->
+								<span data-zh-tooltip-overflow data-ng-if="!controller.isInlineEditableCheckboxType(column)" data-ng-bind="decode.model(column, row[column.name])" ng-style="controller.calcLeftPaddingForChildrenRow(row, $index, column)"></span>
+
+								<!-- Input inline editable -->
+								<div data-ng-if="column.inlineEditable && column.inlineEditable !== 'checkbox' && controller.inlineEditableCondition(row, column)" class="editable-content">
+									<input
+										data-last-inline-editable = "{{column._isLastInlineEditable || false}}"
+										class="inline-edit mousetrap"
+										data-zh-tooltip-overflow type="text"
+										ng-model="column.widget.currentRow[column.name + '_inline']"
+										data-zh-inline-editable="column"
+										data-zh-mask
+										maxlength="{{column.maxlength}}"
+										zh-mask-component="column"
+										style="text-align: {{ column.align || 'left' }}; display: none;">
+								</div>
+
+							</div>
+
+							<!-- Right actions -->
+							<div class="td right-grid-actions"
+								data-ng-if="visibleRightActions > 0"
+								ng-show="!row.__group"
+								data-zh-field-name="__RIGHT_ACTIONS">
+								<div class="zh-grid-actions">
+									<span zh-ripple-effect data-ng-repeat="action in row.__rightActions || rightActions"
+										class="zh-grid-icon"
+										zh-icon="{{action.icon}} inline-block"
+										data-zh-touchstart="actionClick(action, widget, row)"
+										data-zh-owner-element="action"
+										data-zh-stop-propagation-click
+										data-zh-title-tooltip="{{ action.tooltip | i18n:words:lang }}"
+									></span>
+								</div>
+							</div>
+
+							<!-- row group header -->
+							<div class="td grid-group-header"
+								data-ng-show="row.__groupHeader"
+								colspan="9999"
+								ng-style="{ 'left': row.__groupIndex * 20 + 'px' }"
+								data-ng-class="{opened: row.__groupOpened}"
+								data-zh-touchstart="controller.toggleGroup(row)">
+								<span data-zh-icon="forward no-border"></span>
+								<span data-zh-tooltip-overflow class="grid-group-header-text" data-ng-bind="controller.getGroupHeaderText(row)"></span>
+							</div>
+
+							<!-- row group footer -->
+							<div class="td grid-group-footer zh-standard-column {{column.gridClass}} grid-align-{{ column.align || 'left' }}"
+								data-ng-repeat="column in widget._filteredFields"
+								data-ng-show="row.__groupFooter && column.isVisible && column.aclIsVisible"
+								data-ng-class="{'grid-group-summary': column.expression, fixed: column.fixed && !Util.isPhone()}"
+								data-zh-field-name="{{column.name}}">
+								<span data-zh-title-tooltip="{{ getTooltip(column) }}" data-ng-bind="row[column.name]"
+									data-ng-if="column.expression">
+								</span>
+							</div>
+						</div>
+						<!-- No match text:
+						- This text is only displayed when there is no filtered content
+						- that matches the search box value.
+						-->
+						<div class="row" data-ng-if="filtered.length == 0">
+							<div class="col-xs-12">
+								<ng-include src="templateManager.getFrameworkTemplateURL('component/empty-data-message.html')"></ng-include>
+							</div>
+						</div>
+						<div class="row" data-ng-if="filtered.length == 0 && widget.showAddButtonAs == 'button'"
+							data-zh-touchstart="widget.onAdd()">
+							<div class="col-xs-12">
+								<p zh-ripple-effect class="text-center zh-text-search-not-found zh-add-when-empty">
+									<span zh-icon="plus"></span>
+									<span data-zh-bind-translate="widget.addButtonText || 'Add a new record'"></span>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="grid-vertical-scroll-control">
+					<div></div>
+				</div>
+				<div class="body-scroll-control">
+					<div></div>
+				</div>
+			</div>
+		</div>
+
+		<div data-ng-show="widget.isFloatingControlVisible()" data-ng-include="templateManager.getFrameworkTemplateURL('component/floating-control.html')"></div>
+	</div>
+
+	<div class="stripe-footer"
+		data-ng-init="widget = controller.stripeFooter()"
+		data-ng-if="!Util.isUndefined(widget)"
+		data-ng-include="controller.getStripeFooterTemplate(widget)">
+	</div>
+</section>

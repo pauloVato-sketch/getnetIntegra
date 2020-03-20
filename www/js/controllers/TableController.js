@@ -1340,20 +1340,30 @@ function TableController($rootScope, PermissionService, TableService, TableRepos
 
 	};
 
-	this.splitProductsValidation = function () {
+    this.splitProductsValidation = function (){
 
-		var widgetProducts = templateManager.container.getWidget("widgetProducts");
-		var field = templateManager.container.getWidget("widgetSplit").getField("positionswidget");
-		var selectedProducts = templateManager.container.getWidget("widgetProducts").getCheckedRows();
+        var widgetProducts = templateManager.container.getWidget("widgetProducts");
+        var field = templateManager.container.getWidget("widgetSplit").getField("positionswidget");
+        var selectedProducts = templateManager.container.getWidget("widgetProducts").getCheckedRows();
 
-		if (!field.position || field.position.length <= 1 || selectedProducts.length === 0)
-			widgetProducts.getAction("dividir").isVisible = false;
-		else
-			widgetProducts.getAction("dividir").isVisible = true;
+        if (!field.position || field.position.length <= 1 || selectedProducts.length === 0)
+            widgetProducts.getAction("dividir").isVisible = false;
+        else
+            widgetProducts.getAction("dividir").isVisible = true;
 
-		field._isStatusChanged = false;
+        field._isStatusChanged = false;
 
-	};
+    };
+
+    this.splitProductPromoIntegrity = function(widget, selectedItem){
+        widget.dataSource.data.forEach(function (item){
+            if (selectedItem && !_.isEmpty(item.NRSEQPRODCOM)){
+                if (item.NRSEQPRODCOM == selectedItem.NRSEQPRODCOM && !_.isEqual(item, selectedItem)){
+                    item.__isSelected = !selectedItem.__isSelected;
+                }
+            }
+        });
+    };
 
 	this.cancelSplitedProductsValidation = function () {
 
@@ -1413,7 +1423,7 @@ function TableController($rootScope, PermissionService, TableService, TableRepos
 			});
 			this.splitProductsValidation();
 		} else {
-			ScreenService.showMessage('Não é possível dividir o produto selecionado para este número de pessoas.');
+			ScreenService.showMessage('Não é possível realizar a divisão de um ou mais produtos para esta seleção de posições, pois o preço total do mesmo irá ficar menor que 1 centavo.');
 		}
 	};
 

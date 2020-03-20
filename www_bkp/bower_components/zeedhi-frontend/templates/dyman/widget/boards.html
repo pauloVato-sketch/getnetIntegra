@@ -1,0 +1,25 @@
+<section
+	zh-scroller
+	data-ng-if="widget.aclIsVisible"
+	data-ng-show="widget.isVisible"
+	class="zh-boards container zh-widget" data-zh-boards data-zh-widget-events>
+	<div
+		class="zh-boards-group"
+		data-ng-repeat="group in widget.dataSource.data"
+		data-ng-class="{'collapsed': group.collapsed}">
+		<span class="zh-board-toggle" data-zh-click="group.collapsed = !group.collapsed;">
+			<span zh-icon="collapse no-border"></span>
+			<span class="zh-boards-group-label" data-ng-bind="group.label"></span>
+		</span>
+			<div data-zh-masonry-grid>
+				<div
+					data-ng-repeat="widget in group.items"
+					class="zh-dashboard-widget"
+					id="masonry-item-{{widget.id}}"
+					data-ng-class="{editing: grid.editing}"
+					data-ng-include src="templateManager.getTemplateURL(widget.template )"
+					zh-post-repeat="initializeGrid(group.items)">
+				</div>
+			</div>
+	</div>
+</section>

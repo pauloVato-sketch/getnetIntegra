@@ -1,0 +1,16 @@
+<div class="zh-switch-container zh-field">
+  <input type="checkbox"
+    class="mousetrap"
+ 		name="{{field.name}}"
+ 		id="switch-{{field.name}}"
+ 		data-ng-disabled="{{field.isReadOnly()}}"
+ 		data-ng-model="fieldRow"
+ 		data-zh-events
+ 	>
+  <label for="switch-{{field.name}}">
+    <span class="zh-label zh-switch-label" data-ng-bind="field.label"></span>
+    <div class="zh-switch">
+      <div class="zh-inner-switch"></div>
+    </div>
+  </label>
+</div>

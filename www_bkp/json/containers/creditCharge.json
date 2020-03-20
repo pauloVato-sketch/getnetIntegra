@@ -1,0 +1,1332 @@
+{
+    "id": "1",
+    "name": "creditCharge",
+    "label": "Crédito Pessoal",
+    "showHeader": true,
+    "showMenu": true,
+    "showBack": true,
+    "showFooter": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "events": [],
+    "widgets": [
+        {
+            "id": "1",
+            "name": "personalCreditTabs",
+            "label": "Crédito Pessoal",
+            "template": "widget/tabbedWidget.html",
+            "isVisible": true,
+            "actions": [],
+            "events": [],
+            "fields": [],
+            "widgets": [
+                {
+                    "id": "1",
+                    "name": "creditChargeWidget",
+                    "label": "Recarga",
+                    "template": "widget/form.html",
+                    "isVisible": true,
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "WidgetOnEnter",
+                            "code": "AccountController.prepareCreditCharge(args.owner);"
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "id": "1",
+                            "label": "Voltar",
+                            "isVisible": true,
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "ActionEvent",
+                                    "code": "UtilitiesService.backMainScreen();"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "2",
+                            "label": "QR Code",
+                            "name": "qrcode",
+                            "isVisible": true,
+                            "icon": "qrcode",
+                            "showAsAction": "always",
+                            "activeOnMode": null,
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "ActionEvent",
+                                    "code": "TableController.scanConsumerQrCode(args.owner.widget);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "3",
+                            "label": "Confirmar",
+                            "isVisible": true,
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "ActionEvent",
+                                    "code": "PaymentController.receivePersonalCredit(args.row);"
+                                }
+                            ]
+                        }
+                    ],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "id": "1",
+                            "class": 6,
+                            "name": "NMRAZSOCCLIE",
+                            "label": "Cliente",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "required": true,
+                            "valueField": "CDCLIENTE",
+                            "descriptionField": "NMRAZSOCCLIE",
+                            "outData": {
+                                "NMRAZSOCCLIE": "NMRAZSOCCLIE",
+                                "CDCLIENTE": "CDCLIENTE"
+                            },
+                            "template": "field/select.html",
+                            "showSelectAs": "grid",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "FieldOnChange",
+                                    "code": "PaymentController.prepareCustomers(args.row, args.owner.field);"
+                                },
+                                {
+                                    "id": "2",
+                                    "name": "FieldOnClick",
+                                    "code": "TableController.doBlockPopupOnEnterEvent();"
+                                }
+                            ],
+                            "dataSource": {
+                                "memoryStorage": true,
+                                "name": "/ParamsClientRepository"
+                            },
+                            "fields": [
+                                {
+                                    "id": "1",
+                                    "name": "NMRAZSOCCLIE",
+                                    "label": "Nome",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "2",
+                            "name": "NMCONSUMIDOR",
+                            "label": "Consumidor",
+                            "class": 6,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "required": true,
+                            "itemsPerPage": 30,
+                            "defaultValue": null,
+                            "descriptionField": "NMCONSUMIDOR",
+                            "valueField": "CDCONSUMIDOR",
+                            "dataSource": {
+                                "name": "/ParamsCustomerRepository",
+                                "lazyLoad": true,
+                                "rest": true
+                            },
+                            "dataSourceFilter": [
+                                {
+                                    "name": "CDCLIENTE",
+                                    "value": "",
+                                    "operator": "="
+                                }
+                            ],
+                            "template": "field/select.html",
+                            "showSelectAs": "grid",
+                            "outData": {
+                                "CDCLIENTE": "CDCLIENTE",
+                                "NMCONSUMIDOR": "NMCONSUMIDOR",
+                                "CDCONSUMIDOR": "CDCONSUMIDOR",
+                                "NMRAZSOCCLIE": "NMRAZSOCCLIE",
+                                "IDSITCONSUMI": "IDSITCONSUMI"
+                            },
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "FieldBeforeSelectOpen",
+                                    "code": "AccountController.reloadConsumers(args.owner.field);"
+                                }
+                            ],
+                            "fields": [
+                                {
+                                    "id": "1",
+                                    "name": "NMRAZSOCCLIE",
+                                    "label": "Cliente",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "2",
+                                    "name": "NMCONSUMIDOR",
+                                    "label": "Consumidor",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "3",
+                                    "name": "CDIDCONSUMID",
+                                    "label": "Cód. Crachá",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "4",
+                                    "name": "NRCPFRESPCON",
+                                    "label": "CPF",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "3",
+                            "class": 6,
+                            "name": "NMFAMILISALD",
+                            "label": "Familia de Saldo",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "required": true,
+                            "valueField": "CDFAMILISALD",
+                            "descriptionField": "NMFAMILISALD",
+                            "outData": {
+                                "NMFAMILISALD": "NMFAMILISALD",
+                                "CDFAMILISALD": "CDFAMILISALD",
+                                "IDPERMCARGACRED": "IDPERMCARGACRED"
+                            },
+                            "template": "field/select.html",
+                            "showSelectAs": "grid",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "FieldOnClick",
+                                    "code": "TableController.doBlockPopupOnEnterEvent();"
+                                }
+                            ],
+                            "dataSource": {
+                                "name": "/ParamsFamilyRepository",
+                                "rest": false,
+                                "memoryStorage": true
+                            },
+                            "dataSourceFilter": [],
+                            "fields": [
+                                {
+                                    "id": "1",
+                                    "name": "CDFAMILISALD",
+                                    "label": "Cód.",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "2",
+                                    "name": "NMFAMILISALD",
+                                    "label": "Familia",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "3",
+                                    "name": "IDPERMCARGACRED",
+                                    "label": "Permite Carga",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "4",
+                                    "name": "IDSALDNEGFAM",
+                                    "label": "Saldo Negativo",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "4",
+                            "name": "VRRECARGA",
+                            "class": 6,
+                            "label": "Valor da Recarga",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "defaultValue": null,
+                            "minValue": 0,
+                            "spin": false,
+                            "template": "field/number.html",
+                            "events": []
+                        }
+                    ]
+                },
+                {
+                    "id": "2",
+                    "name": "creditCancelWidget",
+                    "label": "Cancelamento",
+                    "template": "widget/form.html",
+                    "isVisible": true,
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "WidgetOnEnter",
+                            "code": "AccountController.prepareCancelCredit(args.owner);"
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "id": "1",
+                            "label": "Voltar",
+                            "isVisible": true,
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.goBack();"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "2",
+                            "label": "QR Code",
+                            "name": "qrcode",
+                            "isVisible": true,
+                            "icon": "qrcode",
+                            "showAsAction": "always",
+                            "activeOnMode": null,
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "ActionEvent",
+                                    "code": "TableController.scanConsumerQrCode(args.owner.widget);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "3",
+                            "label": "Confirmar",
+                            "isVisible": true,
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "ActionEvent",
+                                    "code": "AccountController.cancelPersonalCredit(args.row, args.owner.widget.widgets[0], -1);"
+                                }
+                            ]
+                        }
+                    ],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "id": "1",
+                            "class": 6,
+                            "name": "NMRAZSOCCLIE",
+                            "label": "Cliente",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "required": true,
+                            "valueField": "CDCLIENTE",
+                            "descriptionField": "NMRAZSOCCLIE",
+                            "outData": {
+                                "NMRAZSOCCLIE": "NMRAZSOCCLIE",
+                                "CDCLIENTE": "CDCLIENTE"
+                            },
+                            "template": "field/select.html",
+                            "showSelectAs": "grid",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "FieldOnChange",
+                                    "code": "PaymentController.prepareCustomers(args.row, args.owner.field);"
+                                },
+                                {
+                                    "id": "2",
+                                    "name": "FieldOnClick",
+                                    "code": "TableController.doBlockPopupOnEnterEvent();"
+                                }
+                            ],
+                            "dataSource": {
+                                "memoryStorage": true,
+                                "name": "/ParamsClientRepository"
+                            },
+                            "fields": [
+                                {
+                                    "id": "1",
+                                    "name": "NMRAZSOCCLIE",
+                                    "label": "Nome",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "2",
+                            "name": "NMCONSUMIDOR",
+                            "label": "Consumidor",
+                            "class": 6,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "required": true,
+                            "itemsPerPage": 30,
+                            "defaultValue": null,
+                            "descriptionField": "NMCONSUMIDOR",
+                            "valueField": "CDCONSUMIDOR",
+                            "dataSource": {
+                                "name": "/ParamsCustomerRepository",
+                                "lazyLoad": true,
+                                "rest": true
+                            },
+                            "dataSourceFilter": [
+                                {
+                                    "name": "CDCLIENTE",
+                                    "value": "",
+                                    "operator": "="
+                                }
+                            ],
+                            "template": "field/select.html",
+                            "showSelectAs": "grid",
+                            "outData": {
+                                "CDCLIENTE": "CDCLIENTE",
+                                "NMCONSUMIDOR": "NMCONSUMIDOR",
+                                "CDCONSUMIDOR": "CDCONSUMIDOR",
+                                "NMRAZSOCCLIE": "NMRAZSOCCLIE",
+                                "IDSITCONSUMI": "IDSITCONSUMI"
+                            },
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "FieldOnClick",
+                                    "code": "TableController.doBlockPopupOnEnterEvent();"
+                                }
+                            ],
+                            "fields": [
+                                {
+                                    "id": "1",
+                                    "name": "NMRAZSOCCLIE",
+                                    "label": "Cliente",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "2",
+                                    "name": "NMCONSUMIDOR",
+                                    "label": "Consumidor",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "3",
+                                    "name": "CDIDCONSUMID",
+                                    "label": "Cód. Crachá",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "4",
+                                    "name": "NRCPFRESPCON",
+                                    "label": "CPF",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "3",
+                            "name": "NRDEPOSICONS",
+                            "class": 12,
+                            "label": "Número do Depósito",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "defaultValue": null,
+                            "minValue": 0,
+                            "spin": false,
+                            "template": "field/number.html",
+                            "events": []
+                        }
+                    ],
+                    "widgets": [
+                        {
+                            "id": "1",
+                            "name": "depositPopup",
+                            "label": "Informe o tipo de recebimento.",
+                            "template": "widget/form.html",
+                            "isVisible": false,
+                            "events": [],
+                            "actions": [
+                                {
+                                    "id": "1",
+                                    "name": "desfazer",
+                                    "label": "Cancelar",
+                                    "showAsAction": "back",
+                                    "isVisible": true,
+                                    "events": [
+                                        {
+                                            "id": "1",
+                                            "name": "ActionEvent",
+                                            "code": "ScreenService.closePopup();"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "2",
+                                    "label": "Confirmar",
+                                    "name": "ok",
+                                    "isVisible": true,
+                                    "showAsAction": "never",
+                                    "events": [
+                                        {
+                                            "id": "1",
+                                            "name": "ActionEvent",
+                                            "code": "AccountController.cancelPersonalCredit(args.row, args.owner.widget, args.row.NRSEQMOVCAIXA);"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "dataSource": {},
+                            "fields": [
+                                {
+                                    "id": "1",
+                                    "name": "NMTIPORECE",
+                                    "label": "",
+                                    "class": 12,
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "required": true,
+                                    "itemsPerPage": 30,
+                                    "defaultValue": null,
+                                    "descriptionField": "NMTIPORECE",
+                                    "valueField": "NRSEQMOVCAIXA",
+                                    "dataSource": {},
+                                    "dataSourceFilter": [],
+                                    "template": "field/select.html",
+                                    "showSelectAs": "grid",
+                                    "outData": {
+                                        "NRSEQMOVCAIXA": "NRSEQMOVCAIXA",
+                                        "NMTIPORECE": "NMTIPORECE"
+                                    },
+                                    "events": [
+                                        {
+                                            "id": "1",
+                                            "name": "FieldOnClick",
+                                            "code": "TableController.doBlockPopupOnEnterEvent();"
+                                        }
+                                    ],
+                                    "fields": [
+                                        {
+                                            "id": "1",
+                                            "name": "NMTIPORECE",
+                                            "label": "Tip. Recebimento",
+                                            "isVisible": true,
+                                            "showOnList": true,
+                                            "template": "field/text-edit.html"
+                                        },
+                                        {
+                                            "id": "2",
+                                            "name": "VRMOVEXTCONS",
+                                            "label": "Valor (R$)",
+                                            "isVisible": true,
+                                            "showOnList": true,
+                                            "template": "field/text-edit.html"
+                                        },
+                                        {
+                                            "id": "3",
+                                            "name": "NRSEQMOVCAIXA",
+                                            "label": "Sequencial",
+                                            "isVisible": true,
+                                            "showOnList": true,
+                                            "template": "field/text-edit.html"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "3",
+                    "name": "transferCreditWidget",
+                    "label": "Transferência",
+                    "template": "widget/form.html",
+                    "isVisible": true,
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "WidgetOnEnter",
+                            "code": "AccountController.prepareTransferCredit(args.owner);"
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "id": "1",
+                            "label": "Voltar",
+                            "isVisible": true,
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.goBack();"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "2",
+                            "label": "Confirmar",
+                            "isVisible": true,
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "ActionEvent",
+                                    "code": "AccountController.transferPersonalCredit(args.owner.widget);"
+                                }
+                            ]
+                        }
+                    ],
+                    "dataSource": {},
+                    "fieldGroups": [
+                        {
+                            "id": 1,
+                            "name": "ORIG",
+                            "label": "Cartão Origem",
+                            "collapsible": false,
+                            "opened": true
+                        },
+                        {
+                            "id": 2,
+                            "name": "DEST",
+                            "label": "Cartão Destino",
+                            "collapsible": false,
+                            "opened": true
+                        },
+                        {
+                            "id": 3,
+                            "name": "PREV",
+                            "label": "Pre-visualização",
+                            "collapsible": false,
+                            "opened": true
+                        }
+                    ],
+                    "fields": [
+                        {
+                            "id": "1",
+                            "name": "cardSearchOri",
+                            "label": "Cartão",
+                            "class": 8,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "defaultValue": null,
+                            "fieldGroup": "ORIG",
+                            "template": "field/text.html",
+                            "events": []
+                        },
+                        {
+                            "id": "2",
+                            "name": "buttonSearchOri",
+                            "label": "Buscar",
+                            "class": 3,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "defaultValue": null,
+                            "fieldGroup": "ORIG",
+                            "template": "field/button.html",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "FieldOnClick",
+                                    "code": "AccountController.cardSearch(args.owner.field.widget, args.owner.field.widget.currentRow.cardSearchOri, 'ORIG');"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "3",
+                            "class": 1,
+                            "name": "qrcodeOrig",
+                            "label": "",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "defaultValue": null,
+                            "icon": "qrcode",
+                            "fieldGroup": "ORIG",
+                            "template": "field/label-with-icon.html",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "FieldOnClick",
+                                    "code": "AccountController.scanTransferCard(args.owner.field.widget, 'ORIG');"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "4",
+                            "class": 12,
+                            "name": "selectedCards",
+                            "label": "Cartões Selecionados",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "required": true,
+                            "valueField": "ID",
+                            "descriptionField": "NMCONSUMIDOR",
+                            "outData": {
+                                "CDCLIENTE": "CDCLIENTE",
+                                "CDCONSUMIDOR": "CDCONSUMIDOR",
+                                "CDFAMILISALD": "CDFAMILISALD",
+                                "CDIDCONSUMID": "CDIDCONSUMID",
+                                "VRSALDCONEXT": "VRSALDCONEXT",
+                                "NMCONSUMIDOR": "NMCONSUMIDOR"
+                            },
+                            "fieldGroup": "ORIG",
+                            "template": "field/select-multiple.html",
+                            "showCheckBox": false,
+                            "showSelectAs": "grid",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "FieldOnChange",
+                                    "code": "AccountController.handleOriginChange(args.owner.field.widget, false);"
+                                }
+                            ],
+                            "dataSource": {},
+                            "fields": [
+                                {
+                                    "id": "1",
+                                    "name": "CDIDCONSUMID",
+                                    "label": "Cartão",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "2",
+                                    "name": "NMCONSUMIDOR",
+                                    "label": "Consumidor",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "3",
+                                    "name": "NMFAMILISALD",
+                                    "label": "Familia",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "4",
+                                    "name": "VRSALDCONEXT",
+                                    "label": "Saldo",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "18",
+                            "name": "buttonClearOri",
+                            "label": "Limpar Seleção",
+                            "class": 3,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "defaultValue": null,
+                            "fieldGroup": "ORIG",
+                            "template": "field/button.html",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "FieldOnClick",
+                                    "code": "AccountController.clearSelectedCards(args.owner.field.widget);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "5",
+                            "name": "cardSearchDest",
+                            "label": "Cartão",
+                            "class": 8,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "defaultValue": null,
+                            "fieldGroup": "DEST",
+                            "template": "field/text.html",
+                            "events": []
+                        },
+                        {
+                            "id": "6",
+                            "name": "buttonSearchDest",
+                            "label": "Buscar",
+                            "class": 3,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "defaultValue": null,
+                            "fieldGroup": "DEST",
+                            "template": "field/button.html",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "FieldOnClick",
+                                    "code": "AccountController.cardSearch(args.owner.field.widget, args.owner.field.widget.currentRow.cardSearchDest, 'DEST');"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "7",
+                            "class": 1,
+                            "name": "qrcodeDest",
+                            "label": "",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "defaultValue": null,
+                            "icon": "qrcode",
+                            "fieldGroup": "DEST",
+                            "template": "field/label-with-icon.html",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "FieldOnClick",
+                                    "code": "AccountController.scanTransferCard(args.owner.field.widget, 'DEST');"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "8",
+                            "class": "invisible",
+                            "name": "familyDest",
+                            "label": "Escolha de Cartões",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "required": true,
+                            "valueField": "NMCONSUMIDOR",
+                            "descriptionField": "NMCONSUMIDOR",
+                            "outData": {
+                                "ID": "destID",
+                                "NMCONSUMIDOR": "destConsumer",
+                                "NMTIPOCONS": "destType",
+                                "CDCLIENTE": "destCDCLIENTE",
+                                "CDCONSUMIDOR": "destCDCONSUMIDOR",
+                                "CDFAMILISALD": "destCDFAMILISALD",
+                                "CDIDCONSUMID": "destCDIDCONSUMID",
+                                "VRSALDCONEXT": "destVRSALDCONEXT",
+                                "CDTIPOCONS": "destCDTIPOCONS",
+                                "IDSITCONSUMI": "destIDSITCONSUMI",
+                                "IDPERTRANSALD": "destIDPERTRANSALD"
+                            },
+                            "fieldGroup": "DEST",
+                            "template": "field/select.html",
+                            "showSelectAs": "grid",
+                            "events": [
+                                {
+                                    "id": 1,
+                                    "name": "FieldOnChange",
+                                    "code": "AccountController.selectDestCard(args.owner.field.widget);"
+                                }
+                            ],
+                            "dataSource": {
+                                "name": "/ParamsCardsRepository",
+                                "memoryStorage": true
+                            },
+                            "fields": [
+                                {
+                                    "id": "1",
+                                    "name": "NMFANTCLIE",
+                                    "label": "Cliente",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "2",
+                                    "name": "CDIDCONSUMID",
+                                    "label": "Cartão",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "3",
+                                    "name": "NMCONSUMIDOR",
+                                    "label": "Consumidor",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "4",
+                                    "name": "NMFAMILISALD",
+                                    "label": "Familia",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "9",
+                            "name": "destConsumer",
+                            "label": "Consumidor",
+                            "class": 6,
+                            "readOnly": true,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "fieldGroup": "DEST",
+                            "template": "field/text-edit.html",
+                            "events": []
+                        },
+                        {
+                            "id": "10",
+                            "name": "destType",
+                            "label": "Tipo Consumidor",
+                            "class": 6,
+                            "readOnly": true,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "fieldGroup": "DEST",
+                            "template": "field/text-edit.html",
+                            "events": []
+                        },
+                        {
+                            "id": "18",
+                            "name": "buttonClearDest",
+                            "label": "Limpar Destino",
+                            "class": 3,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "defaultValue": null,
+                            "fieldGroup": "DEST",
+                            "template": "field/button.html",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "FieldOnClick",
+                                    "code": "AccountController.cleanDestinationValues(args.owner.field.widget);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "11",
+                            "name": "currentBalance",
+                            "label": "Saldo Atual",
+                            "class": 6,
+                            "readOnly": true,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "fieldGroup": "PREV",
+                            "template": "field/text-edit.html",
+                            "events": []
+                        },
+                        {
+                            "id": "12",
+                            "name": "transferValue",
+                            "label": "Transferência",
+                            "class": 6,
+                            "readOnly": true,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "fieldGroup": "PREV",
+                            "template": "field/text-edit.html",
+                            "events": []
+                        },
+                        {
+                            "id": "13",
+                            "name": "finalBalance",
+                            "label": "Saldo Final",
+                            "class": 6,
+                            "readOnly": true,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "fieldGroup": "PREV",
+                            "template": "field/text-edit.html",
+                            "events": []
+                        }
+                    ],
+                    "widgets": [
+                        {
+                            "id": 1,
+                            "name": "cardChooser",
+                            "label": "Escolha de Cartões",
+                            "isVisible": true,
+                            "showCheckbox": true,
+                            "template": "widget/grid.html",
+                            "primaryProperty": "CDIDCONSUMID",
+                            "floatingControl": false,
+                            "events": [],
+                            "dataSource": {
+                                "name": "/ParamsCardsRepository",
+                                "memoryStorage": true
+                            },
+                            "actions": [
+                                {
+                                    "label": "Voltar",
+                                    "isVisible": true,
+                                    "showOnForm": true,
+                                    "showOnList": true,
+                                    "showAsAction": "back",
+                                    "events": [
+                                        {
+                                            "id": 1,
+                                            "name": "ActionEvent",
+                                            "code": "ScreenService.closePopup();"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "label": "Confirmar",
+                                    "isVisible": true,
+                                    "showOnForm": true,
+                                    "showOnList": true,
+                                    "showAsAction": "never",
+                                    "events": [
+                                        {
+                                            "id": 1,
+                                            "name": "ActionEvent",
+                                            "code": "AccountController.selectOrigCard(args.owner.widget, args.owner.widget.parent, args.owner.widget.parent.getField('selectedCards'));"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "fields": [
+                                {
+                                    "id": "1",
+                                    "name": "NMFANTCLIE",
+                                    "label": "Cliente",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "2",
+                                    "name": "CDIDCONSUMID",
+                                    "label": "Cartão",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "3",
+                                    "name": "NMCONSUMIDOR",
+                                    "label": "Consumidor",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "4",
+                                    "name": "NMFAMILISALD",
+                                    "label": "Familia",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "4",
+                    "name": "creditCheckWidget",
+                    "label": "Consulta",
+                    "template": "widget/form.html",
+                    "isVisible": true,
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "WidgetOnEnter",
+                            "code": "AccountController.prepareCheckBalance(args.owner);"
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "id": "1",
+                            "label": "Voltar",
+                            "isVisible": true,
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "ActionEvent",
+                                    "code": "UtilitiesService.backMainScreen();"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "2",
+                            "label": "QR Code",
+                            "name": "qrcode",
+                            "isVisible": true,
+                            "icon": "qrcode",
+                            "showAsAction": "always",
+                            "activeOnMode": null,
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "ActionEvent",
+                                    "code": "TableController.scanConsumerQrCode(args.owner.widget);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "3",
+                            "label": "Consultar",
+                            "isVisible": true,
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "ActionEvent",
+                                    "code": "AccountController.getConsumerBalance(args.owner.widget);"
+                                }
+                            ]
+                        }
+                    ],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "id": "1",
+                            "class": 6,
+                            "name": "NMRAZSOCCLIE",
+                            "label": "Cliente",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "required": true,
+                            "valueField": "CDCLIENTE",
+                            "descriptionField": "NMRAZSOCCLIE",
+                            "outData": {
+                                "NMRAZSOCCLIE": "NMRAZSOCCLIE",
+                                "CDCLIENTE": "CDCLIENTE"
+                            },
+                            "template": "field/select.html",
+                            "showSelectAs": "grid",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "FieldOnChange",
+                                    "code": "PaymentController.prepareCustomers(args.row, args.owner.field);"
+                                },
+                                {
+                                    "id": "2",
+                                    "name": "FieldOnClick",
+                                    "code": "TableController.doBlockPopupOnEnterEvent();"
+                                }
+                            ],
+                            "dataSource": {
+                                "memoryStorage": true,
+                                "name": "/ParamsClientRepository"
+                            },
+                            "fields": [
+                                {
+                                    "id": "1",
+                                    "name": "NMRAZSOCCLIE",
+                                    "label": "Nome",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "2",
+                            "name": "NMCONSUMIDOR",
+                            "label": "Consumidor",
+                            "class": 6,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "required": true,
+                            "itemsPerPage": 30,
+                            "defaultValue": null,
+                            "descriptionField": "NMCONSUMIDOR",
+                            "valueField": "CDCONSUMIDOR",
+                            "dataSource": {
+                                "name": "/ParamsCustomerRepository",
+                                "lazyLoad": true,
+                                "rest": true
+                            },
+                            "dataSourceFilter": [
+                                {
+                                    "name": "CDCLIENTE",
+                                    "value": "",
+                                    "operator": "="
+                                }
+                            ],
+                            "template": "field/select.html",
+                            "showSelectAs": "grid",
+                            "outData": {
+                                "CDCLIENTE": "CDCLIENTE",
+                                "NMCONSUMIDOR": "NMCONSUMIDOR",
+                                "CDCONSUMIDOR": "CDCONSUMIDOR",
+                                "NMRAZSOCCLIE": "NMRAZSOCCLIE",
+                                "IDSITCONSUMI": "IDSITCONSUMI"
+                            },
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "FieldOnClick",
+                                    "code": "TableController.doBlockPopupOnEnterEvent();"
+                                }
+                            ],
+                            "fields": [
+                                {
+                                    "id": "1",
+                                    "name": "NMRAZSOCCLIE",
+                                    "label": "Cliente",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "2",
+                                    "name": "NMCONSUMIDOR",
+                                    "label": "Consumidor",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "3",
+                                    "name": "CDIDCONSUMID",
+                                    "label": "Cód. Crachá",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "4",
+                                    "name": "NRCPFRESPCON",
+                                    "label": "CPF",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        }
+                    ],
+                    "widgets": [
+                        {
+                            "id": 1,
+                            "name": "balanceDisplay",
+                            "label": "Saldo do Consumidor",
+                            "isVisible": true,
+                            "showCheckbox": false,
+                            "template": "widget/grid.html",
+                            "primaryProperty": "CDIDCONSUMID",
+                            "floatingControl": false,
+                            "events": [],
+                            "dataSource": {
+                                "name": "/ConsumerBalanceRepository",
+                                "memoryStorage": true
+                            },
+                            "actions": [
+                                {
+                                    "label": "Voltar",
+                                    "isVisible": true,
+                                    "showOnForm": true,
+                                    "showOnList": true,
+                                    "showAsAction": "back",
+                                    "events": [
+                                        {
+                                            "id": 1,
+                                            "name": "ActionEvent",
+                                            "code": "ScreenService.closePopup();"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "fields": [
+                                {
+                                    "id": "1",
+                                    "name": "NMFAMILISALD",
+                                    "label": "Familia",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "2",
+                                    "name": "CDFAMILISALD",
+                                    "label": "Cod. Familia",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "3",
+                                    "name": "VRSALDCONFAM",
+                                    "label": "Saldo",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

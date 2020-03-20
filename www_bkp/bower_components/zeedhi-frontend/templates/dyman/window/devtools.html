@@ -1,0 +1,49 @@
+<div
+	ng-controller="DevToolsController as DevToolsCtrl"
+	zh-tab-editor
+	zh-hide-developer-tree
+	zh-delete-components
+	zh-new-components
+	zh-create-file
+	zh-search
+	zh-form
+	zh-find-line>
+
+	<!-- Tabs and tree components -->
+	<aside class="components-tree" id="components-tree" zh-components-tree>
+		<div class="tabs">
+			<div ng-if="DevToolsCtrl.inCustomizationMode()" class="tab full" id = "json" zh-click="setCurrentMode('json', DevToolsCtrl)">Custom Container</div>
+			<div ng-if="!inMenuMode() && !DevToolsCtrl.inCustomizationMode()" id = "json" class="tab active" zh-click="setCurrentMode('json', DevToolsCtrl)">JSON</div>
+			<div ng-if="!inMenuMode() && !DevToolsCtrl.inCustomizationMode()" id = "files" class="tab" zh-click="setCurrentMode('files', DevToolsCtrl)">FILES</div>
+			<div ng-if="inMenuMode() && !DevToolsCtrl.inCustomizationMode()" id = "menu" class="tab full">MENU</div>
+		</div>
+		<div ng-if="inMenuMode() && !treeIsHidden()" class="closeMenuMode" zh-click="closeMenu(DevToolsCtrl)">
+			<svg width="40px" height="40px">
+				<use xlink:href=""
+				ng-href="{{ templateManager.getFrameworkTemplateURL('../../assets/images/icons/sprite-zeedhi.svg#back')}}"/>
+			</svg>
+		</div>
+		<div class="tree-items">
+			<ul class="containers-list" id="containers-list">
+				<div>
+					<li
+						zh-tree-item
+						ng-repeat="item in getItems()"
+						ng-include="DevToolsCtrl.getTreeTemplateUrlBasedOnEditorMode()"
+					></li>
+				</div>
+			</ul>
+		</div>
+	</aside>
+
+	<div class="editor" id="editor">
+		<!-- Header -->
+		<header	class="header" ng-include="DevToolsCtrl.getTemplateURLHeader()"></header>
+
+		<!-- Editor -->
+		<div zh-code-editor>
+			<div ng-include="DevToolsCtrl.getEditorTemplateUrlBasedOnEditorMode()"></div>
+			<div ng-if="DevToolsCtrl.shouldShowShortcutWidget()" ng-include="DevToolsCtrl.getShortcutUrl()"></div>
+		</div>
+	</div>
+</div>

@@ -22,7 +22,9 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
 
 buildscript {
-    repositories {
+    
+	ext.kotlin_version = "latest.integration"
+	repositories {
         mavenCentral()
         google()
         jcenter()
@@ -30,6 +32,7 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.0'
+ 		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -276,6 +279,12 @@ android {
             release {
                 signingConfig signingConfigs.release
             }
+            enterprise {
+                signingConfig signingConfigs.release
+            }
+            debug {
+                signingConfig signingConfigs.debug
+            }
         }
         addSigningProps(cdvReleaseSigningPropertiesFile, signingConfigs.release)
     }
@@ -294,15 +303,19 @@ android {
 
 dependencies {
 //    implementation fileTree(dir: 'libs', include: '*.jar')
-//    implementation fileTree(dir: 'libs', include: '*.aar')
+    // implementation fileTree(dir: 'libs', include: '*.aar')
     // SUB-PROJECT DEPENDENCIES START
     implementation(project(path: ":CordovaLib"))
-    implementation(project(path: ":deviceintegrationfacade"))
-    implementation(project(path: ":getnetintegration"))
-    implementation "com.android.support:support-v4:27.+"
-    compile "androidx.core:core-ktx:+"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "androidx.legacy:legacy-support-v4:1.0.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.31"
     // SUB-PROJECT DEPENDENCIES END
+    implementation "br.com.stone:stone-sdk:3.3.2" /* Stone */
+    implementation "br.com.stone:stone-sdk-posandroid:3.3.2" /* Stone */
+    implementation "br.com.stone:stone-sdk-posandroid-ingenico:3.3.2" /* Stone */
+    compile (name:'clisitef-android', ext:'jar') /* CliSiTef (Gertec) */
+    compile (name:'libppcomp-1.15.0.180228.1', ext:'aar') /* Gertec Old Firmware*/
+    compile (name:'pos7api', ext:'aar') /* Ger7 */
+    implementation 'androidx.multidex:multidex:2.0.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
 }
 

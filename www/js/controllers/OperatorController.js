@@ -2,13 +2,13 @@ function OperatorController(OperatorService, TableService, AccountController, Ut
 	TableActiveTable, Query, ApplicationContext, RegisterService, WindowService, OperatorRepository, ParamsAreaRepository,
 	ParamsGroupRepository, ParamsClientRepository, ParamsSellerRepository, AccountCart, ParamsMenuRepository, ParamsGroupPriceChart,
 	ParamsPriceChart, ParamsPrinterRepository, ParamsProdMessageRepository, ParamsProdMessageCancelRepository, ParamsParameterRepository,
-	ParamsObservationsRepository, ZHPromise, FiliaisLogin, CaixasLogin, VendedoresLogin, metaDataFactory, PrinterPoynt, IntegrationService, 
-	SaveLogin, SSLConnectionId, PermissionService, ParamsMensDescontoObs, CarrinhoDesistencia, AccountService, PaymentService, 
-	PerifericosService, ProdSenhaPed){
+	ParamsObservationsRepository, ZHPromise, FiliaisLogin, CaixasLogin, VendedoresLogin, metaDataFactory, PrinterPoynt, IntegrationService,
+	SaveLogin, SSLConnectionId, PermissionService, ParamsMensDescontoObs, CarrinhoDesistencia, AccountService, PaymentService,
+	PerifericosService, ProdSenhaPed) {
 
-	var modoMesa    = 'M';
+	var modoMesa = 'M';
 	var modoComanda = 'C';
-	var modoBalcao  = 'B';
+	var modoBalcao = 'B';
 	var modoDelivery = 'D';
 	var self = this;
 
@@ -151,14 +151,13 @@ function OperatorController(OperatorService, TableService, AccountController, Ut
 						function (data) {
 							if (data.OperatorRepository) {
 								if (data.OperatorRepository[0].paramsImpressora) {
-									PerifericosService.test(data.OperatorRepository[0].paramsImpressora)
-										.then(function (response) {
-											if (!response.error) {
-												self.handleLogin(data, menus);
-											} else {
-												ScreenService.showMessage(response.message);
-											}
-										});
+									PerifericosService.test(data.OperatorRepository[0].paramsImpressora).then(function (response) {
+										if (!response.error) {
+											self.handleLogin(data, menus);
+										} else {
+											ScreenService.showMessage(response.message);
+										}
+									});
 								} else {
 									self.handleLogin(data, menus);
 								}
@@ -235,13 +234,13 @@ function OperatorController(OperatorService, TableService, AccountController, Ut
 
 	this.bindedDoLogin = this.doLogin;
 
-	this.doLogin = function(data, menus) {
-		OperatorRepository.save(data.OperatorRepository).then(function (){
+	this.doLogin = function (data, menus) {
+		OperatorRepository.save(data.OperatorRepository).then(function () {
 			var operatorData = data.OperatorRepository[0];
 			this.handleMenuOptions(operatorData.modoHabilitado, operatorData.IDCOLETOR, menus,
-			 	operatorData.IDHABCAIXAVENDA, operatorData.NMFANVEN, operatorData.CDOPERADOR);
+				operatorData.IDHABCAIXAVENDA, operatorData.NMFANVEN, operatorData.CDOPERADOR);
 
-			TableActiveTable.remove(Query.build()).then(function() {
+			TableActiveTable.remove(Query.build()).then(function () {
 				UtilitiesService.backMainScreen();
 				templateManager.project.notifications[0].isVisible = false;
 			});
@@ -476,44 +475,44 @@ function OperatorController(OperatorService, TableService, AccountController, Ut
 	};
 
 	this.checkPendingPayment = function (IDTPTEF, errorMessage) {
-		OperatorService.findPendingPayments().then(function(payments) {
+		OperatorService.findPendingPayments().then(function (payments) {
 			payments = payments[0];
-			if(payments.error) {
-				if(!_.isEmpty(payments.message))
+			if (payments.error) {
+				if (!_.isEmpty(payments.message))
 					ScreenService.showMessage(payments.message, 'alert');
-				else if(_.isEmpty(payments.message) && errorMessage !== null)
+				else if (_.isEmpty(payments.message) && errorMessage !== null)
 					ScreenService.showMessage(errorMessage, 'alert');
 			} else {
 				payments = payments.data;
-				payments.forEach(function(payment){
+				payments.forEach(function (payment) {
 					var transactionDate = payment.TRANSACTIONDATE;
 					payment.TRANSACTIONDATE = transactionDate.slice(6, 8) + transactionDate.slice(4, 6) + transactionDate.substring(0, 4);
 				});
 
 				payments[0].IDTPTEF = IDTPTEF;
-				ScreenService.showMessage("Há transações pendentes que serão canceladas.").then(function(){
-					IntegrationService.reversalIntegration(self.mochRemovePaymentSale, payments).then(function(reversalIntegrationResult){
-						if (!reversalIntegrationResult.error){
+				ScreenService.showMessage("Há transações pendentes que serão canceladas.").then(function () {
+					IntegrationService.reversalIntegration(self.mochRemovePaymentSale, payments).then(function (reversalIntegrationResult) {
+						if (!reversalIntegrationResult.error) {
 							PaymentService.removePayment(payments);
 							PaymentService.handleRefoundTEFVoucher(reversalIntegrationResult.data);
 						} else {
-							if(reversalIntegrationResult.data.length > 1) {
-								var reversed = _.map(reversalIntegrationResult.data, function(reversal){
+							if (reversalIntegrationResult.data.length > 1) {
+								var reversed = _.map(reversalIntegrationResult.data, function (reversal) {
 									return _.isUndefined(reversal.toRemove) ? null : reversal.toRemove.CDNSUHOSTTEF;
 								});
 								reversed = _.compact(reversed);
 
-								payments = _.filter(payments, function(payment){
+								payments = _.filter(payments, function (payment) {
 									return _.indexOf(reversed, payment.CDNSUHOSTTEF) !== -1;
 								}.bind(this));
 
 								PaymentService.removePayment(payments);
 							}
 
-							ScreenService.showMessage(reversalIntegrationResult.message , 'alert');
+							ScreenService.showMessage(reversalIntegrationResult.message, 'alert');
 						}
 					}.bind(this));
-				}.bind(this));				
+				}.bind(this));
 			}
 		}.bind(this));
 	};

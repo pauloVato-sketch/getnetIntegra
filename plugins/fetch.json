@@ -70,5 +70,13 @@
     },
     "is_top_level": true,
     "variables": {}
+  },
+  "cordova-support-kotlin": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-support-kotlin"
+    },
+    "is_top_level": true,
+    "variables": {}
   }
 }

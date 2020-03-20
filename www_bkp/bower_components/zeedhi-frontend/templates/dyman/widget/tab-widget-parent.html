@@ -1,0 +1,6 @@
+<div class="zh-tab-child">
+	<!-- To enable swiping, add "zh-tabbed-swipe on-swipe="onSwipe"" to the div above. -->
+  <section ng-repeat="widget in widgets" class="{{widget.class}}"
+  data-ng-if='widget.isVisible && widget.aclIsVisible && (widget.isActive() || widget.parent.currentWidget == widget) && widget.showAsTab' 
+  data-ng-include="templateManager.getTemplateURL(widget.formTemplate)">
+</div>

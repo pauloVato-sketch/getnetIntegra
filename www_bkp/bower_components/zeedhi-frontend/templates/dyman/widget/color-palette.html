@@ -1,0 +1,31 @@
+<section
+  class="container color-container color-pallete"
+  ng-controller="ColorController as Ctrl"
+  zh-color-palette
+  zh-widget-events
+  zh-scroller>
+
+  <div class="sugested-colors" ng-if="hasSugestedColors()">
+    <div class="centralize">
+      <div
+        ng-repeat="color in getSugestedColors(true)"
+        ng-class="{ 'selected': isColorSelected(color) }"
+        zh-click="selectColor(color)"
+        zh-fill-color>
+        <span zh-icon="checked no-border icon-white"></span>
+      </div><!--
+
+      --><div
+        class="add-button"
+        ng-if="widget.showAddButton !== false"
+        zh-click="Ctrl.openColorPicker()">
+        <span zh-icon="plus no-border"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="helper-text" ng-if="getHelperText()">
+    <span data-zh-bind-translate="getHelperText()"></span>
+  </div>
+
+</section>

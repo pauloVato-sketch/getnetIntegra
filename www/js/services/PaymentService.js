@@ -185,8 +185,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 		return self.checkIfMustCallIntegration(currentRow.tiporece).then(function (mustCallIntegration) {
 			if (mustCallIntegration) {
 				// chama integração
-				var payment = getPaymentFromCurrentRow(currentRow);
-				return window.cordova.plugins.IntegrationService.payment(payment).then(function (integrationResult) {
+				return IntegrationService.integrationPayment(currentRow).then(function (integrationResult) {
 					if (!integrationResult.error) {
 						return self.savePayment(integrationResult.data).then(function(){
 							return self.handlePrintPayment(integrationResult.data.eletronicTransacion.data).then(function(){
@@ -202,14 +201,6 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 				return self.setPaymentSale(currentRow);
 			}
 		}.bind(this));
-	};
-
-	this.getPaymentFromCurrentRow = function (currentRow){
-		return JSON.stringify(
-			{"paymentType": currentRow.tiporece.IDTIPORECE, 
-			 "paymentValue": currentRow.VRMOVIVEND, 
-			 "paymentNSU": "123"}
-		);
 	};
 
 	this.checkIfMustCallIntegration = function (tiporece) {

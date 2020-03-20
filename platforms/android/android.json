@@ -103,6 +103,9 @@
     },
     "cordova-android-movetasktoback": {
       "PACKAGE_NAME": "com.odhen.POS"
+    },
+    "cordova-support-kotlin": {
+      "PACKAGE_NAME": "com.odhen.POS"
     }
   },
   "dependent_plugins": {},
@@ -178,6 +181,7 @@
     "cordova-plugin-whitelist": "1.3.3",
     "phonegap-plugin-barcodescanner": "8.1.0",
     "cordova-plugin-androidx-adapter": "1.1.0",
-    "cordova-android-movetasktoback": "0.1.4"
+    "cordova-android-movetasktoback": "0.1.4",
+    "cordova-support-kotlin": "1.2.1"
   }
 }

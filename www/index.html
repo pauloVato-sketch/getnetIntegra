@@ -32,6 +32,9 @@
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="index.js"></script>
 
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="qrcode.js"></script>
+
     <script type="text/javascript">
         window.minimumRequirements = {"Chrome": "1.0"};
         window.templateUrls = [
@@ -50,7 +53,7 @@
         ];
         window.metadataUrl = "./";
         window.lang = "pt_br";
-        window.serviceUrl = "../backend/service/index.php";
+        window.serviceUrl = "http://10.2.2.114:9090/odhenPOS/backend/service/index.php";
 
 		mocha.setup('bdd');
 		mocha.reporter('html');

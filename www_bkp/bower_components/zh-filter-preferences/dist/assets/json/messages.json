@@ -1,0 +1,5 @@
+{
+    "save_error": "An error ocurred while saving your filter: __ERROR__",
+    "delete": "Delete __NR_OF_FILTERS__ filters?",
+    "delete_error": "An error ocurred while deleting filters: __ERROR__"
+}

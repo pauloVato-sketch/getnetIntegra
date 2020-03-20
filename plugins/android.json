@@ -31,6 +31,9 @@
     },
     "cordova-android-movetasktoback": {
       "PACKAGE_NAME": "com.odhen.POS"
+    },
+    "cordova-support-kotlin": {
+      "PACKAGE_NAME": "com.odhen.POS"
     }
   },
   "dependent_plugins": {

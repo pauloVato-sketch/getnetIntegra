@@ -1,0 +1,29 @@
+<div ng-controller="ColorController as Ctrl" ng-show="field.isVisible">
+	<!-- Label Include -->
+	<div ng-include="templateManager.getTemplateURL('field/label-with-tooltip.html')"></div>
+
+	<!-- Validation  -->
+	<div class="zh-validation" ng-if="widget.currentRow.$error[field.name].length>0">
+		<span zh-validations class="zh-validation-error" ng-repeat="error in widget.currentRow.$error[field.name]" >
+			{{error.message}}
+		</span>
+	</div>
+
+	<!-- Field -->
+	<div
+		class="zh-select-multiple mousetrap zh-field-{{field.name}} zh-color-multiple zh-text-align-{{field.align || 'left'}}"
+		id="{{field.name}}"
+		name="{{field.name}}"
+		zh-color-field
+		zh-events
+		ng-readonly="field.isReadOnly()"
+		ng-disabled="field.isReadOnly()"
+		zh-click="Ctrl.openColorPalette()"
+		ng-class="{ 'zh-disabled' : field.readOnly }"
+		zh-focus-field="{{ field.focused }}"
+		zh-contenteditable="{{ !field.isReadOnly() }}">
+		<div class="inner-colors">
+			<div ng-repeat="color in getSelectedColors(true)" zh-fill-color></div>
+		</div>
+	</div>
+</div>

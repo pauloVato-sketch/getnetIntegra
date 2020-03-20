@@ -163,7 +163,7 @@ function MenuFunctionsController (PermissionService, AccountController, TableCon
 		productField.dataSource.data = Array();
 		productField.clearValue();
 		AccountController.getAccountData(function(accountData) {
-			AccountService.selectComandaProducts(accountData[0].NRCOMANDA).then(function(result){				
+			AccountService.selectComandaProducts(accountData[0].NRCOMANDA).then(function(result){
 				productField.dataSource.data = result;
 			}.bind(this));
 		});
@@ -190,6 +190,7 @@ function MenuFunctionsController (PermissionService, AccountController, TableCon
 			ScreenService.showMessage("Selecione a comanda de destino.", 'alert');
 		}
 	};
+
 	this.handleCheckedPromo = function(field, action) {
 		_.forEach(field.dataSource, function(produto) {
 			if (!!field.selectedRow.CDPRODPROMOCAO) {
@@ -217,9 +218,9 @@ function MenuFunctionsController (PermissionService, AccountController, TableCon
 					if (!_.isEmpty(p.CDPRODPROMOCAO) && (!_.isEmpty(removedRow)))
 						return (p.CDPRODPROMOCAO == removedRow[0].CDPRODPROMOCAO && p.NRSEQPRODCOM == removedRow[0].NRSEQPRODCOM);
 				});
-				
+
 				var valueField = _.clone(field.value());
-				
+
 				if (!_.isEmpty(toRemove)){
 					_.forEach(toRemove, function(r){
 						_.remove(fieldRow.row.VALOR, function(p){ return (p == r.VALOR);});
@@ -227,13 +228,13 @@ function MenuFunctionsController (PermissionService, AccountController, TableCon
 				} else {
 					_.remove(fieldRow.row.VALOR, function(p){ return (p == removed);});
 				}
-				
+
 				_.forEach(toRemove, function(value) {
 				  _.remove(valueField, function(p){
 				  	return p == value.VALOR;
 				  });
 				});
-				
+
 				field.value(valueField);
 	        }
 		}

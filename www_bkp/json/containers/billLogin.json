@@ -1,0 +1,286 @@
+{
+    "id": "7798508210382111131009",
+    "name": "billLogin",
+    "showHeader": false,
+    "showBack": false,
+    "events": [],
+    "showFooter": false,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "widgets": [
+        {
+            "id": "77200942427598525941010",
+            "name": "billLogin",
+            "label": "Login",
+            "template": "widget/form-login.html",
+            "isVisible": true,
+            "actions": [],
+            "events": [
+                {
+                    "id": "77200942427441903091028",
+                    "name": "WidgetOnEnter",
+                    "code": "args.owner.newRow(); args.owner.moveToFirst(); UtilitiesService.changeIndex(); UtilitiesService.setVersionLabel(args.owner);"
+                }
+            ],
+            "dataSource": {},
+            "fields": [
+                {
+                    "id": "77200942424891846911018",
+                    "name": "logo-waiter",
+                    "source": "../mobile/images/logos/fastpass.png",
+                    "class": "12 login-logo-img",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "sameLine": true,
+                    "defaultValue": null,
+                    "template": "field/image-static.html",
+                    "events": []
+                },
+                {
+                    "id": "77200942412428404531019",
+                    "name": "filial",
+                    "class": 6,
+                    "label": "Filial",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "sameLine": true,
+                    "defaultValue": null,
+                    "template": "field/text.html",
+                    "events": [],
+                    "maxlength": 4,
+                    "mask": {
+                        "type": "zerofill"
+                    }
+                },
+                {
+                    "id": "77200942441837956491020",
+                    "name": "caixa",
+                    "class": 6,
+                    "label": "Caixa",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "sameLine": true,
+                    "defaultValue": null,
+                    "template": "field/text.html",
+                    "events": [],
+                    "maxlength": 3,
+                    "mask": {
+                        "type": "zerofill"
+                    }
+                },
+                {
+                    "id": "7720094243189958951021",
+                    "name": "garcom",
+                    "class": 12,
+                    "label": "Garçom",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "sameLine": true,
+                    "defaultValue": null,
+                    "template": "field/text.html",
+                    "events": [],
+                    "maxlength": 4,
+                    "mask": {
+                        "type": "zerofill"
+                    }
+                },
+                {
+                    "id": "77200942438678094781022",
+                    "name": "senha",
+                    "class": 12,
+                    "label": "Senha",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "sameLine": true,
+                    "defaultValue": null,
+                    "template": "field/password.html",
+                    "events": []
+                },
+                {
+                    "id": "77200942438507801501023",
+                    "name": "entrar",
+                    "label": "Entrar",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/button.html",
+                    "defaultButton": true,
+                    "events": [
+                        {
+                            "id": "77200942440547516431024",
+                            "name": "FieldOnClick",
+                            "code": "OperatorController.login(args.row, args.owner.field.widget.container.getWidget('errorConsole'));"
+                        }
+                    ]
+                },
+                {
+                    "id": "77200942442682227521025",
+                    "name": "servidor",
+                    "label": "Configurar IP do servidor",
+                    "class": 12,
+                    "icon": "global",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label-with-icon.html",
+                    "events": [
+                        {
+                            "id": "77200942413955579731026",
+                            "name": "FieldOnClick",
+                            "code": "UtilitiesService.prepareServerForm(args.owner.field.widget.widgets[0]);"
+                        }
+                    ]
+                },
+                {
+                    "id": "77200942441073641031027",
+                    "name": "version",
+                    "label": "Versão x.x.x",
+                    "class": 12,
+                    "icon": "block icon-black",
+                    "readOnly": true,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label-static.html",
+                    "events": []
+                }
+            ],
+            "widgets": [
+                {
+                    "id": "77200942422362884881011",
+                    "name": "serverIp",
+                    "label": "Configurar IP do Servidor",
+                    "template": "widget/form.html",
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "id": "7720094245071966231014",
+                            "label": "Confirmar",
+                            "name": "ok",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "id": "77200942412656073311015",
+                                    "name": "ActionEvent",
+                                    "code": "UtilitiesService.setServerIp(args.row)"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "77200942436177306661016",
+                            "label": "Voltar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "77200942422390636011017",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "id": "7720094244826434641012",
+                            "name": "ip",
+                            "class": 12,
+                            "placeholder": "IP do servidor",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": false,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/text.html",
+                            "events": []
+                        },
+                        {
+                            "id": "7720094246165866381013",
+                            "name": "porta",
+                            "class": 12,
+                            "placeholder": "Porta (opcional)",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": false,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/text.html",
+                            "events": []
+                        }
+                    ]
+                },
+                {
+                    "id": "29208878629163182851306",
+                    "name": "errorConsole",
+                    "label": "Log de Erros",
+                    "isVisible": false,
+                    "template": "widget/form.html",
+                    "actions": [
+                        {
+                            "id": "2920887862701006341308",
+                            "name": "error",
+                            "label": "Fechar",
+                            "showAsAction": "never",
+                            "isVisible": true,
+                            "events": [
+                                {
+                                    "id": "29208878614401171721309",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "id": "29208878640391184761307",
+                            "class": 12,
+                            "name": "erro",
+                            "isVisible": true,
+                            "readOnly": true,
+                            "defaultValue": null,
+                            "placeholder": "Não há erros...",
+                            "template": "field/textarea.html",
+                            "textRows": 15,
+                            "events": []
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

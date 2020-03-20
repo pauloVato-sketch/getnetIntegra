@@ -1,0 +1,462 @@
+.floating-card-list {
+	overflow: auto;
+	top: 40px;
+	bottom: 0px;
+	right: 0;
+	left: 0;
+	position: absolute;
+	z-index: 2;
+	background-color: rgba(0,0,0,0.25);
+}
+
+@media only screen and (min-device-width: 1200px) {
+	.floating-card-list {
+		top: 32px;
+	}
+}
+
+.floating-preferences-options-container {
+	padding-left: 10px;
+	cursor: pointer;
+}
+
+.floating-preferences-options {
+	padding-top: 7px;
+	padding-bottom: 7px;
+	color: #cccccc;
+	font-size: 13px;
+}
+
+.floating-card {
+	background-color: #4d432e;
+	height: 0px;
+	position: absolute;
+	border-radius: 5px;
+	top: 0;
+	left: 0;
+	right: 55px;
+	transition: height 0.5s ease;
+	-webkit-transition: height 0.5s ease;
+	z-index: 1;
+}
+
+.float-action.opened .floating-card {
+	height: 200px;
+}
+
+.zh-floating-control.pos-top .floating-card, .float-action.fix-position-bottom .floating-card {
+	top: auto;
+	bottom: 0;
+}
+
+.float-action.fix-position-top .floating-card {
+	top: 0;
+	bottom: auto;
+}
+
+.zh-floating-control.pos-left .floating-card {
+	left: 55px;
+	right: 0;
+}
+
+.floating-card-label {
+	color: white;
+	font-size: 14px;
+	position: absolute;
+	top: 0;
+	left: 80px;
+	right: 80px;
+	height: 40px;
+	line-height: 40px;
+	z-index: 5;
+}
+
+@media only screen and (min-device-width: 1200px) {
+	.floating-card-label {
+		height: 32px;
+		line-height: 32px;
+	}
+}
+
+.divider-label-content-floating-card {
+	height: 1px;
+	background-color: #e8b53f;
+}
+
+.scroller-preferences-card::-webkit-scrollbar {
+		width: 7px;
+}
+
+.hide-tool-tip-label {
+	display: none !important;
+}
+
+.extending-action {
+	width: 200px;
+}
+
+.floating-card-header {
+	text-align: center;
+	height: 40px;
+	z-index: 1;
+	overflow: hidden;
+	width: 100%;
+	position: relative;
+}
+
+.floating-card-header span.zh-icon {
+	position: initial !important;
+}
+
+@media only screen and (min-device-width: 1200px) {
+	.floating-card-header {
+		height: 32px;
+	}
+}
+
+.previous-customization-card-action {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: auto;
+	z-index: 10;
+}
+
+.forward-customization-card-action {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	left: auto;
+	z-index: 10;
+}
+
+.divider-list-settings {
+	position: relative;
+	top: 120px;
+}
+
+@media only screen and (min-device-width: 1200px) {
+	.divider-list-settings {
+		top: 135px;
+	}
+}
+
+.check-in-use-customization {
+	float: right;
+	padding-right: 10px;
+}
+
+.footer-floating-card-actions {
+	right: 0;
+	left: auto;
+}
+
+.footer-floating-card-actions.action-icon-right {
+	float: right;
+}
+
+.floating-filter-card .floating-card-search-fields {
+	color: white;
+	display: inline-block;
+	font-size: 12px;
+	height: 40px;
+	line-height: 40px;
+	position: absolute;
+	top: 0;
+	left: 10px;
+	width: 60px;
+}
+
+.floating-filter-card .floating-card-list {
+	bottom: 40px;
+}
+
+.floating-filter-card .floating-card-input {
+	position: absolute;
+	height: 40px;
+	left: 10px;
+	right: 10px;
+	bottom: 0;
+	font-size: 0;
+	overflow: hidden;
+}
+
+.floating-filter-card .floating-card-search-field {
+	display: inline-block;
+	height: 40px;
+	line-height: 40px;
+	width: 29%;
+	margin-right: 1%;
+	font-size: 14px;
+	color: white;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	vertical-align: top;
+}
+
+.floating-filter-card .floating-card-search-field-select ul,
+.floating-filter-card .floating-card-select-field-options ul {
+	background-color: #4d432e;
+	width: 50%;
+	max-height: 180px;
+	position: absolute;
+	overflow-x: hidden;
+	overflow-y: auto;
+	left: 0px;
+	box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.25);
+	border-radius: 5px;
+}
+
+.floating-filter-card .floating-card-select-field-options ul {
+	left: 30%;
+	width: 60%;
+}
+
+.zh-floating-control.pos-bottom .floating-filter-card .floating-card-search-field-select ul,
+.zh-floating-control.pos-bottom .floating-filter-card .floating-card-select-field-options ul {
+	bottom: 43px;
+	top: auto;
+}
+
+.zh-floating-control.pos-top .floating-filter-card .floating-card-search-field-select ul,
+.zh-floating-control.pos-top .floating-filter-card .floating-card-select-field-options ul {
+	top: 43px;
+	bottom: auto;
+}
+
+.floating-filter-card .floating-card-search-field-select ul::-webkit-scrollbar-thumb,
+.floating-filter-card .floating-card-select-field-options ul::-webkit-scrollbar-thumb {
+	background-color: white;
+}
+
+.floating-filter-card .floating-card-search-field-select ul::-webkit-scrollbar-track,
+.floating-filter-card .floating-card-select-field-options ul::-webkit-scrollbar-track {
+	background-color: #4d432e;
+}
+
+.floating-filter-card .floating-card-search-field-select ul > li,
+.floating-filter-card .floating-card-select-field-options ul > li {
+	width: auto;
+	color: white;
+	height: 0px;
+	line-height: 35px;
+	padding: 0 8px;
+	cursor: pointer;
+	transition: all 0.5s ease;
+	-webkit-transition: all 0.5s ease;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	position: relative;
+	font-size: 12px;
+}
+
+.floating-filter-card .floating-card-search-field-select ul > li > span {
+	position: relative !important;
+	display: block;
+}
+
+.floating-filter-card .floating-card-search-field-select ul > li > span.zh-icon {
+	left: -10px;
+	top: -3px;
+	width: 30px;
+
+}
+
+.floating-filter-card .floating-card-search-field-select.opened ul > li,
+.floating-filter-card .floating-card-select-field-options.opened ul > li {
+	height: 35px;
+}
+
+@media only screen and (min-device-width: 1200px) {
+	.floating-filter-card .floating-card-list {
+		bottom: 32px;
+	}
+
+	.floating-filter-card .floating-card-input {
+		height: 32px;
+	}
+
+	.floating-filter-card .floating-card-search-fields {
+		height: 32px;
+		line-height: 32px;
+	}
+
+	.floating-filter-card .floating-card-search-field {
+		height: 32px;
+		line-height: 32px;
+		font-size: 12px;
+	}
+
+	.floating-filter-card .floating-card-search-field-select ul,
+	.floating-filter-card .floating-card-select-field-options ul {
+		max-height: 150px;								
+	}
+
+	.zh-floating-control.pos-bottom .floating-filter-card .floating-card-search-field-select ul,
+	.zh-floating-control.pos-bottom .floating-filter-card .floating-card-select-field-options ul {
+		bottom: 35px;
+	}
+
+	.zh-floating-control.pos-top .floating-filter-card .floating-card-search-field-select ul,
+	.zh-floating-control.pos-top .floating-filter-card .floating-card-select-field-options ul {
+		top: 35px;
+	}
+
+	.floating-filter-card .floating-card-search-field-select ul > li > span.zh-icon {
+		left: -8px;
+		top: -1px;
+		width: 25px;
+	}
+
+	.floating-filter-card .floating-card-search-field-select ul > li,
+	.floating-filter-card .floating-card-select-field-options ul > li {
+		line-height: 30px;
+	}
+
+	.floating-filter-card .floating-card-search-field-select.opened ul > li,
+	.floating-filter-card .floating-card-select-field-options.opened ul > li {
+		height: 30px;
+	}
+}
+
+.floating-filter-card input, .floating-filter-card span.zh-select-search-floating {
+	width: 70%;
+	margin-top: 5px;
+	padding: 0;
+	background-color: transparent;
+	border: none;
+	border-bottom: 1px solid white;
+	color: white;
+	height: 26px;
+	line-height: 26px;
+	font-size: 14px;
+	outline: none;	
+	display: inline-block;
+}
+
+.floating-filter-card span.zh-select-search-floating::after {
+	right: 5px;
+	border-bottom: 2px solid white;
+    border-right: 2px solid white;
+    content: '';
+    display: block;
+    height: 8px;
+    margin-top: -5px;
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    -webkit-transform-origin: 66% 66%;
+    transform-origin: 66% 66%;
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    transition: all 0.15s ease-in-out;
+    width: 8px;
+}
+
+.floating-filter-card span.zh-select-search-floating.opened::after {
+    -webkit-transform: rotate(-135deg);
+    transform: rotate(-135deg);
+}
+
+.floating-filter-card input::selection {
+	background-color: white;
+	color: #4d432e;
+}
+
+@media only screen and (min-device-width: 1200px) {
+	.floating-filter-card input, .floating-filter-card span.zh-select-search-floating {
+		height: 21px;
+		line-height: 21px;
+		font-size: 12px;
+	}
+}
+
+.floating-filter-card .clear-button {
+	left: auto !important;
+	right: -5px;
+}
+
+.float-action.opened .floating-filter-card.no-filter-selection {
+	height: 40px;
+	border-radius: 50% 5px 5px 50%;
+	left: 10px;
+}
+
+@media only screen and (min-device-width: 1200px) {
+	.float-action.opened .floating-filter-card.no-filter-selection {
+		height: 32px;
+	}
+}
+
+.floating-filter-card.no-filter-selection .floating-card-header {
+	display: none;
+}
+
+.floating-filter-card.no-filter-selection .floating-card-list {
+	display: none;
+}
+
+.searching-control-info {
+	width: 30px;
+	display: inline-block;
+	position: relative;
+    height: 30px;
+    vertical-align: middle;
+}
+
+@media only screen and (min-device-width: 1200px) {
+	.searching-control-info {
+	    height: 24px;
+	}
+}
+
+.searching-control-info-text {
+	display: inline-block;
+	padding-right: 30px;
+}
+
+.searching-control-info-details {
+	display: none;
+	max-width: 180px;
+	position: absolute;
+	bottom: 30px;
+	left: 15px;
+	background-color: #4d432e;
+	color: white;
+	transform: translateX(-50%);
+	padding: 5px 10px;
+	z-index: 1;
+	line-height: 14px;
+	text-align: left;
+}
+
+.searching-control-info-details span {
+	width: 100%;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.searching-control-info-details b {
+	font-family: "open_sanssemibold";	
+}
+
+.searching-control-info-details::after {
+	content: '';
+	position: absolute;
+	bottom: -5px;
+	left: 50%;
+	transform: translateX(-7px);
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 5px 7px 0 7px;
+	border-color: #4d432e transparent transparent transparent;
+}
+
+.searching-control-info:hover .searching-control-info-details {
+	display: block;
+}

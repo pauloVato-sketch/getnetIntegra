@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v26/values-v26.xml",
+            "outputFile": "/home/GRUPOTEKNISA/lucasmacedo/workfolder/getnetIntegra/platforms/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v26/values-v26.xml",
             "map": [
                 {
-                    "source": "/home/paulonascimento/.gradle/caches/transforms-2/files-2.1/ab5e760a0f0e43733b4188f5d3401c64/res/values-v26/values-v26.xml",
+                    "source": "/home/GRUPOTEKNISA/lucasmacedo/.gradle/caches/transforms-1/files-1.1/appcompat-1.1.0.aar/6d24222c67637d6b83034833d707a57d/res/values-v26/values-v26.xml",
                     "from": {
                         "startLines": "2,3,4,8,12,16",
                         "startColumns": "4,4,4,4,4,4",

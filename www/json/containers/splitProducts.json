@@ -128,29 +128,32 @@
                     "floatingControl": false,
                     "events": [
                         {
-                            "id": "177538730986341011722",
                             "name": "WidgetOnEnter",
                             "code": "TableController.positionVisibility(templateManager.container.getWidget('widgetProducts'));"
                         },
                         {
-                            "id": "1775387301168080741723",
                             "name": "WidgetAfterSelectRow",
                             "code": "TableController.splitProductsValidation();"
                         },
                         {
-                            "id": "17753873032039834871724",
                             "name": "WidgetAfterUnselectRow",
                             "code": "TableController.splitProductsValidation();"
                         },
                         {
-                            "id": "17753873011127236781725",
                             "name": "WidgetAfterSelectAll",
                             "code": "TableController.splitProductsValidation();"
                         },
                         {
-                            "id": "1775387301085402861726",
                             "name": "WidgetAfterUnselectAll",
                             "code": "TableController.splitProductsValidation();"
+                        },
+                        {
+                            "name": "WidgetBeforeSelectRow",
+                            "code": "TableController.splitProductPromoIntegrity(args.owner, args.owner.selectedRow);"
+                        },
+                        {
+                            "name": "WidgetBeforeUnselectRow",
+                            "code": "TableController.splitProductPromoIntegrity(args.owner, args.owner.selectedRow);"
                         }
                     ],
                     "fields": [
@@ -234,29 +237,32 @@
                     ],
                     "events": [
                         {
-                            "id": "17753873029810939481736",
                             "name": "WidgetOnEnter",
                             "code": "TableController.positionVisibility(templateManager.container.getWidget('widgetCancel'));"
                         },
                         {
-                            "id": "17753873012634279991737",
                             "name": "WidgetAfterSelectRow",
                             "code": "TableController.cancelSplitedProductsValidation();"
                         },
                         {
-                            "id": "177538730440910881738",
                             "name": "WidgetAfterUnselectRow",
                             "code": "TableController.cancelSplitedProductsValidation();"
                         },
                         {
-                            "id": "17753873029776715131739",
                             "name": "WidgetAfterSelectAll",
                             "code": "TableController.cancelSplitedProductsValidation();"
                         },
                         {
-                            "id": "1775387305564064981740",
                             "name": "WidgetAfterUnselectAll",
                             "code": "TableController.cancelSplitedProductsValidation();"
+                        },
+                        {
+                            "name": "WidgetBeforeSelectRow",
+                            "code": "TableController.splitProductPromoIntegrity(args.owner, args.owner.selectedRow);"
+                        },
+                        {
+                            "name": "WidgetBeforeUnselectRow",
+                            "code": "TableController.splitProductPromoIntegrity(args.owner, args.owner.selectedRow);"
                         }
                     ],
                     "actions": [

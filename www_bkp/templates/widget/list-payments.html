@@ -1,0 +1,45 @@
+<div ng-include src="templateManager.getTemplateDefaultFolder()+'widget/form-without-scroller.html'"
+	data-ng-if="widget.aclIsVisible && widget.isVisible"> </div>
+<div
+	data-zh-widget-events
+	data-zh-scroller
+	class="row container zh-widget-{{widget.name}}"
+	data-ng-if="widget.aclIsVisible && widget.isVisible"
+	>
+	<div class="col-xs-12 col-sm-12">
+		<ul class="zh-products-container" data-ng-controller='ListController as controller'>
+			<li ng-repeat="row in filtered = (widget.dataSource.data | filter:searchInput)"
+				zh-long-tap="controller.onLongTap(row)"
+				ng-class="{  'zh-row-selected' :  (widget.currentRow == row && widget.widgets && widget.widgets.length > 0), 'zh-mult-selected-row': row.__isSelected }"
+				class="zh-sub-list-group"
+				data-zh-style
+				>
+				<div>
+					<div
+					ng-click="openRowInnerList(row, widget)"
+					ng-class="(widget.currentRow == row && widget.widgets && widget.widgets.length > 0) ? 'zh-row-selected-panel-line' : ''" style="">
+						<span class="zh-product-desc">
+							<p>
+								<b>
+									<span data-ng-bind='row[widget.detailDescProp]'>
+									</span>
+									<span class="zh-bold-menu" data-ng-bind='row[widget.boldText]'>
+									</span>
+								</b>
+							</p>
+							<p class="zh-product-sub-desc" data-ng-bind='row[widget.orderDate]'></p>
+							<span class="zh-product-sub-desc" data-ng-bind='row[widget.detailSubDescProp]'></span>
+						</span>
+						<span class="zh-product-price" data-ng-bind='row[widget.detailPriceProp]'></span>
+					</div>
+					<span data-ng-if='widget.widgets.length > 0 && widget.currentRow == row'>
+						<aside data-ng-controller="GroupListController">
+							<div class="zh-workaround-grid-float" ng-include src="templateManager.getTemplateDefaultFolder()+widget.template">
+							</div>
+						</aside>
+					</span>
+				</div>
+			</li>
+		</ul>
+	</div>
+</div>

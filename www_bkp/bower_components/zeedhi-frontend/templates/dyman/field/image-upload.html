@@ -1,0 +1,16 @@
+<img src="{{fieldRow ||  field.imagePlaceholder  || templateManager.getMappedPackages().zeedhiFramework + 'images/no-image.svg'}}" class="img-thumbnail img-preview">
+<div>
+  <button
+		type="button"
+		id="{{field.name}}"
+		name="{{field.name}}"
+		data-ng-model="fieldRow"
+		data-zh-bind-translate="field.label"
+		data-ng-readonly="field.isReadOnly()"
+		data-ng-disabled="field.isReadOnly()"
+		data-zh-style
+		data-zh-events
+		data-zh-click="templateManager.fileToUpload = field; startUploadFile()"
+		class="btn btn-default btn-block form-input-margin-bottom zh-btn-type-button"
+	></button>
+</div>

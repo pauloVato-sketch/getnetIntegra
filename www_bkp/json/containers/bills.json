@@ -1,0 +1,565 @@
+{
+    "id": "203942902437196013901029",
+    "name": "bills",
+    "label": "Comanda",
+    "showHeader": true,
+    "showMenu": true,
+    "showBack": false,
+    "showFooter": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "events": [],
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "widgets": [
+        {
+            "id": "42257279526589144271030",
+            "name": "mainBillsWidget",
+            "label": "",
+            "template": "widget/form.html",
+            "isVisible": true,
+            "actions": [
+                {
+                    "id": "42257279517284272691069",
+                    "name": "addBill",
+                    "isVisible": true,
+                    "icon": "plus icon-black",
+                    "showAsAction": "always",
+                    "events": [
+                        {
+                            "id": "422572795414953431070",
+                            "name": "ActionEvent",
+                            "code": "BillController.addBillClick(args.owner.widget.container.getWidget('billOpeningWidget'), args.row);"
+                        }
+                    ]
+                },
+                {
+                    "id": "42257279525499925571071",
+                    "label": "Abertas",
+                    "name": "btnShowBills",
+                    "isVisible": true,
+                    "showAsAction": "never",
+                    "icon": "",
+                    "events": [
+                        {
+                            "id": "42257279534370270151072",
+                            "name": "ActionEvent",
+                            "code": "BillController.prepareBillList(args.owner.widget.container.getWidget('openBillsWidget'));"
+                        }
+                    ]
+                },
+                {
+                    "id": "1231231231424212412412541",
+                    "name": "conferir",
+                    "isVisible": false,
+                    "icon": "cart",
+                    "showAsAction": "always",
+                    "events": [
+                        {
+                            "id": "42257279534370270151072",
+                            "name": "ActionEvent",
+                            "code": "AccountController.showCheckOrderScreenCartPool({'modoHabilitado': 'C'});"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "id": "42257279542687667271073",
+                    "name": "WidgetOnEnter",
+                    "code": "BillController.prepareBills(args.owner);"
+                }
+            ],
+            "dataSource": {},
+            "fields": [
+                {
+                    "id": "4225727952534864841064",
+                    "name": "lblDSCOMANDA",
+                    "class": 12,
+                    "label": "Digite a comanda:",
+                    "readOnly": true,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "42257279516309648891065",
+                    "name": "DSCOMANDA",
+                    "class": 12,
+                    "label": "",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": true,
+                    "defaultValue": null,
+                    "template": "field/number-keyboard.html",
+                    "showSignalButton": false,
+                    "showSeparatorButton": false,
+                    "spin": false,
+                    "events": [
+                        {
+                            "id": "42257279523085176891066",
+                            "name": "FieldOnConfirm",
+                            "code": "BillController.validateBill(args.row, args.owner.field.widget.widgets);"
+                        }
+                    ],
+                    "size": 22
+                },
+                {
+                    "id": "42257279516309648891066",
+                    "name": "BTNBARCODE",
+                    "class": 2,
+                    "label": "SCAN",
+                    "readOnly": false,
+                    "isVisible": false,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "FieldOnClick",
+                            "code": "BillController.scanBarCode(args.owner.field.widget);"
+                        }
+                    ]
+                },
+                {
+                    "id": "42257279510897950361067",
+                    "name": "btnValidateBill",
+                    "class": 12,
+                    "label": "Confirma",
+                    "readOnly": false,
+                    "openAsPopup": true,
+                    "isVisible": false,
+                    "template": "field/button.html",
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "events": [
+                        {
+                            "id": "42257279539900018361068",
+                            "name": "FieldOnClick",
+                            "code": "BillController.validateBill(args.row, args.owner.field.widget.widgets, args.owner.field.widget.widgets[2]);"
+                        }
+                    ]
+                }
+            ],
+            "widgets": [
+                {
+                    "id": "42257279523621980401031",
+                    "name": "billOpeningWidget",
+                    "label": "Abrir Comanda",
+                    "template": "widget/form.html",
+                    "isVisible": true,
+                    "events": [],
+                    "dataSource": {},
+                    "actions": [
+                        {
+                            "id": "4225727957681185931047",
+                            "label": "Abrir comanda",
+                            "name": "btnOpenBill",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "id": "42257279530880960421048",
+                                    "name": "ActionEvent",
+                                    "code": "BillController.openBill(args.row);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "42257279521889340461049",
+                            "label": "Voltar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "42257279539010550921050",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "btnReadConsumerQRCode",
+                            "isVisible": true,
+                            "icon": "qrcode",
+                            "showAsAction": "always|edit",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "TableController.scanConsumerQrCode(args.owner.widget);"
+                                }
+                            ]
+                        }
+                    ],
+                    "fields": [
+                        {
+                            "id": "42257279515171182901033",
+                            "class": 12,
+                            "name": "NMRAZSOCCLIE",
+                            "label": "Cliente (Opcional)",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "breakline": true,
+                            "valueField": "CDCLIENTE",
+                            "descriptionField": "NMRAZSOCCLIE",
+                            "outData": {
+                                "NMRAZSOCCLIE": "NMRAZSOCCLIE",
+                                "CDCLIENTE": "CDCLIENTE"
+                            },
+                            "template": "field/select.html",
+                            "showSelectAs": "grid",
+                            "events": [
+                                {
+                                    "id": "42257279524438438951035",
+                                    "name": "FieldOnChange",
+                                    "code": "TableController.prepareCustomers(args.owner.field.widget.getField('NMCONSUMIDOR'), args.row.CDCLIENTE, false);"
+                                }
+                            ],
+                            "dataSource": {
+                                "memoryStorage": true,
+                                "name": "/ParamsClientRepository"
+                            },
+                            "fields": [
+                                {
+                                    "id": "4225727954876771191034",
+                                    "name": "NMRAZSOCCLIE",
+                                    "label": "Nome",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "consumerSearch",
+                            "label": "Busca",
+                            "class": 3,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "defaultValue": null,
+                            "template": "field/text.html",
+                            "events": [
+                                {
+                                    "id": "68159823438229374221344",
+                                    "name": "FieldOnInput",
+                                    "code": "BillController.consumerSearch();"
+                                },
+                                {
+                                    "id": "15995324232638265591637",
+                                    "name": "FieldOnKeydown",
+                                    "code": "BillController.handleEnterButton(args);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "42257279526793485531036",
+                            "name": "NMCONSUMIDOR",
+                            "label": "Consumidor (Opcional)",
+                            "class": 9,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "itemsPerPage": 30,
+                            "defaultValue": null,
+                            "descriptionField": "NMCONSUMIDOR",
+                            "valueField": "CDCONSUMIDOR",
+                            "dataSource": {
+                                "name": "/ParamsCustomerRepository",
+                                "lazyLoad": true,
+                                "rest": true,
+                                "memoryStorage": true
+                            },
+                            "dataSourceFilter": [
+                                {
+                                    "name": "CDCLIENTE",
+                                    "value": "",
+                                    "operator": "="
+                                }
+                            ],
+                            "template": "field/select.html",
+                            "showSelectAs": "grid",
+                            "outData": {
+                                "NMCONSUMIDOR": "NMCONSUMIDOR",
+                                "CDCONSUMIDOR": "CDCONSUMIDOR",                                
+                                "CDCLIENTE": "CODCLIE",
+                                "NMRAZSOCCLIE": "NOMCLIE",
+                                "IDSITCONSUMI": "IDSITCONSUMI",
+                                "IDSOLSENHCONS": "IDSOLSENHCONS",
+                                "CDSENHACONS": "CDSENHACONS"
+                            },
+                            "events": [
+                                {
+                                    "name": "FieldOnClick",
+                                    "code": "BillController.applyClientFilter(args.owner.field);"
+                                },
+                                {
+                                    "name": "FieldBeforeSelectOpen",
+                                    "code": "BillController.handleConsumerField(args.owner.field);"
+                                },
+                                {
+                                    "name": "FieldOnChange",
+                                    "code": "BillController.handleConsumerChange(args.owner.field.widget);"
+                                }
+                            ],
+                            "fields": [
+                                {
+                                    "id": "42257279528827132991037",
+                                    "name": "NMCONSUMIDOR",
+                                    "label": "Nome",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "42257279529725022481032",
+                            "name": "DSCONSUMIDOR",
+                            "label": "Nome do Consumidor",
+                            "isVisible": true,
+                            "showOnList": true,
+                            "readOnly": false,
+                            "class": 12,
+                            "template": "field/text-edit.html"
+                        },
+                        {
+                            "id": "42257279530969065631038",
+                            "class": 6,
+                            "name": "btnTableList",
+                            "label": "Mesa (opcional)",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "showOnForm": true,
+                            "defaultValue": null,
+                            "template": "field/button.html",
+                            "events": [
+                                {
+                                    "id": "42257279518975247591039",
+                                    "name": "FieldOnClick",
+                                    "code": "TableController.prepareTableList(args.owner.field.widget.container.getWidget('tableListWidget'));"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "4225727958656587491040",
+                            "class": 6,
+                            "name": "VENDEDOR",
+                            "label": "Vendedor (Opcional)",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "valueField": "CDCLIENTE",
+                            "descriptionField": "DESCVENDEDOR",
+                            "outData": {
+                                "DESCVENDEDOR": "VENDEDOR",
+                                "CDVENDEDOR": "CDVENDEDOR"
+                            },
+                            "template": "field/select.html",
+                            "showSelectAs": "grid",
+                            "events": [],
+                            "dataSource": {
+                                "memoryStorage": true,
+                                "name": "/ParamsSellerRepository"
+                            },
+                            "fields": [
+                                {
+                                    "id": "42257279534796162711041",
+                                    "name": "CDVENDEDOR",
+                                    "label": "Código",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "42257279532378864081042",
+                                    "name": "NMFANVEN",
+                                    "label": "Nome",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "42257279520094499041043",
+                            "class": 6,
+                            "name": "DSCOMANDA",
+                            "placeholder": "Número da comanda",
+                            "readOnly": false,
+                            "isVisible": false,
+                            "showOnForm": true,
+                            "defaultValue": null,
+                            "template": "field/text.html",
+                            "events": []
+                        },
+                        {
+                            "id": "42257279538020297671044",
+                            "class": 6,
+                            "name": "CDCLIENTE",
+                            "label": "",
+                            "readOnly": false,
+                            "isVisible": false,
+                            "showOnForm": true,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "id": "42257279530907511861045",
+                            "class": 6,
+                            "name": "CDCONSUMIDOR",
+                            "label": "",
+                            "readOnly": false,
+                            "isVisible": false,
+                            "showOnForm": true,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "id": "42257279521277023831046",
+                            "class": 6,
+                            "name": "CDVENDEDOR",
+                            "label": "",
+                            "readOnly": false,
+                            "isVisible": false,
+                            "showOnForm": true,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        }
+                    ]
+                },
+                {
+                    "id": "42257279523255978581051",
+                    "name": "tableListWidget",
+                    "label": "Mesas",
+                    "template": "../../../../templates/widget/waiter_list.html",
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "id": "42257279539240517501052",
+                            "label": "Voltar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "42257279532237761691053",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": []
+                },
+                {
+                    "id": "42257279530089393781054",
+                    "name": "sellersWidget",
+                    "label": "Vendedores",
+                    "template": "widget/list-popup.html",
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "id": "42257279516135190101056",
+                            "label": "Voltar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "42257279531820332001057",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [
+                        {
+                            "id": "42257279515836583041058",
+                            "name": "WidgetAfterMoveRow",
+                            "code": "TableController.prepareSellersOpening(args.owner.currentRow, args.owner.container.getWidget('billOpeningWidget'));"
+                        }
+                    ],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "id": "42257279528974884901055",
+                            "name": "DESCVENDEDOR",
+                            "label": "",
+                            "class": 12,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        }
+                    ]
+                },
+                {
+                    "id": "42257279527328910911059",
+                    "name": "openBillsWidget",
+                    "label": "Comandas Abertas",
+                    "template": "widget/list-popup.html",
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "id": "42257279541963055681061",
+                            "label": "Voltar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "42257279534279758061062",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [
+                        {
+                            "id": "4225727952117784341063",
+                            "name": "WidgetAfterMoveRow",
+                            "code": "BillController.selectBill(args.row);"
+                        }
+                    ],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "id": "42257279510192373711060",
+                            "name": "LABELDSCOMANDA",
+                            "class": 12,
+                            "sameLine": false,
+                            "isVisible": true,
+                            "readOnly": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "template": "field/text-edit.html",
+                            "valueField": "DSCOMANDA",
+                            "descriptionField": "DSCOMANDA"
+                        }
+                    ],
+                    "widgets": []
+                }
+            ]
+        }
+    ]
+}

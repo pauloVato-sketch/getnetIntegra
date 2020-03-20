@@ -1698,7 +1698,7 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
     var SITEF_NO  = "1";
 
 	var PAYMENT_INVOICE = "";
-	
+
 	var PAYMENT_TYPE = {
 		pagamento: {
 			debito: 2,
@@ -1776,9 +1776,9 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
         return javaResult;
     };
 
-	// o cancelamento da sitef é o próprio estorno 
+	// o cancelamento da sitef é o próprio estorno
     this.cancelIntegration = function(tiporeceData){
-        self.reversalIntegration(tiporeceData);     
+        self.reversalIntegration(tiporeceData);
     };
 
     this.cancelIntegrationResult = function(resolve, javaResult){
@@ -1792,7 +1792,7 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
 
     this.completeIntegrationResult = function(resolve, javaResult){
         return true;
-    };    
+    };
 
     this.reversalIntegration = function(tiporeceData){
     	if(tiporeceData.IDTIPORECE === 'H'){
@@ -1812,7 +1812,7 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
 			tiporeceData.VRMOVIVEND = parseFloat(tiporeceData.VRMOVIVEND);
 			OperatorRepository.findOne().then(function(operatorData) {
 				self.getParameters(operatorData, tiporeceData.NRCONTROLTEF).then(function(reversalParameters){
-					
+
 					var estornos = PAYMENT_TYPE.estorno;
 					switch (tiporeceData.IDTIPORECE) {
 						case '1': reversalParameters.paymentType = estornos.credito; break;
@@ -1899,7 +1899,7 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
 				case '2': sitefParams.paymentType = pagamentos.debito; break;
 				case 'H': sitefParams.paymentType = pagamentos.mercadoPago; break;
 			}
-			
+
 			sitefParams.paymentValue = currentRow.VRMOVIVEND.toFixed(2);
 			sitefParams.paymentDate = self.PAYMENT_INVOICE.slice(0, 8);
 			sitefParams.paymentHour = self.PAYMENT_INVOICE.slice(8, 14);
@@ -1948,7 +1948,7 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
 	};
 
 	this.formatCardNumber = function(cardNumber){
-		return cardNumber.slice(0, 4) + ' ' + cardNumber.slice(4, 6) + 
+		return cardNumber.slice(0, 4) + ' ' + cardNumber.slice(4, 6) +
 			'** **** ' + cardNumber.slice(6, 10);
 	};
 
@@ -1958,16 +1958,33 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
 		sitefWidget.getField("userInput").isVisible = false;
 		sitefWidget.getAction("btnBack").isVisible = false;
 		sitefWidget.getAction("btnConfirm").isVisible = false;
+		sitefWidget.label = "Stone";
 
-		ScreenService.openPopup(sitefWidget).then(function() {
-			window.setMessage = self.setMessage;
-			window.setLabel = self.setLabel; 
-			window.promptBoolean = self.promptBoolean; 
-			window.promptCommand = self.promptCommand; 
-			window.hideUserInterfaces = self.hideUserInterfaces;
-			window.showCancelButton = self.showCancelButton;
-			cordova.plugins.GertecSitef.payment(JSON.stringify(params), window.returnIntegration, null);
-		}.bind(this));
+        ScreenService.openPopup(sitefWidget).then(function() {
+            OperatorRepository.findOne().then(function (operatorData){
+                window.setMessage = self.setMessage;
+                window.setLabel = self.setLabel;
+                window.promptBoolean = self.promptBoolean;
+                window.promptCommand = self.promptCommand;
+                window.hideUserInterfaces = self.hideUserInterfaces;
+                window.showCancelButton = self.showCancelButton;
+
+                // QRCode Mercado Pago
+                if (params.paymentType == 122){
+                	sitefWidget.getAction("btnBack").isVisible = true;
+                    if (operatorData.CDURLQRCODE){
+                        var qrcode = new QRCode($(".sitef-field")[0], {
+                            width : 150,
+                            height : 150
+                        });
+                        qrcode.makeCode(operatorData.CDURLQRCODE);
+                    }
+                }
+
+				//cordova.plugins.GertecSitef.payment(JSON.stringify(params), window.returnIntegration, null);
+				cordova.exec(window.returnIntegration, window.returnIntegration, 'IntegrationService', 'payment', [JSON.stringify(params)])
+            }.bind(this));
+        }.bind(this));
 	};
 
 	this.continueSitefProcess = function(buffer){
@@ -3716,8 +3733,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 		return self.checkIfMustCallIntegration(currentRow.tiporece).then(function (mustCallIntegration) {
 			if (mustCallIntegration) {
 				// chama integração
-				var payment = getPaymentFromCurrentRow(currentRow);
-				return window.cordova.plugins.IntegrationService.payment(payment).then(function (integrationResult) {
+				return IntegrationService.integrationPayment(currentRow).then(function (integrationResult) {
 					if (!integrationResult.error) {
 						return self.savePayment(integrationResult.data).then(function(){
 							return self.handlePrintPayment(integrationResult.data.eletronicTransacion.data).then(function(){
@@ -3733,14 +3749,6 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 				return self.setPaymentSale(currentRow);
 			}
 		}.bind(this));
-	};
-
-	this.getPaymentFromCurrentRow = function (currentRow){
-		return JSON.stringify(
-			{"paymentType": currentRow.tiporece.IDTIPORECE, 
-			 "paymentValue": currentRow.VRMOVIVEND, 
-			 "paymentNSU": "123"}
-		);
 	};
 
 	this.checkIfMustCallIntegration = function (tiporece) {
@@ -7800,6 +7808,12 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
                                             // Se não tiver observações, não abre o popup.
                                             self.openPromoPopup(productWidget, product, promoValues);
                                         }
+                                        else {
+                                            PromoTray.findAll().then(function (newTray){
+                                                self.handleMutex(productWidget.container.getWidget('categories').dataSource.data, product.CDGRUPMUTEX, product.CDGRUPO, newTray);
+                                                self.advanceGroup(productWidget.container.getWidget('categories'), newTray);
+                                            });
+                                        }
                                     }
                                 });
                             });
@@ -7981,6 +7995,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
                 PRODUTOS: [],
                 CDOCORR: [],
                 DSOCORR_CUSTOM: '',
+                TXPRODCOMVEN: null,
                 OBSERVATIONS: product.OBSERVATIONS,
                 IMPRESSORA: printers.length > 0 ? printers[0].NRSEQIMPRLOJA : null,
                 NRQTDMINOBS: product.NRQTDMINOBS,
@@ -11812,13 +11827,13 @@ function OperatorController(OperatorService, TableService, AccountController, Ut
 	TableActiveTable, Query, ApplicationContext, RegisterService, WindowService, OperatorRepository, ParamsAreaRepository,
 	ParamsGroupRepository, ParamsClientRepository, ParamsSellerRepository, AccountCart, ParamsMenuRepository, ParamsGroupPriceChart,
 	ParamsPriceChart, ParamsPrinterRepository, ParamsProdMessageRepository, ParamsProdMessageCancelRepository, ParamsParameterRepository,
-	ParamsObservationsRepository, ZHPromise, FiliaisLogin, CaixasLogin, VendedoresLogin, metaDataFactory, PrinterPoynt, IntegrationService, 
-	SaveLogin, SSLConnectionId, PermissionService, ParamsMensDescontoObs, CarrinhoDesistencia, AccountService, PaymentService, 
-	PerifericosService, ProdSenhaPed){
+	ParamsObservationsRepository, ZHPromise, FiliaisLogin, CaixasLogin, VendedoresLogin, metaDataFactory, PrinterPoynt, IntegrationService,
+	SaveLogin, SSLConnectionId, PermissionService, ParamsMensDescontoObs, CarrinhoDesistencia, AccountService, PaymentService,
+	PerifericosService, ProdSenhaPed) {
 
-	var modoMesa    = 'M';
+	var modoMesa = 'M';
 	var modoComanda = 'C';
-	var modoBalcao  = 'B';
+	var modoBalcao = 'B';
 	var modoDelivery = 'D';
 	var self = this;
 
@@ -11961,14 +11976,13 @@ function OperatorController(OperatorService, TableService, AccountController, Ut
 						function (data) {
 							if (data.OperatorRepository) {
 								if (data.OperatorRepository[0].paramsImpressora) {
-									PerifericosService.test(data.OperatorRepository[0].paramsImpressora)
-										.then(function (response) {
-											if (!response.error) {
-												self.handleLogin(data, menus);
-											} else {
-												ScreenService.showMessage(response.message);
-											}
-										});
+									PerifericosService.test(data.OperatorRepository[0].paramsImpressora).then(function (response) {
+										if (!response.error) {
+											self.handleLogin(data, menus);
+										} else {
+											ScreenService.showMessage(response.message);
+										}
+									});
 								} else {
 									self.handleLogin(data, menus);
 								}
@@ -12045,13 +12059,13 @@ function OperatorController(OperatorService, TableService, AccountController, Ut
 
 	this.bindedDoLogin = this.doLogin;
 
-	this.doLogin = function(data, menus) {
-		OperatorRepository.save(data.OperatorRepository).then(function (){
+	this.doLogin = function (data, menus) {
+		OperatorRepository.save(data.OperatorRepository).then(function () {
 			var operatorData = data.OperatorRepository[0];
 			this.handleMenuOptions(operatorData.modoHabilitado, operatorData.IDCOLETOR, menus,
-			 	operatorData.IDHABCAIXAVENDA, operatorData.NMFANVEN, operatorData.CDOPERADOR);
+				operatorData.IDHABCAIXAVENDA, operatorData.NMFANVEN, operatorData.CDOPERADOR);
 
-			TableActiveTable.remove(Query.build()).then(function() {
+			TableActiveTable.remove(Query.build()).then(function () {
 				UtilitiesService.backMainScreen();
 				templateManager.project.notifications[0].isVisible = false;
 			});
@@ -12286,44 +12300,44 @@ function OperatorController(OperatorService, TableService, AccountController, Ut
 	};
 
 	this.checkPendingPayment = function (IDTPTEF, errorMessage) {
-		OperatorService.findPendingPayments().then(function(payments) {
+		OperatorService.findPendingPayments().then(function (payments) {
 			payments = payments[0];
-			if(payments.error) {
-				if(!_.isEmpty(payments.message))
+			if (payments.error) {
+				if (!_.isEmpty(payments.message))
 					ScreenService.showMessage(payments.message, 'alert');
-				else if(_.isEmpty(payments.message) && errorMessage !== null)
+				else if (_.isEmpty(payments.message) && errorMessage !== null)
 					ScreenService.showMessage(errorMessage, 'alert');
 			} else {
 				payments = payments.data;
-				payments.forEach(function(payment){
+				payments.forEach(function (payment) {
 					var transactionDate = payment.TRANSACTIONDATE;
 					payment.TRANSACTIONDATE = transactionDate.slice(6, 8) + transactionDate.slice(4, 6) + transactionDate.substring(0, 4);
 				});
 
 				payments[0].IDTPTEF = IDTPTEF;
-				ScreenService.showMessage("Há transações pendentes que serão canceladas.").then(function(){
-					IntegrationService.reversalIntegration(self.mochRemovePaymentSale, payments).then(function(reversalIntegrationResult){
-						if (!reversalIntegrationResult.error){
+				ScreenService.showMessage("Há transações pendentes que serão canceladas.").then(function () {
+					IntegrationService.reversalIntegration(self.mochRemovePaymentSale, payments).then(function (reversalIntegrationResult) {
+						if (!reversalIntegrationResult.error) {
 							PaymentService.removePayment(payments);
 							PaymentService.handleRefoundTEFVoucher(reversalIntegrationResult.data);
 						} else {
-							if(reversalIntegrationResult.data.length > 1) {
-								var reversed = _.map(reversalIntegrationResult.data, function(reversal){
+							if (reversalIntegrationResult.data.length > 1) {
+								var reversed = _.map(reversalIntegrationResult.data, function (reversal) {
 									return _.isUndefined(reversal.toRemove) ? null : reversal.toRemove.CDNSUHOSTTEF;
 								});
 								reversed = _.compact(reversed);
 
-								payments = _.filter(payments, function(payment){
+								payments = _.filter(payments, function (payment) {
 									return _.indexOf(reversed, payment.CDNSUHOSTTEF) !== -1;
 								}.bind(this));
 
 								PaymentService.removePayment(payments);
 							}
 
-							ScreenService.showMessage(reversalIntegrationResult.message , 'alert');
+							ScreenService.showMessage(reversalIntegrationResult.message, 'alert');
 						}
 					}.bind(this));
-				}.bind(this));				
+				}.bind(this));
 			}
 		}.bind(this));
 	};
@@ -14622,20 +14636,30 @@ function TableController($rootScope, PermissionService, TableService, TableRepos
 
 	};
 
-	this.splitProductsValidation = function () {
+    this.splitProductsValidation = function (){
 
-		var widgetProducts = templateManager.container.getWidget("widgetProducts");
-		var field = templateManager.container.getWidget("widgetSplit").getField("positionswidget");
-		var selectedProducts = templateManager.container.getWidget("widgetProducts").getCheckedRows();
+        var widgetProducts = templateManager.container.getWidget("widgetProducts");
+        var field = templateManager.container.getWidget("widgetSplit").getField("positionswidget");
+        var selectedProducts = templateManager.container.getWidget("widgetProducts").getCheckedRows();
 
-		if (!field.position || field.position.length <= 1 || selectedProducts.length === 0)
-			widgetProducts.getAction("dividir").isVisible = false;
-		else
-			widgetProducts.getAction("dividir").isVisible = true;
+        if (!field.position || field.position.length <= 1 || selectedProducts.length === 0)
+            widgetProducts.getAction("dividir").isVisible = false;
+        else
+            widgetProducts.getAction("dividir").isVisible = true;
 
-		field._isStatusChanged = false;
+        field._isStatusChanged = false;
 
-	};
+    };
+
+    this.splitProductPromoIntegrity = function(widget, selectedItem){
+        widget.dataSource.data.forEach(function (item){
+            if (selectedItem && !_.isEmpty(item.NRSEQPRODCOM)){
+                if (item.NRSEQPRODCOM == selectedItem.NRSEQPRODCOM && !_.isEqual(item, selectedItem)){
+                    item.__isSelected = !selectedItem.__isSelected;
+                }
+            }
+        });
+    };
 
 	this.cancelSplitedProductsValidation = function () {
 
@@ -14695,7 +14719,7 @@ function TableController($rootScope, PermissionService, TableService, TableRepos
 			});
 			this.splitProductsValidation();
 		} else {
-			ScreenService.showMessage('Não é possível dividir o produto selecionado para este número de pessoas.');
+			ScreenService.showMessage('Não é possível realizar a divisão de um ou mais produtos para esta seleção de posições, pois o preço total do mesmo irá ficar menor que 1 centavo.');
 		}
 	};
 
@@ -17758,7 +17782,7 @@ function MenuFunctionsController (PermissionService, AccountController, TableCon
 		productField.dataSource.data = Array();
 		productField.clearValue();
 		AccountController.getAccountData(function(accountData) {
-			AccountService.selectComandaProducts(accountData[0].NRCOMANDA).then(function(result){				
+			AccountService.selectComandaProducts(accountData[0].NRCOMANDA).then(function(result){
 				productField.dataSource.data = result;
 			}.bind(this));
 		});
@@ -17785,6 +17809,7 @@ function MenuFunctionsController (PermissionService, AccountController, TableCon
 			ScreenService.showMessage("Selecione a comanda de destino.", 'alert');
 		}
 	};
+
 	this.handleCheckedPromo = function(field, action) {
 		_.forEach(field.dataSource, function(produto) {
 			if (!!field.selectedRow.CDPRODPROMOCAO) {
@@ -17812,9 +17837,9 @@ function MenuFunctionsController (PermissionService, AccountController, TableCon
 					if (!_.isEmpty(p.CDPRODPROMOCAO) && (!_.isEmpty(removedRow)))
 						return (p.CDPRODPROMOCAO == removedRow[0].CDPRODPROMOCAO && p.NRSEQPRODCOM == removedRow[0].NRSEQPRODCOM);
 				});
-				
+
 				var valueField = _.clone(field.value());
-				
+
 				if (!_.isEmpty(toRemove)){
 					_.forEach(toRemove, function(r){
 						_.remove(fieldRow.row.VALOR, function(p){ return (p == r.VALOR);});
@@ -17822,13 +17847,13 @@ function MenuFunctionsController (PermissionService, AccountController, TableCon
 				} else {
 					_.remove(fieldRow.row.VALOR, function(p){ return (p == removed);});
 				}
-				
+
 				_.forEach(toRemove, function(value) {
 				  _.remove(valueField, function(p){
 				  	return p == value.VALOR;
 				  });
 				});
-				
+
 				field.value(valueField);
 	        }
 		}
@@ -18772,7 +18797,7 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 		}
 		if (_.get(payAccount, 'data.mensagemNfce')) {
 			var retornoNfce = _.get(payAccount, 'data.mensagemNfce');
-			if (!~retornoNfce.indexOf("A - ")) {
+			if (!~retornoNfce.indexOf("100 - ")) {
 				message += '<br><br>' + _.get(payAccount, 'data.mensagemNfce');
 			}
 		}

@@ -527,7 +527,7 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 		}
 		if (_.get(payAccount, 'data.mensagemNfce')) {
 			var retornoNfce = _.get(payAccount, 'data.mensagemNfce');
-			if (!~retornoNfce.indexOf("A - ")) {
+			if (!~retornoNfce.indexOf("100 - ")) {
 				message += '<br><br>' + _.get(payAccount, 'data.mensagemNfce');
 			}
 		}

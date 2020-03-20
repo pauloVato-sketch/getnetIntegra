@@ -1,0 +1,298 @@
+{
+    "id": "44059006322448654591711",
+    "name": "splitProducts",
+    "label": "Dividir Produtos",
+    "showFooter": true,
+    "showHeader": true,
+    "showMenu": true,
+    "showBack": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "events": [
+        {
+            "id": "1775387305093617161744",
+            "name": "ContainerAfterinit",
+            "code": "UtilitiesService.setHeader(args.owner);"
+        },
+        {
+            "id": "1775387302035535071745",
+            "name": "ContainerOnBack",
+            "code": "UtilitiesService.handleBack(args.owner.name);"
+        },
+        {
+            "id": "17753873023515742721746",
+            "name": "ContainerAfterinit",
+            "code": "UtilitiesService.setFirstPositionButtonAsActive(args.owner.getWidget('widgetSplit'));"
+        },
+        {
+            "id": "17753873024478092841747",
+            "name": "ContainerAfterinit",
+            "code": "TableController.splitProductsValidation();"
+        },
+        {
+            "id": "1775387303846404141748",
+            "name": "ContainerAfterinit",
+            "code": "TableController.loadOriginalProducts();"
+        },
+        {
+            "id": "1775387304774205661749",
+            "name": "ContainerAfterinit",
+            "code": "TableController.loadProducts();"
+        }
+    ],
+    "widgets": [
+        {
+            "id": "17753873012535332801712",
+            "name": "widgetSplit",
+            "label": "Divisão",
+            "template": "widget/tabbedWidget.html",
+            "isVisible": true,
+            "actions": [],
+            "events": [
+                {
+                    "id": "1775387305140248291743",
+                    "name": "WidgetOnEnter",
+                    "code": "TableController.preparePositions(args.owner.fields[0]);"
+                }
+            ],
+            "fields": [
+                {
+                    "id": "17753873035503123431741",
+                    "name": "positionswidget",
+                    "label": "Posição",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "waiter#field/waiter_position_multiple.html",
+                    "position": 0,
+                    "fields": [],
+                    "actions": [],
+                    "events": [
+                        {
+                            "id": "1775387309003191051742",
+                            "name": "FieldOnClick",
+                            "code": "TableController.splitProductsValidation();"
+                        }
+                    ],
+                    "dataSource": {}
+                }
+            ],
+            "widgets": [
+                {
+                    "id": "17753873024911396021713",
+                    "name": "widgetProducts",
+                    "label": "Escolha os produtos",
+                    "template": "widget/grid.html",
+                    "showCheckbox": true,
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "id": "17753873026860692791718",
+                            "label": "Voltar",
+                            "isVisible": true,
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "1775387305606310851719",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.goBack()"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "17753873028690036061720",
+                            "name": "dividir",
+                            "label": "Dividir",
+                            "isVisible": false,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "id": "17753873026579491021721",
+                                    "name": "ActionEvent",
+                                    "code": "TableController.splitProducts(templateManager.container);"
+                                }
+                            ]
+                        }
+                    ],
+                    "valueField": "codigo",
+                    "descriptionField": "DSBUTTON",
+                    "dataSource": {},
+                    "floatingControl": false,
+                    "events": [
+                        {
+                            "id": "177538730986341011722",
+                            "name": "WidgetOnEnter",
+                            "code": "TableController.positionVisibility(templateManager.container.getWidget('widgetProducts'));"
+                        },
+                        {
+                            "id": "1775387301168080741723",
+                            "name": "WidgetAfterSelectRow",
+                            "code": "TableController.splitProductsValidation();"
+                        },
+                        {
+                            "id": "17753873032039834871724",
+                            "name": "WidgetAfterUnselectRow",
+                            "code": "TableController.splitProductsValidation();"
+                        },
+                        {
+                            "id": "17753873011127236781725",
+                            "name": "WidgetAfterSelectAll",
+                            "code": "TableController.splitProductsValidation();"
+                        },
+                        {
+                            "id": "1775387301085402861726",
+                            "name": "WidgetAfterUnselectAll",
+                            "code": "TableController.splitProductsValidation();"
+                        }
+                    ],
+                    "fields": [
+                        {
+                            "id": "17753873032025210101714",
+                            "name": "codigo",
+                            "label": "Código",
+                            "isVisible": false,
+                            "showOnList": true,
+                            "template": "field/text.html"
+                        },
+                        {
+                            "id": "17753873024692002921715",
+                            "name": "DSBUTTON",
+                            "label": "Produto",
+                            "isVisible": true,
+                            "showOnList": true,
+                            "template": "field/text.html"
+                        },
+                        {
+                            "id": "1775387305506524091716",
+                            "name": "POS",
+                            "label": "Posição",
+                            "isVisible": true,
+                            "showOnList": true,
+                            "template": "field/text.html"
+                        },
+                        {
+                            "id": "17753873040890103711717",
+                            "name": "preco",
+                            "label": "Preço",
+                            "isVisible": true,
+                            "showOnList": true,
+                            "template": "field/text.html"
+                        }
+                    ],
+                    "widgets": []
+                },
+                {
+                    "id": "1775387305845681911727",
+                    "name": "widgetCancel",
+                    "label": "Cancelamento",
+                    "template": "widget/grid.html",
+                    "showCheckbox": true,
+                    "isVisible": true,
+                    "valueField": "codigo",
+                    "descriptionField": "DSBUTTON",
+                    "fields": [
+                        {
+                            "id": "1775387303028325511728",
+                            "name": "codigo",
+                            "label": "Código",
+                            "isVisible": false,
+                            "showOnList": true,
+                            "template": "field/text.html"
+                        },
+                        {
+                            "id": "17753873042701479261729",
+                            "name": "DSBUTTON",
+                            "label": "Produto",
+                            "isVisible": true,
+                            "showOnList": true,
+                            "template": "field/text.html"
+                        },
+                        {
+                            "id": "17753873019267455411730",
+                            "name": "POS",
+                            "label": "Posição",
+                            "isVisible": true,
+                            "showOnList": true,
+                            "template": "field/text.html"
+                        },
+                        {
+                            "id": "17753873017430210961731",
+                            "name": "preco",
+                            "label": "Preço",
+                            "isVisible": true,
+                            "showOnList": true,
+                            "template": "field/text.html"
+                        }
+                    ],
+                    "events": [
+                        {
+                            "id": "17753873029810939481736",
+                            "name": "WidgetOnEnter",
+                            "code": "TableController.positionVisibility(templateManager.container.getWidget('widgetCancel'));"
+                        },
+                        {
+                            "id": "17753873012634279991737",
+                            "name": "WidgetAfterSelectRow",
+                            "code": "TableController.cancelSplitedProductsValidation();"
+                        },
+                        {
+                            "id": "177538730440910881738",
+                            "name": "WidgetAfterUnselectRow",
+                            "code": "TableController.cancelSplitedProductsValidation();"
+                        },
+                        {
+                            "id": "17753873029776715131739",
+                            "name": "WidgetAfterSelectAll",
+                            "code": "TableController.cancelSplitedProductsValidation();"
+                        },
+                        {
+                            "id": "1775387305564064981740",
+                            "name": "WidgetAfterUnselectAll",
+                            "code": "TableController.cancelSplitedProductsValidation();"
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "id": "17753873034837982641732",
+                            "label": "Voltar",
+                            "isVisible": true,
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "17753873027401258101733",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.goBack()"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "17753873028850690731734",
+                            "name": "cancelar",
+                            "label": "Cancelar Divisão",
+                            "isVisible": false,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "id": "1775387305433868681735",
+                                    "name": "ActionEvent",
+                                    "code": "TableController.cancelSplitedProducts(templateManager.container);"
+                                }
+                            ]
+                        }
+                    ],
+                    "widgets": []
+                }
+            ]
+        }
+    ]
+}

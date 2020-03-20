@@ -1,0 +1,97 @@
+{
+    "name": "zhFilterPreferencesConfig",
+    "label": "Filters",
+    "isVisible": true,
+    "template": "widget/grid.html",
+    "showAsModal": true,
+    "showCheckbox": true,
+    "showDescriptionOrder": false,
+    "searchWithPagination": false,
+    "actions": [
+        {
+            "name": "back_edit",
+            "label": "Back",
+            "isVisible": true,
+            "showAsAction": "back",
+            "events": [
+                {
+                    "name": "ActionEvent",
+                    "code": "ScreenService.closePopup();"
+                }
+            ]
+        },
+        {
+            "name": "always",
+            "icon": "plus",
+            "isVisible": true,
+            "showAsAction": "always",
+            "tooltip": "Create Filter",
+            "events": [
+                {
+                    "name": "ActionEvent",
+                    "code": "ZhFilterConfigWidgetController.openCreateFilterWidget(args.owner.widget);"
+                }
+            ]
+        },
+        {
+            "name": "checked_rows",
+            "icon": "trash",
+            "isVisible": true,
+            "showAsAction": "checked_rows",
+            "tooltip": "Delete Filters",
+            "events": [
+                {
+                    "name": "ActionEvent",
+                    "code": "ZhFilterConfigWidgetController.deleteFilters(args.owner.widget);"
+                }
+            ]
+        }
+    ],
+    "styles": [],
+    "floatingControl": {
+        "pdfAction": false,
+        "xlsAction": false,
+        "refreshAction": true,
+        "customizationAction": {
+            "layout": false,
+            "filter": false,
+            "view": false
+        },
+        "actions": []
+    },
+    "dataSourceFilter": [],
+    "dataSource": {
+        "name": "/filter",
+        "localStorage": false,
+        "data": []
+    },
+    "events": [
+        {
+            "name": "WidgetAfterMoveRow",
+            "code": "ZhFilterConfigWidgetController.editFilter(args.owner, args.row)"
+        }
+    ],
+    "fields": [
+        {
+            "name": "LABEL",
+            "label": "Filter name",
+            "showOnList": true,
+            "template": "field/text-edit.html"
+        },
+        {
+            "name": "DEFAULT_FILTER",
+            "label": "Default filter",
+            "showOnList": true,
+            "align": "center",
+            "valueToTrue": true,
+            "valueToFalse": false,
+            "inlineEditable": "checkbox",
+            "events": [
+                {
+                    "name": "FieldOnChange",
+                    "code": "ZhFilterConfigWidgetController.updateDefaultFilter(args.owner.field.widget, args.row);"
+                }
+            ]
+        }
+    ]
+}

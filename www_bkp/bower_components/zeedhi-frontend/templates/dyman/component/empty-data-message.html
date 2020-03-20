@@ -1,0 +1,12 @@
+<p data-ng-if="!widget.dataSource.loadError && !Util.objectHasAnyValue(widget.searchCriteria)"
+    class="text-center zh-text-search-not-found"
+    data-zh-bind-translate="widget.noMatchText || 'There are no records' "
+></p>
+<p data-ng-if="!widget.dataSource.loadError && Util.objectHasAnyValue(widget.searchCriteria)"
+    class="text-center zh-text-search-not-found"
+    data-zh-bind-translate="widget.searchNoMatchText || 'No records were found' "
+></p>
+<p data-ng-if="widget.dataSource.loadError"
+    class="text-center zh-text-search-not-found"
+    data-zh-bind-translate="widget.loadErrorText || 'Error loading data' "
+></p>

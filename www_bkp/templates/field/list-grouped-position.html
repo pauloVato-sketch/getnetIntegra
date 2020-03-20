@@ -1,0 +1,54 @@
+<div class="" ng-show="field.isVisible">
+    <label class="zh-label" ng-bind="field.label"></label>
+<div
+    zh-events
+    data-ng-controller="WaiterListGroupedController"
+    >
+    <div class="col-xs-12 col-sm-12">
+        <ul class="zh-container-groups">
+            <li
+                ng-repeat="category in getCategoriesByPosition(field.dataSource.data, 'POS')"
+                data-ng-show="filtered.length > 0"
+                zh-update-scroller="250"
+                class="zh-list-group"
+                data-ng-controller='ListController as controller'
+                >
+                <span class="zh-group-desc">{{category}}</span>
+                <ul class="zh-products-container">
+                    <li ng-repeat="row in filtered = (field.dataSource.data)"
+                        data-ng-if="row[field.groupProp] === category"
+                        zh-long-tap="controller.onLongTap(row)"
+                        ng-class="{'zh-mult-selected-row': row.__isSelected}"
+                        class="zh-sub-list-group"
+                        data-zh-style
+                        >
+
+                        <div>
+                            <div
+                            ng-click="listGroupedFieldSelect(row, field)">
+                                <span class="zh-product-desc">
+                                    <p data-ng-bind='row[field.detailDescProp]'>
+                                        <b>
+                                            <span class="zh-product-desc" data-ng-bind='row[field.boldText]'>
+                                            </span>
+                                        </b>
+                                    </p>
+                                    <span class="subdisplay">
+                                        <p ng-show="row.NMVENDEDOR" class="zh-product-sub-desc">
+                                            <span data-ng-bind='row.NMVENDEDOR'></span>
+                                            <span data-ng-bind='row[field.orderDate]'></span>
+                                        </p>
+                                        <p ng-hide="row.NMVENDEDOR" class="zh-product-sub-desc" data-ng-bind='row[field.orderDate]'></p>
+                                        <p class="zh-product-sub-desc" data-ng-bind='row[field.addDisplay]'></p>
+                                    </span>
+                                    <span class="zh-product-sub-desc" data-ng-bind='row[field.detailSubDescProp]'></span>
+                                </span>
+                                <span class="zh-product-price" data-ng-bind='row[field.detailPriceProp]'></span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>

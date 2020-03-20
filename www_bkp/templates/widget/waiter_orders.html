@@ -1,0 +1,25 @@
+<section zh-widget-events>
+	<div class="row">
+		<div class="col-xs-12 col-sm-12">
+			<div class="zh-container-search">
+				<input class="zh-input-search" type="text" placeholder="pesquisar" ng-model="$rootScope.searchList"/>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" data-ng-show="(widget.widgets[1].dataSource.data | filter:{DSBUTTON:$rootScope.searchList}).length == 0">
+		<div class="col-xs-12  col-sm-12">
+			<p class="text-center zh-text-search-not-find" data-ng-show="(widget.widgets[1].dataSource.data | filter:{DSBUTTON:$rootScope.searchList}).length == 0" data-ng-bind="widget.noMatchText || 'nenhum registro encontrado'"></p>
+		</div>
+	</div>
+
+	<div class="container product-list" zh-scroller>
+		<div class="row">
+			<div class="col-xs-12 col-sm-12">
+				<div ng-repeat="widget in widget.widgets"
+					ng-include src="templateManager.getTemplateURL(widget.template)">
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

@@ -1,11 +1,19 @@
 cordova.define('cordova/plugin_list', function(require, exports, module) {
   module.exports = [
     {
-      "id": "com.odhen.POS.IntegrationService",
-      "file": "plugins/com.odhen.POS/www/IntegrationService.js",
+      "id": "com.odhen.POS.Gertec",
+      "file": "plugins/com.odhen.POS/www/Gertec.js",
       "pluginId": "com.odhen.POS",
       "clobbers": [
-        "cordova.plugins.IntegrationService"
+        "cordova.plugins.Gertec"
+      ]
+    },
+    {
+      "id": "com.odhen.POS.GertecSitef",
+      "file": "plugins/com.odhen.POS/www/GertecSitef.js",
+      "pluginId": "com.odhen.POS",
+      "clobbers": [
+        "cordova.plugins.GertecSitef"
       ]
     },
     {
@@ -63,6 +71,7 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
     "cordova-plugin-whitelist": "1.3.3",
     "phonegap-plugin-barcodescanner": "8.1.0",
     "cordova-plugin-androidx-adapter": "1.1.0",
-    "cordova-android-movetasktoback": "0.1.4"
+    "cordova-android-movetasktoback": "0.1.4",
+    "cordova-support-kotlin": "1.2.1"
   };
 });

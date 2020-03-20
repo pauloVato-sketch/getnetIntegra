@@ -1,0 +1,28 @@
+<section ng-controller="WaiterOrdersProdCtrl" zh-widget-events>
+	<!-- workaround row inner row why fields in to objects -->
+	<div class="row ">
+		<div class="col-xs-12">
+			<ul class="zh-sub-products">
+				<li ng-repeat="product in widget.dataSource.data | filter:{DSBUTTON:searchList}" >
+					<a
+						href=""
+						ng-class="{'idprodbloq': product.IDPRODBLOQ == 'S'}"
+						class="{{widget.class}}"
+						style="background-color:{{product[widget.colorProperty]}}; color:{{idealTextColor(product[widget.colorProperty])}}"
+						ng-click="select(widget, product, widget.container.getWidget('positionsWidget').position+1)"
+						zh-long-tap="onLongTabProduct(widget, product);"
+					>
+					<div ng-if="product.quantity > 0" class="product-badge">
+						<p>{{product.quantity}}</p>
+					</div>
+						<p
+							ng-bind="product[widget.labelProperty]"
+							class="square"
+						>
+						</p>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</section>

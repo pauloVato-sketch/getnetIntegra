@@ -1,0 +1,14 @@
+<div class="col-xs-12 zh-container-textarea">
+  <label class="label_questionary zh-label">
+    <span data-ng-bind='question.seqno'></span>
+    <span data-zh-bind-translate='question.description'></span>
+  </label>
+  <textarea
+    type="text"
+    dirname="ltr"
+    name="msg"
+    class="zh-form-login input-text form-control zh-field-textarea"
+    data-ng-model="questionary.answer[question.name]['value']"
+  >
+  </textarea>
+</div>

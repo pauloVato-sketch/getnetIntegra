@@ -16,6 +16,7 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.lang.Integer.parseInt
+import com.teknisa.tef.TransactionMessenger
 
 class IntegrationService: CordovaPlugin() {
 
@@ -61,18 +62,23 @@ class IntegrationService: CordovaPlugin() {
         //ImpressaoController.instance = com.odhen.ingenicointegration.ImpressaoController(this)
         //VendaController.instance = com.odhen.sitefintegration.VendaController(this)
 
-        /* GETNET */
-        val getnetController = com.odhen.getnetintegration.GetnetController(mainActivity)
-        ImpressaoController.instance = getnetController.impressaoController
-        VendaController.instance = getnetController.vendaController
-        mainActivity.deviceIntegrationListener = getnetController.vendaController
+        /* INGENICO - STONE */
+        VendaController.instance = com.teknisa.tef.VendaController("808832092", "SANDBOX", mainActivity)
+        ImpressaoController.instance = com.teknisa.tef.ImpressaoController()
 
+        /* GETNET */
+        //val getnetController = com.odhen.getnetintegration.GetnetController(mainActivity)
+        //ImpressaoController.instance = getnetController.impressaoController
+        //VendaController.instance = getnetController.vendaController
+        //mainActivity.deviceIntegrationListener = getnetController.vendaController
 
     }
 
     @Throws(JSONException::class)
     override fun execute(action: String, args: JSONArray, callbackContext: CallbackContext): Boolean {
         val integrationInstance = IntegrationInstance(callbackContext)
+
+        Log.d("bipfun", action)
 
         //Alteração de vários ifs para um when com as ações que podem ser realizadas pela máquina
         return when (action) {

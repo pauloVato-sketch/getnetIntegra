@@ -23,6 +23,18 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven {
+            url "https://packagecloud.io/stone/sdk-android/maven2"
+        }
+        maven {
+            url "https://packagecloud.io/stone/sdk-android-snapshot/maven2"
+        }
+        maven {
+            url "https://packagecloud.io/Stone/pos-android-service-container/maven2"
+        }
+        flatDir {
+            dirs 'libs'
+        }
     }
 
     dependencies {
@@ -38,6 +50,18 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven {
+            url "https://packagecloud.io/stone/sdk-android/maven2"
+        }
+        maven {
+            url "https://packagecloud.io/stone/sdk-android-snapshot/maven2"
+        }
+        maven {
+            url "https://packagecloud.io/Stone/pos-android-service-container/maven2"
+        }
+        flatDir {
+            dirs 'libs'
+        }
     }
 
     //This replaces project.properties w.r.t. build settings

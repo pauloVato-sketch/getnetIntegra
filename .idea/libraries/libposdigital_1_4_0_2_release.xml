@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="libposdigital-1.4.0-2-release">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/platforms/android/app/libs/libposdigital-1.4.0-2-release.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

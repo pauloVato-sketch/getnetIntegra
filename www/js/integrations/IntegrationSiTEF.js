@@ -13,7 +13,7 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
     var SITEF_NO  = "1";
 
 	var PAYMENT_INVOICE = "";
-	
+
 	var PAYMENT_TYPE = {
 		pagamento: {
 			debito: 2,
@@ -91,9 +91,9 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
         return javaResult;
     };
 
-	// o cancelamento da sitef é o próprio estorno 
+	// o cancelamento da sitef é o próprio estorno
     this.cancelIntegration = function(tiporeceData){
-        self.reversalIntegration(tiporeceData);     
+        self.reversalIntegration(tiporeceData);
     };
 
     this.cancelIntegrationResult = function(resolve, javaResult){
@@ -107,7 +107,7 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
 
     this.completeIntegrationResult = function(resolve, javaResult){
         return true;
-    };    
+    };
 
     this.reversalIntegration = function(tiporeceData){
     	if(tiporeceData.IDTIPORECE === 'H'){
@@ -127,7 +127,7 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
 			tiporeceData.VRMOVIVEND = parseFloat(tiporeceData.VRMOVIVEND);
 			OperatorRepository.findOne().then(function(operatorData) {
 				self.getParameters(operatorData, tiporeceData.NRCONTROLTEF).then(function(reversalParameters){
-					
+
 					var estornos = PAYMENT_TYPE.estorno;
 					switch (tiporeceData.IDTIPORECE) {
 						case '1': reversalParameters.paymentType = estornos.credito; break;
@@ -214,7 +214,7 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
 				case '2': sitefParams.paymentType = pagamentos.debito; break;
 				case 'H': sitefParams.paymentType = pagamentos.mercadoPago; break;
 			}
-			
+
 			sitefParams.paymentValue = currentRow.VRMOVIVEND.toFixed(2);
 			sitefParams.paymentDate = self.PAYMENT_INVOICE.slice(0, 8);
 			sitefParams.paymentHour = self.PAYMENT_INVOICE.slice(8, 14);
@@ -263,7 +263,7 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
 	};
 
 	this.formatCardNumber = function(cardNumber){
-		return cardNumber.slice(0, 4) + ' ' + cardNumber.slice(4, 6) + 
+		return cardNumber.slice(0, 4) + ' ' + cardNumber.slice(4, 6) +
 			'** **** ' + cardNumber.slice(6, 10);
 	};
 
@@ -273,16 +273,33 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
 		sitefWidget.getField("userInput").isVisible = false;
 		sitefWidget.getAction("btnBack").isVisible = false;
 		sitefWidget.getAction("btnConfirm").isVisible = false;
+		sitefWidget.label = "Stone";
 
-		ScreenService.openPopup(sitefWidget).then(function() {
-			window.setMessage = self.setMessage;
-			window.setLabel = self.setLabel; 
-			window.promptBoolean = self.promptBoolean; 
-			window.promptCommand = self.promptCommand; 
-			window.hideUserInterfaces = self.hideUserInterfaces;
-			window.showCancelButton = self.showCancelButton;
-			cordova.plugins.GertecSitef.payment(JSON.stringify(params), window.returnIntegration, null);
-		}.bind(this));
+        ScreenService.openPopup(sitefWidget).then(function() {
+            OperatorRepository.findOne().then(function (operatorData){
+                window.setMessage = self.setMessage;
+                window.setLabel = self.setLabel;
+                window.promptBoolean = self.promptBoolean;
+                window.promptCommand = self.promptCommand;
+                window.hideUserInterfaces = self.hideUserInterfaces;
+                window.showCancelButton = self.showCancelButton;
+
+                // QRCode Mercado Pago
+                if (params.paymentType == 122){
+                	sitefWidget.getAction("btnBack").isVisible = true;
+                    if (operatorData.CDURLQRCODE){
+                        var qrcode = new QRCode($(".sitef-field")[0], {
+                            width : 150,
+                            height : 150
+                        });
+                        qrcode.makeCode(operatorData.CDURLQRCODE);
+                    }
+                }
+
+				//cordova.plugins.GertecSitef.payment(JSON.stringify(params), window.returnIntegration, null);
+				cordova.exec(window.returnIntegration, window.returnIntegration, 'IntegrationService', 'payment', [JSON.stringify(params)])
+            }.bind(this));
+        }.bind(this));
 	};
 
 	this.continueSitefProcess = function(buffer){

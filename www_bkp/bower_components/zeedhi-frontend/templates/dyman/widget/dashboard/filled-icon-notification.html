@@ -1,0 +1,12 @@
+<div
+	zh-click="dashboardController.itemClick(widget)"
+	class="dashboard-filled-icon-notification"
+	zh-filled-icon-notification>
+	<span class="shortcut-label" data-zh-bind-translate="widget.label"></span>
+	<div class="wrapper">
+		<span class="shortcut-icon" zh-icon="icon-white no-border {{widget.icon}}"></span>
+		<div class="shortcut-notification">
+			<span class="full-width" ng-bind="widget.notification"></span>
+		</div>
+	</div>
+</div>

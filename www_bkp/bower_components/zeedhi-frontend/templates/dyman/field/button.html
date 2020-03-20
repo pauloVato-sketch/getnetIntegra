@@ -1,0 +1,16 @@
+<div zh-ripple-effect ng-show="field.isVisible" zh-schema-validator="field/button.html.json">
+	<button
+		type="button"
+		class="btn btn-default btn-block form-input-margin-bottom zh-btn-type-button zh-button zh-text-align-{{field.align || 'center'}}"
+		data-zh-bind-translate="field.label"
+		id="{{field.name}}"
+		name="{{field.name}}"
+		data-ng-readonly="field.isReadOnly()"
+		data-ng-disabled="field.isReadOnly()"
+		data-zh-style
+		data-zh-events
+		data-ng-model="fieldRow"
+		placeholder="{{field.placeholder|i18n}}"
+		maxlength="{{field.maxlength}}"
+	></button>
+</div>

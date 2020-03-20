@@ -1,0 +1,46 @@
+<div class="container" zh-widget-events zh-scroller>
+	<section class="old-calendar" old-zh-calendar>
+		<!-- Navigation controls -->
+		<nav>
+			<div class="month-nav">
+				<button class="prev" zh-touchstart="navigateDate(-1, 'month')"> &lt; </button>
+				<span class="month"  ng-bind="currentMonth"></span>
+				<button class="next" zh-touchstart="navigateDate(1, 'month')"> &gt; </button>
+			</div>
+
+			<div class="year-nav">
+				<button class="prev" zh-touchstart="navigateDate(-1, 'year')"> &lt; </button>
+				<span class="year"   ng-bind="currentYear"></span>
+				<button	class="next" zh-touchstart="navigateDate(1, 'year')"> &gt; </button>
+			</div>
+
+			<button class="today" zh-touchstart="goToday()" ng-bind="todayText"></button>
+		</nav>
+
+		<!-- Calendar -->
+		<table class="calendar-days">
+
+			<thead class="week-days">
+				<tr>
+					<td
+						ng-repeat="day in weekDays"
+						ng-bind="day"
+					></td>
+				</tr>
+			</thead>
+
+			<tbody class="month-days">
+				<tr ng-repeat="week in weeks">
+					<td
+						ng-repeat="day in week.days"
+						ng-bind="day.day"
+						data-date="{{day.date}}"
+						data-today-text="{{todayText}}"
+						zh-touchstart="dateClick(day)"
+						ng-class="{ 'today': day.today, 'selected': day.selected, 'event': day.events.length, 'last-month': day.lastMonth, 'next-month': day.nextMonth || isBlockedDate(day.date), 'blocked': isBlockedDate(day.date)}"
+					></td>
+				</tr>
+			</tbody>
+		</table>
+	</section>
+</div>

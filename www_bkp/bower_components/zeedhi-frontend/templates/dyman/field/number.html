@@ -1,0 +1,45 @@
+<div
+  class="zh-input-number-container form-input-margin-bottom zh-field-{{field.name}}"
+  ng-show="field.isVisible"
+  zh-schema-validator="field/number.html.json"
+>
+
+  <!-- Label Include -->
+  <div ng-include="templateManager.getTemplateURL('field/label-with-tooltip.html')"></div>
+
+  <!-- 'Minus' Spin Button -->
+  <button ng-if="field.spin === true" data-ng-disabled="field.isReadOnly()" data-zh-touchstart='buttonClick(false)' class="spin-button spin-button-minus">&ndash;</button>
+
+  <!-- Field -->
+  <div ng-class="{'no-spin': field.spin !== true}">
+    <input
+      type="number"
+      class="input-number form-control mousetrap zh-field-{{field.name}} zh-text-align-{{field.align || 'left'}}"
+      id="{{field.name}}"
+      min={{field.minValue}}
+      max={{field.maxValue}}
+      name="{{field.name}}"
+      data-ng-readonly="field.isReadOnly()"
+      data-ng-disabled="field.isReadOnly()"
+      data-zh-style
+      data-zh-mask
+      data-zh-events
+      data-zh-validate
+      data-ng-model="fieldRow"
+      placeholder="{{field.placeholder|i18n}}"
+      maxlength="{{field.maxlength}}"
+      data-zh-focus-field="{{ field.focused }}"
+      zh-input-number
+    />
+  </div>
+
+  <!-- 'Plus' Spin Button -->
+  <button ng-if="field.spin === true" data-ng-disabled="field.isReadOnly()" data-zh-touchstart='buttonClick(true)' class="spin-button spin-button-plus">+</button>
+
+  <!-- Validation  -->
+  <div class="zh-validation" ng-if="widget.currentRow.$error[field.name].length>0">
+    <span zh-validations class="zh-validation-error" ng-repeat="error in widget.currentRow.$error[field.name]">
+      {{error.message}}
+    </span>
+  </div>
+</div>

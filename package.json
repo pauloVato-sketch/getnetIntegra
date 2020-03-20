@@ -20,6 +20,7 @@
     "cordova-plugin-keyboard": "^1.2.0",
     "cordova-plugin-whitelist": "^1.3.3",
     "cordova-set-version": "^8.2.0",
+    "cordova-support-kotlin": "^1.2.1",
     "phonegap-plugin-barcodescanner": "^8.1.0"
   },
   "cordova": {
@@ -33,7 +34,8 @@
       "cordova-plugin-device": {},
       "cordova-plugin-androidx": {},
       "cordova-plugin-androidx-adapter": {},
-      "cordova-android-movetasktoback": {}
+      "cordova-android-movetasktoback": {},
+      "cordova-support-kotlin": {}
     },
     "platforms": [
       "android"

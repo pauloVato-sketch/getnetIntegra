@@ -1,0 +1,37 @@
+<section ng-controller="RelationsController" class="container relations-container" zh-relations zh-scroller>
+
+	<ul class="column keys" ng-if="currentKey">
+		<li class="key"
+			ng-repeat="key in keys"
+			ng-bind="key[keysDescriptionField]"
+			zh-click="startRelating(key)"
+			ng-class="{ 'selected': key.__related }"
+		></li>
+	</ul><!--
+		This comment should not be removed due to inline-block display issues
+	--><ul class="column edit values" ng-if="currentKey">
+		<li class="value"
+			ng-repeat="value in currentValues"
+			ng-bind="value[valuesDescriptionField]"
+			zh-click="relateToCurrentKey(value)"
+			ng-class="{ 'selected': value.__related }"
+		>
+		</li>
+	</ul><!--
+		This comment should not be removed due to inline-block display issues
+	--><ul class="column relations" ng-if="!currentKey">
+		<li class="relation" ng-repeat="key in keys" ng-class="{ 'has-values' : getRelatedValues(key).length }">
+			<div class="key-items">
+				<div class="key selected">
+					<span ng-bind="key[keysDescriptionField]"></span>
+				</div>
+			</div><!--
+				This comment should not be removed due to inline-block display issues
+			--><div class="value-items">
+				<div class="value selected" ng-repeat="value in getRelatedValues(key)" >
+					<span ng-bind="value[valuesDescriptionField]"></span>
+				</div>
+			</div>
+		</li>
+	</ul>
+</section>

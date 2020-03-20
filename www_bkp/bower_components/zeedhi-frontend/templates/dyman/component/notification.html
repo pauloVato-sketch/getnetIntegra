@@ -1,0 +1,10 @@
+<section ng-controller="NotificationMessageController">
+  <ul class="zh-notification-messages">
+    <li data-ng-repeat="message in $root.notificationMessages" class="{{ 'msg-' + message.type }}" id="{{message.id}}" data-zh-click="removeMessage(message);">
+      <span>
+        <span class="notification-message-icon"></span>
+        <span class="notification-message-text" data-ng-bind="message.text"></span>
+      </span>
+    </li>
+  </ul>
+</section>

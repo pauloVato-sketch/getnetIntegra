@@ -1,0 +1,165 @@
+{
+    "id": "160322638913702784681672",
+    "name": "sendWaiterless",
+    "label": "Mensagem Produção",
+    "showHeader": true,
+    "showMenu": true,
+    "showFooter": true,
+    "showBack": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "events": [],
+    "widgets": [
+        {
+            "id": "2747979496830949671673",
+            "name": "sendMessage",
+            "label": "Mensagem Produção",
+            "template": "widget/form.html",
+            "isVisible": true,
+            "actions": [
+                {
+                    "id": "27479794911364347671681",
+                    "label": "Enviar mensagem",
+                    "name": "enviar",
+                    "isVisible": true,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "id": "2747979497227054031682",
+                            "name": "ActionEvent",
+                            "code": "TableController.sendWaiterlessMessage(args.row);"
+                        }
+                    ]
+                },
+                {
+                    "id": "27479794927424217931683",
+                    "label": "Voltar",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "27479794942875218241684",
+                            "name": "ActionEvent",
+                            "code": "UtilitiesService.handleBack(args.owner.widget.container.name);"
+                        }
+                    ]
+                }
+            ],
+            "dataSource": {},
+            "events": [
+                {
+                    "id": "2747979497011220441685",
+                    "name": "WidgetOnEnter",
+                    "code": "TableController.prepareWaiterlessData(args.owner);"
+                }
+            ],
+            "fields": [
+                {
+                    "id": "27479794913819897221674",
+                    "name": "lblMensagem",
+                    "label": "Mensagem",
+                    "class": 12,
+                    "readOnly": true,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": true,
+                    "defaultValue": null,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "2747979495057320871675",
+                    "name": "DSOCORR",
+                    "valueField": "DSOCORR",
+                    "label": "DSOCORR",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "template": "field/observations.html",
+                    "events": [
+                        {
+                            "id": "27479794924945390541676",
+                            "name": "FieldOnClick",
+                            "code": "AccountController.doNothing();"
+                        }
+                    ],
+                    "dataSource": {
+                        "rest": false,
+                        "memoryStorage": true,
+                        "name": "/ParamsProdMessageRepository"
+                    }
+                },
+                {
+                    "id": "27479794916917164551677",
+                    "name": "mensagem",
+                    "placeholder": "Mensagem personalizada",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/text.html",
+                    "events": [
+                        {
+                            "name": "FieldOnKeydown",
+                            "code": "TableController.handleEnterButton(args);"
+                        }
+                    ]
+                },
+                {
+                    "id": "27479794928273988451678",
+                    "name": "lblPrinters",
+                    "label": "Impressora",
+                    "class": 12,
+                    "readOnly": true,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": true,
+                    "defaultValue": null,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "27479794929860844811679",
+                    "name": "NRSEQIMPRLOJA",
+                    "valueField": "NRSEQIMPRLOJA",
+                    "label": "NMIMPRLOJA",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "events": [
+                        {
+                            "id": "27479794928904220991680",
+                            "name": "FieldOnClick",
+                            "code": "AccountController.doNothing();"
+                        }
+                    ],
+                    "showOnList": true,
+                    "newLine": false,
+                    "template": "field/observations.html",
+                    "dataSource": {
+                        "rest": false,
+                        "memoryStorage": true,
+                        "name": "/ParamsPrinterRepository"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,41 @@
+<aside zh-about class="zh-background-loading">
+	<section class="zh-container-about">
+		<div>
+			<div class="product-logo">
+				<img ng-src="{{ templateManager.project.productLogo }}">
+			</div>
+			<div class="zh-title-container">
+				<label class="zh-about-title active" zh-touchstart="templateManager.versionData.dependencies.changeCurrentVersion('frontend')"
+					ng-class="{'active': templateManager.versionData.dependencies.current === templateManager.versionData.dependencies.frontend}">
+					<p>Frontend</p>
+				</label>
+				<label class="zh-about-title" zh-touchstart="templateManager.versionData.dependencies.changeCurrentVersion('backend')"
+					ng-class="{'active': templateManager.versionData.dependencies.current === templateManager.versionData.dependencies.backend}">
+					<p>Backend</p>
+				</label>
+				<label class="zh-about-title" zh-touchstart="templateManager.versionData.dependencies.changeCurrentVersion('modules')"
+					ng-if="templateManager.versionData.dependencies.modules.length > 0"
+					ng-class="{'active': templateManager.versionData.dependencies.current === templateManager.versionData.dependencies.modules}">
+					<p>Modules</p>
+				</label>
+			</div>
+			<div class="version-data">
+				<span>
+					<span ng-bind="templateManager.versionData.name"></span> - <span class="bold" ng-bind="templateManager.versionData.version"></span>
+				</span>
+				<span class="dependency" ng-repeat="dependency in templateManager.versionData.dependencies.current">
+					<span ng-bind="dependency.name"></span> - <span class="bold" ng-bind="dependency.version"></span>
+				</span>
+			</div>
+			<div class="powered-by">
+				<span zh-bind-translate="'Powered by '"></span>
+				<img ng-src="{{ templateManager.getMappedPackages().zeedhiFramework + 'images/zeedhi.svg' }}">
+			</div>
+		</div>
+		<footer class="footer">
+			<button data-zh-click="closeAbout()">
+				<span data-zh-bind-translate="'OK'"></span>
+			</button>
+		</footer>
+	</section>
+</aside>

@@ -1,0 +1,164 @@
+{
+    "id": "584620325840709491438",
+    "name": "newConsumer",
+    "label": "Novo Cadastro",
+    "events": [],
+    "showHeader": true,
+    "showBack": true,
+    "showFooter": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "widgets": [
+        {
+            "id": "161971681739788267361439",
+            "name": "newConsumer",
+            "label": "Cadastrar Novo Cliente",
+            "template": "widget/form.html",
+            "isVisible": true,
+            "actions": [
+                {
+                    "id": "161971681733042311161446",
+                    "label": "Cadastrar",
+                    "name": "cadastrar",
+                    "isVisible": true,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "id": "161971681723017955231447",
+                            "name": "ActionEvent",
+                            "code": "OrderController.newConsumer(args.row, args.owner.widget)"
+                        }
+                    ]
+                },
+                {
+                    "id": "161971681730376220431448",
+                    "label": "Voltar",
+                    "name": "btnBack",
+                    "isVisible": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "161971681713462778501449",
+                            "name": "ActionEvent",
+                            "code": "ScreenService.goBack();"
+                        }
+                    ]
+                }
+            ],
+            "events": [],
+            "dataSource": {},
+            "fields": [
+                {
+                    "id": "16197168171409271591440",
+                    "name": "DSEMAILCONS",
+                    "label": "Email",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "maxlength": 50,
+                    "template": "field/text-edit.html",
+                    "validations": {
+                        "required": true
+                    },
+                    "events": []
+                },
+                {
+                    "id": "161971681739344159281441",
+                    "name": "NMCONSUMIDOR",
+                    "label": "Nome",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "maxlength": 50,
+                    "template": "field/text-edit.html",
+                    "validations": {
+                        "required": true
+                    },
+                    "events": []
+                },
+                {
+                    "id": "16197168173774378251442",
+                    "name": "CDSENHACONSMD5",
+                    "label": "Senha",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "maxlength": 16,
+                    "template": "field/password-edit.html",
+                    "validations": {
+                        "required": true
+                    },
+                    "events": []
+                },
+                {
+                    "id": "161971681733874292981443",
+                    "name": "passwordCheck",
+                    "label": "Confirmar Senha",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "maxlength": 16,
+                    "template": "field/password-edit.html",
+                    "validations": {
+                        "required": true
+                    },
+                    "events": []
+                },
+                {
+                    "id": "161971681734192995341444",
+                    "name": "NRCELULARCONS",
+                    "label": "Celular",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "template": "field/phone.html",
+                    "showSeparatorButton": false,
+                    "showSignalButton": false,
+                    "validations": {
+                        "required": true
+                    },
+                    "events": []
+                },
+                {
+                    "id": "161971681740518655511445",
+                    "name": "CDIDCONSUMID",
+                    "label": "Código de Indentificação",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "maxlength": 50,
+                    "template": "field/text-edit.html",
+                    "events": []
+                }
+            ]
+        }
+    ]
+}

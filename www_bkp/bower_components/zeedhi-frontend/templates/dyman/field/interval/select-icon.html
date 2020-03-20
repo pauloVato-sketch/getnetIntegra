@@ -1,0 +1,13 @@
+<span ng-controller="SelectController as SelectCtrl" ng-init="field = selectField">
+	<span
+		zh-events
+		ng-hide="IntervalCtrl.isRowSet()"
+		zh-icon="no-border search"
+	></span>
+	<span
+		ng-show="IntervalCtrl.isRowSet()"
+		zh-icon="no-border close-x"
+		zh-touchstart="intervalField.clearValue()"
+		zh-stop-propagation-click
+	></span>
+</span>

@@ -1,0 +1,13 @@
+{
+  "name": "zh-preferences",
+  "version": "3.0.1",
+  "description": "zh-preferences is a service to handle customizations on zeedhi grid's",
+  "license": "Comercial",
+  "ignore": [
+    "**/.*",
+    "!dist/**/*"
+  ],
+  "dependencies": {
+    "zeedhi-frontend": "^1.48.1"
+  }
+}

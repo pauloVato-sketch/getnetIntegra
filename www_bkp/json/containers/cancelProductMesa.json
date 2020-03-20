@@ -1,0 +1,179 @@
+{
+    "id": "3556617236392018531078",
+    "name": "cancelProductMesa",
+    "label": "Cancelar Produto",
+    "showHeader": true,
+    "showMenu": true,
+    "showBack": true,
+    "showFooter": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "events": [
+        {
+            "id": "49733165137379635951092",
+            "name": "ContainerAfterinit",
+            "code": "UtilitiesService.setHeader(args.owner);"
+        },
+        {
+            "id": "49733165128279634281093",
+            "name": "ContainerOnBack",
+            "code": "UtilitiesService.handleBack(args.owner.name);"
+        }
+    ],
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "widgets": [
+        {
+            "id": "49733165112135387341079",
+            "name": "cancelProductMesa",
+            "label": "",
+            "template": "../../../../templates/widget/list-grouped-position.html",
+            "isVisible": true,
+            "allowSelectOnLongTap": false,
+            "actions": [
+                {
+                    "id": "49733165111246320271088",
+                    "label": "Voltar",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "4973316519629713501089",
+                            "name": "ActionEvent",
+                            "code": "ScreenService.goBack()"
+                        }
+                    ]
+                }
+            ],
+            "groupProp": "posicao",
+            "detailPriceProp": "preco",
+            "detailDescProp": "DSBUTTON",
+            "detailSubDescProp": "TXPRODCOMVEN",
+            "orderDate": "DTHRINCOMVEN",
+            "addDisplay": "toGoText",
+            "events": [
+                {
+                    "id": "4973316516193059581090",
+                    "name": "WidgetOnEnter",
+                    "code": "AccountController.refreshItems(args.owner);"
+                },
+                {
+                    "id": "49733165136091977981091",
+                    "name": "WidgetAfterMoveRow",
+                    "code": "AccountController.prepareCancelProduct(args.owner);"
+                }
+            ],
+            "dataSource": {},
+            "fields": [],
+            "widgets": [
+                {
+                    "id": "49733165111722830421080",
+                    "name": "cancelProductWidget",
+                    "label": "",
+                    "template": "widget/form-without-scroller.html",
+                    "isVisible": true,
+                    "actions": [],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "id": "49733165120139017361081",
+                            "name": "CDOCORR",
+                            "valueField": "CDOCORR",
+                            "label": "DSOCORR",
+                            "class": 12,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": false,
+                            "newLine": false,
+                            "template": "field/observations.html",
+                            "events": [
+                                {
+                                    "id": "49733165116972608491082",
+                                    "name": "FieldOnChange",
+                                    "code": "AccountController.updateCancelObservations(args.row);"
+                                }
+                            ],
+                            "dataSource": {
+                                "rest": false,
+                                "memoryStorage": true,
+                                "name": "/ParamsProdMessageCancelRepository"
+                            }
+                        },
+                        {
+                            "id": "49733165126350684171083",
+                            "name": "listaFilhos",
+                            "class": 12,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": false,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "valueField": "CDPRODUTO",
+                            "detailPriceProp": "PRECO",
+                            "detailDescProp": "DSBUTTON",
+                            "groupProp": "LISTA",
+                            "detailSubDescProp": "TXPRODCOMVEN",
+                            "template": "../../../../templates/field/list-grouped.html",
+                            "events": [],
+                            "dataSource": {
+                                "memoryStorage": true,
+                                "name": "/EmptyRepository"
+                            }
+                        },
+                        {
+                            "id": "49733165111630002891084",
+                            "name": "cancelMotive",
+                            "class": 8,
+                            "placeholder": "motivo",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/text.html",
+                            "events": [
+                                {
+                                    "id": "49733165121822519061085",
+                                    "name": "FieldOnChange",
+                                    "code": "AccountController.updateCancelObservations(args.row);"
+                                },
+                                {
+                                    "id": "15995324232638265591637",
+                                    "name": "FieldOnKeydown",
+                                    "code": "AccountController.handleEnterButton(args);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "49733165137582342691086",
+                            "name": "exclude",
+                            "class": 4,
+                            "label": "Excluir",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/label-with-icon.html",
+                            "icon": "trash icon-black",
+                            "events": [
+                                {
+                                    "id": "49733165112220541551087",
+                                    "name": "FieldOnClick",
+                                    "code": "AccountController.checkProducedProduct(args.row, args.owner.field.widget.parent);"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1814,6 +1814,12 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
                                             // Se não tiver observações, não abre o popup.
                                             self.openPromoPopup(productWidget, product, promoValues);
                                         }
+                                        else {
+                                            PromoTray.findAll().then(function (newTray){
+                                                self.handleMutex(productWidget.container.getWidget('categories').dataSource.data, product.CDGRUPMUTEX, product.CDGRUPO, newTray);
+                                                self.advanceGroup(productWidget.container.getWidget('categories'), newTray);
+                                            });
+                                        }
                                     }
                                 });
                             });
@@ -1995,6 +2001,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
                 PRODUTOS: [],
                 CDOCORR: [],
                 DSOCORR_CUSTOM: '',
+                TXPRODCOMVEN: null,
                 OBSERVATIONS: product.OBSERVATIONS,
                 IMPRESSORA: printers.length > 0 ? printers[0].NRSEQIMPRLOJA : null,
                 NRQTDMINOBS: product.NRQTDMINOBS,

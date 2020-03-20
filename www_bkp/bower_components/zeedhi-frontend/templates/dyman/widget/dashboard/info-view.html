@@ -1,0 +1,50 @@
+<section class="dashboard-info-view"
+	zh-click="dashboardController.itemClick(widget)"
+	ng-controller="FormController as Ctrl"
+	zh-widget-events>
+
+	<!-- Title -->
+	<div class="title">
+		<span ng-if="widget.icon" zh-icon="{{widget.icon}} no-border"></span>
+		<span class="main-label" ng-bind="widget.label"></span>
+		<span class="highlight-label" ng-bind="widget.highlight"></span>
+	</div>
+
+	<!-- Information viewer -->
+	<div class="dashboard-table-container">
+		<form>
+			<!-- Field groups -->
+			<section class="zh-field-group"
+				ng-repeat="fieldGroup in widget.fieldGroups"
+				data-ng-if="fieldGroup.rows.length > 0  && fieldGroup.isVisible">
+
+				<!-- Field group label -->
+				<label class="zh-field-group-control" zh-click="fieldGroup.opened = fieldGroup.collapsible !== false ? !fieldGroup.opened : fieldGroup.opened" data-ng-if="fieldGroup.label">
+					<span zh-icon="down no-border" data-ng-show="fieldGroup.collapsible !== false"
+						data-ng-class="{ 'opened' : fieldGroup.opened, 'closed' : !fieldGroup.opened }"></span>
+					<span class="zh-label zh-field-group-label"
+						ng-bind="fieldGroup.label"></span>
+				</label>
+
+				<!-- Field group rows -->
+				<div class="field-group-rows" ng-show="fieldGroup.opened">
+
+					<div class="row"
+						ng-repeat="row in fieldGroup.rows"
+						ng-show="widget.isVisible || true">
+
+						<div
+							class="col-xs-{{field.class}} zh-field"
+							ng-repeat="field in row.fields"
+							ng-include src="templateManager.getFrameworkTemplateURL('field/label-static.html')"
+							data-ng-if="field.aclIsVisible"
+							ng-show="field.isVisible && field.showOnView"
+							zh-post-repeat="templateManager.container.refresh()"
+						></div>
+					</div>
+
+				 </div>
+			</div>
+		</form>
+	</div>
+</section>

@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v16/values-v16.xml",
+            "outputFile": "/home/GRUPOTEKNISA/lucasmacedo/workfolder/getnetIntegra/platforms/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v16/values-v16.xml",
             "map": [
                 {
-                    "source": "/home/paulonascimento/.gradle/caches/transforms-2/files-2.1/ab5e760a0f0e43733b4188f5d3401c64/res/values-v16/values-v16.xml",
+                    "source": "/home/GRUPOTEKNISA/lucasmacedo/.gradle/caches/transforms-1/files-1.1/appcompat-1.1.0.aar/6d24222c67637d6b83034833d707a57d/res/values-v16/values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -23,7 +23,7 @@
                     }
                 },
                 {
-                    "source": "/home/paulonascimento/.gradle/caches/transforms-2/files-2.1/3db4d59374d8a84f214f1980f9883319/res/values-v16/values-v16.xml",
+                    "source": "/home/GRUPOTEKNISA/lucasmacedo/.gradle/caches/transforms-1/files-1.1/core-1.1.0.aar/15f7ea4acf941cf40a9e157ef88f7a4f/res/values-v16/values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
