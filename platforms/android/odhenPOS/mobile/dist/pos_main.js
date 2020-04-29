@@ -1581,6 +1581,131 @@ Configuration(function(ContextRegister) {
     ContextRegister.register('IntegrationCielo', IntegrationCielo);
 });
 
+// FILE: js/integrations/IntegrationGetnet.js
+function IntegrationGetnet(){
+	var self = this;
+	var PAYMENT_CONFIRMATION = false;
+    var REMOVE_ALL_INTEGRATIONS = false;
+
+    var MESSAGE_INTEGRATION_FAIL = 'Não foi possível chamar a integração. Sua instância não existe.';
+    var MESSAGE_NULL_RESPONSE = 'Não foi pissível obter o retorno da integração.';
+
+	this.integrationPayment = function(operatorData, currentRow) {
+
+		if(!!window.cordova && !!window.cordova.plugins.IntegrationService) {
+			var params = self.getPaymentFromCurrentRow(currentRow);
+
+			window.cordova.plugins.IntegrationService.payment(params, window.returnIntegration, null);
+		} else {
+            window.returnIntegration(self.invalidIntegrationInstance());
+        }
+	};
+
+	this.integrationPaymentResult = function(resolve, javaResult) {
+		console.log(resolve);
+		console.log(javaResult);
+		var integrationResult = {};
+		
+		if(javaResult !== null) {
+			if (!javaResult.error){
+				integrationResult.error = false;
+				javaResult = javaResult.data;
+				integrationResult.data = {
+					CDBANCARTCR: javaResult.flag,
+					CDNSUHOSTTEF: javaResult.nsu,
+					NRCONTROLTEF: javaResult.AUTO,
+					PAYMENTCONFIRMATION : PAYMENT_CONFIRMATION,
+					REMOVEALLINTEGRATIONS : REMOVE_ALL_INTEGRATIONS
+				};
+			} else {
+				integrationResult.message = javaResult.message;
+			}
+		} else {
+			integrationResult.message = MESSAGE_NULL_RESPONSE;
+		}
+
+		resolve(integrationResult);
+	};
+
+	// rede não completa integração
+    this.completeIntegration = function(){
+        return true;
+    };
+
+    this.completeIntegrationResult = function(resolve, javaResult){
+        return true;
+    };    
+
+    // o cancelamento da rede é o próprio estorno 
+    this.cancelIntegration = function(tiporeceData){
+        self.reversalIntegration(tiporeceData);     
+    };
+
+    this.cancelIntegrationResult = function(resolve, javaResult){
+        self.reversalIntegrationResult(resolve, javaResult);
+    };
+
+    this.reversalIntegration = function(tiporeceData){
+    	console.log(tiporeceData);
+      	if(!!window.cordova && !!window.cordova.plugins.IntegrationService) {
+			var params = self.getRefundFromSaleCancelResult(tiporeceData);
+			console.log("refund");
+			window.cordova.plugins.IntegrationService.refund(params, window.returnIntegration,null);
+		} else {
+			window.returnIntegration(self.invalidIntegrationInstance());
+		}
+	};
+
+  	this.reversalIntegrationResult = function(resolve, javaResult){
+  		console.log("refund RESULT");
+		self.integrationPaymentResult(resolve, javaResult);
+	};
+
+	this.formatResponse = function(){
+		return{
+			error:true,
+			message:'',
+			data:{}
+		};
+	};
+
+	this.invalidIntegrationInstance = function(){
+		return {
+            error: true,
+            message: MESSAGE_INTEGRATION_FAIL
+        };
+	};
+
+	this.getPaymentFromCurrentRow = function(currentRow){
+		return JSON.stringify(
+		{"paymentType": currentRow.tiporece.IDTIPORECE,
+		 "paymentValue": currentRow.VRMOVIVEND,
+		 "paymentNSU" : "123"
+		});
+	};
+
+	this.getRefundFromSaleCancelResult = function(integrations){
+		return JSON.stringify(
+		{"refundType": integrations.IDTIPORECE,
+		 "refundValue": integrations.VRMOVIVEND,
+		 "refundDate" : integrations.TRANSACTIONDATE,
+		 "refundCV" : integrations.NRCONTROLTEF
+		});
+	};
+
+	this.handleJavaResult = function(javaResult){
+		if(typeof(javaResult) === 'string'){
+			javaResult = JSON.parse(javaResult);
+			return javaResult;
+		}
+	};
+
+}
+
+Configuration(function(ContextRegister) {
+	ContextRegister.register('IntegrationGetnet', IntegrationGetnet);
+});
+
 // FILE: js/integrations/IntegrationNTK.js
 function IntegrationNTK(){
 	this.formatResponse = null;
@@ -2217,8 +2342,7 @@ function PrinterGetnet(){
 
         if (!!window.cordova.plugins.IntegrationService){
 
-        	var params = JSON.stringify({"texto":text,
-        	                              "flag":"printText"});
+        	var params = JSON.stringify({"texto":text, "flag":"printText"});
             //Chamada da função de impressão da integração
             //window.returnPrintResult contém a função printResult desse mesmo arquivo
             window.cordova.plugins.IntegrationService.print(params, window.returnPrintResult,null);
@@ -2230,16 +2354,14 @@ function PrinterGetnet(){
 
     this.printQRCode = function(qrCode){
 
-        var params = JSON.stringify({"qrcode":qrCode,
-                                     "flag":"qrCode"});
+        var params = JSON.stringify({"qrcode":qrCode,"flag":"qrCode"});
         window.cordova.plugins.IntegrationService.print(params, window.returnPrintResult,null);
 
     };
 
     this.printBarCode = function(barCode){
 
-        var params = JSON.stringify({"barcode":barCode,
-                                     "flag":"barCode"});
+        var params = JSON.stringify({"barcode":barCode, "flag":"barCode"});
         window.cordova.plugins.IntegrationService.print(params, window.returnPrintResult,null);
 
     };
@@ -3256,13 +3378,14 @@ Configuration(function(ContextRegister) {
 });
 
 // FILE: js/services/IntegrationService.js
-function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, IntegrationSiTEF, IntegrationCielo,OperatorRepository) {
+function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, IntegrationSiTEF, IntegrationCielo, IntegrationGetnet,OperatorRepository) {
 	var INTEGRATION_TYPE = {
 		'2': IntegrationCappta,
 		'3': IntegrationNTK,
 		'4': IntegrationRede,
 		'5': IntegrationSiTEF,
-		'7': IntegrationCielo
+		'7': IntegrationCielo,
+		'8': IntegrationGetnet
 		};
 
 	var self = this;
@@ -3279,12 +3402,10 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 		return OperatorRepository.findOne().then(function(operatorData) {
 			currentRow.eletronicTransacion.data.IDTPTEF = operatorData.IDTPTEF;
 
-			//[remove]
 			IntegrationClass = self.chooseIntegration(operatorData.IDTPTEF);
 			if (IntegrationClass){
 				return new Promise(function(resolve) {
 					window.returnIntegration = _.bind(IntegrationClass.integrationPaymentResult, IntegrationClass, resolve);
-					//[remove]
 					IntegrationClass.integrationPayment(operatorData, currentRow);
 				}).then(self.buildIntegrationResponse.bind(currentRow));				
 			} else {
@@ -3307,7 +3428,6 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 		return integrationResult;
 	};
 
-    //[remove]
 	this.chooseIntegration = function(IDTPTEF){
 		// seleciona serviço de integração
 		return INTEGRATION_TYPE[IDTPTEF];
@@ -3315,53 +3435,44 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 
 	this.cancelIntegration = function(tiporeceData){
 		return new Promise(function(resolve) {
-		    //[remove]
 			IntegrationClass = self.chooseIntegration(tiporeceData.IDTPTEF);
             window.returnIntegration = _.bind(IntegrationClass.cancelIntegrationResult, IntegrationClass, resolve);
-            //[remove]
             IntegrationClass.cancelIntegration(tiporeceData);
 		}.bind(this));
 	};
 
 	this.completeIntegration = function(integrations){
-		// pega IDTPTEF da primeira posição pois será o mesmo para qualquer recebimento
-		return new Promise(function(resolve) {
-			if (window.cordova.plugins.IntegrationService){
-				window.returnIntegration = _.bind(self.completeIntegrationResult, self, resolve);
-				return true;
-			} else {
-				resolve(self.invalidIntegrationValues());
-				return false;
-			}
-		}.bind(this));
-	};	
+    	// pega IDTPTEF da primeira posição pois será o mesmo para qualquer recebimento
+    	return new Promise(function(resolve) {
+    		IntegrationClass = self.chooseIntegration(integrations[0].IDTPTEF);
+    		if (IntegrationClass){
+    			window.returnIntegration = _.bind(IntegrationClass.completeIntegrationResult, IntegrationClass, resolve);
+    			IntegrationClass.completeIntegration();
+    		} else {
+    			resolve(self.invalidIntegrationValues());
+    		}
+    	}.bind(this));
+    };
 
 	this.callRecursive = null;
 
-    this.getRefundFromSaleCancelResult = function (integrations){
-        return JSON.stringify(
-        	{"refundType" : integrations.IDTIPORECE,
-        	 "refundValue": integrations.VRMOVIVEND,
-    		 "refundDate" : integrations.TRANSACTIONDATE,
-    		 "refundCV"   : integrations.NRCONTROLTEF
-    		 }
-    	);
-    };
-
 	this.reversalIntegration = function(removePaymentSale, integrations){
+
         //chamada para iniciar processo de estorno pela integração
     	return new Promise(function(reversalResolve) {
-			//verifica-se o tamanho do array de transações
-			if(integrations.length>0){
-				self.reversalWaiting = _.clone(integrations);	
-				//callRecursive se torna recursiveReversalIntegration com ambiente self com argumentos fixos reversalResolve
-				//e o array de transações
-				self.callRecursive = _.bind(self.recursiveReversalIntegration, self, reversalResolve,integrations);
-				//chama-se a função com o último parametro faltante
-				self.callRecursive(removePaymentSale);
-			} else {
-				reversalResolve(self.invalidIntegrationValues());
-			}
+			this.reversalIntegration = function(removePaymentSale, integrations){
+            		// pega IDTPTEF da primeira posição pois será o mesmo para qualquer recebimento
+            		return new Promise(function(reversalResolve) {
+            			IntegrationClass = self.chooseIntegration(integrations[0].IDTPTEF);
+            			if(IntegrationClass){
+            				self.reversalWaiting = _.clone(integrations);
+            				self.callRecursive = _.bind(this.recursiveReversalIntegration, self, reversalResolve, Array());
+            				self.callRecursive(removePaymentSale, IntegrationClass);
+            			} else {
+            				reversalResolve(self.invalidIntegrationValues());
+            			}
+            		}.bind(this));
+            	};
 		}.bind(this));
 	};
 
@@ -3377,9 +3488,8 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 		new Promise(function(resolve){
 		    //definimos um parametro do objeto global window como uma função que é a reversalIntegrationResult
 		    //com ambiente self e argumento resolve
-			window.returnIntegration = _.bind(self.reversalIntegrationResult, self, resolve);
-			//chama-se a função que executa a chamada direta da integração
-			self.reversalIntegrationOnly(integrationToReverse);
+			window.returnIntegration = _.bind(IntegrationClass.reversalIntegrationResult, IntegrationClass, resolve);
+            IntegrationClass.reversalIntegration(integrationToReverse);
 		}.bind(this)).then(function(resolved){
 			// armazena todos os retornos
 			if (!resolved.error) {
@@ -3421,11 +3531,11 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 		result.message = VALUES_NOT_FOUND;
 		return result;
 	};
-    //[remove]
     IntegrationCappta.formatResponse = self.formatResponse;
 	IntegrationNTK.formatResponse = self.formatResponse;
 	IntegrationRede.formatResponse = self.formatResponse;
 	IntegrationSiTEF.formatResponse = self.formatResponse;
+	IntegrationGetnet.formatResponse = self.formatResponse;
 
 	this.integrationData = function() {
 		return {
@@ -3447,98 +3557,6 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 			NRCARTBANCO: ''
 		};
 	};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    ////////////////CODIGO ALTERADO DA INTEGRAÇÃO REDE 208~259//////////////
-
-	this.reversalIntegrationResult = function(resolve, javaResult){
-	    //Função alocada no window.returnIntegration() e que faz a chamada abaixo
-
-    	self.integrationPaymentResult(resolve, javaResult);
-    };
-
-    this.integrationPaymentResult = function(resolve, javaResult) {
-        //Realiza validação dos dados,e envia a resposta de volta com o resolve
-   		var integrationResult = {};
-    	if(javaResult !== null) {
-    		if (!javaResult.error){
-    			integrationResult.error = false;
-    			javaResult = javaResult.data;
-    			integrationResult.data = {
-    				CDBANCARTCR: javaResult.flag,
-    				CDNSUHOSTTEF: javaResult.nsu,
-    				NRCONTROLTEF: javaResult.AUTO,
-    				PAYMENTCONFIRMATION : PAYMENT_CONFIRMATION,
-    				REMOVEALLINTEGRATIONS : REMOVE_ALL_INTEGRATIONS
-    			};
-    		} else {
-    		    integrationResult.error = javaResult.error;
-    			integrationResult.message = javaResult.message;
-    		}
-    	} else {
-    		integrationResult.message = MESSAGE_NULL_RESPONSE;
-    	}
-    	resolve(integrationResult);
-    };
-
-    this.reversalIntegrationOnly = function(tiporeceData){
-            //Verificamos a existência do plugin no momento
-          	if(!!window.cordova && !!window.cordova.plugins.IntegrationService) {
-    			//Definimos os parametros como sendo os dados necessários para realizar o reembolso em forma de string JSON
-    			var params = self.getRefundFromSaleCancelResult(tiporeceData);
-                //Chama-se a função da integração(KT) com os parametros,a função que é pra onde o código seguirá caso sucesso,e null
-    			window.cordova.plugins.IntegrationService.refund(params, window.returnIntegration, null);
-    		} else {
-    			window.returnIntegration(self.invalidIntegrationInstance());
-    		}
-    };
-
-    this.completeIntegrationResult = function(){
-          return true;
-    };
-
-    this.invalidIntegrationInstance = function(){
-    	return {
-           error: true,
-           message: MESSAGE_INTEGRATION_FAIL
-        };
-    };
-
-
-
-    ////////////////CÓDIGO PROVENIENTE DE PAYMENTSERVICE.JS     263~283//////////////////////////////
-
-    this.getPaymentFromCurrentRow = function (currentRow){
-        return JSON.stringify(
-       		{"paymentType": currentRow.tiporece.IDTIPORECE,
-       		 "paymentValue": currentRow.VRMOVIVEND,
-       		 "paymentNSU": "123"}
-       	);
-    };
-
-    this.callPayment = function(currentRow){
-        var payment = self.getPaymentFromCurrentRow(currentRow);
-        OperatorRepository.findOne().then(function(operatorData) {
-        	currentRow.eletronicTransacion.data.DSENDIPSITEF = operatorData.DSENDIPSITEF;
-        	currentRow.eletronicTransacion.data.CDLOJATEF = operatorData.CDLOJATEF;
-           	currentRow.eletronicTransacion.data.CDTERTEF = operatorData.CDTERTEF;
-        	currentRow.eletronicTransacion.data.NRCARTBANCO = '';
-        	currentRow.eletronicTransacion.data.IDTIPORECE = '';
-        	window.cordova.plugins.IntegrationService.payment(payment, window.returnIntegration, null);
-       	});
-    };
 }
 
 Configuration(function(ContextRegister) {
@@ -3759,7 +3777,7 @@ Configuration(function(ContextRegister) {
 });
 
 // FILE: js/services/PaymentService.js
-function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPayAccount, OperatorRepository, IntegrationService, PrintTEFVoucher, GetConsumerLimit, ZHPromise, AccountSaleCode, ChargePersonalCredit, CartPricesRepository, PrinterService, QRCodeSaleRepository, ScreenService, SavePayment, RemovePayment){
+function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPayAccount, OperatorRepository, IntegrationService, PrintTEFVoucher, GetConsumerLimit, ZHPromise, AccountSaleCode, ChargePersonalCredit, CartPricesRepository, PrinterService, QRCodeSaleRepository, ScreenService, SavePayment, RemovePayment, ParamsParameterRepository){
 
 	var self = this;
 
@@ -3828,6 +3846,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 	                    FALTANTE: TOTALVENDA,
 	                    VALORPAGO: 0,
 	                    TROCO: 0,
+	                    REPIQUE: 0,
 	                    TOTAL: TOTAL,
 	                    TOTALSUBSIDY: TOTALSUBSIDY,
 	                    REALSUBSIDY: REALSUBSIDY,
@@ -3869,7 +3888,21 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 	                DELIVERY: false
 	            };
 
+
 	            self.calcTotalSale(result);
+	            // Verifica parametros e se houve alteração da taxa de serviço para mostrar o label do repique na tela de recebimento.
+	            if (operatorData.IDTPCONTRREPIQ !== 'N' && !CREDITOPESSOAL) {
+	            	ParamsParameterRepository.findOne().then(function (params) {
+	            		// Se houve alteração no valor da taxa de serviço o repique é desabilitado.
+	            		if (operatorData.modoHabilitado !== 'B' && operatorData.IDCOMISVENDA !== 'N') {
+	            			result.showRepique = (accountDetails.vlrservoriginal == accountDetails.vlrservico) ? true : false;
+	            		} else {
+	            			result.showRepique = true;
+	            		}
+	            	}.bind(this));
+	            } else {
+	            	result.showRepique = false;
+	            }
 
 	            if (CDCLIENTE != '' && CDCONSUMIDOR != ''){
 	                self.getConsumerLimit(CDCLIENTE, CDCONSUMIDOR, 'all').then(function(limits){
@@ -3882,7 +3915,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 	            else {
 	                resolve(result);
 	            }
-            });
+            }.bind(this));
         });
 	};
 
@@ -3941,54 +3974,28 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 		});
 	};
 
-
-
-
 	this.handlePayment = function (currentRow) {
-    	// verifica se caixa e pagamento selecionado faz integração
-    	return new Promise(function (resolve, reject) {
-    		self.checkIfMustCallIntegration(currentRow.tiporece).then(function (mustCallIntegration) {
-    			if (mustCallIntegration) {
-    				// chama integração
-    				window.returnIntegration = function (integrationResponse) {
-    					ScreenService.hideLoader();
-    					if (!integrationResponse.error) {
-    						var NRCARTBANCO = integrationResponse.data.binCard + integrationResponse.data.lastNumbersCard;
-    						var transactionDate = integrationResponse.data.date;
-    						transactionDate = transactionDate.slice(6, 8) + transactionDate.slice(4, 6) + transactionDate.substring(0, 4);
-    						integrationResponse.data.eletronicTransacion = currentRow.eletronicTransacion;
-    						integrationResponse.data.eletronicTransacion.data.CDBANCARTCR = integrationResponse.data.cardBrandName? integrationResponse.data.cardBrandName: '';
-    						integrationResponse.data.eletronicTransacion.data.STLPRIVIA = '';
-    						integrationResponse.data.eletronicTransacion.data.STLSEGVIA = '';
-    						integrationResponse.data.eletronicTransacion.data.CDNSUHOSTTEF = integrationResponse.data.uniqueSequentialNumber;
-    						integrationResponse.data.eletronicTransacion.data.TRANSACTIONDATE = transactionDate;
-    						integrationResponse.data.eletronicTransacion.data.NRCONTROLTEF= integrationResponse.data.CV;
-    						//alterar nome dos campos nas outras integrações
-    						integrationResponse.data.eletronicTransacion.data.IDTIPORECE= integrationResponse.data.OperationType;
-    						integrationResponse.data.eletronicTransacion.data.NRCARTBANCO = NRCARTBANCO;
-    						integrationResponse.data.eletronicTransacion.data.VRMOVIVEND = currentRow.VRMOVIVEND;
-    						integrationResponse.data.VRMOVIVEND = currentRow.VRMOVIVEND;
-    						integrationResponse.data.tiporece = currentRow.tiporece;
-    						self.savePayment(integrationResponse.data).then(function(){
-    							// self.handlePrintPayment(integrationResponse.data.eletronicTransacion.data).then(function(){
-    								self.setPaymentSale(integrationResponse.data).then(resolve, reject);
-    								//we need the resolve here to send the answer back to the savepayment
-    							// });
-    						});
-    					} else {
-    					    //window.resolveIntegration(integrationResponse).then() CRIAR ESSA FUNCAO SEJA LA O QUE FOR
-    						ApplicationContext.UtilitiesService.backAfterFinish();
-    					}
-    				};
-    				IntegrationService.callPayment(currentRow);
-    			} else {
-    				// pagamento sem integração
-    				self.setPaymentSale(currentRow).then(resolve, reject);
-    			}
-    		});
-    	});
-    };
-
+		// verifica se caixa e pagamento selecionado faz integração
+		return self.checkIfMustCallIntegration(currentRow.tiporece).then(function (mustCallIntegration) {
+			if (mustCallIntegration) {
+				// chama integração
+				return IntegrationService.integrationPayment(currentRow).then(function (integrationResult) {
+					if (!integrationResult.error) {
+						return self.savePayment(integrationResult.data).then(function(){
+							return self.handlePrintPayment(integrationResult.data.eletronicTransacion.data).then(function(){
+								return self.setPaymentSale(integrationResult.data);
+							}.bind(this));
+						}.bind(this));
+					} else {
+						return integrationResult;
+					}
+				});
+			} else {
+				// pagamento sem integração
+				return self.setPaymentSale(currentRow);
+			}
+		}.bind(this));
+	};
 
 	this.checkIfMustCallIntegration = function (tiporece) {
 		return OperatorRepository.findOne().then(function (operatorData) {
@@ -4007,9 +4014,9 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 			};
 
 			self.handlePrintReceipt(tefObject, false);
-			
+
 			ScreenService.confirmMessage(
-				'Deseja imprimir a via do cliente?', 'question', 
+				'Deseja imprimir a via do cliente?', 'question',
 				function(){
 					var tefPrintVoucher = tefObject.TEFVOUCHER[0];
 					tefPrintVoucher.STLPRIVIA = '';
@@ -4025,7 +4032,6 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 	};
 
 	this.savePayment = function(currentPayment) {
-
 		return new Promise(function(resolve) {
 			return PaymentRepository.findOne().then(function(paymentData) {
 				var query = Query.build()
@@ -4084,6 +4090,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 			IDTIPORECE: button.IDTIPORECE,
 			DSBUTTON: button.DSBUTTON,
 			VRMOVIVEND: currentRow.VRMOVIVEND,
+			REPIQUE: currentRow.REPIQUE > 0 ? currentRow.REPIQUE : 0,
 			TRANSACTION: currentRow.eletronicTransacion,
 			DTHRINCOMVEN: self.dateTime()
 		};
@@ -4101,18 +4108,23 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 	this.calcTotalSale = function (payment) {
 		var DATASALE = payment.DATASALE;
 		var amountPaid = 0;
+		var repique = 0;
 
 		payment.TIPORECE.forEach(function (tiporece) {
 			amountPaid += tiporece.VRMOVIVEND;
+			repique += tiporece.REPIQUE;
 		});
 
 		DATASALE.VALORPAGO = amountPaid;
 		if (DATASALE.TOTALVENDA < amountPaid) {
+
 			DATASALE.FALTANTE = 0;
+			DATASALE.REPIQUE = repique;
 			DATASALE.TROCO = parseFloat((amountPaid - DATASALE.TOTALVENDA).toFixed(2));
 		} else {
 			DATASALE.FALTANTE = parseFloat((DATASALE.TOTALVENDA - amountPaid).toFixed(2));
 			DATASALE.TROCO = 0;
+			DATASALE.REPIQUE = 0;
 		}
 	};
 
@@ -4227,7 +4239,6 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 	this.handleRefoundTEFVoucher = function (arrRefoundIntegration) {
 		if (!_.isEmpty(arrRefoundIntegration)) {
-
 			var arrRefoundTEFVoucher = Array();
 			if (!_.isArray(arrRefoundIntegration) && _.isObject(arrRefoundIntegration))
 				arrRefoundIntegration = [arrRefoundIntegration];
@@ -4369,9 +4380,9 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 							reversedPayment = {
 								'CDNSUHOSTTEF': reversedPayment.toRemove.CDNSUHOSTTEF,
-								'NRCONTROLTEF': reversedPayment.REVERSEDNRCONTROLTEF 
+								'NRCONTROLTEF': reversedPayment.REVERSEDNRCONTROLTEF
 							};
-							reversedPayments.push(reversedPayment); 
+							reversedPayments.push(reversedPayment);
 						});
 
 						return self.removePayment(reversedPayments).then(function(){
@@ -4511,10 +4522,17 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
     	OperatorRepository.findOne().then(function(operatorData){
 			if (!_.isEmpty(dadosImpressao)){
 				if (_.get(dadosImpressao, 'TEXTOCUPOM1VIA')){
+
 					PrinterService.printerCommand(PrinterService.TEXT_COMMAND, dadosImpressao.TEXTOCUPOM1VIA);
 					PrinterService.printerCommand(PrinterService.BARCODE_COMMAND, dadosImpressao.TEXTOCODIGOBARRAS);
 					PrinterService.printerCommand(PrinterService.QRCODE_COMMAND, dadosImpressao.TEXTOQRCODE);
 					PrinterService.printerCommand(PrinterService.TEXT_COMMAND, dadosImpressao.TEXTORODAPE);
+					// Impressão do rodapé da API de Painel de senhas do Madero.
+					if (!_.isEmpty(dadosImpressao.TEXTOPAINELSENHA)) {
+						PrinterService.printerCommand(PrinterService.TEXT_COMMAND, dadosImpressao.TEXTOPAINELSENHA.inicio);
+						PrinterService.printerCommand(PrinterService.QRCODE_COMMAND, dadosImpressao.TEXTOPAINELSENHA.qrCode);
+						PrinterService.printerCommand(PrinterService.TEXT_COMMAND, dadosImpressao.TEXTOPAINELSENHA.final);
+					}
 
 					if (!_.isEmpty(dadosImpressao.TEXTOCUPOM2VIA)) {
 						PrinterService.printerCommand(PrinterService.TEXT_COMMAND, dadosImpressao.TEXTOCUPOM2VIA);
@@ -4522,8 +4540,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 						PrinterService.printerCommand(PrinterService.QRCODE_COMMAND, dadosImpressao.TEXTOQRCODE);
 						PrinterService.printerCommand(PrinterService.TEXT_COMMAND, dadosImpressao.TEXTORODAPE);
 					}
-
-					var space = operatorData.IDTPEMISSAOFOS === 'SAT' ? 2 : 0;
+					var space = (operatorData.IDTPEMISSAOFOS  === 'SAT' || !_.isEmpty(dadosImpressao.TEXTOPAINELSENHA)) ? 2 : 0;
 					space = operatorData.IDHABCAIXAVENDA === 'FOS' ? space + 1 : space;
 					self.printerSpaceCommand(space);
 				}

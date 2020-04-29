@@ -1,4 +1,4 @@
-function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPayAccount, OperatorRepository, IntegrationService, PrintTEFVoucher, GetConsumerLimit, ZHPromise, AccountSaleCode, ChargePersonalCredit, CartPricesRepository, PrinterService, QRCodeSaleRepository, ScreenService, SavePayment, RemovePayment){
+function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPayAccount, OperatorRepository, IntegrationService, PrintTEFVoucher, GetConsumerLimit, ZHPromise, AccountSaleCode, ChargePersonalCredit, CartPricesRepository, PrinterService, QRCodeSaleRepository, ScreenService, SavePayment, RemovePayment, ParamsParameterRepository){
 
 	var self = this;
 
@@ -67,6 +67,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 	                    FALTANTE: TOTALVENDA,
 	                    VALORPAGO: 0,
 	                    TROCO: 0,
+	                    REPIQUE: 0,
 	                    TOTAL: TOTAL,
 	                    TOTALSUBSIDY: TOTALSUBSIDY,
 	                    REALSUBSIDY: REALSUBSIDY,
@@ -108,7 +109,21 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 	                DELIVERY: false
 	            };
 
+
 	            self.calcTotalSale(result);
+	            // Verifica parametros e se houve alteração da taxa de serviço para mostrar o label do repique na tela de recebimento.
+	            if (operatorData.IDTPCONTRREPIQ !== 'N' && !CREDITOPESSOAL) {
+	            	ParamsParameterRepository.findOne().then(function (params) {
+	            		// Se houve alteração no valor da taxa de serviço o repique é desabilitado.
+	            		if (operatorData.modoHabilitado !== 'B' && operatorData.IDCOMISVENDA !== 'N') {
+	            			result.showRepique = (accountDetails.vlrservoriginal == accountDetails.vlrservico) ? true : false;
+	            		} else {
+	            			result.showRepique = true;
+	            		}
+	            	}.bind(this));
+	            } else {
+	            	result.showRepique = false;
+	            }
 
 	            if (CDCLIENTE != '' && CDCONSUMIDOR != ''){
 	                self.getConsumerLimit(CDCLIENTE, CDCONSUMIDOR, 'all').then(function(limits){
@@ -121,7 +136,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 	            else {
 	                resolve(result);
 	            }
-            });
+            }.bind(this));
         });
 	};
 
@@ -180,54 +195,28 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 		});
 	};
 
-
-
-
 	this.handlePayment = function (currentRow) {
-    	// verifica se caixa e pagamento selecionado faz integração
-    	return new Promise(function (resolve, reject) {
-    		self.checkIfMustCallIntegration(currentRow.tiporece).then(function (mustCallIntegration) {
-    			if (mustCallIntegration) {
-    				// chama integração
-    				window.returnIntegration = function (integrationResponse) {
-    					ScreenService.hideLoader();
-    					if (!integrationResponse.error) {
-    						var NRCARTBANCO = integrationResponse.data.binCard + integrationResponse.data.lastNumbersCard;
-    						var transactionDate = integrationResponse.data.date;
-    						transactionDate = transactionDate.slice(6, 8) + transactionDate.slice(4, 6) + transactionDate.substring(0, 4);
-    						integrationResponse.data.eletronicTransacion = currentRow.eletronicTransacion;
-    						integrationResponse.data.eletronicTransacion.data.CDBANCARTCR = integrationResponse.data.cardBrandName? integrationResponse.data.cardBrandName: '';
-    						integrationResponse.data.eletronicTransacion.data.STLPRIVIA = '';
-    						integrationResponse.data.eletronicTransacion.data.STLSEGVIA = '';
-    						integrationResponse.data.eletronicTransacion.data.CDNSUHOSTTEF = integrationResponse.data.uniqueSequentialNumber;
-    						integrationResponse.data.eletronicTransacion.data.TRANSACTIONDATE = transactionDate;
-    						integrationResponse.data.eletronicTransacion.data.NRCONTROLTEF= integrationResponse.data.CV;
-    						//alterar nome dos campos nas outras integrações
-    						integrationResponse.data.eletronicTransacion.data.IDTIPORECE= integrationResponse.data.OperationType;
-    						integrationResponse.data.eletronicTransacion.data.NRCARTBANCO = NRCARTBANCO;
-    						integrationResponse.data.eletronicTransacion.data.VRMOVIVEND = currentRow.VRMOVIVEND;
-    						integrationResponse.data.VRMOVIVEND = currentRow.VRMOVIVEND;
-    						integrationResponse.data.tiporece = currentRow.tiporece;
-    						self.savePayment(integrationResponse.data).then(function(){
-    							// self.handlePrintPayment(integrationResponse.data.eletronicTransacion.data).then(function(){
-    								self.setPaymentSale(integrationResponse.data).then(resolve, reject);
-    								//we need the resolve here to send the answer back to the savepayment
-    							// });
-    						});
-    					} else {
-    					    //window.resolveIntegration(integrationResponse).then() CRIAR ESSA FUNCAO SEJA LA O QUE FOR
-    						ApplicationContext.UtilitiesService.backAfterFinish();
-    					}
-    				};
-    				IntegrationService.callPayment(currentRow);
-    			} else {
-    				// pagamento sem integração
-    				self.setPaymentSale(currentRow).then(resolve, reject);
-    			}
-    		});
-    	});
-    };
-
+		// verifica se caixa e pagamento selecionado faz integração
+		return self.checkIfMustCallIntegration(currentRow.tiporece).then(function (mustCallIntegration) {
+			if (mustCallIntegration) {
+				// chama integração
+				return IntegrationService.integrationPayment(currentRow).then(function (integrationResult) {
+					if (!integrationResult.error) {
+						return self.savePayment(integrationResult.data).then(function(){
+							return self.handlePrintPayment(integrationResult.data.eletronicTransacion.data).then(function(){
+								return self.setPaymentSale(integrationResult.data);
+							}.bind(this));
+						}.bind(this));
+					} else {
+						return integrationResult;
+					}
+				});
+			} else {
+				// pagamento sem integração
+				return self.setPaymentSale(currentRow);
+			}
+		}.bind(this));
+	};
 
 	this.checkIfMustCallIntegration = function (tiporece) {
 		return OperatorRepository.findOne().then(function (operatorData) {
@@ -246,9 +235,9 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 			};
 
 			self.handlePrintReceipt(tefObject, false);
-			
+
 			ScreenService.confirmMessage(
-				'Deseja imprimir a via do cliente?', 'question', 
+				'Deseja imprimir a via do cliente?', 'question',
 				function(){
 					var tefPrintVoucher = tefObject.TEFVOUCHER[0];
 					tefPrintVoucher.STLPRIVIA = '';
@@ -264,7 +253,6 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 	};
 
 	this.savePayment = function(currentPayment) {
-
 		return new Promise(function(resolve) {
 			return PaymentRepository.findOne().then(function(paymentData) {
 				var query = Query.build()
@@ -323,6 +311,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 			IDTIPORECE: button.IDTIPORECE,
 			DSBUTTON: button.DSBUTTON,
 			VRMOVIVEND: currentRow.VRMOVIVEND,
+			REPIQUE: currentRow.REPIQUE > 0 ? currentRow.REPIQUE : 0,
 			TRANSACTION: currentRow.eletronicTransacion,
 			DTHRINCOMVEN: self.dateTime()
 		};
@@ -340,18 +329,23 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 	this.calcTotalSale = function (payment) {
 		var DATASALE = payment.DATASALE;
 		var amountPaid = 0;
+		var repique = 0;
 
 		payment.TIPORECE.forEach(function (tiporece) {
 			amountPaid += tiporece.VRMOVIVEND;
+			repique += tiporece.REPIQUE;
 		});
 
 		DATASALE.VALORPAGO = amountPaid;
 		if (DATASALE.TOTALVENDA < amountPaid) {
+
 			DATASALE.FALTANTE = 0;
+			DATASALE.REPIQUE = repique;
 			DATASALE.TROCO = parseFloat((amountPaid - DATASALE.TOTALVENDA).toFixed(2));
 		} else {
 			DATASALE.FALTANTE = parseFloat((DATASALE.TOTALVENDA - amountPaid).toFixed(2));
 			DATASALE.TROCO = 0;
+			DATASALE.REPIQUE = 0;
 		}
 	};
 
@@ -466,7 +460,6 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 	this.handleRefoundTEFVoucher = function (arrRefoundIntegration) {
 		if (!_.isEmpty(arrRefoundIntegration)) {
-
 			var arrRefoundTEFVoucher = Array();
 			if (!_.isArray(arrRefoundIntegration) && _.isObject(arrRefoundIntegration))
 				arrRefoundIntegration = [arrRefoundIntegration];
@@ -608,9 +601,9 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 							reversedPayment = {
 								'CDNSUHOSTTEF': reversedPayment.toRemove.CDNSUHOSTTEF,
-								'NRCONTROLTEF': reversedPayment.REVERSEDNRCONTROLTEF 
+								'NRCONTROLTEF': reversedPayment.REVERSEDNRCONTROLTEF
 							};
-							reversedPayments.push(reversedPayment); 
+							reversedPayments.push(reversedPayment);
 						});
 
 						return self.removePayment(reversedPayments).then(function(){
@@ -750,10 +743,17 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
     	OperatorRepository.findOne().then(function(operatorData){
 			if (!_.isEmpty(dadosImpressao)){
 				if (_.get(dadosImpressao, 'TEXTOCUPOM1VIA')){
+
 					PrinterService.printerCommand(PrinterService.TEXT_COMMAND, dadosImpressao.TEXTOCUPOM1VIA);
 					PrinterService.printerCommand(PrinterService.BARCODE_COMMAND, dadosImpressao.TEXTOCODIGOBARRAS);
 					PrinterService.printerCommand(PrinterService.QRCODE_COMMAND, dadosImpressao.TEXTOQRCODE);
 					PrinterService.printerCommand(PrinterService.TEXT_COMMAND, dadosImpressao.TEXTORODAPE);
+					// Impressão do rodapé da API de Painel de senhas do Madero.
+					if (!_.isEmpty(dadosImpressao.TEXTOPAINELSENHA)) {
+						PrinterService.printerCommand(PrinterService.TEXT_COMMAND, dadosImpressao.TEXTOPAINELSENHA.inicio);
+						PrinterService.printerCommand(PrinterService.QRCODE_COMMAND, dadosImpressao.TEXTOPAINELSENHA.qrCode);
+						PrinterService.printerCommand(PrinterService.TEXT_COMMAND, dadosImpressao.TEXTOPAINELSENHA.final);
+					}
 
 					if (!_.isEmpty(dadosImpressao.TEXTOCUPOM2VIA)) {
 						PrinterService.printerCommand(PrinterService.TEXT_COMMAND, dadosImpressao.TEXTOCUPOM2VIA);
@@ -761,8 +761,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 						PrinterService.printerCommand(PrinterService.QRCODE_COMMAND, dadosImpressao.TEXTOQRCODE);
 						PrinterService.printerCommand(PrinterService.TEXT_COMMAND, dadosImpressao.TEXTORODAPE);
 					}
-
-					var space = operatorData.IDTPEMISSAOFOS === 'SAT' ? 2 : 0;
+					var space = (operatorData.IDTPEMISSAOFOS  === 'SAT' || !_.isEmpty(dadosImpressao.TEXTOPAINELSENHA)) ? 2 : 0;
 					space = operatorData.IDHABCAIXAVENDA === 'FOS' ? space + 1 : space;
 					self.printerSpaceCommand(space);
 				}
