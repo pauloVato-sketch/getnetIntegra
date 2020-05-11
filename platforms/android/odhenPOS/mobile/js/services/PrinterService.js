@@ -44,7 +44,6 @@ function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, Print
 		return OperatorRepository.findOne().then(function(operatorData) {
 			if (!_.isEmpty(self.printerCommands)){
 				PrinterClass = self.choosePrinter(operatorData.IDMODEIMPRES);
-
 				if (PrinterClass){
 					return new Promise(function(resolve){
 						self.callRecursivePrintCommands = _.bind(self.printCommands, self, resolve, PrinterClass);
@@ -73,12 +72,6 @@ function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, Print
 			window.returnPrintResult = _.bind(PrinterClass.printResult, PrinterClass, resolve);
 			PrinterClass[currentPrinterCommand.type](currentPrinterCommand.parameter);
 		}.bind(this)).then(function(resolved){
-		    //funcao de transformaçao codigo de erro em mensagem
-		    //para poder fazer o json object q esta sendo tratado a seguir
-		    //funcao aqui<<<<<
-
-
-		    console.log(resolved);
 			if (!resolved.error) {
 				if (!_.isEmpty(self.printerCommands)){
 					// realiza impressão do próximo comando
@@ -92,8 +85,6 @@ function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, Print
 				resolved.message = PRINT_ERROR + resolved.message;
 				impressionResolved(resolved);
 
-                //Podemos fazer o código retornar para uma janela especifica ao ocorrer erro na impressao
-				//WindowService.openWindow('LOGIN_SCREEN');
 			}
 		}.bind(this));
 	};

@@ -132,8 +132,6 @@ class IntegrationService: CordovaPlugin() {
             }
         }*/
 
-        Log.d("TAGG",""+data)
-
 
         VendaController.instance?.chamaEstorno(
                 refundData.refundValue.toFloat(),
@@ -147,7 +145,6 @@ class IntegrationService: CordovaPlugin() {
     @Throws(JSONException::class, InterruptedException::class)
     fun print(args: JSONArray, integrationInstance: IntegrationInstance){
         val data = JSONObject(args.getString(0))
-        val spacing = "\n \n \n \n"
 
         /*
         Pelo fato de as impressões serem diferentes e virem de diferentes funções dos arquivos de impressão,
@@ -160,6 +157,8 @@ class IntegrationService: CordovaPlugin() {
                 Suspeito que os parâmetros não estão sendo inicializados no momento certo,gerando inconsistências
                 Dessa forma,imprimi um vazio antes de realizar as impressões,para tentar burlar isso
                 */
+               ImpressaoController.instance?.imprimeTexto("")
+
 
                 Log.d("TAGG",String.format("        \n%s\n",data.get("texto").toString()))
                 ImpressaoController.instance?.imprimeTexto(data.get("texto").toString())
@@ -181,7 +180,7 @@ class IntegrationService: CordovaPlugin() {
             }
             "qrCode"->{
                 //Paliativo
-                //ImpressaoController.instance?.imprimeTexto("                ")
+//                ImpressaoController.instance?.imprimeTexto("                ")
                 Log.d("TAGG",String.format("        \n%s\n",data.get("qrcode").toString()))
                 ImpressaoController.instance?.imprimeQrCode(data.get("qrcode").toString())
                 if(ImpressaoController.instance?.reportError()!=0){
@@ -199,7 +198,7 @@ class IntegrationService: CordovaPlugin() {
             }
             "barCode"->{
                 //Paliativo
-                //ImpressaoController.instance?.imprimeTexto("                ")
+//                ImpressaoController.instance?.imprimeTexto("                ")
                 Log.d("TAGG",String.format("        \n%s\n",data.get("barcode").toString()))
                 ImpressaoController.instance?.imprimeCodBarra(data.get("barcode").toString())
                 if(ImpressaoController.instance?.reportError()!=0){

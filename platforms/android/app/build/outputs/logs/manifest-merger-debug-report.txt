@@ -1,254 +1,254 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
-INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
-INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
-INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
-MERGED from [:barcodescanner-release-2.1.5:] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5be9a052d2c2449ef64bcfbc086289b3/AndroidManifest.xml:2:1-14:12
-MERGED from [:getnetintegration] /home/paulonascimento/workfolder/odhenPOS-/platforms/android/getnetintegration/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-13:12
-MERGED from [libposdigital-1.4.0-2-release.aar] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5f26bfb26a5c8c136208847ca20349e8/AndroidManifest.xml:2:1-11:12
-MERGED from [:deviceintegrationfacade] /home/paulonascimento/workfolder/odhenPOS-/platforms/android/deviceintegrationfacade/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
-MERGED from [androidx.core:core-ktx:1.3.0-alpha01] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/45db198daa168dabc53156b958a80480/AndroidManifest.xml:2:1-9:12
-MERGED from [:CordovaLib] /home/paulonascimento/workfolder/odhenPOS-/platforms/android/CordovaLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:20:1-27:12
-MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/2cc7dde911a0a9e25ce03a0d7414df2c/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.appcompat:appcompat:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/ab5e760a0f0e43733b4188f5d3401c64/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.media:media:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/b93bf263dbeaeb3bfbcc529bfd583b9f/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/7904e8fa0f8f394cc2896be1fd06c391/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/c1076e0fafe5ae74a11321898729ae81/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.fragment:fragment:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5d494d54465eb8a6cc257ee55d0e509e/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.appcompat:appcompat-resources:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/259228d4cfc500dc6cf34dc899ea6e00/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/e6a9f50c79e334a41ceeeb632564c6fd/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.loader:loader:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/75577eae18a3fc1cf6e4a5fc4f1add40/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.viewpager:viewpager:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/91d2426c49bd2b358a8a007a94ffd497/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/d5b89cf75defc975461c0eb19569c1e9/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/4e91f29ebb060ec3a89c8944be30e838/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.customview:customview:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/52afad7c2c9eb681b3d6b1999dcca3fa/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/ffeaf87400b5903c62165e7477933894/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/330c4defb6424f1850d4853b55b18b17/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.activity:activity:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/37b0431304f18b6177093b6722c7ae6b/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/35c6f9453b0320888c6551b0b98be5a0/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/89e8b3f74a181a486c23195d6941d784/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.core:core:1.3.0-alpha01] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/3db4d59374d8a84f214f1980f9883319/AndroidManifest.xml:17:1-26:12
-MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/c5e1345e9ca414c3ca276ff147c44575/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/eda482f15520cece33a4eb6dfd1d0084/AndroidManifest.xml:17:1-27:12
-MERGED from [androidx.documentfile:documentfile:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/0a4545d81d444a4ab3f7d412f064390b/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/7bfce4df3e5e35b4e3e20b3823ae36d8/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.print:print:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/ee053e3fbab805633d91855c24c7d4f4/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.interpolator:interpolator:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/14dcf7beba33f804ae07c6ffccf0e358/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.lifecycle:lifecycle-runtime:2.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/deddeb0f1b40dcae8db25bee808b85ff/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/41bef4c68b79f55ff7b49c761f257418/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.savedstate:savedstate:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/629f5968cdedf05f3e07ae051afddc9a/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/623f141134fc595c9a9ffd976890e07d/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/25460d3c4198c977bf1d739118d27099/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.arch.core:core-runtime:2.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/c827bced9cf2949105ea97d75bf848d8/AndroidManifest.xml:17:1-22:12
-INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
-INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
-INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
+ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
+INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
+INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
+INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
+MERGED from [:barcodescanner-release-2.1.5:] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/1bcbf29bd845a55c38cf22bb1f672b2f/AndroidManifest.xml:2:1-14:12
+MERGED from [:getnetintegration] /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/getnetintegration/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-13:12
+MERGED from [libposdigital-1.4.0-2-release.aar] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/be992f302c30b690e843de4c6b67ab4e/AndroidManifest.xml:2:1-11:12
+MERGED from [:deviceintegrationfacade] /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/deviceintegrationfacade/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
+MERGED from [androidx.core:core-ktx:1.3.0-rc01] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/e8400d453bde8b95f7daca65719beae7/AndroidManifest.xml:2:1-9:12
+MERGED from [:CordovaLib] /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/CordovaLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:20:1-27:12
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5df1361732a20286fecc7db9cabeabb8/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.appcompat:appcompat:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5312dd1aa4b76c48c86246b32e5170e6/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.media:media:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/0f54dfc986131f9611e89ac69b406ede/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/2ed2dc0730833db1f7ed111d7e2280d4/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/692d88b81cfb0f95a60b92002f38e05a/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.fragment:fragment:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/deee7e352fcda7c512810f9d9a92eb36/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.appcompat:appcompat-resources:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/488bdbaf90b2df416d601e5368c9c3c0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/85dea5fe3f5672ec3430806f6f0bd481/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/cc67b7fb44c7c0e2c8469b157d877b6e/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/97741e6de5945bbb06e2e6c8c464c816/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/3fdff5ea53101a3bf62d219e8c2e83d1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5e969ebad67fce50fefa74f0489a3082/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/622a2474c3fc678a8fde3bf75154e111/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/ae87604d881c36dccb1bfc165957fd8a/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/52ad1cd9f1219497d29c944ceaa97e96/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.activity:activity:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/f803f2b5fd28ae572b039f0f483dc9bf/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/0b39a716f531310c8c64343017750e04/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/60e59763cbf3ac8a239f96f6e3405e0d/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.core:core:1.3.0-rc01] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/7aa506e68ad2860dc74e3aacc2717dc5/AndroidManifest.xml:17:1-26:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/98338e90627947d36b2382b30ebfb597/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/8c42160ae87479e60a91726a5f65c167/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.documentfile:documentfile:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/787df46fc80323cbe924adabc4e442fb/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/27613f7394fb4e40fbdf77449016ed9f/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.print:print:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/6261bdafac9fa0ac07ced7d5bbe4fb92/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/92d00e7b9cbd6c8ee2b7d6635c4be19e/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/bc37321655697030bd04598e6af7e6d2/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/0113ff795ed73ac96872635151065dc1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/4d1b3d61501e4480d916b0bed6a22ac4/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/97a7f00d2d6ffdd1bf85f833d05d6c2f/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/f73799f5b3f659194c3d47a7ba99f62b/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/24c97de3121c199bc5363bb1e57ceb87/AndroidManifest.xml:17:1-22:12
+INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
+INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
+INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:2:1-19:12
 	package
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:2:106-129
-		INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml
-		INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:2:106-129
+		INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml
+		INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml
 	android:versionName
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:2:74-105
-		INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml
-		INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:2:74-105
+		INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml
+		INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml
 	android:hardwareAccelerated
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:2:11-45
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:2:11-45
 	xmlns:android
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:2:130-188
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:2:130-188
 	android:versionCode
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:2:46-73
-		INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml
-		INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:2:46-73
+		INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml
+		INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml
 supports-screens
-ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:3:5-191
+ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:3:5-191
 	android:largeScreens
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:3:49-76
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:3:49-76
 	android:smallScreens
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:3:132-159
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:3:132-159
 	android:normalScreens
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:3:77-105
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:3:77-105
 	android:xlargeScreens
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:3:160-188
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:3:160-188
 	android:resizeable
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:3:106-131
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:3:106-131
 	android:anyDensity
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:3:23-48
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:3:23-48
 uses-permission#android.permission.ACCESS_WEBVIEW
-ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:4:5-73
+ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:4:5-73
 	android:name
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:4:22-70
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:4:22-70
 uses-permission#android.permission.INTERNET
-ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:5:5-67
+ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:5:5-67
 	android:name
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:5:22-64
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:5:22-64
 application
-ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:6:5-15:19
-MERGED from [:barcodescanner-release-2.1.5:] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5be9a052d2c2449ef64bcfbc086289b3/AndroidManifest.xml:11:5-12:19
-MERGED from [:barcodescanner-release-2.1.5:] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5be9a052d2c2449ef64bcfbc086289b3/AndroidManifest.xml:11:5-12:19
-MERGED from [androidx.core:core:1.3.0-alpha01] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/3db4d59374d8a84f214f1980f9883319/AndroidManifest.xml:24:5-89
-MERGED from [androidx.core:core:1.3.0-alpha01] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/3db4d59374d8a84f214f1980f9883319/AndroidManifest.xml:24:5-89
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/eda482f15520cece33a4eb6dfd1d0084/AndroidManifest.xml:24:5-25:19
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/eda482f15520cece33a4eb6dfd1d0084/AndroidManifest.xml:24:5-25:19
+ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:6:5-15:19
+MERGED from [:barcodescanner-release-2.1.5:] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/1bcbf29bd845a55c38cf22bb1f672b2f/AndroidManifest.xml:11:5-12:19
+MERGED from [:barcodescanner-release-2.1.5:] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/1bcbf29bd845a55c38cf22bb1f672b2f/AndroidManifest.xml:11:5-12:19
+MERGED from [androidx.core:core:1.3.0-rc01] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/7aa506e68ad2860dc74e3aacc2717dc5/AndroidManifest.xml:24:5-89
+MERGED from [androidx.core:core:1.3.0-rc01] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/7aa506e68ad2860dc74e3aacc2717dc5/AndroidManifest.xml:24:5-89
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/8c42160ae87479e60a91726a5f65c167/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/8c42160ae87479e60a91726a5f65c167/AndroidManifest.xml:24:5-25:19
 	android:appComponentFactory
-		ADDED from [androidx.core:core:1.3.0-alpha01] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/3db4d59374d8a84f214f1980f9883319/AndroidManifest.xml:24:18-86
+		ADDED from [androidx.core:core:1.3.0-rc01] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/7aa506e68ad2860dc74e3aacc2717dc5/AndroidManifest.xml:24:18-86
 	android:supportsRtl
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:6:121-147
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:6:121-147
 	android:label
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:6:88-120
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:6:88-120
 	android:hardwareAccelerated
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:6:18-52
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:6:18-52
 	android:icon
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:6:53-87
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:6:53-87
 activity#com.odhen.POS.MainActivity
-ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:7:9-12:20
+ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:7:9-12:20
 	android:label
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:7:136-173
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:7:136-173
 	android:launchMode
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:7:174-204
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:7:174-204
 	android:windowSoftInputMode
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:7:284-326
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:7:284-326
 	android:configChanges
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:7:19-135
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:7:19-135
 	android:theme
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:7:233-283
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:7:233-283
 	android:name
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:7:205-232
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:7:205-232
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:8:13-11:29
+ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:8:13-11:29
 	android:label
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:8:28-65
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:8:28-65
 action#android.intent.action.MAIN
-ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:9:17-69
+ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:9:17-69
 	android:name
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:9:25-66
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:9:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:10:17-77
+ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:10:17-77
 	android:name
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:10:27-74
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:10:27-74
 activity#com.google.zxing.client.android.CaptureActivity
-ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:13:9-311
+ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:13:9-311
 	android:clearTaskOnLaunch
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:13:19-51
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:13:19-51
 	android:windowSoftInputMode
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:13:261-308
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:13:261-308
 	android:exported
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:13:114-138
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:13:114-138
 	android:configChanges
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:13:52-113
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:13:52-113
 	android:theme
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:13:202-260
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:13:202-260
 	android:name
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:13:139-201
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:13:139-201
 activity#com.google.zxing.client.android.encode.EncodeActivity
-ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:14:9-112
+ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:14:9-112
 	android:label
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:14:19-40
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:14:19-40
 	android:name
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:14:41-109
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:14:41-109
 uses-permission#android.permission.CAMERA
-ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:16:5-65
+ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:16:5-65
 	android:name
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:16:22-62
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:16:22-62
 uses-permission#android.permission.FLASHLIGHT
-ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:17:5-69
+ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:17:5-69
 	android:name
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:17:22-66
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:17:22-66
 uses-feature#android.hardware.camera
-ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:18:5-84
+ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:18:5-84
 	android:required
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:18:58-81
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:18:58-81
 	android:name
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml:18:19-57
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml:18:19-57
 uses-sdk
-INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml
-INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml
-MERGED from [:barcodescanner-release-2.1.5:] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5be9a052d2c2449ef64bcfbc086289b3/AndroidManifest.xml:7:5-9:41
-MERGED from [:barcodescanner-release-2.1.5:] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5be9a052d2c2449ef64bcfbc086289b3/AndroidManifest.xml:7:5-9:41
-MERGED from [:getnetintegration] /home/paulonascimento/workfolder/odhenPOS-/platforms/android/getnetintegration/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [:getnetintegration] /home/paulonascimento/workfolder/odhenPOS-/platforms/android/getnetintegration/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [libposdigital-1.4.0-2-release.aar] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5f26bfb26a5c8c136208847ca20349e8/AndroidManifest.xml:7:5-9:41
-MERGED from [libposdigital-1.4.0-2-release.aar] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5f26bfb26a5c8c136208847ca20349e8/AndroidManifest.xml:7:5-9:41
-MERGED from [:deviceintegrationfacade] /home/paulonascimento/workfolder/odhenPOS-/platforms/android/deviceintegrationfacade/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [:deviceintegrationfacade] /home/paulonascimento/workfolder/odhenPOS-/platforms/android/deviceintegrationfacade/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [androidx.core:core-ktx:1.3.0-alpha01] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/45db198daa168dabc53156b958a80480/AndroidManifest.xml:5:5-7:41
-MERGED from [androidx.core:core-ktx:1.3.0-alpha01] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/45db198daa168dabc53156b958a80480/AndroidManifest.xml:5:5-7:41
-MERGED from [:CordovaLib] /home/paulonascimento/workfolder/odhenPOS-/platforms/android/CordovaLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:25:5-44
-MERGED from [:CordovaLib] /home/paulonascimento/workfolder/odhenPOS-/platforms/android/CordovaLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:25:5-44
-MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/2cc7dde911a0a9e25ce03a0d7414df2c/AndroidManifest.xml:20:5-44
-MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/2cc7dde911a0a9e25ce03a0d7414df2c/AndroidManifest.xml:20:5-44
-MERGED from [androidx.appcompat:appcompat:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/ab5e760a0f0e43733b4188f5d3401c64/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.appcompat:appcompat:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/ab5e760a0f0e43733b4188f5d3401c64/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.media:media:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/b93bf263dbeaeb3bfbcc529bfd583b9f/AndroidManifest.xml:20:5-44
-MERGED from [androidx.media:media:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/b93bf263dbeaeb3bfbcc529bfd583b9f/AndroidManifest.xml:20:5-44
-MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/7904e8fa0f8f394cc2896be1fd06c391/AndroidManifest.xml:20:5-44
-MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/7904e8fa0f8f394cc2896be1fd06c391/AndroidManifest.xml:20:5-44
-MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/c1076e0fafe5ae74a11321898729ae81/AndroidManifest.xml:20:5-44
-MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/c1076e0fafe5ae74a11321898729ae81/AndroidManifest.xml:20:5-44
-MERGED from [androidx.fragment:fragment:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5d494d54465eb8a6cc257ee55d0e509e/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.fragment:fragment:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5d494d54465eb8a6cc257ee55d0e509e/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.appcompat:appcompat-resources:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/259228d4cfc500dc6cf34dc899ea6e00/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.appcompat:appcompat-resources:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/259228d4cfc500dc6cf34dc899ea6e00/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/e6a9f50c79e334a41ceeeb632564c6fd/AndroidManifest.xml:20:5-44
-MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/e6a9f50c79e334a41ceeeb632564c6fd/AndroidManifest.xml:20:5-44
-MERGED from [androidx.loader:loader:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/75577eae18a3fc1cf6e4a5fc4f1add40/AndroidManifest.xml:20:5-44
-MERGED from [androidx.loader:loader:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/75577eae18a3fc1cf6e4a5fc4f1add40/AndroidManifest.xml:20:5-44
-MERGED from [androidx.viewpager:viewpager:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/91d2426c49bd2b358a8a007a94ffd497/AndroidManifest.xml:20:5-44
-MERGED from [androidx.viewpager:viewpager:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/91d2426c49bd2b358a8a007a94ffd497/AndroidManifest.xml:20:5-44
-MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/d5b89cf75defc975461c0eb19569c1e9/AndroidManifest.xml:20:5-44
-MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/d5b89cf75defc975461c0eb19569c1e9/AndroidManifest.xml:20:5-44
-MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/4e91f29ebb060ec3a89c8944be30e838/AndroidManifest.xml:20:5-44
-MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/4e91f29ebb060ec3a89c8944be30e838/AndroidManifest.xml:20:5-44
-MERGED from [androidx.customview:customview:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/52afad7c2c9eb681b3d6b1999dcca3fa/AndroidManifest.xml:20:5-44
-MERGED from [androidx.customview:customview:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/52afad7c2c9eb681b3d6b1999dcca3fa/AndroidManifest.xml:20:5-44
-MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/ffeaf87400b5903c62165e7477933894/AndroidManifest.xml:20:5-44
-MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/ffeaf87400b5903c62165e7477933894/AndroidManifest.xml:20:5-44
-MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/330c4defb6424f1850d4853b55b18b17/AndroidManifest.xml:20:5-44
-MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/330c4defb6424f1850d4853b55b18b17/AndroidManifest.xml:20:5-44
-MERGED from [androidx.activity:activity:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/37b0431304f18b6177093b6722c7ae6b/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.activity:activity:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/37b0431304f18b6177093b6722c7ae6b/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/35c6f9453b0320888c6551b0b98be5a0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/35c6f9453b0320888c6551b0b98be5a0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/89e8b3f74a181a486c23195d6941d784/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/89e8b3f74a181a486c23195d6941d784/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.core:core:1.3.0-alpha01] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/3db4d59374d8a84f214f1980f9883319/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.core:core:1.3.0-alpha01] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/3db4d59374d8a84f214f1980f9883319/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/c5e1345e9ca414c3ca276ff147c44575/AndroidManifest.xml:20:5-44
-MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/c5e1345e9ca414c3ca276ff147c44575/AndroidManifest.xml:20:5-44
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/eda482f15520cece33a4eb6dfd1d0084/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/eda482f15520cece33a4eb6dfd1d0084/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.documentfile:documentfile:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/0a4545d81d444a4ab3f7d412f064390b/AndroidManifest.xml:20:5-44
-MERGED from [androidx.documentfile:documentfile:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/0a4545d81d444a4ab3f7d412f064390b/AndroidManifest.xml:20:5-44
-MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/7bfce4df3e5e35b4e3e20b3823ae36d8/AndroidManifest.xml:20:5-44
-MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/7bfce4df3e5e35b4e3e20b3823ae36d8/AndroidManifest.xml:20:5-44
-MERGED from [androidx.print:print:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/ee053e3fbab805633d91855c24c7d4f4/AndroidManifest.xml:20:5-44
-MERGED from [androidx.print:print:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/ee053e3fbab805633d91855c24c7d4f4/AndroidManifest.xml:20:5-44
-MERGED from [androidx.interpolator:interpolator:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/14dcf7beba33f804ae07c6ffccf0e358/AndroidManifest.xml:20:5-44
-MERGED from [androidx.interpolator:interpolator:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/14dcf7beba33f804ae07c6ffccf0e358/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-runtime:2.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/deddeb0f1b40dcae8db25bee808b85ff/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-runtime:2.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/deddeb0f1b40dcae8db25bee808b85ff/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/41bef4c68b79f55ff7b49c761f257418/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/41bef4c68b79f55ff7b49c761f257418/AndroidManifest.xml:20:5-44
-MERGED from [androidx.savedstate:savedstate:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/629f5968cdedf05f3e07ae051afddc9a/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.savedstate:savedstate:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/629f5968cdedf05f3e07ae051afddc9a/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/623f141134fc595c9a9ffd976890e07d/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/623f141134fc595c9a9ffd976890e07d/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/25460d3c4198c977bf1d739118d27099/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/25460d3c4198c977bf1d739118d27099/AndroidManifest.xml:20:5-44
-MERGED from [androidx.arch.core:core-runtime:2.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/c827bced9cf2949105ea97d75bf848d8/AndroidManifest.xml:20:5-44
-MERGED from [androidx.arch.core:core-runtime:2.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/c827bced9cf2949105ea97d75bf848d8/AndroidManifest.xml:20:5-44
-INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml
-INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml
+INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml
+INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml
+MERGED from [:barcodescanner-release-2.1.5:] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/1bcbf29bd845a55c38cf22bb1f672b2f/AndroidManifest.xml:7:5-9:41
+MERGED from [:barcodescanner-release-2.1.5:] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/1bcbf29bd845a55c38cf22bb1f672b2f/AndroidManifest.xml:7:5-9:41
+MERGED from [:getnetintegration] /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/getnetintegration/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:getnetintegration] /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/getnetintegration/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [libposdigital-1.4.0-2-release.aar] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/be992f302c30b690e843de4c6b67ab4e/AndroidManifest.xml:7:5-9:41
+MERGED from [libposdigital-1.4.0-2-release.aar] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/be992f302c30b690e843de4c6b67ab4e/AndroidManifest.xml:7:5-9:41
+MERGED from [:deviceintegrationfacade] /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/deviceintegrationfacade/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:deviceintegrationfacade] /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/deviceintegrationfacade/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [androidx.core:core-ktx:1.3.0-rc01] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/e8400d453bde8b95f7daca65719beae7/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.core:core-ktx:1.3.0-rc01] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/e8400d453bde8b95f7daca65719beae7/AndroidManifest.xml:5:5-7:41
+MERGED from [:CordovaLib] /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/CordovaLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:25:5-44
+MERGED from [:CordovaLib] /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/CordovaLib/build/intermediates/library_manifest/debug/AndroidManifest.xml:25:5-44
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5df1361732a20286fecc7db9cabeabb8/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5df1361732a20286fecc7db9cabeabb8/AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5312dd1aa4b76c48c86246b32e5170e6/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5312dd1aa4b76c48c86246b32e5170e6/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.media:media:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/0f54dfc986131f9611e89ac69b406ede/AndroidManifest.xml:20:5-44
+MERGED from [androidx.media:media:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/0f54dfc986131f9611e89ac69b406ede/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/2ed2dc0730833db1f7ed111d7e2280d4/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/2ed2dc0730833db1f7ed111d7e2280d4/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/692d88b81cfb0f95a60b92002f38e05a/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/692d88b81cfb0f95a60b92002f38e05a/AndroidManifest.xml:20:5-44
+MERGED from [androidx.fragment:fragment:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/deee7e352fcda7c512810f9d9a92eb36/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/deee7e352fcda7c512810f9d9a92eb36/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat-resources:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/488bdbaf90b2df416d601e5368c9c3c0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat-resources:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/488bdbaf90b2df416d601e5368c9c3c0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/85dea5fe3f5672ec3430806f6f0bd481/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/85dea5fe3f5672ec3430806f6f0bd481/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/cc67b7fb44c7c0e2c8469b157d877b6e/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/cc67b7fb44c7c0e2c8469b157d877b6e/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/97741e6de5945bbb06e2e6c8c464c816/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/97741e6de5945bbb06e2e6c8c464c816/AndroidManifest.xml:20:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/3fdff5ea53101a3bf62d219e8c2e83d1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/3fdff5ea53101a3bf62d219e8c2e83d1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5e969ebad67fce50fefa74f0489a3082/AndroidManifest.xml:20:5-44
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5e969ebad67fce50fefa74f0489a3082/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/622a2474c3fc678a8fde3bf75154e111/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/622a2474c3fc678a8fde3bf75154e111/AndroidManifest.xml:20:5-44
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/ae87604d881c36dccb1bfc165957fd8a/AndroidManifest.xml:20:5-44
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/ae87604d881c36dccb1bfc165957fd8a/AndroidManifest.xml:20:5-44
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/52ad1cd9f1219497d29c944ceaa97e96/AndroidManifest.xml:20:5-44
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/52ad1cd9f1219497d29c944ceaa97e96/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/f803f2b5fd28ae572b039f0f483dc9bf/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/f803f2b5fd28ae572b039f0f483dc9bf/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/0b39a716f531310c8c64343017750e04/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/0b39a716f531310c8c64343017750e04/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/60e59763cbf3ac8a239f96f6e3405e0d/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/60e59763cbf3ac8a239f96f6e3405e0d/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.3.0-rc01] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/7aa506e68ad2860dc74e3aacc2717dc5/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.3.0-rc01] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/7aa506e68ad2860dc74e3aacc2717dc5/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/98338e90627947d36b2382b30ebfb597/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/98338e90627947d36b2382b30ebfb597/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/8c42160ae87479e60a91726a5f65c167/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/8c42160ae87479e60a91726a5f65c167/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.documentfile:documentfile:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/787df46fc80323cbe924adabc4e442fb/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/787df46fc80323cbe924adabc4e442fb/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/27613f7394fb4e40fbdf77449016ed9f/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/27613f7394fb4e40fbdf77449016ed9f/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/6261bdafac9fa0ac07ced7d5bbe4fb92/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/6261bdafac9fa0ac07ced7d5bbe4fb92/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/92d00e7b9cbd6c8ee2b7d6635c4be19e/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/92d00e7b9cbd6c8ee2b7d6635c4be19e/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/bc37321655697030bd04598e6af7e6d2/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/bc37321655697030bd04598e6af7e6d2/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/0113ff795ed73ac96872635151065dc1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.1.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/0113ff795ed73ac96872635151065dc1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/4d1b3d61501e4480d916b0bed6a22ac4/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate:1.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/4d1b3d61501e4480d916b0bed6a22ac4/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/97a7f00d2d6ffdd1bf85f833d05d6c2f/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/97a7f00d2d6ffdd1bf85f833d05d6c2f/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/f73799f5b3f659194c3d47a7ba99f62b/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/f73799f5b3f659194c3d47a7ba99f62b/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/24c97de3121c199bc5363bb1e57ceb87/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /home/paulonascimento/.gradle/caches/transforms-2/files-2.1/24c97de3121c199bc5363bb1e57ceb87/AndroidManifest.xml:20:5-44
+INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml
+INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml
-		INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml
+		INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml
+		INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml
-		ADDED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml
-		INJECTED from /home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/src/main/AndroidManifest.xml
+		INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml
+		ADDED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml
+		INJECTED from /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/src/main/AndroidManifest.xml
 uses-permission#com.getnet.posdigital.service.POSDIGITAL
-ADDED from [:getnetintegration] /home/paulonascimento/workfolder/odhenPOS-/platforms/android/getnetintegration/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-80
+ADDED from [:getnetintegration] /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/getnetintegration/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-80
 	android:name
-		ADDED from [:getnetintegration] /home/paulonascimento/workfolder/odhenPOS-/platforms/android/getnetintegration/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:22-77
+		ADDED from [:getnetintegration] /home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/getnetintegration/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:22-77

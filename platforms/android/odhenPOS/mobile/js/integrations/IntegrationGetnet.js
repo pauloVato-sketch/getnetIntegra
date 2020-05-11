@@ -4,13 +4,12 @@ function IntegrationGetnet(){
     var REMOVE_ALL_INTEGRATIONS = false;
 
     var MESSAGE_INTEGRATION_FAIL = 'Não foi possível chamar a integração. Sua instância não existe.';
-    var MESSAGE_NULL_RESPONSE = 'Não foi pissível obter o retorno da integração.';
+    var MESSAGE_NULL_RESPONSE = 'Não foi possível obter o retorno da integração.';
 
 	this.integrationPayment = function(operatorData, currentRow) {
 
 		if(!!window.cordova && !!window.cordova.plugins.IntegrationService) {
 			var params = self.getPaymentFromCurrentRow(currentRow);
-
 			window.cordova.plugins.IntegrationService.payment(params, window.returnIntegration, null);
 		} else {
             window.returnIntegration(self.invalidIntegrationInstance());
@@ -18,18 +17,31 @@ function IntegrationGetnet(){
 	};
 
 	this.integrationPaymentResult = function(resolve, javaResult) {
-		console.log(resolve);
-		console.log(javaResult);
-		var integrationResult = {};
-		
+
+		var integrationResult = self.formatResponse();
+        console.log("RESOLVE:");
+        console.log(resolve);
+        console.log("JavaResult:");
+        console.log(javaResult);
+
 		if(javaResult !== null) {
 			if (!javaResult.error){
 				integrationResult.error = false;
 				javaResult = javaResult.data;
+				var NRCARTBANCO = javaResult.binCard + javaResult.lastNumbersCard;
+                var transactionDate = javaResult.date;
+                transactionDate = transactionDate.slice(6, 8) + transactionDate.slice(4, 6) + transactionDate.substring(0, 4);
 				integrationResult.data = {
-					CDBANCARTCR: javaResult.flag,
+					CDBANCARTCR: javaResult.cardBrandName ? javaResult.cardBrandName : '',
 					CDNSUHOSTTEF: javaResult.nsu,
-					NRCONTROLTEF: javaResult.AUTO,
+					VRMOVIVEND: javaResult.Value,
+					tiporece: javaResult.OperationType,
+                    STLPRIVIA : '',
+                    STLSEGVIA : '',
+                    TRANSACTIONDATE : transactionDate,
+                    NRCONTROLTEF: javaResult.CV,
+                    IDTIPORECE: javaResult.OperationType,
+                    NRCARTBANCO : NRCARTBANCO,
 					PAYMENTCONFIRMATION : PAYMENT_CONFIRMATION,
 					REMOVEALLINTEGRATIONS : REMOVE_ALL_INTEGRATIONS
 				};
@@ -39,7 +51,8 @@ function IntegrationGetnet(){
 		} else {
 			integrationResult.message = MESSAGE_NULL_RESPONSE;
 		}
-
+		console.log("resolving integration");
+		console.log(integrationResult);
 		resolve(integrationResult);
 	};
 
@@ -62,10 +75,9 @@ function IntegrationGetnet(){
     };
 
     this.reversalIntegration = function(tiporeceData){
-    	console.log(tiporeceData);
+        console.log("Flamengooo");
       	if(!!window.cordova && !!window.cordova.plugins.IntegrationService) {
 			var params = self.getRefundFromSaleCancelResult(tiporeceData);
-			console.log("refund");
 			window.cordova.plugins.IntegrationService.refund(params, window.returnIntegration,null);
 		} else {
 			window.returnIntegration(self.invalidIntegrationInstance());
@@ -73,7 +85,6 @@ function IntegrationGetnet(){
 	};
 
   	this.reversalIntegrationResult = function(resolve, javaResult){
-  		console.log("refund RESULT");
 		self.integrationPaymentResult(resolve, javaResult);
 	};
 

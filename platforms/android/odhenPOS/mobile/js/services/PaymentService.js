@@ -201,15 +201,20 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 			if (mustCallIntegration) {
 				// chama integração
 				return IntegrationService.integrationPayment(currentRow).then(function (integrationResult) {
-					if (!integrationResult.error) {
-						return self.savePayment(integrationResult.data).then(function(){
-							return self.handlePrintPayment(integrationResult.data.eletronicTransacion.data).then(function(){
-								return self.setPaymentSale(integrationResult.data);
-							}.bind(this));
-						}.bind(this));
-					} else {
-						return integrationResult;
-					}
+				    console.log("Resultado da integração:   ");
+				    console.log(integrationResult);
+				    if (!integrationResult.error) {
+					    return self.savePayment(integrationResult.data).then(function(){
+					        console.log("TTTTTTTT");
+					        console.log(integrationResult);
+						    //return self.handlePrintPayment(integrationResult.data.eletronicTransacion.data).then(function(){
+							    return self.setPaymentSale(integrationResult.data);
+						    //}.bind(this));
+					    }.bind(this));
+				    } else {
+                        ApplicationContext.UtilitiesService.backAfterFinish();
+					    return integrationResult;
+				    }
 				});
 			} else {
 				// pagamento sem integração
@@ -226,6 +231,8 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 
 	this.handlePrintPayment = function(dataPrinter) {
+		console.log("dataPrinter");
+	    console.log(dataPrinter);
 		return new Promise(function(resolve) {
 			var tefObject = {
 				TEFVOUCHER: [{
@@ -236,6 +243,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 			self.handlePrintReceipt(tefObject, false);
 
+            console.log("Message is up");
 			ScreenService.confirmMessage(
 				'Deseja imprimir a via do cliente?', 'question',
 				function(){
@@ -259,6 +267,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 					.where('paymentData').equals(paymentData)
 					.where('currentPayment').equals(currentPayment);
 
+                console.log("blyat");
 				return SavePayment.download(query).then(function(paymentData){
 					resolve();
 				});
@@ -736,6 +745,8 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 	};
 
     this.handlePrintReceipt = function(dadosImpressao, delayPrint) {
+        console.log('Dados impressao handlePrintReceipt');
+        console.log(dadosImpressao);
     	if(_.isUndefined(delayPrint)) {
     		delayPrint = true;
     	}

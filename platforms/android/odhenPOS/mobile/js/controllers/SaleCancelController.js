@@ -6,8 +6,12 @@ function SaleCancelController(AccountService, OperatorRepository, PermissionServ
 		if (_.get(widget, 'currentRow.CODIGOCUPOM')){
 			OperatorRepository.findOne().then(function(operatorData){
 				widget.currentRow.CODIGOCUPOM = UtilitiesService.padLeft(widget.currentRow.CODIGOCUPOM, widget.getField('CODIGOCUPOM').maxlength, '0');
+				console.log("Cancelamento 1");
+				console.log(widget.currentRow.CODIGOCUPOM);
 				AccountService.saleCancel(operatorData.chave, widget.currentRow.CODIGOCUPOM, widget.CDSUPERVISOR).then(function(saleCancelResult){
 					saleCancelResult = saleCancelResult[0];
+					console.log("Cancelamento 2");
+					console.log(saleCancelResult);
 					if (!saleCancelResult.error) {
 						self.clearScreen(widget);
 

@@ -104,7 +104,7 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 			'CDNSUHOSTTEF': null,
 			'DTHRINCOMVEN': null
 		};
-
+        console.log("Ativa o cyberpunk");
 		new Promise(function(resolve){
 		    //definimos um parametro do objeto global window como uma função que é a reversalIntegrationResult
 		    //com ambiente self e argumento resolve

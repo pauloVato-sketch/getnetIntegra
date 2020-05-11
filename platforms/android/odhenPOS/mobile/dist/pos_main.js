@@ -1588,13 +1588,12 @@ function IntegrationGetnet(){
     var REMOVE_ALL_INTEGRATIONS = false;
 
     var MESSAGE_INTEGRATION_FAIL = 'Não foi possível chamar a integração. Sua instância não existe.';
-    var MESSAGE_NULL_RESPONSE = 'Não foi pissível obter o retorno da integração.';
+    var MESSAGE_NULL_RESPONSE = 'Não foi possível obter o retorno da integração.';
 
 	this.integrationPayment = function(operatorData, currentRow) {
 
 		if(!!window.cordova && !!window.cordova.plugins.IntegrationService) {
 			var params = self.getPaymentFromCurrentRow(currentRow);
-
 			window.cordova.plugins.IntegrationService.payment(params, window.returnIntegration, null);
 		} else {
             window.returnIntegration(self.invalidIntegrationInstance());
@@ -1602,18 +1601,31 @@ function IntegrationGetnet(){
 	};
 
 	this.integrationPaymentResult = function(resolve, javaResult) {
-		console.log(resolve);
-		console.log(javaResult);
-		var integrationResult = {};
-		
+
+		var integrationResult = self.formatResponse();
+        console.log("RESOLVE:");
+        console.log(resolve);
+        console.log("JavaResult:");
+        console.log(javaResult);
+
 		if(javaResult !== null) {
 			if (!javaResult.error){
 				integrationResult.error = false;
 				javaResult = javaResult.data;
+				var NRCARTBANCO = javaResult.binCard + javaResult.lastNumbersCard;
+                var transactionDate = javaResult.date;
+                transactionDate = transactionDate.slice(6, 8) + transactionDate.slice(4, 6) + transactionDate.substring(0, 4);
 				integrationResult.data = {
-					CDBANCARTCR: javaResult.flag,
+					CDBANCARTCR: javaResult.cardBrandName ? javaResult.cardBrandName : '',
 					CDNSUHOSTTEF: javaResult.nsu,
-					NRCONTROLTEF: javaResult.AUTO,
+					VRMOVIVEND: javaResult.Value,
+					tiporece: javaResult.OperationType,
+                    STLPRIVIA : '',
+                    STLSEGVIA : '',
+                    TRANSACTIONDATE : transactionDate,
+                    NRCONTROLTEF: javaResult.CV,
+                    IDTIPORECE: javaResult.OperationType,
+                    NRCARTBANCO : NRCARTBANCO,
 					PAYMENTCONFIRMATION : PAYMENT_CONFIRMATION,
 					REMOVEALLINTEGRATIONS : REMOVE_ALL_INTEGRATIONS
 				};
@@ -1623,7 +1635,8 @@ function IntegrationGetnet(){
 		} else {
 			integrationResult.message = MESSAGE_NULL_RESPONSE;
 		}
-
+		console.log("resolving integration");
+		console.log(integrationResult);
 		resolve(integrationResult);
 	};
 
@@ -1646,10 +1659,9 @@ function IntegrationGetnet(){
     };
 
     this.reversalIntegration = function(tiporeceData){
-    	console.log(tiporeceData);
+        console.log("Flamengooo");
       	if(!!window.cordova && !!window.cordova.plugins.IntegrationService) {
 			var params = self.getRefundFromSaleCancelResult(tiporeceData);
-			console.log("refund");
 			window.cordova.plugins.IntegrationService.refund(params, window.returnIntegration,null);
 		} else {
 			window.returnIntegration(self.invalidIntegrationInstance());
@@ -1657,7 +1669,6 @@ function IntegrationGetnet(){
 	};
 
   	this.reversalIntegrationResult = function(resolve, javaResult){
-  		console.log("refund RESULT");
 		self.integrationPaymentResult(resolve, javaResult);
 	};
 
@@ -2339,9 +2350,7 @@ function PrinterGetnet(){
     var INVALID_PRINTER_INSTANCE = 'Não foi possível chamar a impressora. Sua instância não existe.';
 
     this.printText = function(text){
-
         if (!!window.cordova.plugins.IntegrationService){
-
         	var params = JSON.stringify({"texto":text, "flag":"printText"});
             //Chamada da função de impressão da integração
             //window.returnPrintResult contém a função printResult desse mesmo arquivo
@@ -2353,22 +2362,26 @@ function PrinterGetnet(){
     };
 
     this.printQRCode = function(qrCode){
-
-        var params = JSON.stringify({"qrcode":qrCode,"flag":"qrCode"});
-        window.cordova.plugins.IntegrationService.print(params, window.returnPrintResult,null);
-
+        if (!!window.cordova.plugins.IntegrationService){
+            var params = JSON.stringify({"qrcode":qrCode,"flag":"qrCode"});
+            window.cordova.plugins.IntegrationService.print(params, window.returnPrintResult,null);
+        }else{
+            window.returnPrintResult(self.invalidPrinterInstance());
+        }
     };
 
     this.printBarCode = function(barCode){
-
-        var params = JSON.stringify({"barcode":barCode, "flag":"barCode"});
-        window.cordova.plugins.IntegrationService.print(params, window.returnPrintResult,null);
-
+        if (!!window.cordova.plugins.IntegrationService){
+            var params = JSON.stringify({"barcode":barCode, "flag":"barCode"});
+            window.cordova.plugins.IntegrationService.print(params, window.returnPrintResult,null);
+        }else{
+            window.returnPrintResult(self.invalidPrinterInstance());
+        }
     };
 
     this.reprintTEFVoucher = function(){
 
-        //window.returnPrintResult(self.invalidPrinterInstance());
+        window.returnPrintResult(self.invalidPrinterInstance());
     };
 
 
@@ -2541,7 +2554,6 @@ function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, Print
 		return OperatorRepository.findOne().then(function(operatorData) {
 			if (!_.isEmpty(self.printerCommands)){
 				PrinterClass = self.choosePrinter(operatorData.IDMODEIMPRES);
-
 				if (PrinterClass){
 					return new Promise(function(resolve){
 						self.callRecursivePrintCommands = _.bind(self.printCommands, self, resolve, PrinterClass);
@@ -2570,12 +2582,6 @@ function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, Print
 			window.returnPrintResult = _.bind(PrinterClass.printResult, PrinterClass, resolve);
 			PrinterClass[currentPrinterCommand.type](currentPrinterCommand.parameter);
 		}.bind(this)).then(function(resolved){
-		    //funcao de transformaçao codigo de erro em mensagem
-		    //para poder fazer o json object q esta sendo tratado a seguir
-		    //funcao aqui<<<<<
-
-
-		    console.log(resolved);
 			if (!resolved.error) {
 				if (!_.isEmpty(self.printerCommands)){
 					// realiza impressão do próximo comando
@@ -2589,8 +2595,6 @@ function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, Print
 				resolved.message = PRINT_ERROR + resolved.message;
 				impressionResolved(resolved);
 
-                //Podemos fazer o código retornar para uma janela especifica ao ocorrer erro na impressao
-				//WindowService.openWindow('LOGIN_SCREEN');
 			}
 		}.bind(this));
 	};
@@ -3484,7 +3488,7 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 			'CDNSUHOSTTEF': null,
 			'DTHRINCOMVEN': null
 		};
-
+        console.log("Ativa o cyberpunk");
 		new Promise(function(resolve){
 		    //definimos um parametro do objeto global window como uma função que é a reversalIntegrationResult
 		    //com ambiente self e argumento resolve
@@ -3980,15 +3984,20 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 			if (mustCallIntegration) {
 				// chama integração
 				return IntegrationService.integrationPayment(currentRow).then(function (integrationResult) {
-					if (!integrationResult.error) {
-						return self.savePayment(integrationResult.data).then(function(){
-							return self.handlePrintPayment(integrationResult.data.eletronicTransacion.data).then(function(){
-								return self.setPaymentSale(integrationResult.data);
-							}.bind(this));
-						}.bind(this));
-					} else {
-						return integrationResult;
-					}
+				    console.log("Resultado da integração:   ");
+				    console.log(integrationResult);
+				    if (!integrationResult.error) {
+					    return self.savePayment(integrationResult.data).then(function(){
+					        console.log("TTTTTTTT");
+					        console.log(integrationResult);
+						    //return self.handlePrintPayment(integrationResult.data.eletronicTransacion.data).then(function(){
+							    return self.setPaymentSale(integrationResult.data);
+						    //}.bind(this));
+					    }.bind(this));
+				    } else {
+                        ApplicationContext.UtilitiesService.backAfterFinish();
+					    return integrationResult;
+				    }
 				});
 			} else {
 				// pagamento sem integração
@@ -4005,6 +4014,8 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 
 	this.handlePrintPayment = function(dataPrinter) {
+		console.log("dataPrinter");
+	    console.log(dataPrinter);
 		return new Promise(function(resolve) {
 			var tefObject = {
 				TEFVOUCHER: [{
@@ -4015,6 +4026,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 			self.handlePrintReceipt(tefObject, false);
 
+            console.log("Message is up");
 			ScreenService.confirmMessage(
 				'Deseja imprimir a via do cliente?', 'question',
 				function(){
@@ -4038,6 +4050,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 					.where('paymentData').equals(paymentData)
 					.where('currentPayment').equals(currentPayment);
 
+                console.log("blyat");
 				return SavePayment.download(query).then(function(paymentData){
 					resolve();
 				});
@@ -4515,6 +4528,8 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 	};
 
     this.handlePrintReceipt = function(dadosImpressao, delayPrint) {
+        console.log('Dados impressao handlePrintReceipt');
+        console.log(dadosImpressao);
     	if(_.isUndefined(delayPrint)) {
     		delayPrint = true;
     	}
@@ -18763,6 +18778,8 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 			if (self.validValue(widget.getField('VRMOVIVEND'), '')) {
 				ScreenService.showLoader();
 				PaymentService.handlePayment(currentRow).then(function (handlePaymentResult) {
+				    console.log("Result do Payment:");
+				    console.log(handlePaymentResult);
 					ScreenService.hideLoader();
 					if (!handlePaymentResult.error) {
 						self.paymentFinish(widgetPayment, handlePaymentResult.data);
@@ -20362,8 +20379,12 @@ function SaleCancelController(AccountService, OperatorRepository, PermissionServ
 		if (_.get(widget, 'currentRow.CODIGOCUPOM')){
 			OperatorRepository.findOne().then(function(operatorData){
 				widget.currentRow.CODIGOCUPOM = UtilitiesService.padLeft(widget.currentRow.CODIGOCUPOM, widget.getField('CODIGOCUPOM').maxlength, '0');
+				console.log("Cancelamento 1");
+				console.log(widget.currentRow.CODIGOCUPOM);
 				AccountService.saleCancel(operatorData.chave, widget.currentRow.CODIGOCUPOM, widget.CDSUPERVISOR).then(function(saleCancelResult){
 					saleCancelResult = saleCancelResult[0];
+					console.log("Cancelamento 2");
+					console.log(saleCancelResult);
 					if (!saleCancelResult.error) {
 						self.clearScreen(widget);
 

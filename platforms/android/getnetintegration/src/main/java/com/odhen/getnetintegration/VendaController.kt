@@ -88,13 +88,6 @@ class VendaController(val activity: AppCompatActivity) : VendaController, Device
         intent.putExtras(bundle)
         activity.startActivityForResult(intent, REQUEST_CODE)
     }
-    /*
-    Possibilidade de implementação da reimpressão via link disponível na documentação
-    fun reprint(){
-        val intent = Intent(Intent.ACTION_VIEW,Uri.parse(URI_REPRINT))
-        activity.startActivityForResult(intent,REQUEST_CODE)
-
-    }*/
 
 
     override fun onIntegrationResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -116,6 +109,7 @@ class VendaController(val activity: AppCompatActivity) : VendaController, Device
                     PaymentResult.FALHA, PaymentResult.DESCONHECIDO -> VendaController.EstadoTransacao.ERRO
                 }
 
+                Log.d("TAGG",estadoTransacao.toString() +"/"+paymentData.toString()+"/"+paymentResult.descricao);
                 this.transacaoListener?.transacaoConcluida(
                         estadoTransacao,
                         paymentResult.descricao,
@@ -126,6 +120,7 @@ class VendaController(val activity: AppCompatActivity) : VendaController, Device
                 this.transacaoListener = null
                 VendaAtual.venda = null
             }
+
         }
     }
 

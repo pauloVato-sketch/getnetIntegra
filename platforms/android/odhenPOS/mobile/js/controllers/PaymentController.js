@@ -222,6 +222,8 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 			if (self.validValue(widget.getField('VRMOVIVEND'), '')) {
 				ScreenService.showLoader();
 				PaymentService.handlePayment(currentRow).then(function (handlePaymentResult) {
+				    console.log("Result do Payment:");
+				    console.log(handlePaymentResult);
 					ScreenService.hideLoader();
 					if (!handlePaymentResult.error) {
 						self.paymentFinish(widgetPayment, handlePaymentResult.data);

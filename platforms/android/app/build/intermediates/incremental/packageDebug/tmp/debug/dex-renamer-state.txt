@@ -1,4 +1,4 @@
-#Fri Mar 06 12:58:35 BRT 2020
+#Mon May 11 14:23:59 BRT 2020
 path.1=classes.dex
 path.0=classes.dex
 renamed.8=classes9.dex
@@ -9,16 +9,16 @@ renamed.4=classes5.dex
 renamed.3=classes4.dex
 renamed.2=classes3.dex
 renamed.1=classes2.dex
-base.8=/home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/build/intermediates/transforms/dexMerger/debug/2
+base.8=/home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/build/intermediates/transforms/dexMerger/debug/3
 renamed.0=classes.dex
-base.7=/home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/build/intermediates/transforms/dexMerger/debug/1
-base.6=/home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/build/intermediates/transforms/dexMerger/debug/4
-base.5=/home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/build/intermediates/transforms/dexMerger/debug/0
-base.4=/home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/build/intermediates/transforms/dexMerger/debug/7
-base.3=/home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/build/intermediates/transforms/dexMerger/debug/3
-base.2=/home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/build/intermediates/transforms/dexMerger/debug/6
-base.1=/home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/build/intermediates/transforms/dexMerger/debug/5
-base.0=/home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/build/intermediates/transforms/dexMerger/debug/8
+base.7=/home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/build/intermediates/transforms/dexMerger/debug/6
+base.6=/home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/build/intermediates/transforms/dexMerger/debug/1
+base.5=/home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/build/intermediates/transforms/dexMerger/debug/4
+base.4=/home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/build/intermediates/transforms/dexMerger/debug/2
+base.3=/home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/build/intermediates/transforms/dexMerger/debug/0
+base.2=/home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/build/intermediates/transforms/dexMerger/debug/7
+base.1=/home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/build/intermediates/transforms/dexMerger/debug/5
+base.0=/home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/build/intermediates/transforms/dexMerger/debug/8
 path.8=classes.dex
 path.7=classes.dex
 path.6=classes.dex

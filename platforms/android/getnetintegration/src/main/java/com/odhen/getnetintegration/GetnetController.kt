@@ -24,9 +24,11 @@ class GetnetController (activity: AppCompatActivity) {
             var printer: IPrinterService? = try {
                 val printer = PosDigital.getInstance().printer
                 printer.init()
+
                 printer
             } catch (_: Exception) {
                 startService()
+
                 null
             }
 

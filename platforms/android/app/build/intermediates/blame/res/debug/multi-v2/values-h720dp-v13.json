@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/home/paulonascimento/workfolder/odhenPOS-/platforms/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-h720dp-v13/values-h720dp-v13.xml",
+            "outputFile": "/home/paulonascimento/workfolder/finalGetnet/getnetintegra/platforms/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-h720dp-v13/values-h720dp-v13.xml",
             "map": [
                 {
-                    "source": "/home/paulonascimento/.gradle/caches/transforms-2/files-2.1/ab5e760a0f0e43733b4188f5d3401c64/res/values-h720dp-v13/values-h720dp-v13.xml",
+                    "source": "/home/paulonascimento/.gradle/caches/transforms-2/files-2.1/5312dd1aa4b76c48c86246b32e5170e6/res/values-h720dp-v13/values-h720dp-v13.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

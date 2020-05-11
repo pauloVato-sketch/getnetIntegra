@@ -37,17 +37,14 @@ class ImpressaoController: com.odhen.deviceintagrationfacade.Controllers.Impress
     private var code : Int? = 0
 
     fun initPrinterParams(printer: IPrinterService?) {
-        printer?.setGray(5)
-        printer?.defineFontFormat(this.textFontSize)
-        printer?.init()
         this.printer = printer
+        this.printer?.setGray(5)
+        this.printer?.defineFontFormat(this.textFontSize)
     }
 
     override fun imprimeTexto(texto: String) {
         //Em algumas situações,aparentemente a integração reseta as definições da impressora
         //alterando a fonte e o tom do cinza,de forma que é necessário garantir a inicialização
-        this.initPrinterParams(printer)
-
         printer?.addText(AlignMode.CENTER, texto)
         printer?.print(printerListener)
         Thread.sleep(1_000)
@@ -70,7 +67,7 @@ class ImpressaoController: com.odhen.deviceintagrationfacade.Controllers.Impress
         Thread.sleep(1_000)
 
         setCode(printer?.status)
-        printer?.defineFontFormat(this.textFontSize)
+        this.printer?.defineFontFormat(this.textFontSize)
 
     }
 
