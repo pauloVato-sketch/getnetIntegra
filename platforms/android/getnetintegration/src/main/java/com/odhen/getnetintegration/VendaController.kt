@@ -78,6 +78,9 @@ class VendaController(val activity: AppCompatActivity) : VendaController, Device
 
         var dataFormatada = dataTransacao.substring(0, 2) + "/" + dataTransacao.substring(2, 4) + "/" + dataTransacao.substring(4, 8)
 
+        Log.d("TAGG",valorLong.toString())
+        Log.d("TAGG",cvNumber)
+        Log.d("TAGG",dataFormatada)
         val bundle = bundleOf(
                 "amount" to String.format("%012d", valorLong),
                 "cvNumber" to cvNumber,

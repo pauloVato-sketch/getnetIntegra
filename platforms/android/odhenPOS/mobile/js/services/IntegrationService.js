@@ -77,23 +77,17 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 	this.callRecursive = null;
 
 	this.reversalIntegration = function(removePaymentSale, integrations){
-
-        //chamada para iniciar processo de estorno pela integração
-    	return new Promise(function(reversalResolve) {
-			this.reversalIntegration = function(removePaymentSale, integrations){
-            		// pega IDTPTEF da primeira posição pois será o mesmo para qualquer recebimento
-            		return new Promise(function(reversalResolve) {
-            			IntegrationClass = self.chooseIntegration(integrations[0].IDTPTEF);
-            			if(IntegrationClass){
-            				self.reversalWaiting = _.clone(integrations);
-            				self.callRecursive = _.bind(this.recursiveReversalIntegration, self, reversalResolve, Array());
-            				self.callRecursive(removePaymentSale, IntegrationClass);
-            			} else {
-            				reversalResolve(self.invalidIntegrationValues());
-            			}
-            		}.bind(this));
-            	};
-		}.bind(this));
+        // pega IDTPTEF da primeira posição pois será o mesmo para qualquer recebimento
+        return new Promise(function(reversalResolve) {
+        	IntegrationClass = self.chooseIntegration(integrations[0].IDTPTEF);
+        	if(IntegrationClass){
+        		self.reversalWaiting = _.clone(integrations);
+            	self.callRecursive = _.bind(this.recursiveReversalIntegration, self, reversalResolve, Array());
+            	self.callRecursive(removePaymentSale, IntegrationClass);
+            } else {
+            	reversalResolve(self.invalidIntegrationValues());
+            }
+        }.bind(this));
 	};
 
 	this.recursiveReversalIntegration = function(reversalResolve, data, removePaymentSale){

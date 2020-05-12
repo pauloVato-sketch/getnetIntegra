@@ -124,13 +124,13 @@ class IntegrationService: CordovaPlugin() {
         )
 
         //Código inutilizado
-        /*val refundType =  when(refundData.refundType) {
+        val refundType =  when(refundData.refundType) {
             1 -> TipoMovimentacao.CREDITO
             2 -> TipoMovimentacao.DEBITO
             else -> {
                 return
             }
-        }*/
+        }
 
 
         VendaController.instance?.chamaEstorno(

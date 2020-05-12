@@ -76,6 +76,7 @@ function IntegrationGetnet(){
 
     this.reversalIntegration = function(tiporeceData){
         console.log("Flamengooo");
+        console.log(tiporeceData);
       	if(!!window.cordova && !!window.cordova.plugins.IntegrationService) {
 			var params = self.getRefundFromSaleCancelResult(tiporeceData);
 			window.cordova.plugins.IntegrationService.refund(params, window.returnIntegration,null);
@@ -111,12 +112,13 @@ function IntegrationGetnet(){
 		});
 	};
 
-	this.getRefundFromSaleCancelResult = function(integrations){
+	this.getRefundFromSaleCancelResult = function(tiporeceData){
+	    console.log(tiporeceData.TRANSACTIONDATE);
 		return JSON.stringify(
-		{"refundType": integrations.IDTIPORECE,
-		 "refundValue": integrations.VRMOVIVEND,
-		 "refundDate" : integrations.TRANSACTIONDATE,
-		 "refundCV" : integrations.NRCONTROLTEF
+		{"refundType": tiporeceData.IDTIPORECE,
+		 "refundValue": tiporeceData.VRMOVIVEND,
+		 "refundDate" : tiporeceData.TRANSACTIONDATE,
+		 "refundCV" : tiporeceData.NRCONTROLTEF
 		});
 	};
 

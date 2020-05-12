@@ -1660,6 +1660,7 @@ function IntegrationGetnet(){
 
     this.reversalIntegration = function(tiporeceData){
         console.log("Flamengooo");
+        console.log(tiporeceData);
       	if(!!window.cordova && !!window.cordova.plugins.IntegrationService) {
 			var params = self.getRefundFromSaleCancelResult(tiporeceData);
 			window.cordova.plugins.IntegrationService.refund(params, window.returnIntegration,null);
@@ -1695,12 +1696,13 @@ function IntegrationGetnet(){
 		});
 	};
 
-	this.getRefundFromSaleCancelResult = function(integrations){
+	this.getRefundFromSaleCancelResult = function(tiporeceData){
+	    console.log(tiporeceData.TRANSACTIONDATE);
 		return JSON.stringify(
-		{"refundType": integrations.IDTIPORECE,
-		 "refundValue": integrations.VRMOVIVEND,
-		 "refundDate" : integrations.TRANSACTIONDATE,
-		 "refundCV" : integrations.NRCONTROLTEF
+		{"refundType": tiporeceData.IDTIPORECE,
+		 "refundValue": tiporeceData.VRMOVIVEND,
+		 "refundDate" : tiporeceData.TRANSACTIONDATE,
+		 "refundCV" : tiporeceData.NRCONTROLTEF
 		});
 	};
 
@@ -3461,23 +3463,17 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 	this.callRecursive = null;
 
 	this.reversalIntegration = function(removePaymentSale, integrations){
-
-        //chamada para iniciar processo de estorno pela integração
-    	return new Promise(function(reversalResolve) {
-			this.reversalIntegration = function(removePaymentSale, integrations){
-            		// pega IDTPTEF da primeira posição pois será o mesmo para qualquer recebimento
-            		return new Promise(function(reversalResolve) {
-            			IntegrationClass = self.chooseIntegration(integrations[0].IDTPTEF);
-            			if(IntegrationClass){
-            				self.reversalWaiting = _.clone(integrations);
-            				self.callRecursive = _.bind(this.recursiveReversalIntegration, self, reversalResolve, Array());
-            				self.callRecursive(removePaymentSale, IntegrationClass);
-            			} else {
-            				reversalResolve(self.invalidIntegrationValues());
-            			}
-            		}.bind(this));
-            	};
-		}.bind(this));
+        // pega IDTPTEF da primeira posição pois será o mesmo para qualquer recebimento
+        return new Promise(function(reversalResolve) {
+        	IntegrationClass = self.chooseIntegration(integrations[0].IDTPTEF);
+        	if(IntegrationClass){
+        		self.reversalWaiting = _.clone(integrations);
+            	self.callRecursive = _.bind(this.recursiveReversalIntegration, self, reversalResolve, Array());
+            	self.callRecursive(removePaymentSale, IntegrationClass);
+            } else {
+            	reversalResolve(self.invalidIntegrationValues());
+            }
+        }.bind(this));
 	};
 
 	this.recursiveReversalIntegration = function(reversalResolve, data, removePaymentSale){
@@ -20379,12 +20375,8 @@ function SaleCancelController(AccountService, OperatorRepository, PermissionServ
 		if (_.get(widget, 'currentRow.CODIGOCUPOM')){
 			OperatorRepository.findOne().then(function(operatorData){
 				widget.currentRow.CODIGOCUPOM = UtilitiesService.padLeft(widget.currentRow.CODIGOCUPOM, widget.getField('CODIGOCUPOM').maxlength, '0');
-				console.log("Cancelamento 1");
-				console.log(widget.currentRow.CODIGOCUPOM);
 				AccountService.saleCancel(operatorData.chave, widget.currentRow.CODIGOCUPOM, widget.CDSUPERVISOR).then(function(saleCancelResult){
 					saleCancelResult = saleCancelResult[0];
-					console.log("Cancelamento 2");
-					console.log(saleCancelResult);
 					if (!saleCancelResult.error) {
 						self.clearScreen(widget);
 
@@ -20446,6 +20438,7 @@ function SaleCancelController(AccountService, OperatorRepository, PermissionServ
 
 	this.handleTransactionRefound = function(saleCancelResult){
 		var dataTEF = saleCancelResult.dataTEF;
+		console.log(dataTEF);
 		dataTEF = _.filter(dataTEF, function(tiporece) {
 			return PaymentService.checkIfMustCallIntegration(tiporece);
 
@@ -20461,17 +20454,24 @@ function SaleCancelController(AccountService, OperatorRepository, PermissionServ
 		// monta dados para estorno
 		dataTEF = _.map(dataTEF, function(tiporece){
 			tiporece.IDTPTEF = operatorData.IDTPTEF;
+			console.log(tiporece);
+			var transactionDate;
 			switch(tiporece.IDTPTEF) {
-				case '2':
+				case '2':{
 					tiporece.AUTHKEY = IntegrationCappta.getAUTHKEY(operatorData.AMBIENTEPRODUCAO);
 					break;
-				case '5':
+				}
+				case '5':{
 					tiporece.DSENDIPSITEF = operatorData.DSENDIPSITEF;
 					tiporece.CDLOJATEF = operatorData.CDLOJATEF;
 					tiporece.CDTERTEF = operatorData.CDTERTEF;
-					var transactionDate = tiporece.DTHRINCMOV.split(" ")[0].replace('-', '').replace('-', '');
+					transactionDate = tiporece.DTHRINCMOV.split(" ")[0].replace('-', '').replace('-', '');
 					tiporece.TRANSACTIONDATE = transactionDate.slice(6, 8) + transactionDate.slice(4, 6) + transactionDate.substring(0, 4);
-					break;
+				} break;
+				case '8':{
+					transactionDate = tiporece.DTHRINCMOV.split(" ")[0].replace('-', '').replace('-', '');
+					tiporece.TRANSACTIONDATE = transactionDate.slice(6, 8) + transactionDate.slice(4, 6) + transactionDate.substring(0, 4);
+                } break;
 
 			}
 			return tiporece;
