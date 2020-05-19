@@ -204,13 +204,17 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 				    console.log("Resultado da integração:   ");
 				    console.log(integrationResult);
 				    if (!integrationResult.error) {
-					    return self.savePayment(integrationResult.data).then(function(){
-					        console.log("TTTTTTTT");
-					        console.log(integrationResult);
-						    //return self.handlePrintPayment(integrationResult.data.eletronicTransacion.data).then(function(){
+				        try{
+					        return self.savePayment(integrationResult.data).then(function(){
+					            console.log("TTTTTTTT");
+					            console.log(integrationResult);
+						        // self.handlePrintPayment(integrationResult.data.eletronicTransacion.data).then(function(){
 							    return self.setPaymentSale(integrationResult.data);
-						    //}.bind(this));
-					    }.bind(this));
+						        //}.bind(this));
+					        }.bind(this));
+				        }catch(e){
+                            console.log(e);
+				        }
 				    } else {
                         ApplicationContext.UtilitiesService.backAfterFinish();
 					    return integrationResult;
@@ -267,7 +271,8 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 					.where('paymentData').equals(paymentData)
 					.where('currentPayment').equals(currentPayment);
 
-                console.log("blyat");
+                console.log(paymentData);
+                console.log(currentPayment);
 				return SavePayment.download(query).then(function(paymentData){
 					resolve();
 				});
@@ -283,6 +288,8 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 	this.setPaymentSale = function (currentRow) {
 		return PaymentRepository.findOne().then(function (payment) {
+		    console.log("Resultado da integração:   ");
+            console.log(payment);
 			// seta recebimento
 			self.formatPriceChart(payment.TIPORECE, currentRow);
 			// calcula valor pago no total da venda

@@ -1592,7 +1592,7 @@ function IntegrationGetnet(){
 
 	this.integrationPayment = function(operatorData, currentRow) {
 
-		if(!!window.cordova && !!window.cordova.plugins.IntegrationService) {
+		if(!!window.cordova.plugins.IntegrationService) {
 			var params = self.getPaymentFromCurrentRow(currentRow);
 			window.cordova.plugins.IntegrationService.payment(params, window.returnIntegration, null);
 		} else {
@@ -1603,8 +1603,7 @@ function IntegrationGetnet(){
 	this.integrationPaymentResult = function(resolve, javaResult) {
 
 		var integrationResult = self.formatResponse();
-        console.log("RESOLVE:");
-        console.log(resolve);
+
         console.log("JavaResult:");
         console.log(javaResult);
 
@@ -1618,10 +1617,10 @@ function IntegrationGetnet(){
 				integrationResult.data = {
 					CDBANCARTCR: javaResult.cardBrandName ? javaResult.cardBrandName : '',
 					CDNSUHOSTTEF: javaResult.nsu,
-					VRMOVIVEND: javaResult.Value,
 					tiporece: javaResult.OperationType,
-                    STLPRIVIA : '',
-                    STLSEGVIA : '',
+					VRMOVIVEND: javaResult.Value,
+                    STLPRIVIA : "",
+                    STLSEGVIA : "",
                     TRANSACTIONDATE : transactionDate,
                     NRCONTROLTEF: javaResult.CV,
                     IDTIPORECE: javaResult.OperationType,
@@ -1661,7 +1660,7 @@ function IntegrationGetnet(){
     this.reversalIntegration = function(tiporeceData){
         console.log("Flamengooo");
         console.log(tiporeceData);
-      	if(!!window.cordova && !!window.cordova.plugins.IntegrationService) {
+      	if(!!window.cordova.plugins.IntegrationService) {
 			var params = self.getRefundFromSaleCancelResult(tiporeceData);
 			window.cordova.plugins.IntegrationService.refund(params, window.returnIntegration,null);
 		} else {
@@ -3983,13 +3982,17 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 				    console.log("Resultado da integração:   ");
 				    console.log(integrationResult);
 				    if (!integrationResult.error) {
-					    return self.savePayment(integrationResult.data).then(function(){
-					        console.log("TTTTTTTT");
-					        console.log(integrationResult);
-						    //return self.handlePrintPayment(integrationResult.data.eletronicTransacion.data).then(function(){
+				        try{
+					        return self.savePayment(integrationResult.data).then(function(){
+					            console.log("TTTTTTTT");
+					            console.log(integrationResult);
+						        // self.handlePrintPayment(integrationResult.data.eletronicTransacion.data).then(function(){
 							    return self.setPaymentSale(integrationResult.data);
-						    //}.bind(this));
-					    }.bind(this));
+						        //}.bind(this));
+					        }.bind(this));
+				        }catch(e){
+                            console.log(e);
+				        }
 				    } else {
                         ApplicationContext.UtilitiesService.backAfterFinish();
 					    return integrationResult;
@@ -4046,8 +4049,10 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 					.where('paymentData').equals(paymentData)
 					.where('currentPayment').equals(currentPayment);
 
-                console.log("blyat");
+                console.log(paymentData);
+                console.log(currentPayment);
 				return SavePayment.download(query).then(function(paymentData){
+					console.log("blyat");
 					resolve();
 				});
 			}.bind(this));
@@ -4062,6 +4067,8 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 	this.setPaymentSale = function (currentRow) {
 		return PaymentRepository.findOne().then(function (payment) {
+		    console.log("Resultado da integração:   ");
+            console.log(payment);
 			// seta recebimento
 			self.formatPriceChart(payment.TIPORECE, currentRow);
 			// calcula valor pago no total da venda

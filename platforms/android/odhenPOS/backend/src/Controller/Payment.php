@@ -772,7 +772,6 @@ class Payment extends \Zeedhi\Framework\Controller\Simple {
         	$session = $this->util->getSessionVars(null);
 
         	$result = $this->paymentService->savePayment($params, $session);
-
 			$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('SavePayment', $result));
 		} catch (\Exception $e) {
 			Exception::logException($e);

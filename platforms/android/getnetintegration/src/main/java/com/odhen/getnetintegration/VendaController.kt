@@ -78,9 +78,6 @@ class VendaController(val activity: AppCompatActivity) : VendaController, Device
 
         var dataFormatada = dataTransacao.substring(0, 2) + "/" + dataTransacao.substring(2, 4) + "/" + dataTransacao.substring(4, 8)
 
-        Log.d("TAGG",valorLong.toString())
-        Log.d("TAGG",cvNumber)
-        Log.d("TAGG",dataFormatada)
         val bundle = bundleOf(
                 "amount" to String.format("%012d", valorLong),
                 "cvNumber" to cvNumber,
@@ -97,7 +94,6 @@ class VendaController(val activity: AppCompatActivity) : VendaController, Device
         Log.d("integrationResult@rq", requestCode.toString())
         Log.d("integrationResult@rs", resultCode.toString())
         Log.d("integrationResult@dt", data.toString())
-
 
         if (requestCode == REQUEST_CODE && data != null) {
             val paymentResultCode = data.extras?.getString(RESULT_KEY) ?: ""

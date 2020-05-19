@@ -29,7 +29,7 @@ class ImpressaoController: com.odhen.deviceintagrationfacade.Controllers.Impress
     *PrinterStatus.UNKNOW === 1000 -> "Não foi possível definir o erro"
     * */
     override val textFontSize: Int = FontFormat.MEDIUM
-    override val qrCodeSize = 300
+    override val qrCodeSize = 450
     override val barCodeSize = null
 
     private var printer: IPrinterService? = null
@@ -37,18 +37,21 @@ class ImpressaoController: com.odhen.deviceintagrationfacade.Controllers.Impress
     private var code : Int? = 0
 
     fun initPrinterParams(printer: IPrinterService?) {
+        printer?.init()
+        printer?.setGray(5)
+        printer?.defineFontFormat(this.textFontSize)
         this.printer = printer
-        this.printer?.setGray(5)
-        this.printer?.defineFontFormat(this.textFontSize)
+
     }
 
     override fun imprimeTexto(texto: String) {
         //Em algumas situações,aparentemente a integração reseta as definições da impressora
         //alterando a fonte e o tom do cinza,de forma que é necessário garantir a inicialização
+        printer?.defineFontFormat(this.textFontSize)
+        Thread.sleep(350)
         printer?.addText(AlignMode.CENTER, texto)
         printer?.print(printerListener)
-        Thread.sleep(1_000)
-
+        Thread.sleep(700)
         setCode(printer?.status)
 
 
@@ -59,23 +62,25 @@ class ImpressaoController: com.odhen.deviceintagrationfacade.Controllers.Impress
         //porém o qrcode pode sofrer mal-funcionamento nessa fonte,de forma que no caso do qrcode
         // é melhor deixá-lo imprimir na fonte média e depois revertermos a fonte para pequena
 
-        printer?.defineFontFormat(FontFormat.MEDIUM)
+        printer?.defineFontFormat(this.textFontSize)
 
         printer?.addQrCode(AlignMode.CENTER, 240, content)
         printer?.addText(AlignMode.LEFT, "\n\n\n")
         printer?.print(printerListener)
-        Thread.sleep(1_000)
+        Thread.sleep(700)
 
         setCode(printer?.status)
-        this.printer?.defineFontFormat(this.textFontSize)
+        printer?.defineFontFormat(this.textFontSize)
 
     }
 
     override fun imprimeCodBarra(content: String) {
+        printer?.defineFontFormat(this.textFontSize)
         printer?.addBarCode(AlignMode.CENTER, content)
         printer?.addText(AlignMode.LEFT, "\n\n\n")
         printer?.print(printerListener)
-        Thread.sleep(1_000)
+        Thread.sleep(700)
+        printer?.defineFontFormat(this.textFontSize)
 
         setCode(printer?.status)
     }
@@ -92,10 +97,12 @@ class ImpressaoController: com.odhen.deviceintagrationfacade.Controllers.Impress
             Alinhamento.DIREITA         -> AlignMode.RIGHT
             Alinhamento.CENTRO, null    -> AlignMode.CENTER
         }
+
         printer?.addImageBitmap(alignMode, imagem)
+        Thread.sleep(250)
         printer?.addText(AlignMode.LEFT, "\n\n\n")
         printer?.print(printerListener)
-        Thread.sleep(1_000)
+        Thread.sleep(700)
 
         setCode(printer?.status)
     }
