@@ -1,10 +1,20 @@
 {
     "logs": [
         {
-            "outputFile": "/home/GRUPOTEKNISA/lucasmacedo/workfolder/getnetIntegra/platforms/android/app/build/intermediates/incremental/mergeReleaseResources/merged.dir/values-v16/values-v16.xml",
+            "outputFile": "C:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-v16\\values-v16.xml",
             "map": [
                 {
-                    "source": "/home/GRUPOTEKNISA/lucasmacedo/.gradle/caches/transforms-1/files-1.1/appcompat-1.1.0.aar/6d24222c67637d6b83034833d707a57d/res/values-v16/values-v16.xml",
+                    "source": "C:\\Users\\Computador\\.gradle\\caches\\transforms-2\\files-2.1\\2d6d38038bb4fe29850c992875f0b3e4\\res\\values-v16\\values-v16.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "65",
+                        "endOffsets": "116"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Computador\\.gradle\\caches\\transforms-2\\files-2.1\\07ba7fffad44920a5884640f8b348b79\\res\\values-v16\\values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -20,16 +30,6 @@
                         "endLines": "6",
                         "endColumns": "12",
                         "endOffsets": "289"
-                    }
-                },
-                {
-                    "source": "/home/GRUPOTEKNISA/lucasmacedo/.gradle/caches/transforms-1/files-1.1/core-1.1.0.aar/15f7ea4acf941cf40a9e157ef88f7a4f/res/values-v16/values-v16.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "65",
-                        "endOffsets": "116"
                     }
                 }
             ]

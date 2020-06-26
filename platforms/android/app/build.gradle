@@ -312,9 +312,9 @@ dependencies {
     implementation "br.com.stone:stone-sdk:3.3.2" /* Stone */
     implementation "br.com.stone:stone-sdk-posandroid:3.3.2" /* Stone */
     implementation "br.com.stone:stone-sdk-posandroid-ingenico:3.3.2" /* Stone */
-    compile (name:'clisitef-android', ext:'jar') /* CliSiTef (Gertec) */
-    compile (name:'libppcomp-1.15.0.180228.1', ext:'aar') /* Gertec Old Firmware*/
-    compile (name:'pos7api', ext:'aar') /* Ger7 */
+    implementation(name:'clisitef-android', ext:'jar') /* CliSiTef (Gertec) */
+    implementation(name:'libppcomp-1.15.0.180228.1', ext:'aar') /* Gertec Old Firmware*/
+    implementation(name:'pos7api', ext:'aar') /* Ger7 */
     implementation 'androidx.multidex:multidex:2.0.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
 }

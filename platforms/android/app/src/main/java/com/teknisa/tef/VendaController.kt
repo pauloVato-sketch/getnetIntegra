@@ -16,15 +16,11 @@ import com.odhen.deviceintagrationfacade.Shared.VendaAtual
 import com.odhen.deviceintegrationfacade.Interfaces.DeviceIntegrationListener
 import org.json.JSONObject
 import android.app.Activity.RESULT_CANCELED
-
 import com.teknisa.tef.pos.StoneIntegration
 import com.teknisa.tef.TransactionMessenger
 import com.teknisa.tef.PaymentData
-
 import android.content.Context
-
 import org.apache.cordova.CordovaActivity
-
 import java.text.SimpleDateFormat
 import java.util.Calendar
 

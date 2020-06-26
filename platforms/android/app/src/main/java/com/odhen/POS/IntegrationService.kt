@@ -66,6 +66,7 @@ class IntegrationService: CordovaPlugin() {
         VendaController.instance = com.teknisa.tef.VendaController("808832092", "SANDBOX", mainActivity)
         ImpressaoController.instance = com.teknisa.tef.ImpressaoController()
 
+
         /* GETNET */
         //val getnetController = com.odhen.getnetintegration.GetnetController(mainActivity)
         //ImpressaoController.instance = getnetController.impressaoController

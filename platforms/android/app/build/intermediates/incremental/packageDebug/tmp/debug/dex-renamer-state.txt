@@ -1,4 +1,4 @@
-#Fri Mar 20 11:34:55 BRT 2020
+#Thu Jun 25 13:44:39 GMT-03:00 2020
 path.1=classes.dex
 path.0=classes.dex
 renamed.5=classes6.dex
@@ -7,12 +7,12 @@ renamed.3=classes4.dex
 renamed.2=classes3.dex
 renamed.1=classes2.dex
 renamed.0=classes.dex
-base.5=/home/GRUPOTEKNISA/lucasmacedo/workfolder/getnetIntegra/platforms/android/app/build/intermediates/transforms/dexMerger/debug/2
-base.4=/home/GRUPOTEKNISA/lucasmacedo/workfolder/getnetIntegra/platforms/android/app/build/intermediates/transforms/dexMerger/debug/1
-base.3=/home/GRUPOTEKNISA/lucasmacedo/workfolder/getnetIntegra/platforms/android/app/build/intermediates/transforms/dexMerger/debug/4
-base.2=/home/GRUPOTEKNISA/lucasmacedo/workfolder/getnetIntegra/platforms/android/app/build/intermediates/transforms/dexMerger/debug/2
-base.1=/home/GRUPOTEKNISA/lucasmacedo/workfolder/getnetIntegra/platforms/android/app/build/intermediates/transforms/dexMerger/debug/0
-base.0=/home/GRUPOTEKNISA/lucasmacedo/workfolder/getnetIntegra/platforms/android/app/build/intermediates/transforms/dexMerger/debug/3
+base.5=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\2
+base.4=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\1
+base.3=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\4
+base.2=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\3
+base.1=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
+base.0=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\2
 path.5=classes2.dex
 path.4=classes.dex
 path.3=classes.dex

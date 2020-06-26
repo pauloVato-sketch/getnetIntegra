@@ -17,6 +17,14 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
       ]
     },
     {
+      "id": "com.odhen.POS.IntegrationService",
+       "file": "plugins/com.odhen.POS/www/IntegrationService.js",
+       "pluginId": "com.odhen.POS",
+       "clobbers": [
+         "cordova.plugins.IntegrationService"
+       ]
+    },
+    {
       "id": "cordova-plugin-android-permissions.Permissions",
       "file": "plugins/cordova-plugin-android-permissions/www/permissions.js",
       "pluginId": "cordova-plugin-android-permissions",
