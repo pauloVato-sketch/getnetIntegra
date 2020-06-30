@@ -7,7 +7,7 @@
         },
         {
             "type": "git",
-            "url": "git@192.168.122.56:odhen/api.git"
+            "url": "http://code.zeedhi.com/odhen/api.git"
         },
         {
             "packagist" : false
@@ -15,7 +15,7 @@
     ],
     "minimum-stability" : "dev",
     "require": {
-        "zeedhi/framework": "2.0.0",
+        "zeedhi/framework": "^2.0.0",
         "leaseweb/doctrine-pdo-dblib": "1.0.2",
         "zendframework/zend-mail": "~2.5",
         "odhen/api": "200.x-dev#85d851a70",

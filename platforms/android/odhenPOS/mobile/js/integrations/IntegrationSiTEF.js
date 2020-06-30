@@ -52,6 +52,7 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
 	};
 
 	this.integrationPaymentResult = function(resolve, javaResult, isRefund) {
+	    console.log(javaResult);
 		var integrationResult = self.formatResponse();
 		ScreenService.closePopup();
 		javaResult = self.handleJavaResult(javaResult);

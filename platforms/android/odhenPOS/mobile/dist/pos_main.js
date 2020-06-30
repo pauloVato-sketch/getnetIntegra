@@ -1737,6 +1737,7 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
 	};
 
 	this.integrationPaymentResult = function(resolve, javaResult, isRefund) {
+	    console.log(javaResult);
 		var integrationResult = self.formatResponse();
 		ScreenService.closePopup();
 		javaResult = self.handleJavaResult(javaResult);
@@ -3536,7 +3537,6 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
            	currentRow.eletronicTransacion.data.CDTERTEF = operatorData.CDTERTEF;
         	currentRow.eletronicTransacion.data.NRCARTBANCO = '';
         	currentRow.eletronicTransacion.data.IDTIPORECE = '';
-        	console.log(window.cordova.plugins.IntegrationService);
         	window.cordova.plugins.IntegrationService.payment(payment, window.returnIntegration, null);
        	});
     };

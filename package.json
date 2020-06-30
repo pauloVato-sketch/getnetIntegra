@@ -1,7 +1,7 @@
 {
   "name": "com.odhen.pos",
   "displayName": "odhenPOS",
-  "version": "6.0.7.0.2",
+  "version": "6.0.8.0.4",
   "description": "A sample Apache Cordova application that responds to the deviceready event.",
   "main": "index.js",
   "scripts": {

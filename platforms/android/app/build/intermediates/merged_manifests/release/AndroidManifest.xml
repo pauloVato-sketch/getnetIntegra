@@ -3,7 +3,7 @@
     package="com.odhen.POS"
     android:hardwareAccelerated="true"
     android:versionCode="60804"
-    android:versionName="6.0.7.0.2" >
+    android:versionName="6.0.8.0.4" >
 
     <uses-sdk
         android:minSdkVersion="22"

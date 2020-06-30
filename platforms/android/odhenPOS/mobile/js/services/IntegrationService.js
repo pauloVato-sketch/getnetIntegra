@@ -278,7 +278,6 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
            	currentRow.eletronicTransacion.data.CDTERTEF = operatorData.CDTERTEF;
         	currentRow.eletronicTransacion.data.NRCARTBANCO = '';
         	currentRow.eletronicTransacion.data.IDTIPORECE = '';
-        	console.log(window.cordova.plugins.IntegrationService);
         	window.cordova.plugins.IntegrationService.payment(payment, window.returnIntegration, null);
        	});
     };

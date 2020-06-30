@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Thu Jun 25 11:50:27 GMT-03:00 2020
+#Tue Jun 30 12:50:04 GMT-03:00 2020
 2385.set=ASSET
 3632.path=www/node_modules/domutils/test/tests/helpers.js
 5391.baseType=DIRECTORY
@@ -917,7 +917,7 @@
 5106.set=ASSET
 1271.set=ASSET
 2925.base=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\merged_assets\\debug\\mergeDebugAssets\\out
-3677.path=www/node_modules/phantomjs-prebuilt/lib/phantom/examples/sleepsort.js
+3677.path=www/node_modules/mkdirp/test/mkdirp.js
 1952.base=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\merged_assets\\debug\\mergeDebugAssets\\out
 364.base=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\merged_assets\\debug\\mergeDebugAssets\\out
 81.base=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\merged_assets\\debug\\mergeDebugAssets\\out
@@ -5966,7 +5966,7 @@ count=5946
 4992.baseType=DIRECTORY
 2347.base=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\merged_assets\\debug\\mergeDebugAssets\\out
 849.base=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\merged_assets\\debug\\mergeDebugAssets\\out
-5670.path=www/qrcode.js
+5670.path=www/node_modules/mkdirp/test/opts_fs_sync.js
 3099.path=www/node_modules/iconv-lite/lib/index.js
 1374.base=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\merged_assets\\debug\\mergeDebugAssets\\out
 1240.set=ASSET
@@ -12181,7 +12181,7 @@ count=5946
 4649.path=www/node_modules/grunt-mocha/node_modules/mocha/CHANGELOG.md
 1261.set=ASSET
 2924.base=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\merged_assets\\debug\\mergeDebugAssets\\out
-3676.path=www/node_modules/mkdirp/test/mkdirp.js
+3676.path=www/node_modules/phantomjs-prebuilt/lib/phantom/examples/sleepsort.js
 1951.base=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\merged_assets\\debug\\mergeDebugAssets\\out
 363.base=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\merged_assets\\debug\\mergeDebugAssets\\out
 1908.baseType=DIRECTORY
@@ -15853,7 +15853,7 @@ count=5946
 1473.set=ASSET
 4917.base=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\merged_assets\\debug\\mergeDebugAssets\\out
 1509.baseType=DIRECTORY
-5669.path=www/node_modules/mkdirp/test/opts_fs_sync.js
+5669.path=www/qrcode.js
 3944.base=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\merged_assets\\debug\\mergeDebugAssets\\out
 5065.set=ASSET
 4696.path=www/js/repositories/AccountGetAccountItemsForTransfer.js
