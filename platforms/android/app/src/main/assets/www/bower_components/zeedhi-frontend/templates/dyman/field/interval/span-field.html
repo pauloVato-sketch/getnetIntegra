@@ -1,0 +1,23 @@
+<!-- ABOUT THIS:
+-	The span-field.html is used on form widgets in the view mode.
+-	It is included and shows a different visualization for
+-->
+
+<div zh-events
+	zh-style="field.widget.currentRow"
+	ng-show="field.isVisible"
+	zh-style="field.widget.currentRow">
+
+	<!-- Label for general fields -->
+	<label
+		class="zh-label"
+		data-zh-bind-translate="field.label"
+	></label>
+
+	<!-- Value for general fields -->
+	<p
+		class="zh-field-value"
+		ng-bind="fieldRow"
+	></p>
+
+</div>

@@ -1,0 +1,39 @@
+<section class="zh-widget" data-zh-widget-events>
+	<div class="container no-image zh-product-detail-container" data-zh-scroller data-ng-controller="ProductGridController as controller" zh-product-grid-detail>
+		<div class="product-img" zh-product-grid-detail-image="widget.productItem[widget.parentWidget.productImageField]">
+			<span></span>
+		</div>
+		<div class="product-info">
+			<span class="product-name" data-ng-bind="widget.productItem[widget.parentWidget.productNameField]"></span>
+			<span class="product-desc" data-ng-if="widget.productItem[widget.parentWidget.productDescField]" data-ng-bind="widget.productItem[widget.parentWidget.productDescField]"></span>
+			<span class="product-qtty" data-ng-init="field = widget.fields[0]; fieldRow = widget.productItem.qtty;" data-ng-include="templateManager.getTemplateURL(field.template)"></span>
+			<span class="product-price" data-ng-bind="controller.currencyFormat(fieldRow * (widget.productItem[widget.parentWidget.productPriceField] + widget.productItem.optionsPrice))"></span>
+			<div class="product-detail-pages" data-ng-if="widget.productItem.detailPages.length > 0">
+				<div class="tab-wrapper" zh-product-grid-detail-tab>
+					<div class="zh-tab-scroller">
+						<ul class="detail-pages-header" data-ng-init="controller.selectDetailPage(widget.productItem.detailPages[0], widget.productItem)">
+							<li data-ng-repeat="page in widget.productItem.detailPages" data-zh-click="controller.selectDetailPage(page, widget.productItem)">
+								<label class="zh-tab-cell">
+									<a data-ng-bind="page.title" data-ng-class="{ active: widget.productItem.selectedPage == page }" ></a>
+									<span data-zh-icon="issue no-border inline-block" data-ng-show="page.constraintError"></span>
+								</label>
+							</li>
+						</ul>
+						<div class="zh-tab-line"></div>
+					</div>
+					<span class="icon-scroll-left" zh-icon="previous no-border" zh-click="scrollLeft()"></span>
+					<span class="icon-scroll-right" zh-icon="forward no-border" zh-click="scrollRight()"></span>
+				</div>
+				<ul class="detail-pages" data-ng-if="widget.productItem.detailPages.length > 0">
+					<li data-ng-repeat="page in widget.productItem.detailPages" data-ng-show="widget.productItem.selectedPage == page">
+						<span class="page-desc" data-ng-if="page.desc" data-zh-bind-translate="page.desc"></span>
+						<div data-ng-repeat="option in page.items" class="detail-option" data-zh-click="controller.selectOption(option, page, widget.productItem)" data-ng-class="{selected: controller.getOptionIndex(page, option) > -1}">
+							<span data-zh-bind-translate="option.desc"></span>
+							<span class="detail-price" data-ng-if="option.price" data-ng-bind="'+'+controller.currencyFormat(option.price)"></span>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>

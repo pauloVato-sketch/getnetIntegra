@@ -1,0 +1,232 @@
+{
+    "id": "37175072038063457301580",
+    "name": "orderProduct",
+    "showHeader": true,
+    "showMenu": true,
+    "label": "Cardápio",
+    "showBack": true,
+    "events": [],
+    "showFooter": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "widgets": [
+        {
+            "id": "110075662321898441871581",
+            "name": "orderProduct",
+            "label": "Nome do Produto",
+            "template": "widget/form.html",
+            "isVisible": true,
+            "actions": [
+                {
+                    "id": "110075662339547830871594",
+                    "label": "Adicionar",
+                    "name": "adicionar",
+                    "isVisible": true,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "id": "110075662333718058081595",
+                            "name": "ActionEvent",
+                            "code": "OrderController.addToOrderCart(args.row);"
+                        }
+                    ]
+                },
+                {
+                    "id": "110075662342585616811596",
+                    "label": "Voltar",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "110075662333999606251597",
+                            "name": "ActionEvent",
+                            "code": "ScreenService.goBack()"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "id": "110075662328755439081598",
+                    "name": "WidgetOnEnter",
+                    "code": "OrderController.prepareProductDetail(args.owner, args.owner.container, args.owner.container.widgets[0].fields[4]);"
+                }
+            ],
+            "dataSource": {},
+            "fields": [
+                {
+                    "id": "110075662319734802651582",
+                    "name": "IMAGEM",
+                    "label": "Logo-waiter",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": true,
+                    "sameLine": false,
+                    "defaultValue": null,
+                    "template": "field/image.html",
+                    "events": []
+                },
+                {
+                    "id": "11007566233840706601583",
+                    "name": "auxiliar",
+                    "label": "",
+                    "class": "12",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": true,
+                    "sameLine": false,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "11007566236216357681584",
+                    "name": "DSBUTTON",
+                    "label": "",
+                    "class": "12 labelTotal-productDetail",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": true,
+                    "sameLine": false,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "id": "110075662329782145171585",
+                    "name": "auxiliar",
+                    "label": "",
+                    "class": "12",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": true,
+                    "sameLine": false,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "110075662336177241871586",
+                    "name": "labelDescricao",
+                    "label": "",
+                    "class": "12 description-text",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": true,
+                    "sameLine": false,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "11007566234375563551587",
+                    "name": "auxiliar",
+                    "label": "",
+                    "class": "12",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": true,
+                    "sameLine": false,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "110075662310304015421588",
+                    "name": "labelQuantidade",
+                    "label": "Quantidade",
+                    "class": "5 margin-top-10",
+                    "placeholder": "nome",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": true,
+                    "sameLine": false,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "110075662322795834861589",
+                    "name": "labelTotal",
+                    "label": "Total:",
+                    "class": "7 labelTotal-productDetail",
+                    "placeholder": "nome",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": false,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "110075662341278125201590",
+                    "name": "QTDPRODUCT",
+                    "class": 5,
+                    "label": "",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": true,
+                    "sameLine": false,
+                    "template": "field/number.html",
+                    "spin": true,
+                    "minValue": 1,
+                    "maxValue": 99,
+                    "defaultValue": 1,
+                    "events": [
+                        {
+                            "id": "11007566231679330881591",
+                            "name": "FieldOnChange",
+                            "code": "OrderController.updateTotal(args.row, args.owner.field.widget);"
+                        }
+                    ]
+                },
+                {
+                    "id": "11007566234463317511592",
+                    "name": "TOTAL",
+                    "label": "",
+                    "class": "7 labelTotal-productDetail total-text label-total-margin-bottom margin-left-total",
+                    "placeholder": "nome",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": false,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "sameLine": true,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "id": "110075662342507137481593",
+                    "name": "CDOCORR",
+                    "valueField": "CDOCORR",
+                    "label": "DSOCORR",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "template": "field/observations.html",
+                    "events": [],
+                    "dataSource": {}
+                }
+            ]
+        }
+    ]
+}

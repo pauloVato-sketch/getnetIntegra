@@ -1,0 +1,585 @@
+{
+    "name": "addConsumer",
+    "label": "Cadastro de Consumidor",
+    "events": [],
+    "showHeader": true,
+    "showBack": true,
+    "showFooter": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "widgets": [
+        {
+            "name": "addConsumer",
+            "label": "Cadastro de Consumidor",
+            "template": "widget/form.html",
+            "isVisible": true,
+            "actions": [
+                {
+                    "label": "Cadastrar",
+                    "name": "cadastrar",
+                    "isVisible": true,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": "ConsumerController.addConsumer(args.owner.widget)"
+                        }
+                    ]
+                },
+                {
+                    "label": "Voltar",
+                    "name": "btnBack",
+                    "isVisible": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": "UtilitiesService.backMainScreen();"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "name": "WidgetOnEnter",
+                    "code": "ConsumerController.resetConsumerRegister(args.owner);"
+                }
+            ],
+            "dataSource": {},
+            "fields": [
+                {
+                    "name": "NMFANTCLIE",
+                    "label": "Cliente",
+                    "isVisible": true,
+                    "readOnly": true,
+                    "class": 12,
+                    "template": "field/text.html",
+                    "events": []
+                },
+                {
+                    "name": "consumerCod",
+                    "label": "Cod.",
+                    "isVisible": true,
+                    "class": 12,
+                    "template": "field/text.html",
+                    "validations": {
+                        "required": true
+                    },
+                    "maxlength": 21,
+                    "defaultValue": null,
+                    "events": [
+                        {
+                            "name": "FieldOnInput",
+                            "code": "UtilitiesService.toNumber(args.owner.field); args.owner.field.widget.activate();"
+                        }
+                    ]
+                },
+                {
+                    "name": "consumerName",
+                    "label": "Nome",
+                    "isVisible": true,
+                    "class": 12,
+                    "template": "field/text.html",
+                    "validations": {
+                        "required": true
+                    },
+                    "maxlength": 50,
+                    "events": [
+                        {
+                            "name": "FieldOnInput",
+                            "code": "UtilitiesService.validateName(args.owner.field); args.owner.field.widget.activate();"
+                        }
+                    ]
+                },
+                {
+                    "name": "NMTIPOVENDA",
+                    "label": "Tipo Venda",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "template": "field/select.html",
+                    "validations": {
+                        "required": true
+                    },
+                    "itemsPerPage": 30,
+                    "descriptionField": "NMTIPOVENDA",
+                    "outData": {
+                        "CDTIPOVENDA": "CDTIPOVENDA",
+                        "NMTIPOVENDA": "NMTIPOVENDA"
+                    },
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "FieldOnClick",
+                            "code": "TableController.doBlockPopupOnEnterEvent();"
+                        }
+                    ],
+                    "dataSource": {
+                        "name": "/SaleTypesRepository",
+                        "lazyLoad": true,
+                        "rest": true,
+                        "memoryStorage": true,
+                        "timeout": 20000
+                    }
+                },
+                {
+                    "name": "NMTIPOCONS",
+                    "label": "Tipo Cons.",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "template": "field/select.html",
+                    "validations": {
+                        "required": true
+                    },
+                    "itemsPerPage": 30,
+                    "descriptionField": "NMTIPOCONS",
+                    "outData": {
+                        "CDTIPOCONS": "CDTIPOCONS",
+                        "NMTIPOCONS": "NMTIPOCONS"
+                    },
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "FieldOnClick",
+                            "code": "TableController.doBlockPopupOnEnterEvent();"
+                        }
+                    ],
+                    "dataSource": {
+                        "name": "/ConsumerTypeRepository",
+                        "lazyLoad": true,
+                        "rest": true,
+                        "memoryStorage": true,
+                        "timeout": 20000
+                    }
+                },
+                {
+                    "name": "consumerGender",
+                    "label": "Sexo",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "template": "field/select-native.html",
+                    "valueField": "value",
+                    "descriptionField": "name",
+                    "events": [],
+                    "dataSource": {
+                        "data": [
+                            {
+                                "name": "Masculino",
+                                "value": "M"
+                            },
+                            {
+                                "name": "Feminino",
+                                "value": "F"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "consumerBirth",
+                    "label": "Data Nasc.",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "template": "field/text-number.html",
+                    "mask": {
+                       "type": "fix",
+                       "params": {
+                          "mask": "99/99/9999"
+                        }
+                    },
+                    "events": [
+                        {
+                            "name": "FieldOnChange",
+                            "code": "ConsumerController.validateConsumerBirthday(args.owner.field);"
+                        }
+                    ]
+                },
+                {
+                    "name": "consumerRG",
+                    "label": "RG.",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "maxlength": 12,
+                    "template": "field/text-edit.html",
+                    "events": []
+                },
+                {
+                    "name": "consumerCPF",
+                    "label": "CPF",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "template": "field/text-number.html",
+                    "mask": {
+                       "type": "fix",
+                       "params": {
+                          "mask": "999.999.999-99"
+                        }
+                    },
+                    "events": [
+                        {
+                            "name": "FieldOnChange",
+                            "code": "ConsumerController.validateConsumerCPF(args.owner.field);"
+                        }
+                    ]
+                },
+                {
+                    "name": "consumerAdress",
+                    "label": "Endereço",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "maxlength": 52,
+                    "template": "field/text-edit.html",
+                    "events": []
+                },
+                {
+                    "name": "consumerAdressNum",
+                    "label": "Número",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "maxlength": 10,
+                    "template": "field/text-number.html",
+                    "type": "tel",
+                    "events": [
+                        {
+                            "name": "FieldOnInput",
+                            "code": "UtilitiesService.toNumber(args.owner.field); args.owner.field.widget.activate();"
+                        }
+                    ]
+                },
+                {
+                    "name": "NMPAIS",
+                    "label": "País",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "template": "field/select.html",
+                    "itemsPerPage": 30,
+                    "descriptionField": "NMPAIS",
+                    "outData": {
+                        "CDPAIS": "CDPAIS",
+                        "NMPAIS": "NMPAIS"
+                    },
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "FieldOnChange",
+                            "code": "ConsumerController.prepareStates(args.owner.field.widget.getField('NMESTADO'), args.owner.field.widget.getField('NMMUNICIPIO'), args.owner.field.widget.getField('NMBAIRRO'), args.row.CDPAIS, args.row.SGESTADO, args.row.CDMUNICIPIO, args.row.CDBAIRRO);"
+                        },
+                        {
+                            "id": "2",
+                            "name": "FieldOnClick",
+                            "code": "TableController.doBlockPopupOnEnterEvent();"
+                        }
+                    ],
+                    "dataSource": {
+                        "name": "/CountryRepository",
+                        "lazyLoad": true,
+                        "rest": true,
+                        "memoryStorage": true,
+                        "timeout": 20000
+                    }
+                },
+                {
+                    "name": "NMESTADO",
+                    "label": "UF",
+                    "class": 6,
+                    "readOnly": true,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "template": "field/select.html",
+                    "itemsPerPage": 30,
+                    "descriptionField": "NMESTADO",
+                    "outData": {
+                        "SGESTADO": "SGESTADO",
+                        "NMESTADO": "NMESTADO"
+                    },
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "FieldOnChange",
+                            "code": "ConsumerController.prepareCities(args.owner.field.widget.getField('NMMUNICIPIO'), args.owner.field.widget.getField('NMBAIRRO'), args.row.CDPAIS, args.row.SGESTADO, args.row.CDMUNICIPIO, args.row.CDBAIRRO);"
+                        },
+                        {
+                            "id": "2",
+                            "name": "FieldOnClick",
+                            "code": "TableController.doBlockPopupOnEnterEvent();"
+                        }
+                    ],
+                    "dataSource": {
+                        "name": "/StateRepository",
+                        "lazyLoad": true,
+                        "rest": true,
+                        "memoryStorage": true,
+                        "timeout": 20000
+                    },
+                    "dataSourceFilter": [
+                        {
+                            "name": "CDPAIS",
+                            "value": "",
+                            "operator": "="
+                        }
+                    ]
+                },
+                {
+                    "name": "NMMUNICIPIO",
+                    "label": "Cidade",
+                    "class": 6,
+                    "readOnly": true,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "template": "field/select.html",
+                    "itemsPerPage": 30,
+                    "descriptionField": "NMMUNICIPIO",
+                    "outData": {
+                        "CDMUNICIPIO": "CDMUNICIPIO",
+                        "NMMUNICIPIO": "NMMUNICIPIO"
+                    },
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "FieldOnChange",
+                            "code": "ConsumerController.prepareNeighborhoods(args.owner.field.widget.getField('NMBAIRRO'), args.row.CDPAIS, args.row.SGESTADO, args.row.CDMUNICIPIO);"
+                        },
+                        {
+                            "id": "2",
+                            "name": "FieldOnClick",
+                            "code": "TableController.doBlockPopupOnEnterEvent();"
+                        }
+                    ],
+                    "dataSource": {
+                        "name": "/CityRepository",
+                        "lazyLoad": true,
+                        "rest": true,
+                        "memoryStorage": true,
+                        "timeout": 20000
+                    },
+                    "dataSourceFilter": [
+                        {
+                            "name": "CDPAIS",
+                            "value": "",
+                            "operator": "="
+                        },
+                        {
+                            "name": "SGESTADO",
+                            "value": "",
+                            "operator": "="
+                        }
+                    ]
+                },
+                {
+                    "name": "NMBAIRRO",
+                    "label": "Bairro",
+                    "class": 6,
+                    "readOnly": true,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "template": "field/select.html",
+                    "itemsPerPage": 30,
+                    "descriptionField": "NMBAIRRO",
+                    "outData": {
+                        "CDBAIRRO": "CDBAIRRO",
+                        "NMBAIRRO": "NMBAIRRO"
+                    },
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "FieldOnClick",
+                            "code": "TableController.doBlockPopupOnEnterEvent();"
+                        }
+                    ],
+                    "dataSource": {
+                        "name": "/NeighborhoodRepository",
+                        "lazyLoad": true,
+                        "rest": true,
+                        "memoryStorage": true,
+                        "timeout": 20000
+                    },
+                    "dataSourceFilter": [
+                        {
+                            "name": "CDPAIS",
+                            "value": "",
+                            "operator": "="
+                        },
+                        {
+                            "name": "SGESTADO",
+                            "value": "",
+                            "operator": "="
+                        },
+                        {
+                            "name": "CDMUNICIPIO",
+                            "value": "",
+                            "operator": "="
+                        }
+                    ]
+                },
+                {
+                    "name": "consumerCEP",
+                    "label": "CEP",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "maxlength": 8,
+                    "template": "field/text-number.html",
+                    "events": [
+                        {
+                            "name": "FieldOnInput",
+                            "code": "UtilitiesService.toNumber(args.owner.field); args.owner.field.widget.activate();"
+                        }
+                    ]
+                },
+                {
+                    "name": "consumerResPhone",
+                    "label": "Tel. Residencial",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "template": "field/phone-custom.html",
+                    "type": "tel"
+                },
+                {
+                    "name": "consumerComPhone",
+                    "label": "Tel. Comercial",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "template": "field/phone-custom.html",
+                    "type": "tel"
+                },
+                {
+                    "name": "consumerCellPhone",
+                    "label": "Celular",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "template": "field/phone-custom.html",
+                    "type": "tel"
+                },
+                {
+                    "name": "consumerEmail",
+                    "label": "E-mail",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "maxlength": 52,
+                    "template": "field/text-edit.html",
+                    "events": [
+                        {
+                            "name": "FieldOnChange",
+                            "code": "ConsumerController.validateConsumerEmail(args.owner.field);"
+                        }
+                    ]
+                },
+                {
+                    "name": "consumerId",
+                    "label": "Identificação",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "maxlength": 22,
+                    "template": "field/text-number.html",
+                    "events": [
+                        {
+                            "name": "FieldOnInput",
+                            "code": "UtilitiesService.toNumber(args.owner.field); args.owner.field.widget.activate();"
+                        }
+                    ]
+                },
+                {
+                    "name": "consumerCodAcess",
+                    "label": "Cód. Acesso Site",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "maxlength": 50,
+                    "template": "field/text-edit.html",
+                    "events": []
+                },
+                {
+                    "name": "consumerPassAcess",
+                    "label": "Senha Acesso Site",
+                    "class": 6,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "maxlength": 30,
+                    "template": "field/password.html",
+                    "events": []
+                },
+                {
+                    "name": "consumerCodAcessExt",
+                    "label": "Cod. Acesso Externo",
+                    "class": 5,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "maxlength": 50,
+                    "template": "field/text-edit.html",
+                    "events": []
+                },
+                {
+                    "name": "consumerUpdateCPF",
+                    "label": "Atualiza CPF Durante a Venda",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": "N",
+                    "template": "field/checkbox.html",
+                    "events": []
+                },
+                {
+                    "name": "consumerReleasedConsum",
+                    "label": "Liberado para Consumo",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": "N",
+                    "template": "field/checkbox.html",
+                    "events": []
+                },
+                {
+                    "name": "consumerPrint",
+                    "label": "Imprime CPF/CNPJ no Cupom Fiscal",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": "N",
+                    "template": "field/checkbox.html",
+                    "events": []
+                },
+                {
+                    "name": "consumerVerifyBalance",
+                    "label": "Verifica Saldo do Consumidor",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": "N",
+                    "template": "field/checkbox.html",
+                    "events": []
+                }
+            ]
+        }
+    ]
+}

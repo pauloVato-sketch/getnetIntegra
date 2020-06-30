@@ -1,0 +1,67 @@
+<div id="footer" class="zh-custom-footer zh-custom-footer zh-navbar-footer-green-edit zh-fixed-bottom" ng-controller="WizardController">
+	<div class="zh-footer-left">
+		<ul>
+			<li ng-if="!sourceActions.countActionsByVisibility('back')">
+				<a href="#" zh-click="cancelWizard()">
+					<span data-zh-bind-translate="'Cancelar'" class="zh-footer-title-sprit"></span>
+				</a>
+			</li>
+			<li class="previous"
+			data-ng-repeat="action in sourceActions.getActionsByVisibility('back')"
+			data-zh-touchstart="actionClick(action, action.widget)"
+			data-zh-stop-propagation-click
+			data-zh-owner-element="action"
+			data-ng-if="sourceActions.countActionsByVisibility('back') > 0">
+				<a data-zh-title-tooltip="{{ action.tooltip }}">
+					<span zh-icon="previous no-border icon-white" data-ng-hide="action.hideIcon"></span>
+					<span class="zh-footer-title-sprit" data-zh-bind-translate='action.label'></span>
+				</a>
+			</li>
+		</ul>
+	</div>
+	<div class="zh-footer-center">
+		<ul>
+			<li ng-if="sourceActions.getActionsByVisibility(templateManager.container.getActionsTypeToShow()).length === 0">
+				<a>
+					<span class="zh-footer-title-wizard">
+						<span data-zh-bind-translate="'etapa'"> </span>
+						<span data-ng-bind="currentStageIndex"></span>
+						<span data-zh-bind-translate="'de'"> </span>
+						<span data-ng-bind="numberOfStages"></span>
+					</span>
+				</a>
+			</li>
+			<li
+				data-ng-repeat="action in sourceActions.getActionsByVisibility(templateManager.container.getActionsTypeToShow())"
+				data-ng-show="action.isVisible" data-ng-if="action.aclIsVisible && sourceActions.getActionsByVisibility(templateManager.container.getActionsTypeToShow()).length > 0"
+				data-zh-touchstart="actionClick(action, action.widget)"
+				data-zh-stop-propagation-click
+				data-zh-owner-element="action"
+				>
+				<a data-zh-title-tooltip="{{ action.tooltip }}">
+					<span zh-icon="{{action.icon}} icon-white"></span>
+					<span class='zh-action-hint' data-ng-show='action.label' data-zh-bind-translate='action.label'></span>
+				</a>
+			</li>
+		</ul>
+	</div>
+	<div class="zh-footer-right">
+		<ul class="pull-right zh-footer-actions-navigation">
+			<li ng-hide="currentStageIndex == 1">
+				<a zh-click="prevStage()">
+					<span zh-icon="back icon-white"></span>
+				</a>
+			</li>
+			<li ng-hide="currentStageIndex == numberOfStages">
+				<a zh-click="nextStage()">
+					<span zh-icon="next icon-white"></span>
+				</a>
+			</li>
+			<li ng-show="currentStageIndex == numberOfStages">
+				<a zh-click="nextStage()">
+					<span zh-icon="checked icon-white"></span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>

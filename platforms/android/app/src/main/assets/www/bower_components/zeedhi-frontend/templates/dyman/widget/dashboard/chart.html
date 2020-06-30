@@ -1,0 +1,78 @@
+<section
+	data-ng-if="widget.aclIsVisible"
+	data-ng-show="widget.isVisible"
+	class="zh-widget zh-graph-container zh-dashboard-graph zh-widget-{{widget.name}}"
+	ng-class="{ 'full-width-desktop-chart': Util.isDesktop(), 'tablet-chart': Util.isTablet(), 'smartphone-chart': Util.isPhone() }"
+	data-zh-widget-events
+	>
+
+	<div class="zh-chart-title" data-ng-class="{ 'has-config-button': widget.configButtonIcon }"
+		data-zh-bind-translate="widget.label">
+	</div>
+	<div class="zh-chart-subtitle" data-ng-if="widget.labelInfo"
+		data-ng-class="{ 'has-config-button': widget.configButtonIcon }"
+		data-zh-bind-translate="widget.labelInfo">
+	</div>
+
+	<div class="zh-chart-config-button" data-ng-if="widget.configButtonIcon"
+		data-zh-click="dashboardController.itemConfigClick(widget)" >
+		<span zh-icon="no-border {{ widget.configButtonIcon }}"></span>
+	</div>
+
+	<div class="zh-dashboard-chart" data-ng-class="{ 'has-label-info': widget.labelInfo }">
+
+		<!-- Area, Bar, Donut and Line charts -->
+		<div zh-morris
+			class="zh-graph"
+			data-type="{{widget.chartType}}"
+			data-xkey="{{widget.chartXkey}}"
+			data-ykeys="{{widget.chartYkeys}}"
+			data-chart-data="widget.dataSource"
+			data-labels="{{widget.chartLabels}}"
+			data-bar-colors="{{widget.chartColors}}"
+			data-stacked="{{widget.chartStacked || null}}"
+			data-ng-if="widget.chartType == 'area' || widget.chartType == 'bar' || widget.chartType == 'donut' || widget.chartType == 'line'"
+			data-formatter="{{widget.formatter}}"
+			data-mask="{{widget.mask}}"
+			data-value-format="{{widget.valueFormat}}"
+		></div>
+
+		<!-- Gauge chart -->
+		<div data-ng-if="widget.chartType == 'gauge'"
+			class="zh-gauge-container" zh-gauge>
+			<canvas></canvas>
+			<span>
+				<div class="value-text"
+					ng-bind="widget.valueText">
+				</div>
+				<div class="value-hint"
+					ng-if="widget.showHintText"
+					ng-bind="widget.hintText">
+				</div>
+			</span>
+		</div>
+
+		<!-- Pie chart -->
+		<div data-ng-if="widget.chartType == 'pie'" class="zh-pie-container" zh-pie>
+			<canvas></canvas>
+			<span>
+				<div class="value-text"
+					ng-bind="widget.valueText">
+				</div>
+				<div class="value-hint"
+					ng-if="widget.showHintText"
+					ng-bind="widget.hintText">
+				</div>
+			</span>
+		</div>
+
+		<!-- Pizza chart -->
+		<div data-ng-if="widget.chartType == 'pizza'">
+			<section class="pie-container"
+				zh-pizza>
+				<canvas class="pie-chart"></canvas>
+			</section>
+		</div>
+
+	</div>
+</section>

@@ -1,0 +1,48 @@
+<section
+	class="dashboard-grid-container"
+	zh-click="dashboardController.itemClick(widget)"
+	ng-controller="DecodeValueField as decode">
+	<!-- Title -->
+	<div class="title">
+		<span zh-icon="{{widget.icon}} no-border"></span>
+		<span class="main-label" ng-bind="widget.label"></span>
+		<span class="highlight-label" ng-bind="widget.highlight"></span>
+	</div>
+
+	<!-- Grid -->
+	<div class="dashboard-table-container">
+		<table class="dashboard-grid">
+			<thead ng-if="widget.showHeader">
+				<tr>
+					<th
+						ng-repeat="column in widget.fields"
+						ng-bind="column.label"
+						class="grid-align-{{ column.align || 'left' }}"
+					></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr zh-Dashboard-Grid-Navegation ng-repeat="row in widget.dataSource.data | startFrom: (currentPage * rowsPerPage) | limitTo: rowsPerPage" zh-style>
+					<td
+						ng-repeat="column in widget.fields"
+						ng-bind="decode.model(column, row[column.name])"
+						class="grid-align-{{ column.align || 'left' }}"
+					></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+<div class="pagination-control" zh-Dashboard-Grid-Navegation>
+	<div class="pagination-container" ng-class="{'activate-control': widget.showPagination === false || widget.showPagination === null || widget.showPagination === undefined} ">
+		<div class="left-control">
+			<div class="first"><span class="btn" zh-icon="before no-border icon-white" ng-disabled="currentPage == 0"  ng-click="currentPage = 0"> </span></div>
+			<div class="previous"><span class="btn" zh-icon="back no-border icon-white" ng-disabled="currentPage == 0" ng-click="currentPage = currentPage-1"></span></div>
+		</div>
+		<div class="pagination-box"><span class="index-list">{{currentPage + 1}} / {{numberOfPages()}}</span></div>
+		<div class="right-control">
+			<div class="last"><span class="btn" zh-icon="after no-border icon-white" ng-disabled="currentPage === numberOfPages()-1" ng-click="currentPage = numberOfPages()-1"> </span></div>
+			<div class="next"><span class="btn" zh-icon="next no-border icon-white" ng-disabled="currentPage === numberOfPages()-1" ng-click="currentPage = currentPage+1"> </span></div>
+		</div>
+	</div>
+</div>

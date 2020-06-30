@@ -1,0 +1,7 @@
+<div
+	ng-click="dashboardController.itemClick(widget)"
+	class="dashboard-menu-shortcut">
+	<span class="shortcut-label" ng-bind="widget.label|i18n:words:lang" ></span>
+	<img class= "{{widget.image_class}}" src="{{widget.image}}"></span>
+	<span zh-icon="no-border icon-white {{widget.icon}} "></span>
+</div>

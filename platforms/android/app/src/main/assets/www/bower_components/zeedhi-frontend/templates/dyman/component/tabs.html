@@ -1,0 +1,8 @@
+
+<ul class="zh-tabs-container">
+	<li ng-repeat="tab in widget.tabs" ng-show="tab.isVisible"  class="zh-tabs-actions">
+		<button class="zh-tabs-action zh-btn" zh-click="actionClick(action, widget)" data-zh-owner-element="action">
+			{{tab.label}}
+		</button>
+	</li>
+</ul>

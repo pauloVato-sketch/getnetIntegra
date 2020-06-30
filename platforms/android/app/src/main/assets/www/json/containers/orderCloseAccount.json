@@ -1,0 +1,230 @@
+{
+    "id": "29392004622287938681520",
+    "name": "orderCloseAccount",
+    "label": "Fechamento de Conta",
+    "showHeader": true,
+    "showMenu": true,
+    "showBack": true,
+    "showFooter": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "popup": "component/popup.html",
+    "events": [
+        {
+            "id": "116229018635455290051537",
+            "name": "ContainerAfterinit",
+            "code": "UtilitiesService.setHeader(args.owner);"
+        },
+        {
+            "id": "11622901867313990761538",
+            "name": "ContainerOnBack",
+            "code": "UtilitiesService.handleBack(args.owner.name);"
+        }
+    ],
+    "template": "container/window.html",
+    "widgets": [
+        {
+            "id": "116229018631572330421521",
+            "name": "orderCloseAccount",
+            "label": "Fechamento de Conta",
+            "template": "widget/form.html",
+            "isVisible": true,
+            "actions": [
+                {
+                    "id": "11622901867905502911532",
+                    "label": "Solicitar conta",
+                    "name": "BtncloseAccount",
+                    "isVisible": true,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "id": "11622901862504880751533",
+                            "name": "ActionEvent",
+                            "code": "OrderController.callWaiter('F');"
+                        }
+                    ]
+                },
+                {
+                    "id": "116229018613157430951534",
+                    "label": "Voltar",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "116229018641429980991535",
+                            "name": "ActionEvent",
+                            "code": "ScreenService.goBack()"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "id": "11622901866615713011536",
+                    "name": "WidgetOnEnter",
+                    "code": "AccountController.prepareAccountDetails(args.owner.container.widgets[0]); AccountController.controlVisible(args.owner);"
+                }
+            ],
+            "dataSource": {},
+            "fields": [
+                {
+                    "id": "116229018649846591522",
+                    "name": "lblProdutos",
+                    "label": "Total produtos",
+                    "class": "6 parcial-label",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "breakline": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "116229018616634816971523",
+                    "name": "produtos",
+                    "label": "",
+                    "class": "6 parcial-text",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "id": "11622901862067191681524",
+                    "name": "lblconsumacao",
+                    "label": "Consumação",
+                    "class": "6 parcial-label",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "breakline": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "11622901865632671251525",
+                    "name": "consumacao",
+                    "label": "",
+                    "class": "6 parcial-text",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "id": "116229018622368753501526",
+                    "name": "lblcouvert",
+                    "label": "Couvert",
+                    "class": "6 parcial-label",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "breakline": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "116229018640699032431527",
+                    "name": "couvert",
+                    "label": "",
+                    "class": "6 parcial-text",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "id": "116229018642166180431528",
+                    "name": "lblservico",
+                    "label": "Gorjeta sugerida",
+                    "class": "6 parcial-label",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "breakline": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "11622901863850647701529",
+                    "name": "servico",
+                    "label": "",
+                    "class": "6 parcial-text",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "id": "116229018621044162941530",
+                    "name": "lbtotal",
+                    "label": "Total",
+                    "class": "6 parcial-label ",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": true,
+                    "defaultValue": null,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "11622901862570846111531",
+                    "name": "total",
+                    "label": "",
+                    "class": "6 parcial-text ",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                }
+            ],
+            "widgets": []
+        }
+    ]
+}

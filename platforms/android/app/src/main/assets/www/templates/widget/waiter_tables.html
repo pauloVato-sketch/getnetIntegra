@@ -1,0 +1,125 @@
+<section class="container" zh-scroller data-ng-init='pageSize=16;' ng-controller="WaiterTableController" zh-widget-events>
+
+    <!-- CAMPO DE PESQUISA -->
+    <div class="row zh-container-search-fixed">
+        <div class="col-xs-12">
+            <div class="zh-container-search zh-custom-search">
+                <div class="zh-input-search-container">
+                    <input class="zh-input-search" type="number" placeholder="Pesquisar..." ng-model="searchList" data-ng-change=' tableField.currentPage=0;' >
+                </div>
+            </div>
+            <span zh-icon="search no-border" class="zh-search-box"></span>
+        </div>
+    </div>
+    <div class="row" data-ng-show="(tableField.dataSource.data | filter:__getFilter():_strict_).length == 0">
+        <div class="col-xs-12">
+            <p class="text-center zh-text-search-not-find " data-ng-show="(tableField.dataSource.data | filter:__getFilter():_strict_).length == 0" data-ng-bind="widget.noMatchText || 'Nenhuma mesa encontrada.'"> </p>
+        </div>
+    </div>
+
+    <!-- BARRA DE AMBIENTES -->
+    <div class="row ambient-bar" data-ng-show="!searchList">
+        <div class="col-xs-2 col-sm-1">
+            <button
+                data-zh-touchstart="prevRoom();  tableField.currentPage=0;"
+                type="button"
+                class="btn btn-danger btn-block arrow-left icon-waiter-arrows zh-btn-type-button btn-default"
+                zh-update-scroller="250"
+            >
+                <img ng-src="{{templateManager.getTemplateDefaultFolder()}}../../../../bower_components/zeedhi-frontend/assets/images/icons/seta-esquerda.svg" class="img-responsive img-arrow-waiter-tables">
+            </button>
+        </div><!--
+
+     --><div class="col-xs-8 col-sm-pageSize">
+           <button
+                ng-bind="roomField.currentRow[tableField.categoryProp]"
+                type="button"
+                class="btn btn-block btn-danger zh-btn-type-button btn-default"
+                data-ng-click="openPopup()"
+           >
+               Salão Principal
+           </button>
+        </div><!--
+
+     --><div class="col-xs-2 col-sm-1">
+           <button
+                data-zh-touchstart="nextRoom();  tableField.currentPage=0;"
+                type="button"
+                class="btn btn-danger btn-block arrow-right icon-waiter-arrows zh-btn-type-button btn-default"
+                zh-update-scroller="250"
+            >
+                <img ng-src="{{templateManager.getTemplateDefaultFolder()}}../../../../bower_components/zeedhi-frontend/assets/images/icons/seta-direita.svg" class="img-responsive img-arrow-waiter-tables">
+            </button>
+        </div>
+    </div>
+
+    <div class="container table-list data-zh-stop-propagation-click" zh-scroller ng-class="{searchList: !searchList}">
+        <ul class="wt-tables">
+            <li ng-repeat="table in filtered = (tableField.dataSource.data | filter:__getFilter():_strict_)|paginate:tableField.currentPage*pageSize:(tableField.currentPage*pageSize)+pageSize"
+                data-ng-click="openTable(table)"
+                data-zh-long-tap="enableTableActions(table, tableField.dataSource.data)"
+                data-zh-events="tableField"
+                class="zh-waiter-tables">
+
+                <a href=""
+                    class="zh-table">
+                    <img data-ng-src="{{getImage(table.sprite)}}" class="img-responsive">
+                    <span
+                        class="title-tables"
+                        ng-bind="table.NMMESA">
+                    </span>
+                    <span
+                        class="title-tables"
+                        ng-bind="table.NRJUNMESA">
+                    </span>
+                    <img ng-src="{{getImage(table.consumption)}}" class="wt-timer-table">
+                    <img ng-src="{{getImage(table.delayedProducts)}}" class="wt-timer-table">
+                </a>
+
+                <div class="zh-table-actions" data-ng-if="table._showActions">
+                    <div
+                        class="zh-action-container"
+                        data-ng-show="action.isVisible"
+                        data-ng-if="action.aclIsVisible"
+                        data-ng-repeat="action in widget.getActionsByVisibility('table')">
+                        <span zh-ripple-effect
+                            class="zh-icon-inline"
+                            zh-icon="{{action.icon}} icon-black"
+                            data-zh-touchstart="actionClick(action, action.widget);"
+                            data-zh-stop-propagation-click
+                        ></span>
+                        </div>
+                </div>
+
+            </li>
+        </ul>
+        <span class="table-spacer"></span>
+        <div class="zh-waiter-positions odh-tables-pagination" ng-controller="WaiterOrdersProdCtrl">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <ul class="zh-positions-container" id="odh-table-pagination">
+                    <li class="odh-button-space">
+                        <a data-zh-touchstart='prev();' data-ng-show="startWith > 0">
+                            <div>
+                                ...
+                            </div>
+                        </a>
+                    </li>
+                    <li class="odh-button-space" ng-repeat="i in buildPositionsArray((tableField.dataSource.data | filter:__getFilter():_strict_).length/pageSize, startWith)">
+                        <a zh-touchstart="tableField.currentPage = i" href="">
+                            <div ng-class="{'zh-positions-active' : tableField.currentPage === i}"
+                                 ng-bind="i+1">
+                            </div>
+                        </a>
+                    </li>
+                    <li class="odh-button-space">
+                        <a data-zh-touchstart='next();' data-ng-show="(tableField.dataSource.data | filter:__getFilter():_strict_).length/pageSize > finishWith + 1">
+                            <div>
+                                ...
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>

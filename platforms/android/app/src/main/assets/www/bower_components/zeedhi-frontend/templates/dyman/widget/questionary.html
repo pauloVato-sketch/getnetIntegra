@@ -1,0 +1,38 @@
+<div class="container container-fluid" zh-widget-events zh-scroller>
+	<form data-ng-controller="QuestionaryController">
+		<!-- Questionary title -->
+		<span class="row zh-questionary-title"
+			data-ng-bind="questionary.description">
+		</span>
+		<!-- Questions -->
+		<div class="row zh-question"
+			data-ng-repeat="question in questionary.questions">
+			<!-- Answer fields -->
+			<div class="zh-question-answers"
+				data-ng-if="question.type == 'short_text'"
+				data-ng-show="checkDependency(question, questionary)"
+				data-ng-include="templateManager.getFrameworkTemplateURL('../questionary/templates/short_text_questions.html')">
+			</div>
+			<div class="zh-question-answers"
+				data-ng-if="question.type == 'large_text'"
+				data-ng-show="checkDependency(question, questionary)"
+				data-ng-include="templateManager.getFrameworkTemplateURL('../questionary/templates/large_text_questions.html')">
+			</div>
+			<div class="zh-question-answers"
+				data-ng-if="question.type == 'multiple'"
+				data-ng-show="checkDependency(question, questionary)"
+				data-ng-include="templateManager.getFrameworkTemplateURL('../questionary/templates/multiple_questions.html')">
+			</div>
+			<div class="zh-question-answers"
+				data-ng-if="question.type == 'unique'"
+				data-ng-show="checkDependency(question, questionary)"
+				data-ng-include="templateManager.getFrameworkTemplateURL('../questionary/templates/unique_questions.html')">
+			</div>
+			<div class="zh-question-answers"
+				data-ng-if="question.type == 'datetime'"
+				data-ng-show="checkDependency(question, questionary)"
+				data-ng-include="templateManager.getFrameworkTemplateURL('../questionary/templates/datetime_questions.html')">
+			</div>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,30 @@
+<div ng-show="field.isVisible" zh-schema-validator="field/email.html.json">
+
+	<!-- Label Include -->
+	<div ng-include="templateManager.getTemplateURL('field/label-with-tooltip.html')"></div>
+
+	<!-- Validation  -->
+	<div class="zh-validation" ng-if="widget.currentRow.$error[field.name].length>0">
+		<span zh-validations class="zh-validation-error" ng-repeat="error in widget.currentRow.$error[field.name]">
+			{{error.message}}
+		</span>
+	</div>
+
+	<!-- Field -->
+	<input
+		type="email"
+		class="input-text form-input-margin-bottom mousetrap zh-field-{{field.name}"
+		id="{{field.name}}"
+		name="{{field.name}}"
+		data-ng-readonly="field.isReadOnly()"
+		data-ng-disabled="field.isReadOnly()"
+		data-zh-style
+		data-zh-mask
+		data-zh-events
+		data-zh-validate
+		data-ng-model="fieldRow"
+		placeholder="{{field.placeholder|i18n}}"
+		maxlength="{{field.maxlength}}"
+		data-zh-focus-field="{{ field.focused }}"
+	>
+</div>

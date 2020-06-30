@@ -1,0 +1,71 @@
+{
+    "id": "13657217615241986831574",
+    "name": "menu",
+    "label": "Cardápio",
+    "showHeader": true,
+    "showMenu": true,
+    "showFooter": true,
+    "showBack": true,
+    "showForm": true,
+    "popup": "component/popup.html",
+    "template": "container/window.html",
+    "footer": "component/footer.html",
+    "menuTemplate": "component/menu.html",
+    "widgets": [
+        {
+            "id": "149131263435932073861575",
+            "name": "menu",
+            "label": "Cardápio",
+            "isVisible": true,
+            "template": "../../../../templates/widget/order_menu.html",
+            "groupNameField": "NMGRUPO",
+            "groupImageField": "IMGGRUPO",
+            "groupCodeField": "CDGRUPO",
+            "productNameField": "DSBUTTON",
+            "productPriceField": "PRITEM",
+            "productCodeField": "CDPRODUTO",
+            "productImageField": "IMGPRODUCT",
+            "productDescField": "DESCRIPTION",
+            "productDetailsField": "OBSERVATIONS",
+            "observationDescriptionField": "DSOCORR",
+            "observationCodeField": "CDOCORR",
+            "expandGroups": false,
+            "showShortcut": false,
+            "showCart": true,
+            "actions": [
+                {
+                    "id": "149131263416260760981576",
+                    "label": "Conferir",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "id": "149131263425317032881577",
+                            "name": "ActionEvent",
+                            "code": "OrderController.showOrderCart(args.owner.widget.shoppingCart.items);"
+                        }
+                    ]
+                }
+            ],
+            "styles": [],
+            "events": [
+                {
+                    "id": "1491312634305595781578",
+                    "name": "WidgetOnEnter",
+                    "code": "OrderController.loadMenu(args.owner);"
+                },
+                {
+                    "id": "149131263416620925791579",
+                    "name": "ProductOnClick",
+                    "code": "OrderController.loadProductDetails(args.e.data);"
+                }
+            ],
+            "dataSource": {},
+            "dataSourceFilter": [],
+            "fields": [],
+            "widgets": []
+        }
+    ]
+}

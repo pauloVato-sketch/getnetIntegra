@@ -1,0 +1,44 @@
+
+<section ng-controller="WaiterTableController" zh-widget-events>
+
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="zh-container-search">
+				<input class="zh-input-search" type="text" placeholder="pesquisar" ng-model="searchList"/>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<p class="text-center zh-text-search-not-find " data-ng-show="filtered.length == 0" data-ng-bind="widget.noMatchText"> </p>
+		</div>
+	</div>
+
+	<section>
+		<aside class="field-group row" ng-show="Util.isUndefined(searchList) || searchList.length == 0" zh-events="roomField">
+			<button zh-click="prevRoom()"
+				type="button"
+				class="btn btn-default col-xs-1 icon back-white zh-btn-type-button"
+			></button>
+			<button ng-bind="roomField.currentRow[tableField.filterProp]"
+				type="button"
+				class="btn btn-default col-xs-9 zh-btn-type-button"
+				zh-click="openFilter()"
+			></button>
+			<button
+				zh-click="nextRoom()"
+				type="button"
+				class="btn btn-default col-xs-1 icon next-white zh-btn-type-button"
+				zh-update-scroller="250"
+			></button>
+		</aside>
+		<section class="field-group pull-left" zh-events="tableField" >
+			<div ng-repeat="table in filtered = (tableField.dataSource.data | filter:__getFilter():_strict_)" class="col-xs-6" zh-click="openTable(table)">
+				<div class=" icon-waiter" ng-class="table.sprite">
+
+				</div>
+			</div>
+		</section>
+	</section>
+
+</section>

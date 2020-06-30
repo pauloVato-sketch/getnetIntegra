@@ -1,0 +1,30 @@
+<div ng-show="field.isVisible" class="zh-radio-group zh-radio-group-{{ field.name }}"  data-zh-radio data-zh-events data-zh-async-change data-business-events="FieldOnChange"
+     zh-schema-validator="field/radio-group.html.json">
+  <!-- Label Include -->
+  <div ng-include="templateManager.getTemplateURL('field/label-with-tooltip.html')"></div>
+
+  <div ng-repeat="option in field.dataSource.data" data-ng-class="'zh-radio-columns-'+(field.columns || 1)"
+    class="zh-radio">
+
+    <input
+      type="radio"
+      class="mousetrap"
+      id="radio-{{field.name}}-{{option[field.valueField]}}"
+      name="{{field.name}}"
+      value="{{ option[field.valueField] }}"
+      zh-validate
+      ng-model="fieldRow"
+      ng-change="change()"
+      ng-checked="(fieldRow == option[field.valueField])"
+      ng-disabled="field.isReadOnly()"
+    >
+
+    <label for="radio-{{field.name}}-{{option[field.valueField]}}" class="zh-radio-label">
+      <div zh-ripple-effect="grey" class="zh-circle mousetrap" data-zh-contenteditable="{{ !field.isReadOnly()}}">
+        <div class="zh-inner-circle"> </div>
+      </div>
+      <span ng-bind="option[field.descriptionField]|i18n"></span>
+    </label>
+
+  </div>
+</div>

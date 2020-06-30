@@ -1,0 +1,16 @@
+<section data-ng-show='field.isVisible' ng-controller="WaiterOrdersProdCtrl">
+	<div class="row">
+		<div class="zh-waiter-positions">
+			<div class="col-xs-12 col-sm-12 col-md-12">
+				<ul class="zh-positions-container">
+					<li>posição</li>
+					<li ng-repeat="i in prepareArray(field.dataSource.data[0]['NRPESMESAVEN'])">
+						<a data-zh-events data-position='{{i}}' data-zh-touchstart="field.position = i" href="">
+							<div ng-class="{'zh-positions-active' : field.position === i}" ng-bind="i+1"></div>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>

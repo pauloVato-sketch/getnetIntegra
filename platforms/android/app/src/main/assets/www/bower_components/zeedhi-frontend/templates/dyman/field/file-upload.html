@@ -1,0 +1,54 @@
+<div
+  class="zh-file-upload"
+  data-ng-show="field.isVisible"
+  data-ng-if="field.aclIsVisible"
+  ng-controller="FileUploadController">
+
+  <!-- Label Include -->
+	<div ng-include="templateManager.getTemplateURL('field/label-with-tooltip.html')"></div>
+
+  <!-- Validation  -->
+  <div class="zh-validation" ng-if="widget.currentRow.$error[field.name].length>0">
+    <span zh-validations class="zh-validation-error" ng-repeat="error in widget.currentRow.$error[field.name]">
+      {{error.message}}
+    </span>
+  </div>
+
+  <!-- File list -->
+  <ul class="zh-file-list">
+
+    <!-- "No File Selected" -->
+    <li data-ng-if="!field.fileList.length">
+      <span class="zh-file-name" data-zh-bind-translate="'No file selected'|i18n:words:lang"></span>
+    </li>
+
+    <li data-ng-repeat="file in field.fileList">
+      <span class="zh-file-name" data-ng-bind="file.name"></span>
+      <span zh-icon="trash no-border" zh-click="deselectFile(file)"></span>
+    </li>
+  </ul>
+
+  <input
+    type="file"
+    class="mousetrap"
+    id="{{field.name}}"
+    name="{{field.name}}"
+    data-ng-model="fieldRow"
+    data-zh-bind-translate="field.label"
+    data-ng-readonly="field.isReadOnly()"
+    data-ng-disabled="field.isReadOnly()"
+    data-zh-events
+    data-zh-style
+    data-zh-validate
+    data-zh-file-upload
+  >
+
+  <button
+    id="{{field.name}}"
+    name="{{field.name}}"
+    class="btn btn-default btn-block form-input-margin-bottom zh-btn-type-button zh-button col-xs-4"
+    data-ng-readonly="field.isReadOnly()"
+    data-ng-disabled="field.isReadOnly()"
+    data-zh-style
+    data-zh-bind-translate="'Choose file'|i18n:words:lang"></button>
+</div>

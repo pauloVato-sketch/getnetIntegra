@@ -1,0 +1,400 @@
+{
+    "id": "118224922741335346341818",
+    "name": "transactions",
+    "label": "Transações",
+    "showFooter": true,
+    "showHeader": true,
+    "showMenu": true,
+    "showBack": true,
+    "events": [],
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "widgets": [
+        {
+            "id": "109400806739891469331819",
+            "name": "widgetStripe",
+            "template": "widget/stripe.html",
+            "isVisible": true,
+            "collapsible": true,
+            "readOnly": false,
+            "aclIsVisible": true,
+            "events": [],
+            "aclReadOnly": false,
+            "allowMultiSelect": false,
+            "allowSelectOnLongTap": false,
+            "actions": [
+                {
+                    "id": "109400806716632460111820",
+                    "name": "openFilterPopup",
+                    "label": null,
+                    "isVisible": true,
+                    "readOnly": false,
+                    "aclIsVisible": true,
+                    "aclReadOnly": false,
+                    "showAsAction": "stripe",
+                    "icon": "filter",
+                    "events": [
+                        {
+                            "id": "109400806726401234951821",
+                            "name": "ActionEvent",
+                            "code": "TransactionsController.openFilterTransactionsPopup();"
+                        }
+                    ]
+                }
+            ],
+            "widgets": []
+        },
+        {
+            "id": "109400806739560089911822",
+            "name": "transaction",
+            "label": "Transações",
+            "isVisible": true,
+            "floatingControl": {
+                "customizationAction": {
+                    "filter": false
+                }
+            },
+            "template": "widget/master_detail/grid.html",
+            "dataSource": {
+                "name": "/TransactionsRepository",
+                "rest": true,
+                "lazyLoad": false
+            },
+            "styles": [
+                {
+                    "condition": "row.IDSITUVENDA == 'C'",
+                    "cssClass": "zh-red"
+                }
+            ],
+            "itemsPerPage": 30,
+            "dataSourceFilter": [
+                {
+                    "name": "DTHRFIMMOVini",
+                    "value": null,
+                    "operator": "="
+                },
+                {
+                    "name": "DTHRFIMMOVfim",
+                    "value": null,
+                    "operator": "="
+                },
+                {
+                    "name": "NRADMCODE",
+                    "value": null,
+                    "operator": "="
+                },
+                {
+                    "name": "chave",
+                    "value": null,
+                    "operator": "="
+                }
+            ],
+            "events": [
+                {
+                    "id": "10940080671219065131860",
+                    "name": "WidgetOnEnter",
+                    "code": "TransactionsController.setChaveOnDataSourceFilter(templateManager.container.getWidget('transaction'));"
+                },
+                {
+                    "id": "109400806730542661761861",
+                    "name": "WidgetAfterMoveRow",
+                    "code": "ScreenService.openSwipe(templateManager.container.getWidget('transaction'));"
+                }
+            ],
+            "actions": [
+                {
+                    "id": "109400806717214426741852",
+                    "name": "printBill",
+                    "icon": "letter",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showAsAction": "grid-right",
+                    "tooltip": "Enviar por E-mail",
+                    "events": [
+                        {
+                            "id": "109400806714869571301853",
+                            "name": "ActionEvent",
+                            "code": "TransactionsController.confirmTransactionEmail(templateManager.container.getWidget('transaction'), args);"
+                        }
+                    ]
+                },
+                {
+                    "id": "10940080674912493381854",
+                    "name": "cancelTransaction",
+                    "icon": "error",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showAsAction": "grid-right",
+                    "tooltip": "Cancelar Transação",
+                    "events": [
+                        {
+                            "id": "109400806711790692561855",
+                            "name": "ActionEvent",
+                            "code": "TransactionsController.cancelTransaction(templateManager.container.getWidget('transaction'));"
+                        }
+                    ]
+                },
+                {
+                    "id": "109400806737387840121856",
+                    "name": "backView",
+                    "label": "Voltar",
+                    "showAsAction": "back_view",
+                    "events": [
+                        {
+                            "id": "109400806735167874181857",
+                            "name": "ActionEvent",
+                            "code": "ScreenService.closeSwipe()"
+                        }
+                    ]
+                },
+                {
+                    "id": "109400806715592425621858",
+                    "name": "backToTables",
+                    "label": "Voltar",
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showAsAction": "back_list",
+                    "events": [
+                        {
+                            "id": "109400806714131625001859",
+                            "name": "ActionEvent",
+                            "code": "WindowService.openWindow('TABLES_SCREEN');"
+                        }
+                    ]
+                }
+            ],
+            "fields": [
+                {
+                    "id": "109400806738359689701845",
+                    "label": "Data",
+                    "name": "DATA",
+                    "showOnList": true
+                },
+                {
+                    "id": "109400806734260479541846",
+                    "label": "Hora",
+                    "name": "HORA",
+                    "showOnList": true
+                },
+                {
+                    "id": "109400806731451946931847",
+                    "label": "Tipo",
+                    "name": "LABELTIPMOV",
+                    "showOnList": true
+                },
+                {
+                    "id": "109400806728075492361848",
+                    "label": "Bandeira",
+                    "name": "BANDEIRA",
+                    "showOnList": true
+                },
+                {
+                    "id": "10940080676613541501849",
+                    "label": "Número da Venda",
+                    "name": "NRADMCODE",
+                    "showOnList": true
+                },
+                {
+                    "id": "10940080671205212861850",
+                    "label": "E-mail",
+                    "name": "DSEMAILCLI",
+                    "showOnList": false
+                },
+                {
+                    "id": "109400806719546523001851",
+                    "label": "Valor",
+                    "name": "VALOR",
+                    "showOnList": true,
+                    "mask": {
+                        "type": "currency",
+                        "params": {
+                            "showSymbol": false,
+                            "precision": 2,
+                            "thousands": ".",
+                            "decimal": ","
+                        }
+                    }
+                }
+            ],
+            "widgets": [
+                {
+                    "id": "109400806721480484371823",
+                    "name": "popupEmail",
+                    "label": "E-mail",
+                    "isVisible": false,
+                    "template": "widget/form.html",
+                    "fields": [
+                        {
+                            "id": "109400806724607726941824",
+                            "label": "E-mail",
+                            "name": "DSEMAILCLI",
+                            "showOnList": true,
+                            "template": "field/text-edit.html"
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "id": "109400806724854646831825",
+                            "label": "Enviar",
+                            "name": "sendEmail",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "id": "109400806736820396501826",
+                                    "name": "ActionEvent",
+                                    "code": "TransactionsController.sendTransactionEmail(templateManager.container.getWidget('popupEmail'), args)"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "10940080674811413091827",
+                            "label": "Voltar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "109400806722199105961828",
+                                    "name": "ActionEvent",
+                                    "code": "TransactionsController.widgetEmailVisibility(templateManager.container.getWidget('popupEmail'));"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "109400806726509198331829",
+                    "name": "transactionsFilter",
+                    "label": "Filtro de Transações",
+                    "template": "widget/form.html",
+                    "isVisible": false,
+                    "fields": [
+                        {
+                            "id": "109400806733136311141830",
+                            "name": "DTHRMOVFIM",
+                            "label": "Data",
+                            "class": 6,
+                            "template": "field/calendar.html",
+                            "isVisible": true,
+                            "events": [
+                                {
+                                    "id": "109400806735940626071831",
+                                    "name": "FieldOnChange",
+                                    "code": "TransactionsController.clearField(templateManager.container.getWidget('transactionsFilter'), 1);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "109400806710912999741832",
+                            "name": "NRADMCODE",
+                            "label": "Número da Venda",
+                            "class": 6,
+                            "template": "field/text-edit.html",
+                            "isVisible": true,
+                            "events": [
+                                {
+                                    "id": "109400806740980776331833",
+                                    "name": "FieldOnChange",
+                                    "code": "TransactionsController.clearField(templateManager.container.getWidget('transactionsFilter'), 2);"
+                                }
+                            ]
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "id": "109400806718747278801834",
+                            "label": "Filtrar",
+                            "name": "filterTransactions",
+                            "isVisible": true,
+                            "showOnForm": false,
+                            "showOnList": false,
+                            "showOnView": false,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "id": "10940080679883336771835",
+                                    "name": "ActionEvent",
+                                    "code": "TransactionsController.closeFilterTransactionsPopup();TransactionsController.findTransaction(args.owner.widget);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "109400806720668865721836",
+                            "label": "Cancelar",
+                            "name": "btnCancelFilter",
+                            "isVisible": true,
+                            "showOnForm": false,
+                            "showOnList": false,
+                            "showOnView": false,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "10940080678345503731837",
+                                    "name": "ActionEvent",
+                                    "code": "TransactionsController.closeFilterTransactionsPopup();"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "109400806732422515611838",
+                    "name": "sendEmail",
+                    "label": "Estorno aceito !",
+                    "isVisible": false,
+                    "template": "widget/form.html",
+                    "fields": [
+                        {
+                            "id": "109400806735269188461839",
+                            "label": "Comprovante",
+                            "name": "RECEIPT",
+                            "template": "field/textarea.html",
+                            "readOnly": true,
+                            "textRows": 13
+                        },
+                        {
+                            "id": "109400806741682224981840",
+                            "label": "E-mail",
+                            "name": "DSEMAILCLI",
+                            "showOnList": true,
+                            "template": "field/text-edit.html"
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "id": "109400806723488349691841",
+                            "label": "Enviar",
+                            "name": "sendEmail",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "id": "109400806710079123801842",
+                                    "name": "ActionEvent",
+                                    "code": "AccountController.sendTransactionEmail(args.owner.widget, args)"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "10940080679244516491843",
+                            "label": "Cancelar",
+                            "name": "btnCancelEmail",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "109400806718960920051844",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

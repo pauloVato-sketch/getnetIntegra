@@ -1,0 +1,31 @@
+<section class="container zh-tabbed-container" zh-scroller ng-controller="TabbedWidgetController" zh-widget-events zh-schema-validator="widget/tabbedWidget.html.json">
+	<ng-include ng-if="widget.childTemplate == 'widget/form.html'" src="templateManager.getFrameworkTemplateURL('widget/form-structure.html')"></ng-include>
+	<ng-include ng-if="widget.childTemplate == 'widget/form-view.html'" src="templateManager.getFrameworkTemplateURL('widget/form-view-structure.html')"></ng-include>
+
+	<header class="zh-header zh-custom-tabbed-widget">
+
+		<div class="zh-tab-wrapper"  tab-widget="widget.currentWidget" tab-widgets="widget.widgets">
+			<div class="zh-tab-scroller">
+				<ul ng-init="setDefaultTab(widget.defaultTab);">
+					<li
+						ng-repeat="widgetChild in widget.widgets"
+						ng-if="widgetChild.aclIsVisible && widgetChild.isVisible && widgetChild.showAsTab">
+
+						<label class="zh-tab-cell" zh-click="onClickTab(widget, widgetChild);">
+
+							<a
+								data-zh-bind-translate="widgetChild.label"
+								ng-class="{'active' : widgetChild == widget.currentWidget, 'disabled': !isTabEnabled(widget, widgetChild)}"
+							></a>
+
+						</label>
+					</li>
+				</ul>
+				<div class="zh-tab-line"></div>
+			</div>
+			<span class="icon-scroll-left" zh-icon="previous no-border" zh-click="scrollLeft()"></span>
+			<span class="icon-scroll-right" zh-icon="forward no-border" zh-click="scrollRight()"></span>
+		</div>
+	</header>
+	<section data-ng-include="templateManager.getFrameworkTemplateURL('widget/tab-widget-parent.html')"></section>
+</section>

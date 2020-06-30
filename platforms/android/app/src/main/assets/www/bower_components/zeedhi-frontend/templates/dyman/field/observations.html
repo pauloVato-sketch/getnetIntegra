@@ -1,0 +1,17 @@
+<div id="form_product_obs">
+	<nav>
+		<ul class="zh-observation">
+			<li data-ng-repeat="item in field.dataSource.data"
+				class="li-observation" data-ng-class='{selected : widget.currentRow[field.name] && widget.currentRow[field.name].indexOf(item[field.name]) !== -1}'
+				zh-events
+				zh-push-value="field.name"
+				>
+				<p data-ng-bind="item[field.label]"
+					zh-multiple="true"
+					class="zh-product-children"
+					>
+				</p>
+			</li>
+		</ul>
+	</nav>
+</div>

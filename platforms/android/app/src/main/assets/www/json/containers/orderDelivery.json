@@ -1,0 +1,1214 @@
+{
+    "name": "orderDelivery",
+    "label": "Pedido",
+    "showHeader": true,
+    "showMenu": true,
+    "showFooter": true,
+    "showBack": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "events": [
+        {
+            "name": "ContainerAfterinit",
+            "code": "OrderDeliveryController.checkOrder(args.owner);"
+        }
+    ],
+    "widgets": [
+        {
+            "name": "order",
+            "label": "Pedido Nr.",
+            "template": "widget/form.html",
+            "isVisible": true,
+            "floatingControl": false,
+            "dataSource": {},
+            "events": [],
+            "actions": [
+                {
+                    "label": "Voltar",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": "ScreenService.goBack()"
+                        }
+                    ]
+                },
+                {
+                    "name":"cancelOrder",
+                    "label": "Cancelar Pedido",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "icon": "error",
+                    "showAsAction": "view",
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": "OrderDeliveryController.cancelProductionOrder(args.owner.widget);"
+                        }
+                    ]
+                },
+                {
+                    "name": "relatorioEntrega",
+                    "label": "Relatorio de Entrega",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "icon": "file-ok",
+                    "showAsAction": "view",
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": "OrderDeliveryController.printDeliveryRow(args.owner.widget);"
+                        }
+                    ]
+                },
+                {
+                    "name": "cupomFiscal",
+                    "label": "Cupom Fiscal",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "icon": "",
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": "OrderDeliveryController.geraNotaFiscal(args.owner.widget);"
+                        }
+                    ]
+                },
+                {
+                    "name": "saveOrder",
+                    "label": "Salvar Pedido",
+                    "icon": "",
+                    "isVisible": true,
+                    "showAsAction": "never_edit",
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "reprint",
+                    "label": "Reimpressão",
+                    "isVisible": false,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "icon": "printer",
+                    "showAsAction": "view",
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": "ScreenService.openPopup(args.owner.widget.container.getWidget('reprint'));"
+                        }
+                    ]
+                },
+                {
+                    "name": "concludeOrder",
+                    "label": "Finalizar Pedido",
+                    "isVisible": false,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "icon": "",
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": "OrderDeliveryController.concludeOrder(args.owner.widget);"
+                        }
+                    ]
+                }
+            ],
+            "fields": [
+                {
+                    "name": "NRVENDAREST",
+                    "label": "Numero Sequencial do Pedido",
+                    "class": 4,
+                    "readOnly": true,
+                    "isVisible": false,
+                    "showOnList": false,
+                    "showOnForm": false,
+                    "showOnView": false,
+                    "template": "field/text.html",
+                    "events": [],
+                    "dataSource": {}
+                },
+                {
+                    "name": "DSCOMANDA",
+                    "label": "Pedido",
+                    "class": 4,
+                    "readOnly": true,
+                    "isVisible": false,
+                    "showOnList": false,
+                    "showOnForm": false,
+                    "showOnView": false,
+                    "template": "field/text.html",
+                    "events": [],
+                    "dataSource": {}
+                },
+                {
+                    "name": "NMCONSUMIDOR",
+                    "label": "Nome",
+                    "class": 8,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnForm": true,
+                    "showOnView": true,
+                    "template": "field/text.html",
+                    "events": [],
+                    "dataSource": {}
+                },
+                {
+                    "name": "NRCEPCONSCOMAND",
+                    "label": "CEP",
+                    "class": 4,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnForm": true,
+                    "showOnView": true,
+                    "template": "field/text.html",
+                    "events": [],
+                    "dataSource": {}
+                },
+                {
+                    "name": "DSENDECONSCOMAN",
+                    "label": "Endereço",
+                    "class": 4,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnForm": true,
+                    "showOnView": true,
+                    "template": "field/text.html",
+                    "events": [],
+                    "dataSource": {}
+                },
+                {
+                    "name": "NRENDECONSCOMAN",
+                    "label": "Número",
+                    "class": 4,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnForm": true,
+                    "showOnView": true,
+                    "template": "field/text.html",
+                    "events": [],
+                    "dataSource": {}
+                },
+                {
+                    "name": "DSCOMPLENDCOCOM",
+                    "label": "Compl.",
+                    "class": 4,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnForm": true,
+                    "showOnView": true,
+                    "template": "field/text.html",
+                    "events": [],
+                    "dataSource": {}
+                },
+                {
+                    "name": "DSBAIRRO",
+                    "label": "Bairro",
+                    "class": 4,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnForm": true,
+                    "showOnView": true,
+                    "template": "field/text.html",
+                    "events": [],
+                    "dataSource": {}
+                },
+                {
+                    "name": "NMMUNICIPIO",
+                    "label": "Cidade",
+                    "class": 4,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnForm": true,
+                    "showOnView": true,
+                    "template": "field/text.html",
+                    "events": [],
+                    "dataSource": {}
+                },
+                {
+                    "name": "IDRETBALLOJA",
+                    "label": "Retirar no Balcão da Loja",
+                    "class": 4,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnForm": true,
+                    "showOnView": true,
+                    "template": "field/checkbox.html",
+                    "valueToTrue": "S",
+                    "valueToFalse": "N",
+                    "events": [],
+                    "dataSource": {}
+                },
+                {
+                    "name": "DSENDECONSVENDA",
+                    "label": "Resid.",
+                    "class": 4,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnForm": true,
+                    "showOnView": true,
+                    "template": "field/text.html",
+                    "events": [],
+                    "dataSource": {}
+                },
+                {
+                    "name": "",
+                    "label": "Comercial",
+                    "class": 4,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnForm": true,
+                    "showOnView": true,
+                    "template": "field/text.html",
+                    "events": [],
+                    "dataSource": {}
+                },
+                {
+                    "name": "NRTELECONS",
+                    "label": "Celular",
+                    "class": 4,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnForm": true,
+                    "showOnView": true,
+                    "template": "field/text.html",
+                    "events": [],
+                    "dataSource": {}
+                },
+                {
+                    "name": "DSREFENDCONSCOM",
+                    "label": "Ref.",
+                    "class": 8,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnForm": true,
+                    "showOnView": true,
+                    "template": "field/text.html",
+                    "events": [],
+                    "dataSource": {}
+                },
+                {
+                    "name": "NRCOMANDAEXT",
+                    "label": "iFood",
+                    "class": 4,
+                    "readOnly": false,
+                    "isVisible": false,
+                    "showOnList": true,
+                    "showOnForm": true,
+                    "showOnView": true,
+                    "template": "field/text.html",
+                    "events": [],
+                    "dataSource": {}
+                },
+                {
+                    "name": "SPOONROCKET",
+                    "label": "SpoonRocket",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": false,
+                    "showOnList": true,
+                    "showOnForm": true,
+                    "showOnView": true,
+                    "template": "field/text.html",
+                    "events": [],
+                    "dataSource": {}
+                },
+                {
+                    "name": "IDSTCOMANDA",
+                    "label": "Status do Pedido",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": false,
+                    "showOnList": false,
+                    "showOnForm": false,
+                    "showOnView": false,
+                    "template": "field/text.html",
+                    "events": [],
+                    "dataSource": {}
+                },
+                {
+                    "name": "PRODUTOSPEDIDO",
+                    "label": "Produtos do Pedido",
+                    "class": 6,
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnForm": true,
+                    "showOnView": true,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "name": "FieldOnClick",
+                            "code": "ScreenService.openPopup(args.owner.field.widget.container.getWidget('produtosPopup'));"
+                        }
+                    ]
+                },
+                {
+                    "name": "TIPORECEPEDIDO",
+                    "label": "Tipos de Recebimento",
+                    "class": 6,
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnForm": true,
+                    "showOnView": true,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "name": "FieldOnClick",
+                            "code": "ScreenService.openPopup(args.owner.field.widget.container.getWidget('formaPagamentoPopup'));"
+                        }
+                    ]
+                }
+            ],
+            "widgets": [
+                {
+                    "name": "reprint",
+                    "label": "Reimpressão",
+                    "template": "widget/list-popup.html",
+                    "isVisible": true,
+                    "floatingControl": false,
+                    "dataSource": {
+                        "data": [
+                            {
+                                "name": "reprintDlv",
+                                "label": "Reimprimir Controle de Entrega"
+                            },
+                            {
+                                "name": "reprintCupomF",
+                                "label": "Reimprimir Cupom Fiscal"
+                            }
+                        ]
+                    },
+                    "fields": [
+                        {
+                            "name": "label",
+                            "label": "",
+                            "isVisible": true,
+                            "showOnList": true
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "label": "Voltar",
+                            "isVisible": true,
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup()"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [
+                        {
+                            "name": "WidgetAfterMoveRow",
+                            "code": "OrderDeliveryController.reprint(args.owner);"
+                        }
+                    ]
+                },
+                {
+                    "name": "produtosPopup",
+                    "label": "Produtos",
+                    "template": "widget/grid.html",
+                    "floatingControl": false,
+                    "isVisible": false,
+                    "events": [
+                        {
+                            "name": "WidgetOnEnter",
+                            "code": "OrderDeliveryController.getInfoProdutosDlv(args.owner);"
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "label": "Voltar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Confirmar",
+                            "name": "Confirmar",
+                            "isVisible": false,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "addProduct",
+                            "label": "",
+                            "isVisible": false,
+                            "icon": "plus",
+                            "showAsAction": "always",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "OrderDeliveryController.adicionarProduto();"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "deleteProduct",
+                            "label": "",
+                            "isVisible": true,
+                            "icon": "trash no-border",
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "grid-right",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "OrderDeliveryController.confirmDeleteProduct(args.owner.widget);"
+                                }
+                            ]
+                        }
+                    ],
+                    "dataSource": {
+                        "data": []
+                    },
+                    "fields": [
+                        {
+                            "name": "CDPRODUTO",
+                            "label": "Codigo do Produto",
+                            "isVisible": false,
+                            "readOnly": true,
+                            "class": 6,
+                            "template": "field/text.html",
+                            "showOnView": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "events": []
+                        },
+                        {
+                            "name": "NMPRODUTO",
+                            "label": "Nome do Produto",
+                            "isVisible": true,
+                            "readOnly": true,
+                            "class": 6,
+                            "template": "field/text.html",
+                            "showOnView": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "events": []
+                        },
+                        {
+                            "name": "QTPRODCOMVEN",
+                            "label": "Quantidade do Produto",
+                            "isVisible": true,
+                            "readOnly": true,
+                            "class": 6,
+                            "template": "field/text-number.html",
+                            "showOnView": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "events": [],
+                            "mask": {
+                                "type": "number",
+                                "params": {
+                                    "showSymbol": false,
+                                    "precision": 2,
+                                    "thousands": "",
+                                    "decimal": ",",
+                                    "allowNegative": false
+                                }
+                            }
+                        },
+                        {
+                            "name": "VRPRECCOMVEN",
+                            "label": "Valor Un. (R$)",
+                            "isVisible": true,
+                            "showOnView": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "class": "6 center-align-field",
+                            "template": "field/text-number.html",
+                            "readOnly": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": false,
+                            "newLine": true,
+                            "sameLine": true,
+                            "focused": true,
+                            "range": {
+                                "max": null,
+                                "min": 0.01
+                            },
+                            "defaultValue": null,
+                            "events": [],
+                            "mask": {
+                                "type": "currency",
+                                "params": {
+                                    "showSymbol": false,
+                                    "precision": 2,
+                                    "thousands": "",
+                                    "decimal": ",",
+                                    "allowNegative": false
+                                }
+                            }
+                        },
+                        {
+                            "name": "VRPRECCOMVENTOTAL",
+                            "label": "Valor Total Produto (R$)",
+                            "isVisible": true,
+                            "showOnView": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "class": "6 center-align-field",
+                            "template": "field/text-number.html",
+                            "readOnly": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": false,
+                            "newLine": true,
+                            "sameLine": true,
+                            "focused": true,
+                            "range": {
+                                "max": null,
+                                "min": 0.01
+                            },
+                            "defaultValue": null,
+                            "events": [],
+                            "mask": {
+                                "type": "currency",
+                                "params": {
+                                    "showSymbol": false,
+                                    "precision": 2,
+                                    "thousands": "",
+                                    "decimal": ",",
+                                    "allowNegative": false
+                                }
+                            }
+                        },
+                        {
+                            "name": "NRPRODCOMVEN",
+                            "label": "Numero de Producao na Comanda",
+                            "isVisible": false,
+                            "readOnly": true,
+                            "class": 6,
+                            "template": "field/text.html",
+                            "showOnView": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "events": []
+                        },
+                        {
+                            "name": "CDPRODPROMOCAO",
+                            "label": "Codigo de Promocao",
+                            "isVisible": false,
+                            "readOnly": true,
+                            "class": 6,
+                            "template": "field/text.html",
+                            "showOnView": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "events": []
+                        },
+                        {
+                            "name": "NRSEQPRODCOM",
+                            "label": "Numero Sequencial de Producao Comanda",
+                            "isVisible": false,
+                            "readOnly": true,
+                            "class": 6,
+                            "template": "field/text.html",
+                            "showOnView": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "events": []
+                        },
+                        {
+                            "name": "NRSEQPRODCUP",
+                            "label": "Numero Sequencial de Producao",
+                            "isVisible": false,
+                            "readOnly": true,
+                            "class": 6,
+                            "template": "field/text.html",
+                            "showOnView": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "events": []
+                        }
+                    ],
+                    "widgets": [
+                        {
+                            "name": "produtosFooter",
+                            "isVisible": true,
+                            "template": "widget/stripe.html",
+                            "actions": [],
+                            "events": [],
+                            "fields": [
+                                {
+                                    "name": "ACRESCIMOCOMANDA",
+                                    "label": "Taxa de Entrega: R$",
+                                    "class": "6",
+                                    "align": "left",
+                                    "template": "field/text-number.html",
+                                    "isVisible": true,
+                                    "showOnList": true, 
+                                    "showOnView": true,
+                                    "showOnForm": true,
+                                    "readOnly": true,
+                                    "mask": {
+                                        "type": "currency",
+                                        "params": {
+                                            "showSymbol": false,
+                                            "precision": 2,
+                                            "thousands": "",
+                                            "decimal": ",",
+                                            "allowNegative": false
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "TOTALPRODUTOS",
+                                    "label": "Valor Total: R$",
+                                    "class": "6",
+                                    "align": "right",
+                                    "template": "field/text-number.html",
+                                    "isVisible": true,
+                                    "showOnList": true, 
+                                    "showOnView": true,
+                                    "showOnForm": true,
+                                    "readOnly": true,
+                                    "mask": {
+                                        "type": "currency",
+                                        "params": {
+                                            "showSymbol": false,
+                                            "precision": 2,
+                                            "thousands": "",
+                                            "decimal": ",",
+                                            "allowNegative": false
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "formaPagamentoPopup",
+                    "label": "Formas de Pagamento - Total: ",
+                    "template": "widget/grid.html",
+                    "floatingControl": false,
+                    "isVisible": false,
+                    "widgets": [
+                        {
+                            "name": "pagamentosFooter",
+                            "isVisible": true,
+                            "template": "widget/stripe.html",
+                            "actions": [],
+                            "events": [
+                                {
+                                    "name": "WidgetOnEnter",
+                                    "code": "OrderDeliveryController.getInfoFooterPayment(args.owner);"
+                                }
+                            ],
+                            "fields": [
+                                {
+
+                                    "name": "TOTALCURRENCY",
+                                    "label": "Valor Total: R$",
+                                    "class": "4 left-align-field",
+                                    "template": "field/text-number.html",
+                                    "isVisible": true,
+                                    "showOnList": true, 
+                                    "showOnView": true,
+                                    "showOnForm": true,
+                                    "readOnly": true,
+                                    "mask": {
+                                        "type": "currency",
+                                        "params": {
+                                            "showSymbol": false,
+                                            "precision": 2,
+                                            "thousands": "",
+                                            "decimal": ",",
+                                            "allowNegative": false
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "PAGOCURRENCY",
+                                    "label": "Valor Pago: R$",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "showOnView": true,
+                                    "showOnForm": true,
+                                    "readOnly": true,
+                                    "class": "4 left-align-field",
+                                    "template": "field/text-number.html",
+                                    "mask": {
+                                        "type": "currency",
+                                        "params": {
+                                            "showSymbol": false,
+                                            "precision": 2,
+                                            "thousands": "",
+                                            "decimal": ",",
+                                            "allowNegative": false
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "TROCOCURRENCY",
+                                    "label": "Troco: R$",
+                                    "class": "4 left-align-field",
+                                    "template": "field/text-number.html",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "showOnView": true,
+                                    "showOnForm": true,
+                                    "readOnly": true,
+                                    "mask": {
+                                        "type": "currency",
+                                        "params": {
+                                            "showSymbol": false,
+                                            "precision": 2,
+                                            "thousands": "",
+                                            "decimal": ",",
+                                            "allowNegative": false
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "FALTANTECURRENCY",
+                                    "label": "Valor a Pagar: R$",
+                                    "class": "4 left-align-field",
+                                    "template": "field/text-number.html",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "showOnView": true,
+                                    "showOnForm": true,
+                                    "readOnly": true,
+                                    "mask": {
+                                        "type": "currency",
+                                        "params": {
+                                            "showSymbol": false,
+                                            "precision": 2,
+                                            "thousands": "",
+                                            "decimal": ",",
+                                            "allowNegative": false
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [
+                        {
+                            "name": "WidgetOnEnter",
+                            "code": "OrderDeliveryController.getInfoFormasPagamento(args.owner);"
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "label": "Voltar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "OrderDeliveryController.backPayments(args.owner.widget);"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Confirmar",
+                            "name": "Confirmar",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "OrderDeliveryController.salvarFormaPagamento(args.owner.widget);"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "addPayment",
+                            "label": "",
+                            "isVisible": true,
+                            "icon": "plus",
+                            "showAsAction": "always",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "OrderDeliveryController.abrirPopupNovoPagamento(args);"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "deletePayment",
+                            "label": "",
+                            "isVisible": true,
+                            "icon": "trash no-border",
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "grid-right",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "OrderDeliveryController.deletarFormaPagamento(args.owner.widget);"
+                                }
+                            ]
+                        }
+                    ],
+                    "dataSource": {
+                        "data": []
+                    },
+                    "fields": [
+                        {
+                            "name": "NMTIPORECE",
+                            "label": "Forma de Pagamento",
+                            "isVisible": true,
+                            "readOnly": true,
+                            "class": 6,
+                            "template": "field/text.html",
+                            "showOnView": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "events": []
+                        },
+                        {
+                            "name": "CDTIPORECE",
+                            "label": "Codigo da Forma de Pagamento",
+                            "isVisible": false,
+                            "readOnly": true,
+                            "class": 6,
+                            "template": "field/text.html",
+                            "showOnView": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "events": []
+                        },
+                        {
+                            "name": "NRSEQMOVDLV",
+                            "label": "Codigo Sequencial da Forma de Pagamento Dlv",
+                            "isVisible": false,
+                            "readOnly": true,
+                            "class": 6,
+                            "template": "field/text.html",
+                            "showOnView": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "events": []
+                        },
+                        {
+                            "name": "VRMOVIVENDDLV",
+                            "label": "Valor (R$)",
+                            "isVisible": true,
+                            "showOnView": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "class": "6 center-align-field",
+                            "template": "field/text-number.html",
+                            "readOnly": false,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": false,
+                            "newLine": true,
+                            "sameLine": true,
+                            "focused": true,
+                            "range": {
+                                "max": null,
+                                "min": 0.01
+                            },
+                            "defaultValue": null,
+                            "events": [],
+                            "mask": {
+                                "type": "currency",
+                                "params": {
+                                    "showSymbol": false,
+                                    "precision": 2,
+                                    "thousands": "",
+                                    "decimal": ",",
+                                    "allowNegative": false
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "novoPagamentoPopup",
+                    "label": "Nova Forma de Pagamento",
+                    "template": "widget/form.html",
+                    "floatingControl": false,
+                    "isVisible": false,
+                    "events": [
+                        {
+                            "name": "WidgetOnEnter",
+                            "code": "OrderDeliveryController.getInfoPagamento(args.owner);"
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "label": "Cancelar",
+                            "name": "btnCancel",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "OrderDeliveryController.cancelarNovaFormaPagamento(args.owner.widget);"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Adicionar",
+                            "name": "adicionarPagamento",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "OrderDeliveryController.adicionarFormaPagamento(args.owner.widget);"
+                                }
+                            ]
+                        }
+                    ],
+                    "dataSource": {
+                        "data": []
+                    },
+                    "fields": [
+                        {
+                            "name": "TOTALCURRENCY",
+                            "label": "Valor Total",
+                            "isVisible": true,
+                            "showOnView": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "class": "6 left-align-field",
+                            "template": "field/text-number.html",
+                            "readOnly": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": false,
+                            "newLine": true,
+                            "sameLine": true,
+                            "focused": true,
+                            "range": {
+                                "max": null,
+                                "min": 0.01
+                            },
+                            "defaultValue": null,
+                            "events": [],
+                            "mask": {
+                                "type": "currency",
+                                "params": {
+                                    "showSymbol": false,
+                                    "precision": 2,
+                                    "thousands": "",
+                                    "decimal": ",",
+                                    "allowNegative": false
+                                }
+                            }
+                        },
+                        {
+                            "name": "FALTANTECURRENCY",
+                            "label": "Valor a Pagar",
+                            "isVisible": true,
+                            "showOnView": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "class": "6 left-align-field",
+                            "template": "field/text-number.html",
+                            "readOnly": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": false,
+                            "newLine": true,
+                            "sameLine": true,
+                            "focused": true,
+                            "range": {
+                                "max": null,
+                                "min": 0.01
+                            },
+                            "defaultValue": null,
+                            "events": [],
+                            "mask": {
+                                "type": "currency",
+                                "params": {
+                                    "showSymbol": false,
+                                    "precision": 2,
+                                    "thousands": "",
+                                    "decimal": ",",
+                                    "allowNegative": false
+                                }
+                            }
+                        },
+                        {
+                            "name": "PAGOCURRENCY",
+                            "label": "Valor Pago",
+                            "isVisible": true,
+                            "showOnView": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "class": "6 left-align-field",
+                            "template": "field/text-number.html",
+                            "readOnly": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": false,
+                            "newLine": true,
+                            "sameLine": true,
+                            "focused": true,
+                            "range": {
+                                "max": null,
+                                "min": 0.01
+                            },
+                            "defaultValue": null,
+                            "events": [],
+                            "mask": {
+                                "type": "currency",
+                                "params": {
+                                    "showSymbol": false,
+                                    "precision": 2,
+                                    "thousands": "",
+                                    "decimal": ",",
+                                    "allowNegative": false
+                                }
+                            }
+                        },
+                        {
+                            "name": "TROCOCURRENCY",
+                            "label": "Troco",
+                            "isVisible": true,
+                            "showOnView": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "class": "6 left-align-field",
+                            "template": "field/text-number.html",
+                            "readOnly": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": false,
+                            "newLine": true,
+                            "sameLine": true,
+                            "focused": true,
+                            "range": {
+                                "max": null,
+                                "min": 0.01
+                            },
+                            "defaultValue": null,
+                            "events": [],
+                            "mask": {
+                                "type": "currency",
+                                "params": {
+                                    "showSymbol": false,
+                                    "precision": 2,
+                                    "thousands": "",
+                                    "decimal": ",",
+                                    "allowNegative": false
+                                }
+                            }
+                        },
+                        {
+                            "name": "DSBUTTON",
+                            "label": "Tipo de Recebimento",
+                            "isVisible": true,
+                            "showOnView": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "class": "6 left-align-field",
+                            "template": "field/select.html",
+                            "showSelectAs": "grid",
+                            "readOnly": false,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": false,
+                            "validations": {
+                                "required": true
+                            },
+                            "descriptionField": "DSBUTTON",
+                            "valueField": "CDTIPORECE",
+                            "dataSource": {},
+                            "events":[
+                                {
+                                    "name": "FieldOnClick",
+                                    "code": "OrderDeliveryController.getPaymentTypes(args)"
+                                }
+                            ],
+                             "fields": [
+                                {
+                                    "name": "DSBUTTON",
+                                    "label": "Tipo de Recebimento",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text.html"
+                                },
+                                {
+                                    "name": "CDTIPORECE",
+                                    "label": "Codigo de Recebimento",
+                                    "isVisible": false,
+                                    "showOnList": true,
+                                    "template": "field/text.html"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "VRMOVIVENDDLV",
+                            "label": "Valor",
+                            "isVisible": true,
+                            "showOnView": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "class": "6 left-align-field",
+                            "template": "field/text-number.html",
+                            "readOnly": false,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": false,
+                            "validations": {
+                                "required": true
+                            },
+                            "newLine": true,
+                            "sameLine": true,
+                            "focused": true,
+                            "range": {
+                                "max": null,
+                                "min": 0.01
+                            },
+                            "defaultValue": null,
+                            "events": [],
+                            "mask": {
+                                "type": "currency",
+                                "params": {
+                                    "showSymbol": false,
+                                    "precision": 2,
+                                    "thousands": "",
+                                    "decimal": ",",
+                                    "allowNegative": false
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

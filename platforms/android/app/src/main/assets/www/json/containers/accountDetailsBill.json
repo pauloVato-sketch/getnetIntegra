@@ -1,0 +1,370 @@
+{
+    "id": "18991092121980191441817",
+    "name": "shortAccount",
+    "label": "Parcial da Conta",
+    "showHeader": true,
+    "showMenu": true,
+    "showBack": true,
+    "showFooter": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "template": "container/tabbed.html",
+    "popup": "component/popup.html",
+    "events": [
+        {
+            "id": "7371383063181183491845",
+            "name": "ContainerAfterinit",
+            "code": "UtilitiesService.setHeader(args.owner); AccountController.resetAccountScreen();"
+        },
+        {
+            "id": "7371383063227466538846",
+            "name": "ContainerOnBack",
+            "code": "UtilitiesService.handleBack(args.owner.name);"
+        }
+    ],
+    "widgets": [
+        {
+            "id": "7371383061504881374818",
+            "name": "accountDetailsTable",
+            "label": "Totalização",
+            "template": "widget/form-without-scroller.html",
+            "isVisible": true,
+            "actions": [
+                {
+                    "id": "7371383061541038357833",
+                    "label": "Voltar",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "7371383061133647165834",
+                            "name": "ActionEvent",
+                            "code": "ScreenService.goBack()"
+                        }
+                    ]
+                },
+                {
+                    "id": "737138306796039903835",
+                    "label": "Imprimir",
+                    "name": "imprimir",
+                    "isVisible": true,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "id": "7371383061623089331836",
+                            "name": "ActionEvent",
+                            "code": "AccountController.printAccount();"
+                        }
+                    ]
+                },
+                {
+                    "id": "7371383061525071128837",
+                    "label": "Receber Comanda",
+                    "name": "receber",
+                    "isVisible": false,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "id": "7371383061318448257838",
+                            "name": "ActionEvent",
+                            "code": "AccountController.openPayment(true);"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "id": "7371383061210935076839",
+                    "name": "WidgetOnInitDataSource",
+                    "code": "args.owner.moveToFirst()"
+                },
+                {
+                    "id": "7371383061189814266840",
+                    "name": "WidgetOnEnter",
+                    "code": "AccountController.refreshAccountDetails(args.owner.container.widgets, '');"
+                }
+            ],
+            "dataSource": {
+                "rest": false,
+                "memoryStorage": true,
+                "name": "/AccountGetAccountDetails"
+            },
+            "fields": [
+                {
+                    "id": "737138306669251122819",
+                    "name": "lblQtdPessoas",
+                    "label": "Quantidade de Pessoas",
+                    "class": "6 odh-account-font",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": true,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "id": "7371383062944625977820",
+                    "name": "NRPESMESAVEN",
+                    "label": "",
+                    "class": "6 odh-account-font",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "id": "7371383063392359482821",
+                    "name": "lblPermanencia",
+                    "label": "Permanência",
+                    "class": "6 odh-account-font",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": true,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "id": "737138306678115187822",
+                    "name": "permanencia",
+                    "label": "",
+                    "class": "6 odh-account-font",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "id": "737138306462825167823",
+                    "name": "lblProdutos",
+                    "label": "Produtos",
+                    "class": "6 odh-account-font",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "id": "737138306663119365824",
+                    "name": "produtos",
+                    "label": "",
+                    "class": "6 odh-account-font",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "name": "lbldesconto",
+                    "label": "Desconto",
+                    "class": "6 odh-account-font",
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "breakline": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "name": "desconto",
+                    "label": "",
+                    "class": "6 odh-account-font",
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "id": "7371383062163526789825",
+                    "name": "lblServico",
+                    "label": "Serviço",
+                    "class": "6 odh-account-font",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "id": "7371383062216021615826",
+                    "name": "servico",
+                    "label": "",
+                    "class": "6 odh-account-font",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "id": "737138306960924454827",
+                    "name": "lblCouvert",
+                    "label": "Couvert",
+                    "class": "6 odh-account-font",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "id": "7371383062307125186828",
+                    "name": "couvert",
+                    "label": "",
+                    "class": "6 odh-account-font",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "id": "7371383063564427150829",
+                    "name": "lblConsumo",
+                    "label": "Consumação",
+                    "class": "6 odh-account-font",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "id": "7371383063795517312830",
+                    "name": "consumacao",
+                    "label": "",
+                    "class": "6 odh-account-font",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "id": "737138306530888069831",
+                    "name": "lblTotal",
+                    "label": "Total",
+                    "class": "6 odh-account-font",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "id": "7371383063389379848832",
+                    "name": "total",
+                    "label": "",
+                    "class": "6 odh-account-font",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label.html",
+                    "events": []
+                }
+            ]
+        },
+        {
+            "id": "7371383062918951729841",
+            "name": "accountItemsTable",
+            "label": "Pedidos Realizados",
+            "template": "../../../../templates/widget/list-grouped-position.html",
+            "isVisible": true,
+            "actions": [
+                {
+                    "id": "7371383063861024958842",
+                    "label": "Voltar",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "7371383061673052449843",
+                            "name": "ActionEvent",
+                            "code": "ScreenService.goBack()"
+                        }
+                    ]
+                }
+            ],
+            "groupProp": "GRUPO",
+            "detailPriceProp": "preco",
+            "detailDescProp": "DSBUTTON",
+            "detailSubDescProp": "TXPRODCOMVEN",
+            "orderDate": "DTHRINCOMVEN",
+            "addDisplay": "",
+            "events": [
+                {
+                    "id": "7371383062851092223844",
+                    "name": "WidgetOnEnter",
+                    "code": "AccountController.switchTemplate(args.owner);"
+                }
+            ],
+            "dataSource": {},
+            "fields": []
+        }
+    ]
+}

@@ -1,0 +1,17 @@
+<div class="col-xs-{{field.class}}" ng-show="field.isVisible">
+	<input
+		type="hidden"
+		class="input-text form-control zh-field-{{field.name}}"
+		id="{{field.name}}"
+		name="{{field.name}}"
+		data-ng-readonly="field.isReadOnly()"
+		data-ng-disabled="field.isReadOnly()"
+		data-zh-style
+		data-zh-mask
+		data-zh-events
+		data-zh-validate
+		data-ng-model="fieldRow"
+		placeholder="{{field.placeholder|i18n}}"
+		maxlength="{{field.maxlength}}"
+	>
+</div>

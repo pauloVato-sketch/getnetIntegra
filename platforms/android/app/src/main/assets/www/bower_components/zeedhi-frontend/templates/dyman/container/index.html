@@ -1,0 +1,32 @@
+<section
+	ng-controller="DevWindowController as DevCtrl"
+	zh-inspection>
+
+	<section
+		class="zh-application-content"
+		ng-class="{ 'devtools-opened': DevCtrl.shouldShowDevtoolsContent() && DevCtrl.isDevToolsOpened() }"
+	>
+		<div ng-include="templateManager.getFrameworkTemplateURL('component/notification.html')"></div>
+
+		<div
+			class="default-window"
+			ng-if="!DevCtrl.inDevToolsMode()"
+			ng-include="templateManager.getFrameworkTemplateURL('window/default.html')"
+		></div>
+		<div
+			class="devtools-window"
+			ng-if="DevCtrl.inDevToolsMode()"
+			ng-include="templateManager.getFrameworkTemplateURL('window/devtools.html')"
+			ng-controller="WindowController as Ctrl"
+		></div>
+	</section>
+
+	<section
+		ng-if="DevCtrl.shouldShowDevtoolsContent()"
+		ng-show="DevCtrl.isDevToolsOpened()"
+		class="zh-devtools-content"
+	>
+		<iframe id="dev-tools" name="dev-tools" ng-src="{{location + '?devtools=true'}}"></iframe>
+	</section>
+
+</section>

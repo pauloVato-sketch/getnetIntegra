@@ -1,0 +1,13 @@
+{
+  "name": "zh-filter-preferences",
+  "version": "3.1.0",
+  "description": "zh-filter-preferences is a library to add a general filter to Zeedhi's grids",
+  "license": "Comercial",
+  "ignore": [
+    "**/*",
+    "!dist/**/*"
+  ],
+  "dependencies": {
+    "zh-preferences": "^3.0.0"
+  }
+}

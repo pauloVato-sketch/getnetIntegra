@@ -1,0 +1,41 @@
+<div id="splash" class="splash"></div>
+<span data-ng-if="templateManager.project.inDeveloperMode" ng-controller="WindowController as Ctrl"></span>
+
+<div data-zh-loader class="zh-background-loading">
+	<div class="zh-position-loading">
+		<span class="zh-loading-icon"></span>
+		<span class="zh-loading-desc" data-zh-bind-translate="(templateManager.loadingMessage || 'Aguarde...')"></span>
+	</div>
+</div>
+
+<section class="something-else" ng-include src="templateManager.getTemplateURL(templateManager.project.menuTemplate || 'component/menu.html')"></section>
+
+<section class="everything" zh-keyboard>
+  <header ng-show="templateManager.container.showHeader" ng-include src="templateManager.getTemplateURL(templateManager.container.header || 'component/header.html')"></header> <!-- header -->
+
+  <div zh-acl class="container" zh-fixed ng-class="{noHeader: !templateManager.container.showHeader, noFooter: !templateManager.container.showFooter}" data-ng-if='templateManager.container.aclIsVisible'>
+    <section ng-show="!!templateManager.container.template" ng-include src="templateManager.getTemplateURL(templateManager.container.template)"></section>
+  </div> <!-- container -->
+</section>
+
+<aside ng-include src="templateManager.getFrameworkTemplateURL('component/alert.html')"></aside>
+<aside ng-include src="templateManager.getFrameworkTemplateURL('component/about.html')"></aside>
+
+<section class="zh-swipe-container zh-swipe-right" ng-controller="SwipeController" ng-class="{noHeader: !templateManager.container.showHeader, noFooter: !templateManager.container.showFooter, 'multiple-swipes': $root.swipes.length > 1}">
+	<div ng-repeat="swipe in $root.swipes" data-ng-init="widget = swipe; swipeIndex = $index + 1" class="zh-swipe-inner zh-content" data-ng-class="{open: swipe.open}" data-swipe-level="{{ $index + 1 }}">
+		<div class="swipe-overlay" data-ng-if="swipe.editing || swipe.currentWidget.editing"></div>
+		<div class="swipe-tip"></div>
+		<div class="swipe-parent-description" data-ng-if="templateManager.project.showDescriptionOrder && swipe.showDescriptionOrder !== false">
+			<span data-ng-repeat="s in $root.swipes | reverse"
+				data-ng-bind="s.swipeParent.descriptionOrder"
+				data-ng-if="s.swipeParent.descriptionOrder && ($index >= $root.swipes.length - swipeIndex)">
+			</span>
+		</div>
+		<div ng-include src="templateManager.getTemplateURL(swipe.formTemplate)" class="{{swipe.class}}"></div>
+	</div>
+</section>
+
+<section ng-if="!!templateManager.container.template" id="popup" ng-include src="templateManager.getFrameworkTemplateURL('component/popup.html')" data-ng-class="{'popup-open' : $root.popupOpen}" class="navbar-fixed-bottom"></section>
+
+<footer ng-if="!!templateManager.container.footer" ng-include src="templateManager.getTemplateURL(templateManager.container.footer)" data-ng-class="{'footer-open' : $root.footerOpen}" id="footer"></footer>
+<div id="tooltip-content" class="zh-tooltip-content"></div>
