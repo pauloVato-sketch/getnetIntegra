@@ -51,7 +51,7 @@ class ImpressaoController(): com.odhen.deviceintagrationfacade.Controllers.Impre
     }
 
     override fun reportError():Int? {
-        return 1000
+        return 0
     }
 
     fun getCode():Int?{

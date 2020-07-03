@@ -21,6 +21,7 @@ import com.teknisa.tef.TransactionMessenger
 import com.teknisa.tef.PaymentData
 import android.content.Context
 import org.apache.cordova.CordovaActivity
+import org.apache.cordova.CordovaPlugin
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
@@ -160,11 +161,13 @@ class VendaController(stoneCode: String, environment: String, context: Context) 
     }
 
     override fun onTransactionMessage(message: String) {
-        Log.d("bipfun", "oTC" + message)
+        Log.d("bipfun", "oTC    " + message)
 
         val mainActivity = context as CordovaActivity
-
-        mainActivity.runOnUiThread({ mainActivity.loadUrl("javascript:setMessage('" + message + "')") })
+        
+        mainActivity.runOnUiThread {
+            mainActivity.loadUrl("javascript:setMessage('$message')")
+        }
     }
 
 }

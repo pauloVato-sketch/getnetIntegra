@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Thu Jun 25 13:55:25 GMT-03:00 2020
+#Tue Jun 30 13:54:12 GMT-03:00 2020
 2385.set=ASSET
 3632.path=www/node_modules/underscore.string/toSentenceSerial.js
 5391.baseType=DIRECTORY

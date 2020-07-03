@@ -269,6 +269,7 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
 	};
 
 	this.initSitefProcess = function(params){
+
 		ScreenService.hideLoader();
 		var sitefWidget = templateManager.containers.login.getWidget("sitefPayment");
 		sitefWidget.getField("userInput").isVisible = false;

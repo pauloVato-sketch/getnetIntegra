@@ -1,4 +1,4 @@
-#Tue Jun 30 12:49:58 GMT-03:00 2020
+#Tue Jun 30 13:40:59 GMT-03:00 2020
 path.1=classes.dex
 path.0=classes.dex
 renamed.5=classes6.dex

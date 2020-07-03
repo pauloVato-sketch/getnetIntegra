@@ -1954,6 +1954,7 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
 	};
 
 	this.initSitefProcess = function(params){
+
 		ScreenService.hideLoader();
 		var sitefWidget = templateManager.containers.login.getWidget("sitefPayment");
 		sitefWidget.getField("userInput").isVisible = false;
@@ -3531,6 +3532,7 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 
     this.callPayment = function(currentRow){
         var payment = self.getPaymentFromCurrentRow(currentRow);
+        this.prepareWindowFunctions();
         OperatorRepository.findOne().then(function(operatorData) {
         	currentRow.eletronicTransacion.data.DSENDIPSITEF = operatorData.DSENDIPSITEF;
         	currentRow.eletronicTransacion.data.CDLOJATEF = operatorData.CDLOJATEF;
@@ -3539,6 +3541,19 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
         	currentRow.eletronicTransacion.data.IDTIPORECE = '';
         	window.cordova.plugins.IntegrationService.payment(payment, window.returnIntegration, null);
        	});
+    };
+
+    this.prepareWindowFunctions = function(){
+        window.setMessage =
+        function(message) {
+            templateManager.containers.login.getWidget("sitefPayment").getField("userInterface").value(_.toUpper(message));
+        };
+
+        window.setLabel =
+        function(label) {
+            templateManager.containers.login.getWidget("sitefPayment").label = label;
+        };
+
     };
 }
 
