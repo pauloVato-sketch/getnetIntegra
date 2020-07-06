@@ -3258,7 +3258,7 @@ Configuration(function(ContextRegister) {
 });
 
 // FILE: js/services/IntegrationService.js
-function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, IntegrationSiTEF, IntegrationCielo,OperatorRepository) {
+function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, IntegrationSiTEF, IntegrationCielo,OperatorRepository,templateManager) {
 	var INTEGRATION_TYPE = {
 		'2': IntegrationCappta,
 		'3': IntegrationNTK,
