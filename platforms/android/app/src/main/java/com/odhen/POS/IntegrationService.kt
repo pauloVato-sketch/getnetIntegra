@@ -188,7 +188,6 @@ class IntegrationService: CordovaPlugin() {
             }
             "qrCode"->{
                 //Paliativo
-                //ImpressaoController.instance?.imprimeTexto("                ")
                 Log.d("TAGG",String.format("        \n%s\n",data.get("qrcode").toString()))
                 ImpressaoController.instance?.imprimeQrCode(data.get("qrcode").toString())
                 if(ImpressaoController.instance?.reportError()!=0){
@@ -206,7 +205,6 @@ class IntegrationService: CordovaPlugin() {
             }
             "barCode"->{
                 //Paliativo
-                //ImpressaoController.instance?.imprimeTexto("                ")
                 Log.d("TAGG",String.format("        \n%s\n",data.get("barcode").toString()))
                 ImpressaoController.instance?.imprimeCodBarra(data.get("barcode").toString())
                 if(ImpressaoController.instance?.reportError()!=0){

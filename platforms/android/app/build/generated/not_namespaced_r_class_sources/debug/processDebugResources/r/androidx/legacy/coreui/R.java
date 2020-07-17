@@ -95,7 +95,7 @@ public final class R {
         public static final int async = 0x7f08004d;
         public static final int blocking = 0x7f080053;
         public static final int bottom = 0x7f080056;
-        public static final int chronometer = 0x7f080066;
+        public static final int chronometer = 0x7f080067;
         public static final int end = 0x7f08008c;
         public static final int forever = 0x7f080097;
         public static final int icon = 0x7f0800a4;
@@ -119,9 +119,9 @@ public final class R {
         public static final int tag_unhandled_key_listeners = 0x7f080132;
         public static final int text = 0x7f080134;
         public static final int text2 = 0x7f080135;
-        public static final int time = 0x7f080141;
-        public static final int title = 0x7f080143;
-        public static final int top = 0x7f080148;
+        public static final int time = 0x7f080143;
+        public static final int title = 0x7f080145;
+        public static final int top = 0x7f08014a;
     }
     public static final class integer {
         private integer() {}

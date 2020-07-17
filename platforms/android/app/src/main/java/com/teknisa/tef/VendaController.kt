@@ -35,16 +35,16 @@ class VendaController(stoneCode: String, environment: String, context: Context) 
     var context: Context
     var tipoMovimentacao = 0
     var valor = ""
-
+    var custom_dialog : CustomDialog? = null
     init {
         stone.init(stoneCode, environment, context, this)
         this.context = context
-        Log.d("bipfun", "STONECODE: " + stoneCode)
-        Log.d("bipfun", "ENVIRONMENT: " + environment)
+        Log.d("PAGG", "STONECODE: " + stoneCode)
+        Log.d("PAGG", "ENVIRONMENT: " + environment)
     }
 
     override fun chamaVenda(valor: Float, tipoMovimentacao: TipoMovimentacao, transacaoListener: TransacaoListener) {
-        Log.d("Bipfun", "chamaVenda")
+        Log.d("PAGG", "chamaVenda")
         this.valor = valor.toString()
 
         this.transacaoListener = transacaoListener
@@ -69,7 +69,7 @@ class VendaController(stoneCode: String, environment: String, context: Context) 
     }
 
     override fun chamaEstorno(valor: Float, cvNumber: String, dataTransacao: String, transacaoListener: TransacaoListener) {
-        Log.d("Bipfun", "chamaEstorno")
+        Log.d("PAGG", "chamaEstorno")
 
         this.transacaoListener = transacaoListener
 
@@ -87,11 +87,11 @@ class VendaController(stoneCode: String, environment: String, context: Context) 
     }
 
     override fun onIntegrationResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.d("Bipfun", "result")
+        Log.d("PAGG", "result")
     }
 
     override fun onReturnValue(message: String, status: Int) {
-        Log.d("bipfun", "oRV: " + message + "(" + status + ")")
+        Log.d("PAGG", "oRV: " + message + "(" + status + ")")
 
         if (status == 0) {
             transacaoListener?.transacaoConcluida(
@@ -107,11 +107,11 @@ class VendaController(stoneCode: String, environment: String, context: Context) 
     }
 
     override fun onReturnValue(message: String, status: Int, documentId: String, cardNumber: String, cardBrand: String, authorizationCode: String) {
-        Log.d("bipfun", "oRV: " + message + "(" + status + ")")
-        Log.d("bipfun", "documentID: " + documentId)
-        Log.d("bipfun", "cardNumber: " + cardNumber)
-        Log.d("bipfun", "cardBrand: " + cardBrand)
-        Log.d("bipfun", "authorizationCode: " + authorizationCode)
+        Log.d("PAGG", "oRV: " + message + "(" + status + ")")
+        Log.d("PAGG", "documentID: " + documentId)
+        Log.d("PAGG", "cardNumber: " + cardNumber)
+        Log.d("PAGG", "cardBrand: " + cardBrand)
+        Log.d("PAGG", "authorizationCode: " + authorizationCode)
 
         val paymentData = JSONObject()
 
@@ -150,7 +150,7 @@ class VendaController(stoneCode: String, environment: String, context: Context) 
     }
 
     override fun promptCommand(message: String, minLength: Int, maxLength: Int, fieldId: Int) {
-        Log.d("bipfun", "pc(" + fieldId + "): " + message)
+        Log.d("PAGG", "pc(" + fieldId + "): " + message)
 
         if (fieldId == 517) {
             /* Caso seja cancelamento de transação */
@@ -161,12 +161,19 @@ class VendaController(stoneCode: String, environment: String, context: Context) 
     }
 
     override fun onTransactionMessage(message: String) {
-        Log.d("bipfun", "oTC    " + message)
+        Log.d("PAGG", "oTC    " + message)
 
-        val mainActivity = context as CordovaActivity
-        
-        mainActivity.runOnUiThread {
-            mainActivity.loadUrl("javascript:setMessage('$message')")
+        if(custom_dialog == null){
+            custom_dialog = CustomDialog(context)
+            message?.let { custom_dialog!!.setMessage(it) }
+            custom_dialog?.show()
+        }else{
+            if (message == "PAGAMENTO FINALIZADO") {
+                message?.let { custom_dialog?.setMessage(it) }
+                custom_dialog!!.dismiss()
+            }else{
+                message?.let { custom_dialog?.setMessage(it) }
+            }
         }
     }
 

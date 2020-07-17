@@ -643,15 +643,15 @@ public final class R {
         public static final int async = 0x7f08004d;
         public static final int blocking = 0x7f080053;
         public static final int bottom = 0x7f080056;
-        public static final int buttonPanel = 0x7f08005a;
-        public static final int checkbox = 0x7f080063;
-        public static final int chronometer = 0x7f080066;
-        public static final int content = 0x7f080071;
-        public static final int contentPanel = 0x7f080072;
-        public static final int custom = 0x7f080075;
-        public static final int customPanel = 0x7f080076;
-        public static final int decor_content_parent = 0x7f08007c;
-        public static final int default_activity_button = 0x7f08007d;
+        public static final int buttonPanel = 0x7f08005b;
+        public static final int checkbox = 0x7f080064;
+        public static final int chronometer = 0x7f080067;
+        public static final int content = 0x7f080072;
+        public static final int contentPanel = 0x7f080073;
+        public static final int custom = 0x7f080076;
+        public static final int customPanel = 0x7f080077;
+        public static final int decor_content_parent = 0x7f08007d;
+        public static final int default_activity_button = 0x7f08007e;
         public static final int edit_query = 0x7f08008b;
         public static final int end = 0x7f08008c;
         public static final int expand_activities_button = 0x7f08008f;
@@ -715,15 +715,15 @@ public final class R {
         public static final int text2 = 0x7f080135;
         public static final int textSpacerNoButtons = 0x7f08013b;
         public static final int textSpacerNoTitle = 0x7f08013c;
-        public static final int time = 0x7f080141;
-        public static final int title = 0x7f080143;
-        public static final int titleDividerNoCustom = 0x7f080144;
-        public static final int title_template = 0x7f080147;
-        public static final int top = 0x7f080148;
-        public static final int topPanel = 0x7f080149;
-        public static final int uniform = 0x7f080155;
-        public static final int up = 0x7f080156;
-        public static final int wrap_content = 0x7f080163;
+        public static final int time = 0x7f080143;
+        public static final int title = 0x7f080145;
+        public static final int titleDividerNoCustom = 0x7f080146;
+        public static final int title_template = 0x7f080149;
+        public static final int top = 0x7f08014a;
+        public static final int topPanel = 0x7f08014b;
+        public static final int uniform = 0x7f080157;
+        public static final int up = 0x7f080158;
+        public static final int wrap_content = 0x7f080165;
     }
     public static final class integer {
         private integer() {}
