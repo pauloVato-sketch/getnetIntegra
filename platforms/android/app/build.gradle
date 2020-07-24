@@ -306,15 +306,10 @@ dependencies {
     // implementation fileTree(dir: 'libs', include: '*.aar')
     // SUB-PROJECT DEPENDENCIES START
     implementation(project(path: ":CordovaLib"))
+    implementation(project(path: ":stoneintegration"))
     implementation "androidx.legacy:legacy-support-v4:1.0.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.31"
     // SUB-PROJECT DEPENDENCIES END
-    implementation "br.com.stone:stone-sdk:3.3.2" /* Stone */
-    implementation "br.com.stone:stone-sdk-posandroid:3.3.2" /* Stone */
-    implementation "br.com.stone:stone-sdk-posandroid-ingenico:3.3.2" /* Stone */
-    implementation(name:'clisitef-android', ext:'jar') /* CliSiTef (Gertec) */
-    implementation(name:'libppcomp-1.15.0.180228.1', ext:'aar') /* Gertec Old Firmware*/
-    implementation(name:'pos7api', ext:'aar') /* Ger7 */
     implementation 'androidx.multidex:multidex:2.0.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
 }

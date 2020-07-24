@@ -30,7 +30,7 @@ buildscript {
             url "https://packagecloud.io/stone/sdk-android-snapshot/maven2"
         }
         maven {
-            url "https://packagecloud.io/Stone/pos-android-service-container/maven2"
+            url "https://packagecloud.io/Stone/com.odhen.stoneintegration.pos-android-service-container/maven2"
         }
         flatDir {
             dirs 'libs'
@@ -57,7 +57,7 @@ allprojects {
             url "https://packagecloud.io/stone/sdk-android-snapshot/maven2"
         }
         maven {
-            url "https://packagecloud.io/Stone/pos-android-service-container/maven2"
+            url "https://packagecloud.io/Stone/com.odhen.stoneintegration.pos-android-service-container/maven2"
         }
         flatDir {
             dirs 'libs'

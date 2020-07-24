@@ -75,7 +75,7 @@ public final class R {
 
         public static final int barrier = 0x7f080051;
         public static final int bottom = 0x7f080056;
-        public static final int chains = 0x7f080061;
+        public static final int chains = 0x7f080062;
         public static final int dimensions = 0x7f080080;
         public static final int direct = 0x7f080081;
         public static final int end = 0x7f08008c;
@@ -91,8 +91,8 @@ public final class R {
         public static final int spread_inside = 0x7f08011a;
         public static final int standard = 0x7f08011e;
         public static final int start = 0x7f08011f;
-        public static final int top = 0x7f080148;
-        public static final int wrap = 0x7f080162;
+        public static final int top = 0x7f08014a;
+        public static final int wrap = 0x7f080164;
     }
     public static final class styleable {
         private styleable() {}

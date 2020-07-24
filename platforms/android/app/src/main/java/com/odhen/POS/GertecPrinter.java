@@ -30,7 +30,7 @@
 //    private boolean bloop;
 //    private boolean error;
 //    private int returnStatus;
-//    private Printer printer;
+//    private Printer com.odhen.stoneintegration.printer;
 //    private String message = "";
 //    private String printType;
 //    private String printString;
@@ -46,7 +46,7 @@
 //        new Thread(){
 //            @Override
 //            public void run() {
-//                printer = new wangpos.sdk4.libbasebinder.Printer(mContext);
+//                com.odhen.stoneintegration.printer = new wangpos.sdk4.libbasebinder.Printer(mContext);
 //                iGedi = GEDI.getInstance(mContext);
 //            }
 //        }.start();
@@ -106,7 +106,7 @@
 //
 //            do {
 //                try {
-//                    result = printer.printInit();
+//                    result = com.odhen.stoneintegration.printer.printInit();
 //                } catch (RemoteException e) {
 //                    message = e.getMessage().toString();
 //                }
@@ -117,22 +117,22 @@
 //                    try {
 //                        switch(printType) {
 //                            case "qr":
-//                                result = printer.printQRCode(printString);
+//                                result = com.odhen.stoneintegration.printer.printQRCode(printString);
 //                                break;
 //                            case "bar":
-//                                result = printer.printBarCode(printString, 50, true);
+//                                result = com.odhen.stoneintegration.printer.printBarCode(printString, 50, true);
 //                                break;
 //                        }
 //
 //                        checkResult(result);
 //
 //                        if(!error) {
-//                            result = printer.printPaper(0);
+//                            result = com.odhen.stoneintegration.printer.printPaper(0);
 //                            checkResult(result);
 //                        }
 //
 //                        if(!error) {
-//                            result = printer.printFinish();
+//                            result = com.odhen.stoneintegration.printer.printFinish();
 //                            checkResult(result);
 //                        }
 //                    } catch (Exception e) {

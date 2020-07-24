@@ -392,13 +392,13 @@ class Impressao {
 				'CDPRODUTO' => $cdprodcouver
 			);
 			$posicaoParcial = $this->entityManager->getConnection()->fetchAll("SQL_POSICAO_PARCIAL", $params);
-			foreach ($posicaoParcial as $pos){
+			foreach ($posicaoParcial as $com.odhen.stoneintegration.pos){
 				// TOTAL PRODUTOS POSIÇÃO
-				$vrTotPos = floatval($pos["PRECOTX"]) + floatval($pos["PRECONTX"]);
-				$texto = "Total P" . $pos["NRLUGARMESA"] . ": " . $this->util->formataPreco($vrTotPos) . " ";
+				$vrTotPos = floatval($com.odhen.stoneintegration.pos["PRECOTX"]) + floatval($com.odhen.stoneintegration.pos["PRECONTX"]);
+				$texto = "Total P" . $com.odhen.stoneintegration.pos["NRLUGARMESA"] . ": " . $this->util->formataPreco($vrTotPos) . " ";
 				// TAXA POSIÇÃO
 				if($taxaDeServico > 0) {
-					$vrTxPos = (floatval($pos["PRECOTX"]) / 100) * $porcentServico;
+					$vrTxPos = (floatval($com.odhen.stoneintegration.pos["PRECOTX"]) / 100) * $porcentServico;
 					$texto .= "TX ". $this->util->formataPreco($vrTxPos) . " ";
 				} else {
 					$vrTxPos = 0;

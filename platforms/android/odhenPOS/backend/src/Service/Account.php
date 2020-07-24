@@ -524,9 +524,9 @@ class Account {
 				$itemsToInsert = array();
 				$adicionalItem = 0;
 
-				for ($pos = 0; $pos < $numberOfParts; $pos++) {
+				for ($com.odhen.stoneintegration.pos = 0; $com.odhen.stoneintegration.pos < $numberOfParts; $com.odhen.stoneintegration.pos++) {
 
-					$posicao = $NRLUGARMESA[$pos];
+					$posicao = $NRLUGARMESA[$com.odhen.stoneintegration.pos];
 					$this->util->newCode('ITCOMANDAVEN'.$CDFILIAL.$NRCOMANDA);
 					$NRPRODCOMVENNOVO = $this->util->getNewCode('ITCOMANDAVEN'.$CDFILIAL.$NRCOMANDA , 6);
 
@@ -534,7 +534,7 @@ class Account {
 					$itemAcr = $this->trunc($itemToSplit['VRACRCOMVEN'] / $numberOfParts, 2);
 					$itemQuantity = $this->trunc($itemToSplit['QTPRODCOMVEN'] / $numberOfParts, 3);
 
-					if ($pos == $numberOfParts - 1) {
+					if ($com.odhen.stoneintegration.pos == $numberOfParts - 1) {
 						$multipliedItem = $this->trunc($itemToSplit['VRPRECCOMVEN'] * $itemQuantity, 2);
 						$itemCalculatedValue = $multipliedItem * ($numberOfParts - 1);
 						$itemQuantity = $this->adjustValueIfNecessary($itemQuantity, $numberOfParts, $itemToSplit['QTPRODCOMVEN'], 3);

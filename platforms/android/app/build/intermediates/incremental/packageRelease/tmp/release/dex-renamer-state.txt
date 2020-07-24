@@ -1,4 +1,4 @@
-#Tue Jun 30 13:53:58 GMT-03:00 2020
+#Fri Jul 17 14:53:30 GMT-03:00 2020
 base.0=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\release\\0
 path.1=classes2.dex
 renamed.1=classes2.dex

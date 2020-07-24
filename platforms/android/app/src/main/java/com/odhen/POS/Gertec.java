@@ -18,12 +18,12 @@
 //
 //    @Override
 //    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-//        GertecPrinter printer = new GertecPrinter(this.cordova.getActivity().getApplicationContext());
+//        GertecPrinter com.odhen.stoneintegration.printer = new GertecPrinter(this.cordova.getActivity().getApplicationContext());
 //
 //        if(action.equals(PRINT_STRING)) {
 //            if (args != null) {
 //                String text = args.getString(0);
-//                printer.printText(text, callbackContext);
+//                com.odhen.stoneintegration.printer.printText(text, callbackContext);
 //            } else {
 //                callbackContext.success(getParamNotFoundMessage());
 //                return true;
@@ -31,7 +31,7 @@
 //        } else if(action.equals(PRINT_QR_CODE)) {
 //            if(args != null) {
 //                String text = args.getString(0);
-//                printer.printQrCode(text, callbackContext);
+//                com.odhen.stoneintegration.printer.printQrCode(text, callbackContext);
 //            } else {
 //                callbackContext.success(getParamNotFoundMessage());
 //                return true;
@@ -39,7 +39,7 @@
 //        } else if (action.equals(PRINT_BAR_CODE)) {
 //            if(args != null) {
 //                String text = args.getString(0);
-//                printer.printBarCode(text, callbackContext);
+//                com.odhen.stoneintegration.printer.printBarCode(text, callbackContext);
 //            } else {
 //                callbackContext.success(getParamNotFoundMessage());
 //                return true;

@@ -860,6 +860,7 @@ id bottom
 id brandCardAndDigitCardTextView
 id brandTextView
 id brandsValueTextView
+id btn_cancel
 id buttonPanel
 id cancel_action
 id cardHolderNameTextView
@@ -897,7 +898,6 @@ id decode_succeeded
 id decor_content_parent
 id default_activity_button
 id deviceInfoTextView
-id dialog_button
 id dimensions
 id direct
 id disableHome
@@ -1091,6 +1091,8 @@ id textTotalValueTextView
 id textTransactionsApprovedTextView
 id textTransactionsPaymentedTextView
 id textVoucherTextView
+id textview_message
+id textview_title
 id time
 id time_text_view
 id title

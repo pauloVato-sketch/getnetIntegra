@@ -1,22 +1,16 @@
 package com.odhen.POS
 
-import android.content.Intent
 import android.util.Log
 import com.odhen.deviceintagrationfacade.Controllers.ImpressaoController
 import com.odhen.deviceintagrationfacade.Controllers.VendaController
 import com.odhen.deviceintagrationfacade.Enums.TipoMovimentacao
 import com.odhen.deviceintagrationfacade.Models.PaymentData
 import com.odhen.deviceintagrationfacade.Models.RefundData
-import com.odhen.deviceintagrationfacade.Shared.VendaAtual
-import com.odhen.deviceintegrationfacade.Interfaces.DeviceIntegrationListener
 import org.apache.cordova.CallbackContext
-import org.apache.cordova.CordovaArgs
 import org.apache.cordova.CordovaPlugin
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.lang.Integer.parseInt
-import com.teknisa.tef.TransactionMessenger
 
 class IntegrationService: CordovaPlugin() {
 
@@ -63,8 +57,8 @@ class IntegrationService: CordovaPlugin() {
         //VendaController.instance = com.odhen.sitefintegration.VendaController(this)
 
         /* INGENICO - STONE */
-        VendaController.instance = com.teknisa.tef.VendaController("808832092", "SANDBOX", mainActivity)
-        ImpressaoController.instance = com.teknisa.tef.ImpressaoController()
+        VendaController.instance = com.odhen.stoneintegration.VendaController("808832092", "SANDBOX", mainActivity)
+        ImpressaoController.instance = com.odhen.stoneintegration.ImpressaoController()
 
 
         /* GETNET */

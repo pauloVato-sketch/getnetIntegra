@@ -16,7 +16,7 @@
 			jQuery(function($) {
 				$(".static").click(function() {
 					$("#marker").css( $(this).offset() );
-					var pos = $(this).position();
+					var com.odhen.stoneintegration.pos = $(this).position();
 					$(this).css({ position: 'absolute', top: pos.top, left: pos.left });
 					return false;
 				});
