@@ -1,10 +1,11 @@
-function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, IntegrationSiTEF, IntegrationCielo,OperatorRepository,templateManager) {
+function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, IntegrationSiTEF, IntegrationCielo,IntegrationStone,OperatorRepository,templateManager) {
 	var INTEGRATION_TYPE = {
 		'2': IntegrationCappta,
 		'3': IntegrationNTK,
 		'4': IntegrationRede,
 		'5': IntegrationSiTEF,
-		'7': IntegrationCielo
+		'7': IntegrationCielo,
+		'9': IntegrationStone
 		};
 
 	var self = this;
@@ -21,12 +22,10 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 		return OperatorRepository.findOne().then(function(operatorData) {
 			currentRow.eletronicTransacion.data.IDTPTEF = operatorData.IDTPTEF;
 
-			//[remove]
 			IntegrationClass = self.chooseIntegration(operatorData.IDTPTEF);
 			if (IntegrationClass){
 				return new Promise(function(resolve) {
 					window.returnIntegration = _.bind(IntegrationClass.integrationPaymentResult, IntegrationClass, resolve);
-					//[remove]
 					IntegrationClass.integrationPayment(operatorData, currentRow);
 				}).then(self.buildIntegrationResponse.bind(currentRow));				
 			} else {
@@ -57,10 +56,10 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 
 	this.cancelIntegration = function(tiporeceData){
 		return new Promise(function(resolve) {
-		    //[remove]
+
 			IntegrationClass = self.chooseIntegration(tiporeceData.IDTPTEF);
             window.returnIntegration = _.bind(IntegrationClass.cancelIntegrationResult, IntegrationClass, resolve);
-            //[remove]
+
             IntegrationClass.cancelIntegration(tiporeceData);
 		}.bind(this));
 	};
@@ -68,43 +67,41 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 	this.completeIntegration = function(integrations){
 		// pega IDTPTEF da primeira posição pois será o mesmo para qualquer recebimento
 		return new Promise(function(resolve) {
-			if (window.cordova.plugins.IntegrationService){
-				window.returnIntegration = _.bind(self.completeIntegrationResult, self, resolve);
-				return true;
-			} else {
-				resolve(self.invalidIntegrationValues());
-				return false;
-			}
-		}.bind(this));
+            if (IntegrationClass){
+            	window.returnIntegration = _.bind(IntegrationClass.completeIntegrationResult, IntegrationClass, resolve);
+            	IntegrationClass.completeIntegration();
+            } else {
+            	resolve(self.invalidIntegrationValues());
+            }
+        }.bind(this));
 	};	
 
 	this.callRecursive = null;
 
-    this.getRefundFromSaleCancelResult = function (integrations){
-        return JSON.stringify(
-        	{"refundType" : integrations.IDTIPORECE,
-        	 "refundValue": integrations.VRMOVIVEND,
-    		 "refundDate" : integrations.TRANSACTIONDATE,
-    		 "refundCV"   : integrations.NRCONTROLTEF
-    		 }
-    	);
-    };
-
 	this.reversalIntegration = function(removePaymentSale, integrations){
+        console.log("integration");
+        console.log(IntegrationClass);
         //chamada para iniciar processo de estorno pela integração
-    	return new Promise(function(reversalResolve) {
-			//verifica-se o tamanho do array de transações
-			if(integrations.length>0){
-				self.reversalWaiting = _.clone(integrations);	
-				//callRecursive se torna recursiveReversalIntegration com ambiente self com argumentos fixos reversalResolve
-				//e o array de transações
-				self.callRecursive = _.bind(self.recursiveReversalIntegration, self, reversalResolve,integrations);
-				//chama-se a função com o último parametro faltante
-				self.callRecursive(removePaymentSale);
-			} else {
-				reversalResolve(self.invalidIntegrationValues());
-			}
-		}.bind(this));
+        return new Promise(function(reversalResolve) {
+            //verifica-se o tamanho do array de transações
+            /*if(integrations.length>0){
+        	self.reversalWaiting = _.clone(integrations);
+            //callRecursive se torna recursiveReversalIntegration com ambiente self com argumentos fixos reversalResolve
+            //e o array de transações
+            self.callRecursive = _.bind(self.recursiveReversalIntegration, self, reversalResolve,integrations);
+            //chama-se a função com o último parametro faltante
+            self.callRecursive(removePaymentSale);
+            } else {
+            reversalResolve(self.invalidIntegrationValues());
+            }*/
+            if(IntegrationClass){
+                self.reversalWaiting = _.clone(integrations);
+                self.callRecursive = _.bind(this.recursiveReversalIntegration, self, reversalResolve, Array());
+                self.callRecursive(removePaymentSale, IntegrationClass);
+            } else {
+               	reversalResolve(self.invalidIntegrationValues());
+            }
+        }.bind(this));
 	};
 
 	this.recursiveReversalIntegration = function(reversalResolve, data, removePaymentSale){
@@ -117,11 +114,10 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 		};
 
 		new Promise(function(resolve){
-		    //definimos um parametro do objeto global window como uma função que é a reversalIntegrationResult
-		    //com ambiente self e argumento resolve
-			window.returnIntegration = _.bind(self.reversalIntegrationResult, self, resolve);
-			//chama-se a função que executa a chamada direta da integração
-			self.reversalIntegrationOnly(integrationToReverse);
+		    window.returnIntegration = _.bind(IntegrationClass.reversalIntegrationResult, IntegrationClass, resolve);
+           	IntegrationClass.reversalIntegration(integrationToReverse);
+            //definimos um parametro do objeto global window como uma função que é a reversalIntegrationResult
+            //com ambiente self e argumento resolve
 		}.bind(this)).then(function(resolved){
 			// armazena todos os retornos
 			if (!resolved.error) {
@@ -163,11 +159,12 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 		result.message = VALUES_NOT_FOUND;
 		return result;
 	};
-    //[remove]
+
     IntegrationCappta.formatResponse = self.formatResponse;
 	IntegrationNTK.formatResponse = self.formatResponse;
 	IntegrationRede.formatResponse = self.formatResponse;
 	IntegrationSiTEF.formatResponse = self.formatResponse;
+	IntegrationStone.formatResponse = self.formatResponse;
 
 	this.integrationData = function() {
 		return {
@@ -186,115 +183,12 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 			CDLOJATEF: null,
 			CDTERTEF: null,
 			TRANSACTIONDATE: '',
-			NRCARTBANCO: ''
+			NRCARTBANCO: '',
+			//pagseg
+			TRANSACTIONCODE: '',
+            TRANSACTIONID: ''
 		};
 	};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    ////////////////CODIGO ALTERADO DA INTEGRAÇÃO REDE 208~259//////////////
-
-	this.reversalIntegrationResult = function(resolve, javaResult){
-	    //Função alocada no window.returnIntegration() e que faz a chamada abaixo
-
-    	self.integrationPaymentResult(resolve, javaResult);
-    };
-
-    this.integrationPaymentResult = function(resolve, javaResult) {
-        //Realiza validação dos dados,e envia a resposta de volta com o resolve
-   		var integrationResult = {};
-    	if(javaResult !== null) {
-    		if (!javaResult.error){
-    			integrationResult.error = false;
-    			javaResult = javaResult.data;
-    			integrationResult.data = {
-    				CDBANCARTCR: javaResult.flag,
-    				CDNSUHOSTTEF: javaResult.nsu,
-    				NRCONTROLTEF: javaResult.AUTO,
-    				PAYMENTCONFIRMATION : PAYMENT_CONFIRMATION,
-    				REMOVEALLINTEGRATIONS : REMOVE_ALL_INTEGRATIONS
-    			};
-    		} else {
-    		    integrationResult.error = javaResult.error;
-    			integrationResult.message = javaResult.message;
-    		}
-    	} else {
-    		integrationResult.message = MESSAGE_NULL_RESPONSE;
-    	}
-    	resolve(integrationResult);
-    };
-
-    this.reversalIntegrationOnly = function(tiporeceData){
-            //Verificamos a existência do plugin no momento
-          	if(!!window.cordova && !!window.cordova.plugins.IntegrationService) {
-    			//Definimos os parametros como sendo os dados necessários para realizar o reembolso em forma de string JSON
-    			var params = self.getRefundFromSaleCancelResult(tiporeceData);
-                //Chama-se a função da integração(KT) com os parametros,a função que é pra onde o código seguirá caso sucesso,e null
-    			window.cordova.plugins.IntegrationService.refund(params, window.returnIntegration, null);
-    		} else {
-    			window.returnIntegration(self.invalidIntegrationInstance());
-    		}
-    };
-
-    this.completeIntegrationResult = function(){
-          return true;
-    };
-
-    this.invalidIntegrationInstance = function(){
-    	return {
-           error: true,
-           message: MESSAGE_INTEGRATION_FAIL
-        };
-    };
-
-
-
-    ////////////////CÓDIGO PROVENIENTE DE PAYMENTSERVICE.JS     263~283//////////////////////////////
-
-    this.getPaymentFromCurrentRow = function (currentRow){
-        return JSON.stringify(
-       		{"paymentType": currentRow.tiporece.IDTIPORECE,
-       		 "paymentValue": currentRow.VRMOVIVEND,
-       		 "paymentNSU": "123"}
-       	);
-    };
-
-    this.callPayment = function(currentRow){
-        var payment = self.getPaymentFromCurrentRow(currentRow);
-        this.prepareWindowFunctions();
-        OperatorRepository.findOne().then(function(operatorData) {
-        	currentRow.eletronicTransacion.data.DSENDIPSITEF = operatorData.DSENDIPSITEF;
-        	currentRow.eletronicTransacion.data.CDLOJATEF = operatorData.CDLOJATEF;
-           	currentRow.eletronicTransacion.data.CDTERTEF = operatorData.CDTERTEF;
-        	currentRow.eletronicTransacion.data.NRCARTBANCO = '';
-        	currentRow.eletronicTransacion.data.IDTIPORECE = '';
-        	window.cordova.plugins.IntegrationService.payment(payment, window.returnIntegration, null);
-       	});
-    };
-
-    this.prepareWindowFunctions = function(){
-        window.setMessage =
-        function(message) {
-            templateManager.containers.login.getWidget("sitefPayment").getField("userInterface").value(_.toUpper(message));
-        };
-
-        window.setLabel =
-        function(label) {
-            templateManager.containers.login.getWidget("sitefPayment").label = label;
-        };
-
-    };
 }
 
 Configuration(function(ContextRegister) {

@@ -1,4 +1,4 @@
-#Fri Jul 17 12:18:04 GMT-03:00 2020
+#Mon Jul 27 14:26:44 GMT-03:00 2020
 path.1=classes.dex
 path.0=classes.dex
 renamed.5=classes6.dex
@@ -7,13 +7,13 @@ renamed.3=classes4.dex
 renamed.2=classes3.dex
 renamed.1=classes2.dex
 renamed.0=classes.dex
-base.5=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\2
-base.4=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\1
-base.3=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\4
-base.2=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\3
-base.1=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
-base.0=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\2
-path.5=classes2.dex
-path.4=classes.dex
-path.3=classes.dex
-path.2=classes.dex
+base.5=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\out\\classes_2.dex
+base.4=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\out\\classes_1.dex
+base.3=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\out\\classes_0.dex
+base.2=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\out\\classes2.dex
+base.1=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\out\\classes.dex
+base.0=C\:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\out\\classes.dex
+path.5=classes_2.dex
+path.4=classes_1.dex
+path.3=classes_0.dex
+path.2=classes2.dex

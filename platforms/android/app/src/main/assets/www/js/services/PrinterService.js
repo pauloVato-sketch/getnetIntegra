@@ -7,7 +7,8 @@ function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, Print
 		'25': PrinterGertec,
 		'26': PrinterPoynt,
 		'27': PrinterCieloLio,
-		'28': PrinterGetnet
+		'28': PrinterGetnet,
+		'39': PrinterStone
 	};
 
 	var COMMANDS_NOT_FOUND = 'Comandos de impressora não foram adicionados.';

@@ -185,47 +185,26 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 	this.handlePayment = function (currentRow) {
     	// verifica se caixa e pagamento selecionado faz integração
-    	return new Promise(function (resolve, reject) {
-    		self.checkIfMustCallIntegration(currentRow.tiporece).then(function (mustCallIntegration) {
-    			if (mustCallIntegration) {
-    				// chama integração
-    				window.returnIntegration = function (integrationResponse) {
-    					ScreenService.hideLoader();
-    					if (!integrationResponse.error) {
-    						var NRCARTBANCO = integrationResponse.data.binCard + integrationResponse.data.lastNumbersCard;
-    						var transactionDate = integrationResponse.data.date;
-    						transactionDate = transactionDate.slice(6, 8) + transactionDate.slice(4, 6) + transactionDate.substring(0, 4);
-    						integrationResponse.data.eletronicTransacion = currentRow.eletronicTransacion;
-    						integrationResponse.data.eletronicTransacion.data.CDBANCARTCR = integrationResponse.data.cardBrandName? integrationResponse.data.cardBrandName: '';
-    						integrationResponse.data.eletronicTransacion.data.STLPRIVIA = '';
-    						integrationResponse.data.eletronicTransacion.data.STLSEGVIA = '';
-    						integrationResponse.data.eletronicTransacion.data.CDNSUHOSTTEF = integrationResponse.data.uniqueSequentialNumber;
-    						integrationResponse.data.eletronicTransacion.data.TRANSACTIONDATE = transactionDate;
-    						integrationResponse.data.eletronicTransacion.data.NRCONTROLTEF= integrationResponse.data.CV;
-    						//alterar nome dos campos nas outras integrações
-    						integrationResponse.data.eletronicTransacion.data.IDTIPORECE= integrationResponse.data.OperationType;
-    						integrationResponse.data.eletronicTransacion.data.NRCARTBANCO = NRCARTBANCO;
-    						integrationResponse.data.eletronicTransacion.data.VRMOVIVEND = currentRow.VRMOVIVEND;
-    						integrationResponse.data.VRMOVIVEND = currentRow.VRMOVIVEND;
-    						integrationResponse.data.tiporece = currentRow.tiporece;
-    						self.savePayment(integrationResponse.data).then(function(){
-    							// self.handlePrintPayment(integrationResponse.data.eletronicTransacion.data).then(function(){
-    								self.setPaymentSale(integrationResponse.data).then(resolve, reject);
-    								//we need the resolve here to send the answer back to the savepayment
-    							// });
-    						});
-    					} else {
-    					    //window.resolveIntegration(integrationResponse).then() CRIAR ESSA FUNCAO SEJA LA O QUE FOR
-    						ApplicationContext.UtilitiesService.backAfterFinish();
-    					}
-    				};
-    				IntegrationService.callPayment(currentRow);
-    			} else {
-    				// pagamento sem integração
-    				self.setPaymentSale(currentRow).then(resolve, reject);
-    			}
-    		});
-    	});
+        return self.checkIfMustCallIntegration(currentRow.tiporece).then(function (mustCallIntegration) {
+        	if (mustCallIntegration) {
+        	// chama integração
+        	return IntegrationService.integrationPayment(currentRow).then(function (integrationResult) {
+    			if (!integrationResult.error) {
+        			return self.savePayment(integrationResult.data).then(function(){
+        				//return self.handlePrintPayment(integrationResult.data.eletronicTransaction.data).then (function(){
+        				return self.setPaymentSale(integrationResult.data);
+        				    //}.bind(this));
+        			}.bind(this));
+            	} else {
+            	    ApplicationContext.UtilitiesService.backAfterFinish();
+            		return integrationResult;
+            	}
+            });
+            } else {
+            	// pagamento sem integração
+            	return self.setPaymentSale(currentRow);
+            }
+        }.bind(this));
     };
 
 
@@ -264,7 +243,6 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 	};
 
 	this.savePayment = function(currentPayment) {
-
 		return new Promise(function(resolve) {
 			return PaymentRepository.findOne().then(function(paymentData) {
 				var query = Query.build()

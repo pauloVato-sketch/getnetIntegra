@@ -4,7 +4,17 @@
             "outputFile": "C:\\Users\\Computador\\workfolder\\favour\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v24\\values-v24.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Computador\\.gradle\\caches\\transforms-1\\files-1.1\\media-1.0.0.aar\\e470aa7f9c2c7053cc40b73d584f7091\\res\\values-v24\\values-v24.xml",
+                    "source": "C:\\Users\\Computador\\.gradle\\caches\\transforms-2\\files-2.1\\ad2e89686814680d27b571e99acbb326\\appcompat-1.1.0\\res\\values-v24\\values-v24.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,212",
+                        "endColumns": "156,134",
+                        "endOffsets": "207,342"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Computador\\.gradle\\caches\\transforms-2\\files-2.1\\592b7ebd3a0db4c059aaaadab106b652\\media-1.0.0\\res\\values-v24\\values-v24.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",
@@ -18,16 +28,6 @@
                         "startOffsets": "347,413,474,540",
                         "endColumns": "65,60,65,66",
                         "endOffsets": "408,469,535,602"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\Computador\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-1.1.0.aar\\ca17858caa56e3dc73dc3d5cbc41b434\\res\\values-v24\\values-v24.xml",
-                    "from": {
-                        "startLines": "2,3",
-                        "startColumns": "4,4",
-                        "startOffsets": "55,212",
-                        "endColumns": "156,134",
-                        "endOffsets": "207,342"
                     }
                 }
             ]

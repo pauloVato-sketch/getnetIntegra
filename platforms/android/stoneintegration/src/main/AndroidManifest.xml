@@ -1,2 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.odhen.stoneintegration" />
+    package="com.odhen.stoneintegration">
+<application>
+android:name="android.support.multidex.MultiDexApplication"
+</application>
+</manifest>

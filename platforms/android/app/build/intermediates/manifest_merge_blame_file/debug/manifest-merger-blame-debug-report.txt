@@ -1,0 +1,188 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.odhen.POS"
+4    android:hardwareAccelerated="true"
+5    android:versionCode="60804"
+6    android:versionName="6.0.8.0.4" >
+7
+8    <uses-sdk
+9        android:minSdkVersion="22"
+9-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml
+10        android:targetSdkVersion="28" />
+10-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml
+11
+12    <supports-screens
+12-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:3:5-191
+13        android:anyDensity="true"
+13-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:3:23-48
+14        android:largeScreens="true"
+14-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:3:49-76
+15        android:normalScreens="true"
+15-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:3:77-105
+16        android:resizeable="true"
+16-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:3:106-131
+17        android:smallScreens="true"
+17-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:3:132-159
+18        android:xlargeScreens="true" />
+18-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:3:160-188
+19
+20    <uses-permission android:name="android.permission.ACCESS_WEBVIEW" />
+20-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:4:5-73
+20-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:4:22-70
+21    <uses-permission android:name="android.permission.INTERNET" />
+21-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:5:5-67
+21-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:5:22-64
+22    <uses-permission android:name="android.permission.CAMERA" />
+22-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:16:5-65
+22-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:16:22-62
+23    <uses-permission android:name="android.permission.FLASHLIGHT" />
+23-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:17:5-69
+23-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:17:22-66
+24
+25    <uses-feature
+25-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:18:5-84
+26        android:name="android.hardware.camera"
+26-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:18:19-57
+27        android:required="true" />
+27-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:18:58-81
+28
+29    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+29-->[libppcomp-1.15.0.180228.1.aar] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\c5c2feb99f66a89be70d36f78e89da85\jetified-libppcomp-1.15.0.180228.1\AndroidManifest.xml:11:5-76
+29-->[libppcomp-1.15.0.180228.1.aar] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\c5c2feb99f66a89be70d36f78e89da85\jetified-libppcomp-1.15.0.180228.1\AndroidManifest.xml:11:22-73
+30    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+30-->[libppcomp-1.15.0.180228.1.aar] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\c5c2feb99f66a89be70d36f78e89da85\jetified-libppcomp-1.15.0.180228.1\AndroidManifest.xml:12:5-75
+30-->[libppcomp-1.15.0.180228.1.aar] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\c5c2feb99f66a89be70d36f78e89da85\jetified-libppcomp-1.15.0.180228.1\AndroidManifest.xml:12:22-72
+31    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+31-->[br.com.stone:stone-sdk-posandroid:3.7.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\b08b6a41df5bf870c379a10be9167f07\jetified-stone-sdk-posandroid-3.7.0\AndroidManifest.xml:11:5-78
+31-->[br.com.stone:stone-sdk-posandroid:3.7.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\b08b6a41df5bf870c379a10be9167f07\jetified-stone-sdk-posandroid-3.7.0\AndroidManifest.xml:11:22-75
+32    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+32-->[br.com.stone:stone-sdk:3.7.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\876daeef5ebb320d7b48b029b015fcc9\jetified-stone-sdk-3.7.0\AndroidManifest.xml:11:5-81
+32-->[br.com.stone:stone-sdk:3.7.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\876daeef5ebb320d7b48b029b015fcc9\jetified-stone-sdk-3.7.0\AndroidManifest.xml:11:22-78
+33    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+33-->[br.com.stone:stone-sdk:3.7.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\876daeef5ebb320d7b48b029b015fcc9\jetified-stone-sdk-3.7.0\AndroidManifest.xml:12:5-80
+33-->[br.com.stone:stone-sdk:3.7.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\876daeef5ebb320d7b48b029b015fcc9\jetified-stone-sdk-3.7.0\AndroidManifest.xml:12:22-77
+34    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+34-->[br.com.stone:stone-sdk:3.7.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\876daeef5ebb320d7b48b029b015fcc9\jetified-stone-sdk-3.7.0\AndroidManifest.xml:13:5-79
+34-->[br.com.stone:stone-sdk:3.7.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\876daeef5ebb320d7b48b029b015fcc9\jetified-stone-sdk-3.7.0\AndroidManifest.xml:13:22-76
+35    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+35-->[br.com.stone:stone-sdk:3.7.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\876daeef5ebb320d7b48b029b015fcc9\jetified-stone-sdk-3.7.0\AndroidManifest.xml:14:5-74
+35-->[br.com.stone:stone-sdk:3.7.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\876daeef5ebb320d7b48b029b015fcc9\jetified-stone-sdk-3.7.0\AndroidManifest.xml:14:22-71
+36    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+36-->[br.com.stone:stone-sdk:3.7.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\876daeef5ebb320d7b48b029b015fcc9\jetified-stone-sdk-3.7.0\AndroidManifest.xml:15:5-71
+36-->[br.com.stone:stone-sdk:3.7.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\876daeef5ebb320d7b48b029b015fcc9\jetified-stone-sdk-3.7.0\AndroidManifest.xml:15:22-68
+37    <uses-permission android:name="android.permission.BLUETOOTH" />
+37-->[br.com.stone:stone-sdk:3.7.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\876daeef5ebb320d7b48b029b015fcc9\jetified-stone-sdk-3.7.0\AndroidManifest.xml:16:5-68
+37-->[br.com.stone:stone-sdk:3.7.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\876daeef5ebb320d7b48b029b015fcc9\jetified-stone-sdk-3.7.0\AndroidManifest.xml:16:22-65
+38    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+38-->[br.com.stone:logger:0.1.1] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\01b5b2fe283b1d320fa495a5e04ba112\jetified-logger-0.1.1\AndroidManifest.xml:13:5-79
+38-->[br.com.stone:logger:0.1.1] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\01b5b2fe283b1d320fa495a5e04ba112\jetified-logger-0.1.1\AndroidManifest.xml:13:22-76
+39    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+39-->[br.com.stone:posandroid-ingenico-emvlib:2.11] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\39b863478fe31e385bbd45ff2840fed3\jetified-posandroid-ingenico-emvlib-2.11\AndroidManifest.xml:14:5-79
+39-->[br.com.stone:posandroid-ingenico-emvlib:2.11] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\39b863478fe31e385bbd45ff2840fed3\jetified-posandroid-ingenico-emvlib-2.11\AndroidManifest.xml:14:22-76
+40    <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
+40-->[br.com.stone:posandroid-ingenico-emvlib:2.11] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\39b863478fe31e385bbd45ff2840fed3\jetified-posandroid-ingenico-emvlib-2.11\AndroidManifest.xml:15:5-17:47
+40-->[br.com.stone:posandroid-ingenico-emvlib:2.11] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\39b863478fe31e385bbd45ff2840fed3\jetified-posandroid-ingenico-emvlib-2.11\AndroidManifest.xml:16:9-61
+41
+42    <application
+42-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:6:5-15:19
+43        android:allowBackup="true"
+43-->[libppcomp-1.15.0.180228.1.aar] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\c5c2feb99f66a89be70d36f78e89da85\jetified-libppcomp-1.15.0.180228.1\AndroidManifest.xml:15:9-35
+44        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+44-->[androidx.core:core:1.3.1] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\c69ca41d8257fce4263ffc3510a32c04\core-1.3.1\AndroidManifest.xml:24:18-86
+45        android:debuggable="true"
+46        android:hardwareAccelerated="true"
+46-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:6:18-52
+47        android:icon="@mipmap/ic_launcher"
+47-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:6:53-87
+48        android:label="@string/app_name"
+48-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:6:88-120
+49        android:supportsRtl="true"
+49-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:6:121-147
+50        android:testOnly="true" >
+51        <activity
+51-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:7:9-12:20
+52            android:name="com.odhen.POS.MainActivity"
+52-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:7:205-232
+53            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"
+53-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:7:19-135
+54            android:label="@string/activity_name"
+54-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:7:136-173
+55            android:launchMode="singleTop"
+55-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:7:174-204
+56            android:theme="@style/Theme.AppCompat.NoActionBar"
+56-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:7:233-283
+57            android:windowSoftInputMode="adjustResize" >
+57-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:7:284-326
+58            <intent-filter android:label="@string/launcher_name" >
+58-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:8:13-11:29
+58-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:8:28-65
+59                <action android:name="android.intent.action.MAIN" />
+59-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:9:17-69
+59-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:9:25-66
+60
+61                <category android:name="android.intent.category.LAUNCHER" />
+61-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:10:17-77
+61-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:10:27-74
+62            </intent-filter>
+63        </activity>
+64        <activity
+64-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:13:9-311
+65            android:name="com.google.zxing.client.android.CaptureActivity"
+65-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:13:139-201
+66            android:clearTaskOnLaunch="true"
+66-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:13:19-51
+67            android:configChanges="orientation|keyboardHidden|screenSize"
+67-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:13:52-113
+68            android:exported="false"
+68-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:13:114-138
+69            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+69-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:13:202-260
+70            android:windowSoftInputMode="stateAlwaysHidden" />
+70-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:13:261-308
+71        <activity
+71-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:14:9-112
+72            android:name="com.google.zxing.client.android.encode.EncodeActivity"
+72-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:14:41-109
+73            android:label="Share" />
+73-->C:\Users\Computador\workfolder\favour\getnetintegra\platforms\android\app\src\main\AndroidManifest.xml:14:19-40
+74        <activity
+74-->[pos7api.aar] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\0d733ae6710f260f41f7b671c67dcf59\jetified-pos7api\AndroidManifest.xml:12:9-15:20
+75            android:name="ger7.com.br.pos7api.Intercom"
+75-->[pos7api.aar] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\0d733ae6710f260f41f7b671c67dcf59\jetified-pos7api\AndroidManifest.xml:13:13-56
+76            android:label="POS7 API" >
+76-->[pos7api.aar] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\0d733ae6710f260f41f7b671c67dcf59\jetified-pos7api\AndroidManifest.xml:14:13-37
+77        </activity>
+78        <activity
+78-->[com.google.android.gms:play-services-base:16.1.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\36cb13813ba6d3de461656da3e70b29e\jetified-play-services-base-16.1.0\AndroidManifest.xml:23:9-26:75
+79            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+79-->[com.google.android.gms:play-services-base:16.1.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\36cb13813ba6d3de461656da3e70b29e\jetified-play-services-base-16.1.0\AndroidManifest.xml:24:13-79
+80            android:exported="false"
+80-->[com.google.android.gms:play-services-base:16.1.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\36cb13813ba6d3de461656da3e70b29e\jetified-play-services-base-16.1.0\AndroidManifest.xml:25:13-37
+81            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+81-->[com.google.android.gms:play-services-base:16.1.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\36cb13813ba6d3de461656da3e70b29e\jetified-play-services-base-16.1.0\AndroidManifest.xml:26:13-72
+82
+83        <meta-data
+83-->[com.google.android.gms:play-services-basement:16.2.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\dbe58ced8a4e0ba44e10ae6369a76556\jetified-play-services-basement-16.2.0\AndroidManifest.xml:23:9-25:69
+84            android:name="com.google.android.gms.version"
+84-->[com.google.android.gms:play-services-basement:16.2.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\dbe58ced8a4e0ba44e10ae6369a76556\jetified-play-services-basement-16.2.0\AndroidManifest.xml:24:13-58
+85            android:value="@integer/google_play_services_version" />
+85-->[com.google.android.gms:play-services-basement:16.2.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\dbe58ced8a4e0ba44e10ae6369a76556\jetified-play-services-basement-16.2.0\AndroidManifest.xml:25:13-66
+86
+87        <provider
+87-->[br.com.stone.posandroid:datacontainer-data:1.0.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\06940b25970c15c993167fd6db15fab5\jetified-datacontainer-data-1.0.0\AndroidManifest.xml:13:9-17:54
+88            android:name="br.com.stone.posandroid.datacontainer.data.contentprovider.DataContainerProvider"
+88-->[br.com.stone.posandroid:datacontainer-data:1.0.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\06940b25970c15c993167fd6db15fab5\jetified-datacontainer-data-1.0.0\AndroidManifest.xml:14:13-108
+89            android:authorities="com.odhen.POS"
+89-->[br.com.stone.posandroid:datacontainer-data:1.0.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\06940b25970c15c993167fd6db15fab5\jetified-datacontainer-data-1.0.0\AndroidManifest.xml:15:13-51
+90            android:exported="true" />
+90-->[br.com.stone.posandroid:datacontainer-data:1.0.0] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\06940b25970c15c993167fd6db15fab5\jetified-datacontainer-data-1.0.0\AndroidManifest.xml:16:13-36
+91
+92        <service
+92-->[androidx.room:room-runtime:2.2.4] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\9af8f9d6b31e6f15c0535c9e318d370a\room-runtime-2.2.4\AndroidManifest.xml:25:9-27:40
+93            android:name="androidx.room.MultiInstanceInvalidationService"
+93-->[androidx.room:room-runtime:2.2.4] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\9af8f9d6b31e6f15c0535c9e318d370a\room-runtime-2.2.4\AndroidManifest.xml:26:13-74
+94            android:exported="false" />
+94-->[androidx.room:room-runtime:2.2.4] C:\Users\Computador\.gradle\caches\transforms-2\files-2.1\9af8f9d6b31e6f15c0535c9e318d370a\room-runtime-2.2.4\AndroidManifest.xml:27:13-37
+95    </application>
+96
+97</manifest>
