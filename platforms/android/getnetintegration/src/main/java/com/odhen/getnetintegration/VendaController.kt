@@ -108,7 +108,6 @@ class VendaController(val activity: AppCompatActivity) : VendaController, Device
                     PaymentResult.FALHA, PaymentResult.DESCONHECIDO -> VendaController.EstadoTransacao.ERRO
                 }
 
-                Log.d("TAGG",estadoTransacao.toString() +"/"+paymentData.toString()+"/"+paymentResult.descricao);
                 this.transacaoListener?.transacaoConcluida(
                         estadoTransacao,
                         paymentResult.descricao,

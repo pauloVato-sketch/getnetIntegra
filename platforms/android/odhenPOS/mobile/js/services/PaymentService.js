@@ -200,6 +200,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 		return self.checkIfMustCallIntegration(currentRow.tiporece).then(function (mustCallIntegration) {
 			if (mustCallIntegration) {
 				// chama integração
+				console.log(IntegrationService);
 				return IntegrationService.integrationPayment(currentRow).then(function (integrationResult) {
 				    console.log("Resultado da integração:   ");
 				    console.log(integrationResult);
@@ -288,7 +289,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 	this.setPaymentSale = function (currentRow) {
 		return PaymentRepository.findOne().then(function (payment) {
-		    console.log("Resultado da integração:   ");
+		    console.log("Resultado da integração SETPAYMENSALE:   ");
             console.log(payment);
 			// seta recebimento
 			self.formatPriceChart(payment.TIPORECE, currentRow);

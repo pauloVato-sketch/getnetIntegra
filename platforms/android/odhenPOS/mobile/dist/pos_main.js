@@ -3978,6 +3978,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 		return self.checkIfMustCallIntegration(currentRow.tiporece).then(function (mustCallIntegration) {
 			if (mustCallIntegration) {
 				// chama integração
+				console.log(IntegrationService);
 				return IntegrationService.integrationPayment(currentRow).then(function (integrationResult) {
 				    console.log("Resultado da integração:   ");
 				    console.log(integrationResult);
@@ -4013,8 +4014,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 
 	this.handlePrintPayment = function(dataPrinter) {
-		console.log("dataPrinter");
-	    console.log(dataPrinter);
+
 		return new Promise(function(resolve) {
 			var tefObject = {
 				TEFVOUCHER: [{
@@ -4025,7 +4025,6 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 			self.handlePrintReceipt(tefObject, false);
 
-            console.log("Message is up");
 			ScreenService.confirmMessage(
 				'Deseja imprimir a via do cliente?', 'question',
 				function(){
@@ -4049,10 +4048,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 					.where('paymentData').equals(paymentData)
 					.where('currentPayment').equals(currentPayment);
 
-                console.log(paymentData);
-                console.log(currentPayment);
 				return SavePayment.download(query).then(function(paymentData){
-					console.log("blyat");
 					resolve();
 				});
 			}.bind(this));
@@ -4067,8 +4063,6 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 	this.setPaymentSale = function (currentRow) {
 		return PaymentRepository.findOne().then(function (payment) {
-		    console.log("Resultado da integração:   ");
-            console.log(payment);
 			// seta recebimento
 			self.formatPriceChart(payment.TIPORECE, currentRow);
 			// calcula valor pago no total da venda
