@@ -7,6 +7,7 @@ function PrinterGetnet(){
     this.printText = function(text){
         if (!!window.cordova.plugins.IntegrationService){
         	var params = JSON.stringify({"texto":text, "flag":"printText"});
+        	console.log("PRINT STRINGG  "+text);
             //Chamada da função de impressão da integração
             //window.returnPrintResult contém a função printResult desse mesmo arquivo
             window.cordova.plugins.IntegrationService.print(params, window.returnPrintResult,null);
@@ -19,6 +20,7 @@ function PrinterGetnet(){
     this.printQRCode = function(qrCode){
         if (!!window.cordova.plugins.IntegrationService){
             var params = JSON.stringify({"qrcode":qrCode,"flag":"qrCode"});
+            console.log("CODE STRINGG   "+qrCode);
             window.cordova.plugins.IntegrationService.print(params, window.returnPrintResult,null);
         }else{
             window.returnPrintResult(self.invalidPrinterInstance());
@@ -28,6 +30,7 @@ function PrinterGetnet(){
     this.printBarCode = function(barCode){
         if (!!window.cordova.plugins.IntegrationService){
             var params = JSON.stringify({"barcode":barCode, "flag":"barCode"});
+            console.log("barr");
             window.cordova.plugins.IntegrationService.print(params, window.returnPrintResult,null);
         }else{
             window.returnPrintResult(self.invalidPrinterInstance());

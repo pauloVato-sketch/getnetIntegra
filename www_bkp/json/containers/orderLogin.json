@@ -1,0 +1,280 @@
+{
+    "id": "143930936329067784821548",
+    "name": "orderLogin",
+    "showHeader": false,
+    "showMenu": false,
+    "label": "Login",
+    "showBack": false,
+    "events": [],
+    "showFooter": false,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "widgets": [
+        {
+            "id": "98962340209073441549",
+            "name": "orderMenu",
+            "label": "OrderMenu",
+            "template": "widget/form-login.html",
+            "isVisible": true,
+            "actions": [],
+            "events": [
+                {
+                    "id": "9896234017638447541573",
+                    "name": "WidgetOnEnter",
+                    "code": "OrderController.checkSession(args);"
+                }
+            ],
+            "dataSource": {},
+            "fields": [
+                {
+                    "id": "9896234034443925681564",
+                    "name": "logo-waiter",
+                    "label": "Logo-waiter",
+                    "source": "../mobile/images/logos/order.png",
+                    "class": "12 login-logo-img",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "sameLine": true,
+                    "defaultValue": null,
+                    "template": "field/image-static.html",
+                    "events": []
+                },
+                {
+                    "id": "9896234027119804051565",
+                    "name": "DSEMAILCONS",
+                    "label": "E-mail",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "maxlength": 50,
+                    "template": "field/text-edit.html",
+                    "events": []
+                },
+                {
+                    "id": "9896234030397194701566",
+                    "name": "password",
+                    "label": "Senha",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "maxlength": 16,
+                    "template": "field/password-edit.html",
+                    "events": []
+                },
+                {
+                    "id": "9896234036925992411567",
+                    "name": "login",
+                    "label": "Entrar",
+                    "class": 12,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "newLine": true,
+                    "sameLine": false,
+                    "defaultValue": null,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "id": "989623402675122361568",
+                            "name": "FieldOnClick",
+                            "code": "OrderController.login(args.row, args.owner.field.widget.widgets[1], args.owner.field.widget.widgets[0]);"
+                        }
+                    ]
+                },
+                {
+                    "id": "9896234010839555611569",
+                    "name": "servidor",
+                    "label": "Configurar IP do Servidor",
+                    "class": 12,
+                    "icon": "global",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label-with-icon.html",
+                    "events": [
+                        {
+                            "id": "9896234030058114361570",
+                            "name": "FieldOnClick",
+                            "code": "UtilitiesService.prepareServerForm(args.owner.field.widget.widgets[0]);"
+                        }
+                    ]
+                },
+                {
+                    "id": "9896234035309657151571",
+                    "name": "novoCliente",
+                    "label": "Cadastrar",
+                    "class": 12,
+                    "icon": "plus",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label-with-icon.html",
+                    "events": [
+                        {
+                            "id": "9896234029569132641572",
+                            "name": "FieldOnClick",
+                            "code": "OrderController.openNewConsumer(args.owner.field.widget.widgets[0]);"
+                        }
+                    ]
+                }
+            ],
+            "widgets": [
+                {
+                    "id": "9896234030065693061550",
+                    "name": "serverIp",
+                    "label": "Configurar IP do Servidor",
+                    "template": "widget/form.html",
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "id": "98962340256957221553",
+                            "label": "Voltar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "9896234018625340101554",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "9896234014720548081555",
+                            "label": "Confirmar",
+                            "name": "ok",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "id": "989623409529658751556",
+                                    "name": "ActionEvent",
+                                    "code": "UtilitiesService.setServerIp(args.row);"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "id": "9896234029568551141551",
+                            "name": "ip",
+                            "label": "IP do Servidor",
+                            "class": 12,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "maxlength": 200,
+                            "template": "field/text-edit.html",
+                            "events": []
+                        },
+                        {
+                            "id": "9896234032293786231552",
+                            "name": "porta",
+                            "label": "Porta (Opcional)",
+                            "class": 12,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "maxlength": 6,
+                            "template": "field/text-edit.html",
+                            "events": []
+                        }
+                    ]
+                },
+                {
+                    "id": "989623408232318751557",
+                    "name": "tableList",
+                    "label": "Informe Sua Mesa",
+                    "template": "widget/form.html",
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "id": "9896234017752115331560",
+                            "label": "Cancelar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "9896234039157358981561",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "9896234022075702931562",
+                            "label": "Confirmar",
+                            "name": "ok",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "id": "9896234023794467281563",
+                                    "name": "ActionEvent",
+                                    "code": "OrderController.requestLogin(args.row.tableNumber);"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "id": "9896234039855523481558",
+                            "name": "tableNumber",
+                            "label": "Número da Mesa",
+                            "class": 6,
+                            "placeholder": "",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": false,
+                            "defaultValue": null,
+                            "template": "field/text-edit.html",
+                            "events": [
+                                {
+                                    "id": "9896234018658713911559",
+                                    "name": "FieldOnInput",
+                                    "code": "UtilitiesService.numberLock(args.row.tableNumber);"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

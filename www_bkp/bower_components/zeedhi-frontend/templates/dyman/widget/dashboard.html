@@ -1,0 +1,19 @@
+<section zh-scroller
+  data-ng-if="widget.aclIsVisible"
+  data-ng-show="widget.isVisible"
+  ng-controller="DashboardController as dashboardController"
+  zh-schema-validator="widget/dashboard.html.json"
+  class="container zh-widget zh-dashboard-container" data-zh-widget-events>
+	<div data-zh-masonry-grid data-zh-masonry-grid-order="{{ widget.gridOrder }}" data-ng-init="parentWidget = widget">
+		<div
+			data-ng-repeat="widget in parentWidget.widgets | filter: search"
+			ng-if="widget.isVisible && widget.aclIsVisible"
+			class="zh-dashboard-widget {{ widget.class }}"
+			id="masonry-item-{{widget.id}}"
+			data-ng-class="{editing: grid.editing}"
+			data-ng-include src="templateManager.getTemplateURL(widget.template)"
+			zh-post-repeat="initializeGrid(parentWidget.widgets)">
+		</div>
+	</div>
+	<div data-ng-show="widget.floatingControl !== false" data-ng-include="templateManager.getFrameworkTemplateURL('component/floating-control.html')"></div>
+</section>

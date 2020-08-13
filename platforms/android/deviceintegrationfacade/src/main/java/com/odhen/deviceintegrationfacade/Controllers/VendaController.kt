@@ -1,6 +1,6 @@
-package com.odhen.deviceintagrationfacade.Controllers
+package com.odhen.deviceintegrationfacade.Controllers
 
-import com.odhen.deviceintagrationfacade.Enums.TipoMovimentacao
+import com.odhen.deviceintegrationfacade.Enums.TipoMovimentacao
 import org.json.JSONObject
 
 interface VendaController {

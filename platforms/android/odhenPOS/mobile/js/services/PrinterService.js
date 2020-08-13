@@ -44,6 +44,7 @@ function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, Print
 		return OperatorRepository.findOne().then(function(operatorData) {
 			if (!_.isEmpty(self.printerCommands)){
 				PrinterClass = self.choosePrinter(operatorData.IDMODEIMPRES);
+				console.log(PrinterClass);
 				if (PrinterClass){
 					return new Promise(function(resolve){
 						self.callRecursivePrintCommands = _.bind(self.printCommands, self, resolve, PrinterClass);
@@ -69,6 +70,7 @@ function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, Print
 		// função recursiva utilizada para chamar as funções de impressão
 		var currentPrinterCommand = self.printerCommands.shift();		
 		new Promise(function(resolve){
+		    console.log("currentprintercommand  =   "+currentPrinterCommand);
 			window.returnPrintResult = _.bind(PrinterClass.printResult, PrinterClass, resolve);
 			PrinterClass[currentPrinterCommand.type](currentPrinterCommand.parameter);
 		}.bind(this)).then(function(resolved){

@@ -2,16 +2,21 @@ package com.odhen.getnetintegration
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.net.Uri
 import android.util.Log
 import com.getnet.posdigital.PosDigital
 import com.getnet.posdigital.printer.FontFormat
 import com.getnet.posdigital.printer.AlignMode
 import com.getnet.posdigital.printer.IPrinterService
 import com.getnet.posdigital.printer.PrinterStatus
+import com.google.zxing.BarcodeFormat
 import com.odhen.deviceintegrationfacade.Enums.Alinhamento
 import java.lang.Integer.parseInt
+import com.google.zxing.MultiFormatWriter
+import java.util.*
 
-class ImpressaoController: com.odhen.deviceintagrationfacade.Controllers.ImpressaoController {
+class ImpressaoController: com.odhen.deviceintegrationfacade.Controllers.ImpressaoController {
     /*
     *PrinterStatus.OK === 0    -> "OK"
     *PrinterStatus.PRINTING === 1 -> "Imprimindo"
@@ -28,9 +33,9 @@ class ImpressaoController: com.odhen.deviceintagrationfacade.Controllers.Impress
     *PrinterStatus.ERROR_PAPERJAM === 17 -> "Bobina travada"
     *PrinterStatus.UNKNOW === 1000 -> "Não foi possível definir o erro"
     * */
-    override val textFontSize: Int = FontFormat.MEDIUM
-    override val qrCodeSize = 450
-    override val barCodeSize = null
+    override val textFontSize: Int = FontFormat.SMALL
+    override val qrCodeSize = 350
+    override val barCodeSize = 500
 
     private var printer: IPrinterService? = null
     private var printerListener = ImpressaoListener()
@@ -64,8 +69,8 @@ class ImpressaoController: com.odhen.deviceintagrationfacade.Controllers.Impress
 
         printer?.defineFontFormat(this.textFontSize)
 
-        printer?.addQrCode(AlignMode.CENTER, 240, content)
-        printer?.addText(AlignMode.LEFT, "\n\n\n")
+        printer?.addQrCode(AlignMode.CENTER, qrCodeSize, content)
+        printer?.addText(AlignMode.LEFT, "\n")
         printer?.print(printerListener)
         Thread.sleep(700)
 
@@ -75,14 +80,18 @@ class ImpressaoController: com.odhen.deviceintagrationfacade.Controllers.Impress
     }
 
     override fun imprimeCodBarra(content: String) {
-        printer?.defineFontFormat(this.textFontSize)
-        printer?.addBarCode(AlignMode.CENTER, content)
-        printer?.addText(AlignMode.LEFT, "\n\n\n")
-        printer?.print(printerListener)
-        Thread.sleep(700)
-        printer?.defineFontFormat(this.textFontSize)
 
-        setCode(printer?.status)
+        //addBarCode only works with manual strings and not with String variables!!
+        //so I resorted to using bitmap images to print the barcode
+
+        //printer?.addBarCode(AlignMode.CENTER, content)
+        //printer?.addText(AlignMode.LEFT, "\n\n")
+        //printer?.print(printerListener)
+        //setCode(printer?.status)
+        if(content!="") {
+            var image = this.createReceiptBarcode(content)
+            this.imprimeImagem(image, Alinhamento.CENTRO)
+        }
     }
 
     override fun imprimeImagem(
@@ -97,10 +106,9 @@ class ImpressaoController: com.odhen.deviceintagrationfacade.Controllers.Impress
             Alinhamento.DIREITA         -> AlignMode.RIGHT
             Alinhamento.CENTRO, null    -> AlignMode.CENTER
         }
-
         printer?.addImageBitmap(alignMode, imagem)
         Thread.sleep(250)
-        printer?.addText(AlignMode.LEFT, "\n\n\n")
+        printer?.addText(AlignMode.LEFT, "\n\n")
         printer?.print(printerListener)
         Thread.sleep(700)
 
@@ -108,7 +116,6 @@ class ImpressaoController: com.odhen.deviceintagrationfacade.Controllers.Impress
     }
 
     override fun reportError():Int? {
-
         if (getCode() != null){
             return getCode()
         }else{
@@ -123,6 +130,28 @@ class ImpressaoController: com.odhen.deviceintagrationfacade.Controllers.Impress
     fun setCode(value:Int?){
 
         this.code=value
+    }
+
+    private fun createReceiptBarcode(content:String):Bitmap{
+        val writer = MultiFormatWriter()
+        val finalData: String = Uri.encode(content)
+
+        // Use 1 as the height of the matrix as this is a 1D Barcode.
+
+        // Use 1 as the height of the matrix as this is a 1D Barcode.
+        val bm = writer.encode(finalData, BarcodeFormat.CODE_128, 450, 100)
+        val bmWidth: Int = bm.getWidth()
+
+        val imageBitmap = Bitmap.createBitmap(bmWidth, 100, Bitmap.Config.ARGB_8888)
+
+        for (i in 0 until bmWidth) {
+            // Paint columns of width 1
+            val column = IntArray(100)
+            Arrays.fill(column, if (bm.get(i, 0)) Color.BLACK else Color.WHITE)
+            imageBitmap.setPixels(column, 0, 1, i, 0, 1, 100)
+        }
+
+        return imageBitmap
     }
 
 }

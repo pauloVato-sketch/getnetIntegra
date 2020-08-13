@@ -1,0 +1,371 @@
+{
+    "zeedhi_project": {
+        "name": "Odhen POS",
+        "label": "Odhen POS",
+        "headerLogo": "images/icon-menu.png",
+        "showMenu": true,
+        "showHeader": false,
+        "componentMessages": "component/messages.html",
+        "showHistoryLastItems": false,
+        "showHistoryMenu": false,
+        "footer": "component/footer.html",
+        "popup": "component/popup.html",
+        "mainWindow": "login",
+        "logLevel": "ERROR",
+        "errorReporting": false,
+        "usePostData": false,
+        "shouldBackToMainWindowOnReload": true,
+        "notifications": [
+            {
+                "id": "1",
+                "devOpsId": 1914,
+                "name": "requests",
+                "icon": "cell",
+                "isVisible": false,
+                "events": [
+                    {
+                        "id": "1",
+                        "devOpsId": 1914,
+                        "name": "NotificationEvent",
+                        "code": "OrderController.showNotifications();"
+                    }
+                ]
+            },
+            {
+                "id": "2",
+                "devOpsId": 1914,
+                "name": "home",
+                "icon": "home",
+                "isVisible": false,
+                "events": [
+                    {
+                        "id": "1",
+                        "devOpsId": 1914,
+                        "name": "NotificationEvent",
+                        "code": "OperatorController.showHome();"
+                    }
+                ]
+            }
+        ],
+        "groupMenu": [
+            {
+                "id": "1",
+                "devOpsId": 1914,
+                "label": "APLICAÇÃO",
+                "name": "APLICACAO",
+                "isVisible": true,
+                "menus": [
+                    {
+                        "id": "1",
+                        "devOpsId": 1914,
+                        "label": "Dashboard",
+                        "name": "Dashboard",
+                        "windowName": "orderDashboard",
+                        "icon": "application icon-white",
+                        "isVisible": true
+                    },
+                    {
+                        "id": "2",
+                        "devOpsId": 1914,
+                        "label": "Mesas",
+                        "name": "Mesas",
+                        "windowName": "tables",
+                        "icon": "home icon-white",
+                        "isVisible": true
+                    },
+                    {
+                        "id": "3",
+                        "devOpsId": 1914,
+                        "label": "Comandas",
+                        "name": "Comandas",
+                        "windowName": "bills",
+                        "icon": "papers icon-white",
+                        "isVisible": true
+                    },
+                    {
+                        "id": "4",
+                        "devOpsId": 1914,
+                        "label": "Mensagem Produção",
+                        "name": "Mensagem Produção",
+                        "events": [
+                            {
+                                "devOpsId": 1914,
+                                "name": "MenuOnClick",
+                                "code": "OperatorController.validateSendMessageAccess();"
+                            }
+                        ],
+                        "icon": "letter icon-white",
+                        "isVisible": true
+                    },
+                    {
+                        "id": "5",
+                        "devOpsId": 1914,
+                        "label": "Transações",
+                        "name": "Transações",
+                        "windowName": "transactions",
+                        "icon": "money-sign icon-white",
+                        "isVisible": false
+                    },
+                    {
+                        "id": "6",
+                        "devOpsId": 1914,
+                        "label": "Fazer Pedido",
+                        "name": "Fazer Pedido",
+                        "windowName": "orderMenu",
+                        "icon": "cart icon-white",
+                        "isVisible": true
+                    },
+                    {
+                        "id": "7",
+                        "devOpsId": 1914,
+                        "label": "Solicitar Conta",
+                        "name": "Solicitar Conta",
+                        "windowName": "orderCloseAccount",
+                        "icon": "pencil icon-white",
+                        "isVisible": true
+                    },
+                    {
+                        "id": "8",
+                        "devOpsId": 1914,
+                        "label": "Chamar Garçom",
+                        "name": "Chamar Garçom",
+                        "windowName": "callWaiter",
+                        "icon": "man-in-suit icon-white",
+                        "isVisible": true
+                    },
+                    {
+                        "id": "9",
+                        "devOpsId": 1914,
+                        "label": "Pedidos Realizados",
+                        "name": "Pedidos Realizados",
+                        "windowName": "orderAccountDetails",
+                        "icon": "list icon-white",
+                        "isVisible": true
+                    },
+                    {
+                        "id": "10",
+                        "devOpsId": 1914,
+                        "label": "Cancelar Venda",
+                        "name": "Cancelar Venda",
+                        "events": [
+                            {
+                                "id": "1",
+                                "devOpsId": 1914,
+                                "name": "MenuOnClick",
+                                "code": "SaleCancelController.openSaleCancel('saleCancel');"
+                            }
+                        ],
+                        "icon": "list icon-white",
+                        "isVisible": false
+                    },
+                    {
+                        "id": "11",
+                        "devOpsId": 1914,
+                        "label": "Fechar Caixa",
+                        "name": "Fechar Caixa",
+                        "windowName": "closeRegister",
+                        "icon": "bag-of-money icon-white",
+                        "isVisible": true
+                    },
+                    {
+                        "id": "12",
+                        "devOpsId": 1914,
+                        "label": "Funções Gerais",
+                        "name": "Funções Gerais",
+                        "windowName": "generalFunctions",
+                        "icon": "grouping icon-white",
+                        "isVisible": true
+                    }
+                ]
+            },
+            {
+                "id": "3",
+                "devOpsId": 1914,
+                "label": "CONSUMIDOR",
+                "name": "CONSUMIDOR",
+                "isVisible": true,
+                "menus": [
+                    {
+                        "id": "1",
+                        "devOpsId": 1914,
+                        "label": "Cadastro de Consumidor",
+                        "name": "addConsumer",
+                        "events": [],
+                        "windowName": "addConsumer",
+                        "icon": "person",
+                        "isVisible": true
+                    },
+                    {
+                        "id": "2",
+                        "devOpsId": 1914,
+                        "label": "Crédito Pessoal",
+                        "name": "Crédito Pessoal",
+                        "windowName": "creditCharge",
+                        "icon": "credit-card icon-white",
+                        "isVisible": false
+                    }
+                ]
+            },
+            {
+                "id": "4",
+                "devOpsId": 1914,
+                "label": "ADMINISTRAÇÃO",
+                "name": "administracao",
+                "isVisible": true,
+                "menus": [
+                    {
+                        "id": "0",
+                        "devOpsId": 1914,
+                        "label": "Serial do Dispositivo",
+                        "name": "deviceSerial",
+                        "events": [
+                            {
+                                "id": "20169762994176405180766",
+                                "devOpsId": 1914,
+                                "name": "ActionEvent",
+                                "code": "GeneralFunctions.showDeviceSerial()"
+                            }
+                        ],
+                        "icon": "information icon-white",
+                        "isVisible": false
+                    },
+                    {
+                        "id": "1",
+                        "devOpsId": 1914,
+                        "label": "Trocar de modo",
+                        "name": "trocaModo",
+                        "events": [
+                            {
+                                "id": "1",
+                                "devOpsId": 1914,
+                                "name": "ActionEvent",
+                                "code": "OperatorController.openChangeModePopup(args.owner);"
+                            }
+                        ],
+                        "icon": "logoff icon-white",
+                        "isVisible": true,
+                        "widgets": [
+                            {
+                                "id": "1",
+                                "devOpsId": 1914,
+                                "name": "popupTrocaModo",
+                                "class": "",
+                                "label": "Trocar de modo",
+                                "isVisible": true,
+                                "readOnly": false,
+                                "template": "widget/form.html",
+                                "events": [],
+                                "dataSource": {},
+                                "actions": [
+                                    {
+                                        "id": "1",
+                                        "devOpsId": 1914,
+                                        "label": "Voltar",
+                                        "isVisible": true,
+                                        "showOnForm": true,
+                                        "showOnList": true,
+                                        "showAsAction": "back",
+                                        "events": [
+                                            {
+                                                "id": "1",
+                                                "devOpsId": 1914,
+                                                "name": "ActionEvent",
+                                                "code": "ScreenService.closePopup();"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "id": "2",
+                                        "devOpsId": 1914,
+                                        "label": "Trocar Modo",
+                                        "name": "functions",
+                                        "isVisible": true,
+                                        "showAsAction": "never",
+                                        "events": [
+                                            {
+                                                "id": "1",
+                                                "devOpsId": 1914,
+                                                "name": "ActionEvent",
+                                                "code": "OperatorController.trocaModo(args.owner.widget);"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "fields": [
+                                    {
+                                        "id": "1",
+                                        "devOpsId": 1914,
+                                        "class": 12,
+                                        "name": "nome",
+                                        "label": "Modo",
+                                        "hasPagination": false,
+                                        "isVisible": true,
+                                        "readOnly": false,
+                                        "defaultValue": null,
+                                        "itemsPerPage": 20,
+                                        "placeholder": null,
+                                        "template": "field/select.html",
+                                        "dataSource": {
+                                            "memoryStorage": false,
+                                            "rest": false,
+                                            "lazyLoad": true,
+                                            "name": "/ModosCaixa"
+                                        },
+                                        "descriptionField": "nome",
+                                        "outData": {
+                                            "nome": "nome",
+                                            "codigo": "codigo"
+                                        },
+                                        "events": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "2",
+                        "devOpsId": 1914,
+                        "label": "Bloquear Dispositivo",
+                        "name": "toggleLockDevice",
+                        "events": [
+                            {
+                                "id": "20169762994176405180726",
+                                "devOpsId": 1914,
+                                "name": "ActionEvent",
+                                "code": "GeneralFunctions.handleToggleLock()"
+                            }
+                        ],
+                        "icon": "block icon-white",
+                        "isVisible": false
+                    },
+                    {
+                        "id": "3",
+                        "devOpsId": 1914,
+                        "label": "Sair",
+                        "name": "Sair",
+                        "events": [
+                            {
+                                "id": "20169762994176405180725",
+                                "devOpsId": 1914,
+                                "name": "ActionEvent",
+                                "code": "OperatorController.logout(args.owner);"
+                            }
+                        ],
+                        "windowName": "login",
+                        "icon": "logoff icon-white",
+                        "isVisible": true
+                    },
+                    {
+                        "id": "4",
+                        "devOpsId": 1914,
+                        "label": "Sair",
+                        "name": "sairConf",
+                        "windowName": "confirmacao",
+                        "icon": "logoff icon-white",
+                        "isVisible": false
+                    }
+                ]
+            }
+        ]
+    }
+}

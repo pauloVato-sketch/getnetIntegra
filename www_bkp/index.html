@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html ng-app="ZeedhiApp">
+<head>
+    <meta charset="utf-8">
+    <title>Odhen POS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!--clean cache -->
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+
+    <link rel="shortcut icon" href="images/favicon.png">
+
+    <link rel="stylesheet" href="bower_components/zeedhi-frontend/assets/fonts/font-zeedhi/stylesheet.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="bower_components/zeedhi-frontend/assets/css/libs/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="bower_components/zeedhi-frontend/assets/css/general.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="bower_components/zh-preferences/dist/style/colors/styles-odhen.css" />
+    <link rel="stylesheet" href="bower_components/zeedhi-frontend/assets/css/styles/styles-odhen.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="css/style.css" />
+    <!-- Zh-Select-Autocomplete -->
+    <link rel="stylesheet" href="bower_components/zh-select-autocomplete/dist/style/colors/styles-odhen.css"/>
+
+	<script src="node_modules/mocha/mocha.js"></script>
+	<script src="node_modules/chai/chai.js"></script>
+
+    <!-- Cordova -->
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="index.js"></script>
+
+    <script type="text/javascript">
+        window.minimumRequirements = {"Chrome": "1.0"};
+        window.templateUrls = [
+            {
+                package: 'default',
+                baseUrl: 'bower_components/zeedhi-frontend/templates/dyman/'
+            },
+            {
+                package: 'waiter',
+                baseUrl: 'templates/'
+            },
+            {
+                package: 'zh-select-autocomplete',
+                baseUrl: 'bower_components/zh-select-autocomplete/dist/templates/'
+            }
+        ];
+        window.metadataUrl = "./";
+        window.lang = "pt_br";
+        window.serviceUrl = "../backend/service/index.php";
+
+		mocha.setup('bdd');
+		mocha.reporter('html');
+    </script>
+
+    <script src="bower_components/zeedhi-frontend/assets/dist/main.js"></script>
+    <script src="bower_components/zh-preferences/dist/preferences.js"></script>
+    <script src="bower_components/zh-filter-preferences/dist/filter-preferences.js"></script>
+    <script src="bower_components/zh-memory-storage/src/async.js"></script>
+    <script src="bower_components/lodash/dist/lodash.js"></script>
+    <script src="bower_components/bluebird/js/browser/bluebird.js"></script>
+    <script src="bower_components/zeedhi-webview-requests/dist/zeedhi-webview-requests.js"></script>
+    <script src="bower_components/zh-select-autocomplete/dist/zh-select-autocomplete.js?v=1"></script>
+
+    <script src="dist/pos_main.js"></script>
+    <script src="tests/IntegrationService.test.js"></script>
+	<script src="tests/PrinterService.test.js"></script>
+
+	<script>
+    // Only tests run in real browser, injected script run if options.run == true
+        if (navigator.userAgent.indexOf('PhantomJS') > 0) {
+            mocha.run();
+        }
+    </script>
+
+</head>
+<body ng-controller="ZeedhiMain" zh-body data-ng-class="{'menu-open' : $root.menuOpen}" ng-include src="templateManager.getTemplateDefaultFolder()+'container/index.html'"></body>
+</html>

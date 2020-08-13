@@ -1,0 +1,216 @@
+{
+	"name": "loginAuthContainer",
+	"events": [],
+	"showHeader": false,
+	"showMenu": false,
+	"showFooter": false,
+	"showBack": false,
+	"showHomeButton": true,
+	"showNotifications": true,
+	"footer": "component/footer.html",
+	"template": "container/window.html",
+	"popup": "component/popup.html",
+	"widgets": [
+		{
+			"name": "loginAuthWidget",
+			"isVisible": true,
+			"template": "widget/form-login.html",
+			"actions": [],
+			"events": [
+				{
+					"name": "WidgetOnEnter",
+					"code": " UtilitiesService.setVersionLabel(args.owner); args.owner.reload(); UtilitiesService.loginOnEnter(args);"
+				}
+			],
+			"dataSource": {
+				"rest": false,
+				"memoryStorage": true,
+				"lazyLoad": true,
+				"name": "/nothing"
+			},
+			"fields": [
+				{
+					"class": 12,
+					"name": "OPERADOR",
+					"isVisible": false,
+					"readOnly": false,
+					"defaultValue": null,
+					"label": "Operador",
+					"template": "field/text.html",
+					"maxlength": 12,
+					"events": []
+				},
+				{
+					"class": 12,
+					"name": "senha",
+					"isVisible": false,
+					"readOnly": true,
+					"defaultValue": null,
+					"label": "Senha",
+					"template": "field/password.html",
+					"events": []
+				},
+				{
+					"class": 12,
+					"name": "FILIAL",
+					"label": "Filial",
+					"hasPagination": true,
+					"isVisible": true,
+					"readOnly": false,
+					"defaultValue": null,
+					"itemsPerPage": 20,
+					"placeholder": null,
+					"template": "field/select.html",
+					"showSelectAs": "grid",
+					"dataSource": {
+						"memoryStorage": false,
+						"rest": true,
+						"lazyLoad": true,
+						"name": "/FiliaisLogin"
+					},
+					"descriptionField": "FILIAL",
+					"outData": {
+						"FILIAL": "FILIAL",
+						"CDFILIAL": "CDFILIAL",
+						"NMFILIAL": "NMFILIAL"
+					},
+					"events": [
+						{
+							"name": "FieldOnChange",
+							"code": "AuthController.handleFilialChange(args.owner.field);"
+						}
+					],
+					"fields": [
+						{
+							"name": "CDFILIAL",
+							"label": "Código",
+							"template": "field/text-edit.html",
+							"isVisible": true,
+							"showOnList": true
+						},
+						{
+							"name": "NMFILIAL",
+							"label": "Nome",
+							"template": "field/text-edit.html",
+							"isVisible": true,
+							"showOnList": true
+						}
+					]
+				},
+				{
+					"class": 12,
+					"name": "CAIXA",
+					"isVisible": true,
+					"readOnly": true,
+					"hasPagination": true,
+					"defaultValue": null,
+					"itemsPerPage": 20,
+					"label": "Caixa",
+					"template": "field/select.html",
+					"showSelectAs": "grid",
+					"dataSource": {
+						"memoryStorage": false,
+						"rest": true,
+						"lazyLoad": true,
+						"name": "/CaixasLogin"
+					},
+					"dataSourceFilter": [
+						{
+							"name": "CDFILIAL",
+							"operator": "=",
+							"value": "@ApplicationContext.templateManager.container.getWidget('loginAuthWidget').currentRow['CDFILIAL']@"
+						}
+					],
+					"descriptionField": "CAIXA",
+					"outData": {
+						"CAIXA": "CAIXA",
+						"CDCAIXA": "CDCAIXA"
+					},
+					"events": [],
+					"fields": [
+						{
+							"name": "CDCAIXA",
+							"label": "Código",
+							"template": "field/text-edit.html",
+							"isVisible": true,
+							"showOnList": true
+						},
+						{
+							"name": "NMCAIXA",
+							"label": "Nome",
+							"template": "field/text-edit.html",
+							"isVisible": true,
+							"showOnList": true
+						}
+					]
+				},
+				{
+					"class": 12,
+					"name": "AUTH",
+					"label": "Entrar",
+					"isVisible": true,
+					"readOnly": false,
+					"defaultValue": null,
+					"template": "field/button.html",
+					"defaultButton": true,
+					"events": [
+						{
+							"name": "FieldOnClick",
+							"code": "AuthController.authLogin(args.row);"
+						}
+					]
+				},
+				{
+					"class": 12,
+					"name": "version",
+					"label": "Versão x.x.x",
+					"isVisible": false,
+					"readOnly": true,
+					"defaultValue": null,
+					"template": "field/label-static.html",
+					"events": []
+				},
+				{
+					"class": 12,
+					"name": "blank",
+					"label": "",
+					"isVisible": true,
+					"readOnly": true,
+					"defaultValue": null,
+					"template": "field/label-static.html",
+					"events": []
+				},
+				{
+					"class": 12,
+					"name": "poynt_email",
+					"label": "E-mail: contato@teknisa.com",
+					"isVisible": false,
+					"readOnly": true,
+					"defaultValue": null,
+					"template": "field/label-static.html",
+					"events": []
+				},
+				{
+					"class": 12,
+					"name": "poynt_phone",
+					"label": "Telefone: +55 31 2122-2300",
+					"isVisible": false,
+					"readOnly": true,
+					"defaultValue": null,
+					"template": "field/label-static.html",
+					"events": []
+				},
+				{
+					"class": 12,
+					"name": "poynt_website",
+					"label": "Site: www.teknisa.com",
+					"isVisible": false,
+					"readOnly": true,
+					"defaultValue": null,
+					"template": "field/label-static.html",
+					"events": []
+				}
+			]
+		}
+	]
+}

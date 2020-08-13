@@ -1,0 +1,50 @@
+{
+  "_from": "cordova-support-kotlin",
+  "_id": "cordova-support-kotlin@1.2.1",
+  "_inBundle": false,
+  "_integrity": "sha512-6mhvoC1Pht/4eX4zpPrlEJoVWoV7fQeVuzoX2wsM4+R6mTuS5fuM5YknzuE8fB73ve9ri8peL9Rml8QQYlqOPg==",
+  "_location": "/cordova-support-kotlin",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "cordova-support-kotlin",
+    "name": "cordova-support-kotlin",
+    "escapedName": "cordova-support-kotlin",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/cordova-support-kotlin/-/cordova-support-kotlin-1.2.1.tgz",
+  "_shasum": "365541ca8c36401421522f40012042fbfd166ca9",
+  "_spec": "cordova-support-kotlin",
+  "_where": "/home/GRUPOTEKNISA/lucasmacedo/workfolder/getnetIntegra",
+  "author": {
+    "name": "kain"
+  },
+  "bugs": {
+    "url": "https://github.com/kainonly/cordova-support-kotlin/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "Cordova Android application development kotlin support.",
+  "devDependencies": {
+    "xml2js": "^0.4.19"
+  },
+  "homepage": "https://github.com/kainonly/cordova-support-kotlin#readme",
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "license": "MIT",
+  "name": "cordova-support-kotlin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kainonly/cordova-support-kotlin.git"
+  },
+  "version": "1.2.1"
+}

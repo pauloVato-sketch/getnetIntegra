@@ -1,0 +1,7 @@
+<span class="zh-timeline-icon" zh-icon="{{ item[widget.iconField] || 'clock'}}" data-zh-click="toggle(item)"></span>
+<div class="zh-timeline-item-box" data-ng-class="{closed: item.closed}">
+  <span class="zh-timeline-title" data-ng-bind="item[widget.titleField]"></span>
+  <div class="zh-timeline-item-content">
+  	<div class="zh-timeline-item-description" data-ng-bind="item[widget.descriptionField]"></div>
+  </div>
+</div>

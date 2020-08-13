@@ -1,0 +1,61 @@
+<div class="zh-select-autocomplete"
+	 data-ng-controller="ZhSelectAutoCompleteController as controller"
+	 data-ng-show="field.isVisible"
+	 zh-select-autocomplete
+	 zh-schema-validator="field/select.html.json">
+
+	<!-- Label Include -->
+	<div ng-include="templateManager.getTemplateURL('field/label-with-tooltip.html')"></div>
+
+	<!-- Validation  -->
+	<div class="zh-validation" data-ng-if="widget.currentRow.$error[field.name].length>0">
+		<span zh-validations class="zh-validation-error" data-ng-repeat="error in widget.currentRow.$error[field.name]" >
+			{{error.message}}
+		</span>
+	</div>
+
+	<!-- Field -->
+	<div class="zh-select-multiple zh-select-autocomplete mousetrap zh-field-{{field.name}} zh-text-align-{{field.align || 'left'}}"
+		 ng-model="fieldRow"
+		 id="{{field.name}}"
+		 name="{{field.name}}"
+		 data-zh-events
+		 data-zh-validate
+		 ng-class="{'zh-disabled': field.readOnly, focused: inputHasFocus}"
+		 data-ng-readonly="field.isReadOnly()">
+
+		<span class="value"
+			  ng-bind="getDescriptionFromSelectedValue()"
+			  ng-if="controller.shouldShowSpan()"
+			  ng-click="focusOnInput()"></span>
+		<input type="text"
+			   class="editable selected-autocomplete"
+			   zh-focus-field="{{ field.focused }}"
+			   ng-model="itemSearch"
+			   placeholder="{{'Search'|i18n}}"
+			   data-ng-class="{ 'zh-disabled' : field.readOnly }"
+			   data-ng-disabled="field.isReadOnly()"></input>
+
+		<span zh-icon="no-border close-x"
+			  ng-if="controller.shouldShowSpan()"
+			  zh-click="clearField(field, $event)"></span>
+
+		<span zh-icon="no-border search"
+			  ng-if="!controller.shouldShowSpan()"
+			  ng-click="openField(field, $event)"></span>
+
+		<img class="autocomplete-loading-icon"
+			 ng-src="{{templateManager.getFrameworkTemplateURL('../../assets/images/icons/loading.gif')}}"></img>
+	</div>
+	<!-- Sublist -->
+	<div ng-if="showDropdown" class="list-items show-select">
+		<span ng-repeat="item in controller.getData() | limitTo:dropDownLimit track by $index"
+			  ng-bind="controller.getItemText(item)"
+			  data-item-index = "{{$index}}"
+			  data-item-identifier="{{controller.getItemIdentifier(item)}}"
+			  zh-click="controller.onAutoCompleteItemClick(item)"></span>
+		<span ng-if="shouldShowLoadMore()"
+			  class="view-more"
+			  zh-click="loadMore($event)">{{viewMore | i18n}}</span>
+	</div>
+</div>

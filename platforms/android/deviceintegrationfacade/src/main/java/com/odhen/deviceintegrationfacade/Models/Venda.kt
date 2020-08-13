@@ -1,7 +1,7 @@
-package com.odhen.deviceintagrationfacade.Models
+package com.odhen.deviceintegrationfacade.Models
 
-import com.odhen.deviceintagrationfacade.Enums.EstadoVenda
-import com.odhen.deviceintagrationfacade.Enums.TipoMovimentacao
+import com.odhen.deviceintegrationfacade.Enums.EstadoVenda
+import com.odhen.deviceintegrationfacade.Enums.TipoMovimentacao
 import java.text.SimpleDateFormat
 import java.util.*
 

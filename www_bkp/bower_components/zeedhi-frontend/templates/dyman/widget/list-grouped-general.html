@@ -1,0 +1,55 @@
+<div ng-include src="templateManager.getFrameworkTemplateURL('widget/form-without-scholler.html')"
+     data-ng-if="widget.aclIsVisible && widget.isVisible"> </div>
+<div
+    data-zh-widget-events
+    data-zh-scroller
+    data-zh-infinity-scroll
+    data-widget="widget"
+    class="row container zh-widget-{{widget.name}}"
+    data-ng-if="widget.aclIsVisible && widget.isVisible"
+    >
+    <div class="col-xs-12 col-sm-12">
+        <ul class="zh-container-groups">
+            <li
+                ng-repeat="(category, data) in widget.dataSource.data | groupBy:widget.groupProp:widget"
+                data-ng-show="filtered.length > 0"
+                zh-update-scroller="250"
+                class="zh-list-group"
+                data-ng-controller='ListController as controller'
+                >
+                <ul class="zh-products-container">
+                    <li ng-repeat="row in filtered = (data | filter:searchInput)"
+                        zh-grid-row
+                        zh-long-tap="controller.toggle(row)"
+                        zh-inner-template="#innerWidget"
+                        zh-click="widget.setCurrentRow(row)"
+
+                        ng-class="{  'zh-row-selected' :  (widget.currentRow == row && widget.widgets && widget.widgets.length > 0), 'zh-mult-selected-row': row.__isSelected }"
+                        class="zh-sub-list-group">
+
+                        <div>
+                            <div ng-class="(widget.currentRow == row && widget.widgets && widget.widgets.length > 0) ? 'zh-row-selected-panel-line' : ''" style="">
+                                <span class="zh-product-desc">
+                                    <div
+                                        class="col-xs-{{field.class}} zh-field"
+                                        ng-repeat="field in row.fields"
+                                        ng-include src="templateManager.getTemplateURL(field.template)"
+                                        ng-show="field.isVisible"
+                                        zh-post-repeat="templateManager.container.refresh()"
+                                        >
+                                    </div>
+                                </span>
+                            </div>
+                            <span data-ng-if='widget.widgets.length > 0 && widget.currentRow == row'>
+                                <aside data-ng-controller="GroupListController">
+                                    <div class="zh-workaround-grid-float" ng-include src="templateManager.getTemplateURL(widget.template)">
+                                    </div>
+                                </aside>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>

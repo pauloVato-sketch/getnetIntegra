@@ -1,4 +1,4 @@
-package com.odhen.deviceintagrationfacade.Enums
+package com.odhen.deviceintegrationfacade.Enums
 
 enum class EstadoVenda {
     AUTENTICACAO,

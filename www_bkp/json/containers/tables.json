@@ -1,0 +1,876 @@
+{
+    "id": "12645110363765653111750",
+    "name": "tables",
+    "label": "Mesas",
+    "events": [],
+    "showHeader": true,
+    "showMenu": true,
+    "showFooter": true,
+    "showBack": false,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "widgets": [
+        {
+            "id": "4312562354047349201751",
+            "name": "tables",
+            "label": "Mesas",
+            "isVisible": true,
+            "noMatchText": "nenhuma mesa encontrada",
+            "template": "waiter#widget/waiter_tables.html",
+            "active": true,
+            "actions": [
+                {
+                    "id": "43125623530489183411784",
+                    "name": "refresh",
+                    "showAsAction": "always|edit",
+                    "isVisible": true,
+                    "icon": "loading icon-black",
+                    "events": [
+                        {
+                            "id": "4312562359552983781785",
+                            "name": "ActionEvent",
+                            "code": "TableController.refreshTables(args.owner.widget);"
+                        }
+                    ]
+                },
+                {
+                    "id": "43125623523231516721786",
+                    "name": "quickCloseAccount",
+                    "label": "Fechar conta",
+                    "showAsAction": "table",
+                    "isVisible": true,
+                    "icon": "file-ok",
+                    "events": [
+                        {
+                            "id": "43125623537262517361787",
+                            "name": "ActionEvent",
+                            "code": "TableController.quickCloseAccount(args.e, args.owner.widget.currentRow, args.owner.widget);"
+                        }
+                    ]
+                },
+                {
+                    "id": "43125623514494143901788",
+                    "name": "quickAccountDetails",
+                    "label": "Parcial",
+                    "showAsAction": "table",
+                    "isVisible": true,
+                    "icon": "printer",
+                    "events": [
+                        {
+                            "id": "43125623535448789331789",
+                            "name": "ActionEvent",
+                            "code": "TableController.quickPrintAccount(args.e, args.owner.widget.currentRow, args.owner.widget);"
+                        }
+                    ]
+                },
+                {
+                    "id": "4312562359755461981790",
+                    "name": "quickProductRelease",
+                    "label": "Liberar Produto",
+                    "showAsAction": "table",
+                    "isVisible": false,
+                    "icon": "import",
+                    "events": [
+                        {
+                            "id": "43125623522968001981791",
+                            "name": "ActionEvent",
+                            "code": "TableController.quickProductRelease(args.e, args.owner.widget.currentRow, args.owner.widget);"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "id": "4312562358617056461792",
+                    "name": "WidgetAfterMoveRow",
+                    "code": "TableController.tableClick(args.owner.currentRow, args.owner.widgets[1]);"
+                },
+                {
+                    "id": "43125623515044396451793",
+                    "name": "WidgetOnEnter",
+                    "code": "TableController.prepareAreas(args.owner.fields[0], args.owner.widgets[0], args.owner);"
+                }
+            ],
+            "fields": [
+                {
+                    "id": "43125623517368840881782",
+                    "class": 12,
+                    "name": "",
+                    "label": "",
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "dataSource": {}
+                },
+                {
+                    "id": "43125623526194205041783",
+                    "class": 12,
+                    "name": "NMMESA",
+                    "label": "",
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "categoryProp": "NMSALA",
+                    "filterProp": "NMMESA",
+                    "currentPage": 0,
+                    "dataSource": {}
+                }
+            ],
+            "widgets": [
+                {
+                    "id": "4312562358661472921752",
+                    "name": "areas",
+                    "label": "Ambientes",
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "id": "43125623514425969391754",
+                            "label": "Voltar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "4312562352494239591755",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        }
+                    ],
+                    "noMatchText": "nenhum ambiente encontrado",
+                    "template": "widget/list-popup.html",
+                    "events": [
+                        {
+                            "id": "4312562357498329811756",
+                            "name": "WidgetAfterMoveRow",
+                            "code": "TableController.changeArea(args.owner.parent.fields[0], args.row);"
+                        }
+                    ],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "id": "43125623537955598901753",
+                            "class": 12,
+                            "name": "NMSALA",
+                            "label": "",
+                            "isVisible": true,
+                            "showOnList": true,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        }
+                    ]
+                },
+                {
+                    "id": "43125623539497331981757",
+                    "name": "openTable",
+                    "label": "Abrir Mesa",
+                    "isVisible": true,
+                    "template": "widget/form.html",
+                    "actions": [
+                        {
+                            "id": "1",
+                            "label": "Voltar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "2",
+                            "label": "QR Code",
+                            "name": "qrcode",
+                            "isVisible": true,
+                            "icon": "qrcode",
+                            "showAsAction": "always|edit",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "ActionEvent",
+                                    "code": "TableController.scanConsumerQrCode(args.owner.widget);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "3",
+                            "label": "Abrir Mesa",
+                            "name": "btnOpenTable",
+                            "showAsAction": "never",
+                            "isVisible": true,
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "ActionEvent",
+                                    "code": "TableController.open(args.row, args.owner.widget.container.widgets[0], null, args.owner.widget.getField('positionsField'));"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [
+                        {
+                            "id": "43125623511014187471781",
+                            "name": "WidgetOnEnter",
+                            "code": "TableController.handleShowPositions(args.owner, false);"
+                        }
+                    ],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "id": "43125623521970635571758",
+                            "class": 6,
+                            "name": "NRPOSICAOMESA",
+                            "label": "Quantidade de Pessoas",
+                            "isVisible": true,
+                            "defaultValue": null,
+                            "spin": true,
+                            "blockInputEdit": true,
+                            "minValue": 1,
+                            "maxValue": 99,
+                            "template": "field/number-custom.html",
+                            "events": [
+                                {
+                                    "id": "43125623511686911951759",
+                                    "name": "FieldOnChange",
+                                    "code": "TableController.updatePositionsField(args.owner.field, args.owner.field.widget.getField('positionsField'));"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "43125623512962024081760",
+                            "class": 6,
+                            "name": "VENDEDOR",
+                            "label": "Vendedor (Opcional)",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "valueField": "CDCLIENTE",
+                            "descriptionField": "DESCVENDEDOR",
+                            "outData": {
+                                "DESCVENDEDOR": "VENDEDOR",
+                                "CDVENDEDOR": "CDVENDEDOR"
+                            },
+                            "template": "field/select.html",
+                            "showSelectAs": "grid",
+                            "events": [
+                                {
+                                    "id": "43125623525318501561763",
+                                    "name": "FieldOnClick",
+                                    "code": "TableController.doBlockPopupOnEnterEvent();"
+                                }
+                            ],
+                            "dataSource": {
+                                "memoryStorage": true,
+                                "name": "/ParamsSellerRepository"
+                            },
+                            "fields": [
+                                {
+                                    "id": "43125623524707403201761",
+                                    "name": "CDVENDEDOR",
+                                    "label": "Código",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "43125623517977425901762",
+                                    "name": "NMFANVEN",
+                                    "label": "Nome",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "43125623541771304751764",
+                            "name": "radioTablePositions",
+                            "label": "",
+                            "class": 12,
+                            "readOnly": false,
+                            "isVisible": false,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": false,
+                            "template": "field/radio-group.html",
+                            "events": [
+                                {
+                                    "id": "43125623523605376851765",
+                                    "name": "FieldOnChange",
+                                    "code": "TableController.handlePositionsRadioChange(args.owner, args.owner.widget.getField('positionsField'), args.owner.widget.getField('NMRAZSOCCLIE'), args.owner.widget.getField('NMCONSUMIDOR'), args.owner.widget.getField('DSCONSUMIDOR'), args.owner.widget.getField('NRPOSICAOMESA'), false);"
+                                }
+                            ],
+                            "valueField": "value",
+                            "descriptionField": "name",
+                            "defaultOption": 1,
+                            "dataSource": {
+                                "data": [
+                                    {
+                                        "name": "Controlar Cliente/Consumidor por Mesa",
+                                        "value": "M"
+                                    },
+                                    {
+                                        "name": "Controlar Cliente/Consumidor por Posição",
+                                        "value": "P"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": "4312562351229540691768",
+                            "name": "positionsField",
+                            "label": "Posições",
+                            "class": 12,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "../../../../templates/field/waiter_position_multiple_named.html",
+                            "fields": [],
+                            "position": [],
+                            "forceFunction": true,
+                            "customFunction": "TableController.handleOpenTablePositionChange",
+                            "newPosition": 0,
+                            "dataSource": {
+                                "data": [
+                                    {
+                                        "NRPOSICAOMESA": 2,
+                                        "clientMapping": {},
+                                        "consumerMapping": {},
+                                        "positionNamedMapping": {}
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": "43125623516076214581769",
+                            "class": 6,
+                            "name": "NMRAZSOCCLIE",
+                            "label": "Cliente (Opcional)",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "breakline": true,
+                            "valueField": "CDCLIENTE",
+                            "descriptionField": "NMRAZSOCCLIE",
+                            "outData": {
+                                "NMRAZSOCCLIE": "NMRAZSOCCLIE",
+                                "CDCLIENTE": "CDCLIENTE"
+                            },
+                            "template": "field/select.html",
+                            "showSelectAs": "grid",
+                            "events": [
+                                {
+                                    "id": "43125623510177993241771",
+                                    "name": "FieldOnChange",
+                                    "code": "TableController.prepareCustomers(args.owner.field.widget.getField('NMCONSUMIDOR'), args.row.CDCLIENTE);"
+                                },
+                                {
+                                    "id": "4312562359281521141772",
+                                    "name": "FieldOnClick",
+                                    "code": "TableController.doBlockPopupOnEnterEvent();"
+                                }
+                            ],
+                            "dataSource": {
+                                "memoryStorage": true,
+                                "name": "/ParamsClientRepository"
+                            },
+                            "fields": [
+                                {
+                                    "id": "43125623541457144181770",
+                                    "name": "NMRAZSOCCLIE",
+                                    "label": "Nome",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "43125623511376462761773",
+                            "name": "NMCONSUMIDOR",
+                            "label": "Consumidor (Opcional)",
+                            "class": 6,
+                            "readOnly": true,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "itemsPerPage": 30,
+                            "defaultValue": null,
+                            "descriptionField": "NMCONSUMIDOR",
+                            "valueField": "CDCONSUMIDOR",
+                            "dataSource": {
+                                "name": "/ParamsCustomerRepository",
+                                "lazyLoad": true,
+                                "rest": true,
+                                "timeout": 120000
+                            },
+                            "dataSourceFilter": [
+                                {
+                                    "name": "CDCLIENTE",
+                                    "value": "",
+                                    "operator": "="
+                                }
+                            ],
+                            "template": "field/select.html",
+                            "showSelectAs": "grid",
+                            "outData": {
+                                "NMCONSUMIDOR": "NMCONSUMIDOR",
+                                "CDCONSUMIDOR": "CDCONSUMIDOR",
+                                "CDCLIENTE": "CDCLIENTE",
+                                "NMRAZSOCCLIE": "NMRAZSOCCLIE",
+                                "IDSITCONSUMI": "IDSITCONSUMI",
+                                "IDSOLSENHCONS": "IDSOLSENHCONS",
+                                "CDSENHACONS": "CDSENHACONS"
+                            },
+                            "events": [
+                                {
+                                    "id": "43125623518156728481775",
+                                    "name": "FieldOnChange",
+                                    "code": "TableController.handleSetConsumer(args.owner.field);"
+                                },
+                                {
+                                    "id": "4312562355878588951776",
+                                    "name": "FieldOnClick",
+                                    "code": "TableController.doBlockPopupOnEnterEvent();"
+                                }
+                            ],
+                            "fields": [
+                                {
+                                    "id": "14185299781787661713997",
+                                    "name": "NMRAZSOCCLIE",
+                                    "label": "Cliente",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                },
+                                {
+                                    "id": "43125623527876441081774",
+                                    "name": "NMCONSUMIDOR",
+                                    "label": "Nome",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "DSCONSUMIDOR",
+                            "label": "Nome do Consumidor (Opcional)",
+                            "class": 12,
+                            "isVisible": false,
+                            "readOnly": true,
+                            "template": "field/text-edit.html",
+                            "maxlength": 50,
+                            "events": [
+                                {
+                                    "name": "FieldOnInput",
+                                    "code": "TableController.handleSetConsumer(args.owner.field)"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "setCurrentWaiterPopUp",
+                    "label": "Informar Vendedor",
+                    "template": "widget/form.html",
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "label": "Voltar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "hideIcon": true,
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "TableController.clearAndClose(args.owner.widget.getField('currentWaiterField'));"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "OK",
+                            "name": "btnOk",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "TableController.validateWaiter(args.owner.widget);"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "fields": [
+                        {
+                            "name": "currentWaiterField",
+                            "label": "Pesquisar ",
+                            "isVisible": true,
+                            "itemsPerPage": 30,
+                            "class": 12,
+                            "template": "field/select.html",
+                            "valueField": "CDVENDEDOR",
+                            "descriptionField": "NMFANVEN",
+                            "showSelectAs": "grid",
+                            "validations": {
+                                "required": {}
+                            },
+                            "dataSource": {
+                                "name": "/SelectVendedores",
+                                "rest": true,
+                                "memoryStorage": false,
+                                "lazyLoad": true
+                             },
+                            "fields": [
+                                {
+                                    "name": "CDVENDEDOR",
+                                    "label": "Código",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html",
+                                    "events": []
+                                },
+                                {
+                                    "name": "NMFANVEN",
+                                    "label": "Nome",
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "template": "field/text-edit.html",
+                                    "events": []
+                                }
+                            ],
+                            "events": []
+                        }
+                    ]
+                },
+                {
+                    "name": "setPassWaiterPopUp",
+                    "label": "Confirmar Senha",
+                    "template": "widget/form.html",
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "label": "Voltar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "hideIcon": true,
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "TableController.clearAndClose(args.owner.widget.getField('passwordField'));"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "OK",
+                            "name": "btnOk",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "TableController.validatePassword(args.owner.widget);"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "fields": [
+                        {
+                            "name": "passwordField",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "defaultValue": null,
+                            "placeholder": "Senha",
+                            "template": "field/password.html",
+                            "events": [
+                                {
+                                    "name": "FieldOnKeydown",
+                                    "code": "TableController.handleEnterButton(args);"
+                                }
+                            ],
+                            "validations": {
+                                "required": {}
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "43125623532909465791794",
+            "name": "controlRequests",
+            "label": "Notificações",
+            "template": "widget/tabbedWidget.html",
+            "isVisible": false,
+            "actions": [
+                {
+                    "id": "43125623531585929581816",
+                    "label": "Voltar",
+                    "name": "btnBack",
+                    "isVisible": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "43125623540153156861817",
+                            "name": "ActionEvent",
+                            "code": "ScreenService.closePopup();"
+                        }
+                    ]
+                }
+            ],
+            "events": [],
+            "fields": [],
+            "widgets": [
+                {
+                    "id": "4312562352492674501795",
+                    "name": "solicitations",
+                    "label": "Solicitações",
+                    "template": "../../../../templates/widget/list-grouped-default.html",
+                    "isVisible": true,
+                    "actions": [],
+                    "events": [
+                        {
+                            "id": "43125623533824533581810",
+                            "name": "WidgetAfterMoveRow",
+                            "code": "OrderController.controlInternalWidgetOpening(args.owner.container.widgets[1].widgets[0], args.row);"
+                        }
+                    ],
+                    "groupProp": "grupo",
+                    "detailPriceProp": "tempo",
+                    "detailDescProp": "USERMESA",
+                    "detailSubDescProp": "",
+                    "boldText": "mesa",
+                    "dataSource": {},
+                    "fields": [],
+                    "widgets": [
+                        {
+                            "id": "43125623513900228481796",
+                            "name": "formAccess",
+                            "label": "",
+                            "template": "widget/form-without-scroller.html",
+                            "isVisible": true,
+                            "actions": [],
+                            "events": [],
+                            "dataSource": {},
+                            "fields": [
+                                {
+                                    "id": "43125623529598300201797",
+                                    "name": "atendido",
+                                    "label": "Atendido",
+                                    "class": 12,
+                                    "icon": "checked",
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/label-with-icon.html",
+                                    "events": [
+                                        {
+                                            "id": "43125623533622316981798",
+                                            "name": "FieldOnClick",
+                                            "code": "OrderController.answerTable(args.row);"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "43125623532436885761799",
+                            "name": "formLiberacao",
+                            "label": "",
+                            "template": "widget/form-without-scroller.html",
+                            "isVisible": true,
+                            "actions": [],
+                            "events": [],
+                            "dataSource": {},
+                            "fields": [
+                                {
+                                    "id": "43125623513942955531800",
+                                    "name": "liberar",
+                                    "label": "Liberar",
+                                    "class": 4,
+                                    "icon": "checked",
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/label-with-icon.html",
+                                    "events": [
+                                        {
+                                            "id": "43125623534428030941801",
+                                            "name": "FieldOnClick",
+                                            "code": "OrderController.checkTableStatus(args.row, args.owner.field.widget.container.widgets[0].widgets[1], args.owner.field.widget.container.widgets[0]);"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "43125623541617061891802",
+                                    "name": "ignorar",
+                                    "label": "Desconsiderar",
+                                    "class": 4,
+                                    "icon": "close-x",
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/label-with-icon.html",
+                                    "events": [
+                                        {
+                                            "id": "43125623540341024481803",
+                                            "name": "FieldOnClick",
+                                            "code": "OrderController.controlUserAccess(args.row, 'I')"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "4312562356847392801804",
+                                    "name": "bloquear",
+                                    "label": "Bloquear",
+                                    "class": 4,
+                                    "icon": "block",
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/label-with-icon.html",
+                                    "events": [
+                                        {
+                                            "id": "4312562351928397711805",
+                                            "name": "FieldOnClick",
+                                            "code": "OrderController.controlUserAccess(args.row, 'B')"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "43125623535393220001806",
+                                    "name": "NRMESA",
+                                    "label": "",
+                                    "class": 4,
+                                    "isVisible": false,
+                                    "isVisibleForm": false,
+                                    "isVisibleGrid": false,
+                                    "showOnList": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/label.html",
+                                    "events": []
+                                },
+                                {
+                                    "id": "43125623520860095031807",
+                                    "name": "IDACESSOUSER",
+                                    "label": "",
+                                    "class": 4,
+                                    "isVisible": false,
+                                    "isVisibleForm": false,
+                                    "isVisibleGrid": false,
+                                    "showOnList": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/label.html",
+                                    "events": []
+                                },
+                                {
+                                    "id": "4312562354334879381808",
+                                    "name": "NMUSUARIO",
+                                    "label": "",
+                                    "class": 4,
+                                    "isVisible": false,
+                                    "isVisibleForm": false,
+                                    "isVisibleGrid": false,
+                                    "showOnList": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/label.html",
+                                    "events": []
+                                },
+                                {
+                                    "id": "43125623520014904311809",
+                                    "name": "NRACESSOUSER",
+                                    "label": "",
+                                    "class": 4,
+                                    "isVisible": false,
+                                    "isVisibleForm": false,
+                                    "isVisibleGrid": false,
+                                    "showOnList": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/label.html",
+                                    "events": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "4312562359986434921811",
+                    "name": "blockedIps",
+                    "label": "Acessos Bloqueados",
+                    "template": "../../../../templates/widget/list-grouped-default.html",
+                    "isVisible": true,
+                    "actions": [],
+                    "events": [
+                        {
+                            "id": "43125623516733748941815",
+                            "name": "WidgetAfterMoveRow",
+                            "code": "OrderController.prepareOpeningBlock(args.owner.widgets[0], args.row);"
+                        }
+                    ],
+                    "groupProp": "vazio",
+                    "detailPriceProp": "NMUSUARIO",
+                    "detailDescProp": "DESCMESA",
+                    "detailSubDescProp": "HORABLOQUEIO",
+                    "dataSource": {},
+                    "fields": [],
+                    "widgets": [
+                        {
+                            "id": "4312562353530085181812",
+                            "name": "formUnblock",
+                            "label": "",
+                            "template": "widget/form-without-scroller.html",
+                            "isVisible": true,
+                            "actions": [],
+                            "events": [],
+                            "dataSource": {},
+                            "fields": [
+                                {
+                                    "id": "43125623518023948101813",
+                                    "name": "unblock",
+                                    "label": "Desbloquear",
+                                    "class": 12,
+                                    "icon": "checked",
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/label-with-icon.html",
+                                    "events": [
+                                        {
+                                            "id": "43125623535636613031814",
+                                            "name": "FieldOnClick",
+                                            "code": "OrderController.unblockUser(args.row);"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

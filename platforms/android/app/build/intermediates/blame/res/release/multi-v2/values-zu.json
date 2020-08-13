@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\Computador\\workfolder\\getnetintegra\\platforms\\android\\app\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-zu\\values-zu.xml",
+            "outputFile": "C:\\Users\\Computador\\workfolder\\getnetIntegra\\platforms\\android\\app\\build\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-zu\\values-zu.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Computador\\.gradle\\caches\\transforms-2\\files-2.1\\07ba7fffad44920a5884640f8b348b79\\res\\values-zu\\values-zu.xml",
+                    "source": "C:\\Users\\Computador\\.gradle\\caches\\transforms-2\\files-2.1\\16a35363e8dbd15bdfeac19a98c3b95d\\res\\values-zu\\values-zu.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -14,7 +14,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Computador\\.gradle\\caches\\transforms-2\\files-2.1\\58ddca64d181e3fdd13d337d836af472\\res\\values-zu\\values-zu.xml",
+                    "source": "C:\\Users\\Computador\\.gradle\\caches\\transforms-2\\files-2.1\\3d5711355d464e6d83833f3445c93b69\\res\\values-zu\\values-zu.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

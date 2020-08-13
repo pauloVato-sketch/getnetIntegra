@@ -1,0 +1,10 @@
+<div ng-show="field.isVisible" class="zh-radio"  data-zh-events data-zh-async-change data-business-events="FieldOnChange"
+zh-schema-validator="field/radio.html.json">
+  <input type="radio" class="mousetrap" id="radio-{{field.id}}" name="{{field.name}}" value="{{field.value}}" ng-model="fieldRow" data-ng-disabled="field.isReadOnly()" ng-change="change()">
+  <label for="radio-{{field.id}}" class="zh-radio-label">
+    <div zh-ripple-effect="grey" class="zh-circle">
+      <div class="zh-inner-circle"> </div>
+    </div>
+    <span data-zh-bind-translate="field.label"></span>
+  </label>
+</div>

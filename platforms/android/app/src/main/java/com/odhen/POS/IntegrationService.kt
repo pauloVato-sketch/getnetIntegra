@@ -2,12 +2,12 @@ package com.odhen.POS
 
 import android.content.Intent
 import android.util.Log
-import com.odhen.deviceintagrationfacade.Controllers.ImpressaoController
-import com.odhen.deviceintagrationfacade.Controllers.VendaController
-import com.odhen.deviceintagrationfacade.Enums.TipoMovimentacao
-import com.odhen.deviceintagrationfacade.Models.PaymentData
-import com.odhen.deviceintagrationfacade.Models.RefundData
-import com.odhen.deviceintagrationfacade.Shared.VendaAtual
+import com.odhen.deviceintegrationfacade.Controllers.ImpressaoController
+import com.odhen.deviceintegrationfacade.Controllers.VendaController
+import com.odhen.deviceintegrationfacade.Enums.TipoMovimentacao
+import com.odhen.deviceintegrationfacade.Models.PaymentData
+import com.odhen.deviceintegrationfacade.Models.RefundData
+import com.odhen.deviceintegrationfacade.Shared.VendaAtual
 import com.odhen.deviceintegrationfacade.Interfaces.DeviceIntegrationListener
 import org.apache.cordova.CallbackContext
 import org.apache.cordova.CordovaArgs
@@ -157,59 +157,56 @@ class IntegrationService: CordovaPlugin() {
                 Suspeito que os parâmetros não estão sendo inicializados no momento certo,gerando inconsistências
                 Dessa forma,imprimi um vazio antes de realizar as impressões,para tentar burlar isso
                 */
-               ImpressaoController.instance?.imprimeTexto("")
 
-
-                Log.d("TAGG",String.format("        \n%s\n",data.get("texto").toString()))
+                //Log.d("TAGG",String.format("        \n%s\n",data.get("texto").toString()))
                 ImpressaoController.instance?.imprimeTexto(data.get("texto").toString())
 
+                //Log.d("TAGG",ImpressaoController.instance?.reportError().toString())
                 /*É necessário que façamos o success no callback,senão o PrinterGetnet.js
                 não consegue resolver a promise feita,
                 ou ainda podemos implementar o error no PrinterGetnet.js*/
-                if(ImpressaoController.instance?.reportError()!=0){
+                if(ImpressaoController.instance?.reportError()==0 || ImpressaoController.instance?.reportError()==1){
 
                     integrationInstance.callbackContext.success(    this.getJsonFromPrinter(
-                            ImpressaoController.instance?.reportError(),true
+                            ImpressaoController.instance?.reportError(),false
                     ))
                 }else {
 
                     integrationInstance.callbackContext.success(    this.getJsonFromPrinter(
-                            ImpressaoController.instance?.reportError(), false
+                            ImpressaoController.instance?.reportError(), true
                     ))
                 }
             }
             "qrCode"->{
                 //Paliativo
-//                ImpressaoController.instance?.imprimeTexto("                ")
-                Log.d("TAGG",String.format("        \n%s\n",data.get("qrcode").toString()))
+                //Log.d("TAGG",String.format("        \n%s\n",data.get("qrcode").toString()))
                 ImpressaoController.instance?.imprimeQrCode(data.get("qrcode").toString())
-                if(ImpressaoController.instance?.reportError()!=0){
+                if(ImpressaoController.instance?.reportError()==0 || ImpressaoController.instance?.reportError()==1){
 
                     integrationInstance.callbackContext.success(    this.getJsonFromPrinter(
-                            ImpressaoController.instance?.reportError(),true
+                            ImpressaoController.instance?.reportError(),false
                     ))
                 }else {
 
                     integrationInstance.callbackContext.success(    this.getJsonFromPrinter(
-                            ImpressaoController.instance?.reportError(),false
+                            ImpressaoController.instance?.reportError(),true
                     ))
                 }
 
             }
             "barCode"->{
                 //Paliativo
-//                ImpressaoController.instance?.imprimeTexto("                ")
-                Log.d("TAGG",String.format("        \n%s\n",data.get("barcode").toString()))
+                //Log.d("TAGG",String.format("        \n%s\n",data.get("barcode").toString()))
                 ImpressaoController.instance?.imprimeCodBarra(data.get("barcode").toString())
-                if(ImpressaoController.instance?.reportError()!=0){
+                if(ImpressaoController.instance?.reportError()==0 || ImpressaoController.instance?.reportError()==1){
 
                     integrationInstance.callbackContext.success(    this.getJsonFromPrinter(
-                            ImpressaoController.instance?.reportError(),true
+                            ImpressaoController.instance?.reportError(),false
                     ))
                 }else {
 
                     integrationInstance.callbackContext.success(    this.getJsonFromPrinter(
-                            ImpressaoController.instance?.reportError(),false
+                            ImpressaoController.instance?.reportError(),true
                     ))
                 }
 

@@ -1,0 +1,10 @@
+<span ng-controller="OldCalendarController as CalendarCtrl" ng-init="field = startField">
+	<span data-zh-bind-translate="'From'"></span>
+	<span
+		class="interval-date"
+		ng-bind="field.formattedValue || dynamicLongDateFormat()"
+		zh-touchstart="startField.openField()"
+		zh-stop-propagation-click
+		zh-events
+	></span>
+</span>

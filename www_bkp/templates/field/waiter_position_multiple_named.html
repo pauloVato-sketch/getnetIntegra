@@ -1,0 +1,32 @@
+<section data-ng-show='field.isVisible' ng-controller="WaiterNamedPositions as controller">
+	<div class="row">
+		<div class="zh-waiter-positions multiple">
+			<div class="col-xs-12 col-sm-12 col-md-12">
+				<ul class="zh-positions-container" id="{{'odh-named-positions' + field.id}}">
+					<li>Posição</li>
+					<li class="odh-button-space">
+						<a data-zh-click='prev();' data-ng-show="showPrev">
+							<div>
+								...
+							</div>
+						</a>
+					</li>
+					<li class="odh-button-space" ng-repeat="i in buildNamedPositions(false, false)">
+						<a data-zh-events data-position='{{i}}' zh-click="toggleButtonSelectedStatus(field, i)" href="">
+							<div class="odh-named-positions" ng-class="{'zh-positions-active' : isButtonSelected(field, i)}"
+								 ng-bind="(i+1)+getPositionName(i+1)">
+							</div>
+						</a>
+					</li>
+					<li class="odh-button-space">
+						<a data-zh-click='next();' data-ng-show="showNext">
+							<div>
+								...
+							</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>

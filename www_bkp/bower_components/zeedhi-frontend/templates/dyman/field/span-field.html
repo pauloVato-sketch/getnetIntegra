@@ -1,0 +1,107 @@
+<!-- ABOUT THIS:
+-	The span-field.html is used on form widgets in the view mode.
+-	It is included and shows a different visualization for
+-->
+
+<div
+	zh-style="field.widget.currentRow"
+	ng-show="field.isVisible"
+	class="zh-span-field"
+	id="span-field-{{ field.name }}"
+	ng-controller="DecodeValueField as decode">
+
+	 <!-- Label with tooltip -->
+	<label
+		ng-if="!decode.isCheckbox(field) && !decode.isButton(field) && !decode.isImage(field) && !decode.isLabelWithIcon(field) && !decode.isFieldImageType(field)"
+		class="zh-label"
+		ng-show="field.label">
+		<span data-zh-bind-translate="field.label"></span>
+		<div
+			class="zh-help-icon"
+			ng-if="field.help">?</div>
+		<!-- Tooltip -->
+		<div class="zh-tooltip-arrow" data-ng-if="field.help"></div>
+		<div class="zh-tooltip-text"  data-ng-if="field.help" data-ng-bind-html="field.help|i18n"></div>
+	</label>
+
+
+	<!-- Label with icon -->
+	<div
+		ng-include="templateManager.getTemplateURL(field.template )"
+		ng-if="decode.isLabelWithIcon(field)"
+	></div>
+
+	<!-- Tooltip -->
+	<div class="zh-tooltip-arrow" ng-if="field.help"></div>
+	<div class="zh-tooltip-text"  ng-if="field.help" ng-bind-html="field.help|i18n"></div>
+
+	<!-- Value for general fields -->
+	<p
+		class="zh-field-value zh-text-align-{{field.align || 'left'}}"
+		ng-if="!decode.isSelectMultiple(field) && !decode.isCheckbox(field) && !decode.isButton(field) && !decode.isRadioGroup(field) && !decode.isImage(field) && !decode.isLabelWithIcon(field) && !decode.isFieldImageType(field) && !decode.isColor(field) && !decode.isLabelStaticType(field)"
+		data-ng-class="{'zh-field-value-textarea': decode.isTextarea(field)}"
+		ng-bind="decode.model(field, fieldRow)"
+	></p>
+
+	<!-- Select-multiple -->
+	<p
+		zh-select-multiple-tooltip
+		class="zh-field-value zh-text-align-{{field.align || 'left'}}"
+		ng-if="decode.isSelectMultiple(field)"
+		data-ng-class="{'zh-field-value-textarea': decode.isTextarea(field)}"
+		ng-bind="decode.model(field, fieldRow)"
+	></p>
+
+	<!-- Button field -->
+	<button
+		type="button"
+		class="btn btn-default btn-block form-input-margin-bottom zh-btn-type-button zh-button"
+		data-zh-bind-translate="field.label"
+		data-zh-events
+		ng-if="decode.isButton(field)"
+	></button>
+
+	<!-- Checkbox field -->
+	<div ng-if="decode.isCheckbox(field)" class="zh-checkbox zh-field-value-checkbox" zh-events zh-checkbox>
+		<input type="checkbox" class="mousetrap" ng-checked="fieldRow == field.valueToTrue" readonly disabled>
+		<label class="zh-box-label">
+			<div class="zh-box">
+				<span zh-icon="checked no-border" ng-show="fieldRow == field.valueToTrue"></span>
+			</div>
+			<span data-zh-bind-translate="field.label"></span>
+		</label>
+	</div>
+
+	<!-- RadioGroup field -->
+	<div ng-if="decode.isRadioGroup(field)" class="zh-radio-group zh-field-value-radio-group">
+		<div ng-repeat="option in field.dataSource.data" data-ng-class="'zh-radio-columns-'+(field.columns || 1)" class="zh-radio">
+			<input
+				type="radio"
+				class="mousetrap"
+				value="{{ option[field.valueField] }}"
+				ng-checked="(fieldRow == option[field.valueField])"
+			>
+			<label class="zh-radio-label">
+				<div class="zh-circle mousetrap">
+					<div class="zh-inner-circle"> </div>
+				</div>
+				<span data-zh-bind-translate="option[field.descriptionField]"></span>
+			</label>
+
+		</div>
+	</div>
+
+	<!-- Image field -->
+	<ng-include src="templateManager.getTemplateURL(field.template)" ng-if="decode.isFieldImageType(field)"></ng-include>
+
+	<!-- Color field -->
+	<div ng-if="decode.isColor(field)"
+		class="zh-select-multiple mousetrap zh-field-{{field.name}} zh-color-field zh-text-align-{{field.align || 'left'}}"
+		id="{{field.name}}"
+		name="{{field.name}}"
+		zh-color-field
+		>
+		<div class="inner-color"></div>
+	</div>
+
+</div>

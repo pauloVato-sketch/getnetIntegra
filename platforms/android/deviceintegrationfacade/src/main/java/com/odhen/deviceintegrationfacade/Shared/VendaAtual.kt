@@ -1,6 +1,6 @@
-package com.odhen.deviceintagrationfacade.Shared
+package com.odhen.deviceintegrationfacade.Shared
 
-import com.odhen.deviceintagrationfacade.Models.Venda
+import com.odhen.deviceintegrationfacade.Models.Venda
 
 object VendaAtual {
     var venda: Venda? = null

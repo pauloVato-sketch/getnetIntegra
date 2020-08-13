@@ -1,0 +1,21 @@
+{
+  "name": "Odhen POS",
+  "version": "4.6.1",
+  "authors": [
+    "Hugo <hugo.souza@teknisa.com>",
+    "Marcus <marcus.soares@live.com>",
+    "Philipe <philipe.costa@teknisa.com>",
+    "Leonardo <leonardo@teknisa.com>",
+    "Gabriel <gabriel.braz@teknisa.com>"
+  ],
+  "dependencies": {
+    "zeedhi-frontend": "1.62.6",
+    "zh-memory-storage": "1.0.3",
+    "zh-filter-preferences": "3.1.0",
+    "lodash": "^4.17.4",
+    "bluebird": "^3.5.1"
+  },
+  "resolutions": {
+    "zeedhi-frontend": "*"
+  }
+}

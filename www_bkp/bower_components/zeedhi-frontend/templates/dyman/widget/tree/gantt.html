@@ -1,0 +1,202 @@
+<section class="zh-widget" data-zh-widget-events>
+  <div class="container"
+    data-ng-controller="ListController as controller"
+    data-zh-scroller>
+
+    <!-- Search box -->
+    <div class="zh-container-search">
+      <div class="zh-input-search-container">
+        <input class="zh-input-search" type="text" placeholder="{{'Search'|i18n}}" data-ng-model="widget.searchCriteria['_ALL']">
+      </div>
+    </div>
+
+    <!-- Tree -->
+    <div data-ng-init="zoomLevel = widget.initialZoomLevel"
+      class="container zh-gantt-container"
+      data-ng-class="{'searchOpened': searchOpened}"
+      data-zh-scroller>
+
+      <div class="table-container-fixed">
+        <div class="zh-theader-bkg"></div>
+        <div class="zh-inner">
+          <table cellspacing="0" cellpadding="0"
+            class="table table-striped zh-grid zh-tree-grid"
+            data-ng-class="{'with-checkbox': widget.showCheckbox}">
+
+            <!-- Table header -->
+            <thead class="zh-thead-bgcolor">
+              <tr>
+
+                <!-- Checkbox for checking rows without long tap -->
+                <th data-ng-if="widget.showCheckbox" class="grid-checkbox-column">
+                  <div class="zh-theader" zh-click="controller.toggleAll(widget)">
+                      <svg x="0px" y="0px" width="16px" height="16px" viewBox="0 0 16 16">
+                        <rect class="box" x="0.5" y="0.5" stroke-miterlimit="10" width="15" height="15"/>
+                        <path data-ng-if="widget.dataSource.checkedRows.length > 0" class="check" d="M13.361,3.323c-0.3-0.246-0.78-0.198-1.027,0.104L6.115,11.01L3.632,8.403 C3.37,8.123,2.863,8.076,2.597,8.376C2.345,8.66,2.281,9.047,2.572,9.407l3.05,3.2c0.137,0.149,0.332,0.234,0.536,0.234h0.016h0.007 c0.208-0.007,0.405-0.104,0.541-0.267l6.746-8.226C13.718,4.039,13.672,3.58,13.361,3.323z"/>
+                      </svg>
+                  </div>
+                </th>
+
+                <th data-ng-repeat="column in widget.fields | filter: {showOnList : true, fixed : true} | orderBy: 'sequenceInList'"
+                  data-ng-if="column.aclIsVisible && column.isVisible">
+
+                  <!-- WARNING:
+                  - This header label it's not actually displayed.
+                  - It's only here to guarantee proper table sizing.
+                  -->
+                  <span data-zh-bind-translate="column.label"
+                    style="min-width: {{ column.minWidth || '0' }}; display: block;"
+                  ></span>
+
+                  <!-- Actualy displayed header:
+                  - This markup was the best known way to keep a theader fixed
+                  - on top of the table while it's content scrolls freely.
+                  -->
+
+                  <div class="zh-theader">
+                    <!-- Label text -->
+                    <span data-zh-bind-translate="column.label"
+                      style="max-width: {{ column.maxWidth || '100%' }}; display: block;"
+                      data-ng-class="{ 'zh-field-overflow': column.maxWidth || column.minWidth }"
+                    ></span>
+
+                    <!-- Ordering arrow:
+                    - Ordering function removed from tree-grid due to behavior issues.
+                    - @todo Determine wanted behavior to tree-grid ordering tool and implement it.
+                    -->
+                  </div>
+                </th>
+              </tr>
+            </thead>
+
+
+            <!-- Table body -->
+            <tbody>
+
+              <tr class="search-breadcrumb" data-ng-repeat-start="row in filtered = (widget.plainTreeData | filter:controller.search)" data-ng-if="row._breadcrumb && Util.objectHasAnyValue(widget.searchCriteria)">
+                <td colspan="9999">
+                  <span data-ng-bind="row._breadcrumb"></span>
+                </td>
+              </tr>
+
+              <tr class="{{'zh-row-lvl-' + controller.getRowLevel(row, widget.searchCriteria)}}"
+                data-ng-class="{'row-selected' : row.__isSelected, 'open': row._opened, 'closed': !row_opened, 'bold-parent': (row._childCount > 0 && !Util.objectHasAnyValue(widget.searchCriteria)), 'row-editing': row == widget.currentRow, 'show-breadcrumb': row._breadcrumb && Util.objectHasAnyValue(widget.searchCriteria)}"
+                data-ng-repeat-end
+                data-ng-show="controller.isOpened(row) || row._parent == null || Util.objectHasAnyValue(widget.searchCriteria)"
+                data-zh-long-tap="controller.onLongTap(row);"
+                data-zh-click="openRow(row, widget);"
+                data-zh-swipe-tip
+                data-zh-style>
+
+                <!-- Checkbox for checking rows without long tap -->
+                <td data-ng-if="widget.showCheckbox" class="grid-checkbox-column zh-side-column" data-zh-click="controller.toggle(row); $event.stopPropagation();">
+                  <span>
+                    <svg x="0px" y="0px" width="16px" height="16px" viewBox="0 0 16 16">
+                      <rect class="box" x="0.5" y="0.5" stroke-miterlimit="10" width="15" height="15"/>
+                      <path data-ng-if="row.__isSelected" class="check" d="M13.361,3.323c-0.3-0.246-0.78-0.198-1.027,0.104L6.115,11.01L3.632,8.403 C3.37,8.123,2.863,8.076,2.597,8.376C2.345,8.66,2.281,9.047,2.572,9.407l3.05,3.2c0.137,0.149,0.332,0.234,0.536,0.234h0.016h0.007 c0.208-0.007,0.405-0.104,0.541-0.267l6.746-8.226C13.718,4.039,13.672,3.58,13.361,3.323z"/>
+                    </svg>
+                  </span>
+                </td>
+
+                <!-- Row content -->
+                <td ng-repeat="field in widget.fields | filter: {showOnList : true, fixed : true} | orderBy: 'sequenceInList'"
+                  data-ng-if="field.aclIsVisible && field.isVisible"
+                  class="zh-standard-column">
+
+                  <!-- Parent icon -->
+                  <span class="icon"
+                    data-zh-touchstart='controller.toggleTree(row, elm)' data-zh-stop-propagation-click
+                    data-ng-bind="controller.parentIconContent(row)"
+                    data-ng-if="$first && !Util.isUndefined(objectHasAnyValue)">
+                  </span>
+
+                  <!-- Cell content -->
+                  <span data-ng-class="{ 'zh-field-overflow': field.maxWidth || field.minWidth }"
+                    data-ng-bind="row[field.name]"
+                    style="max-width: {{ field.maxWidth || '100%' }}; display: block;">
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div class="zh-theader-bkg parents"></div>
+        <div class="zh-theader-bkg"></div>
+
+        <div class="zh-inner">
+          <table cellspacing="0" cellpadding="0"
+            class="table table-striped zh-grid zh-tree-grid {{ zoomLevel.toLowerCase() }}">
+
+            <!-- Table header -->
+            <thead class="zh-thead-bgcolor">
+              <tr>
+                <th data-ng-repeat="step in ganttSteps.parentSteps" colspan="{{step.colSpan}}">
+                  <span data-zh-bind-translate="step.label"></span>
+                  <div class="zh-theader parent">
+                    <!-- Label text -->
+                    <span data-zh-bind-translate="step.label"></span>
+                  </div>
+                </th>
+              </tr>
+              <tr>
+                <th data-ng-repeat="step in ganttSteps.steps" data-ng-class="{firstChild: step.firstChild, today: step.today}" class="{{ 'day'+step.weekday }}">
+                  <span data-zh-bind-translate="step.label"></span>
+                  <div class="zh-theader">
+                    <!-- Label text -->
+                    <span data-zh-bind-translate="step.label"></span>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+
+            <!-- Table body -->
+            <tbody>
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+
+      <!-- No match text:
+      - This text is only displayed when there is no filtered content
+      - taht matches the search box text.
+      -->
+      <div class="row" data-ng-if="filtered.length == 0">
+        <div class="col-xs-12">
+          <p data-ng-if="!Util.objectHasAnyValue(widget.searchCriteria)"
+            class="text-center zh-text-search-not-found"
+            data-zh-bind-translate="widget.noMatchText || 'Não há registros.' "
+          ></p>
+          <p data-ng-if="Util.objectHasAnyValue(widget.searchCriteria)"
+            class="text-center zh-text-search-not-found"
+            data-zh-bind-translate="widget.searchNoMatchText || 'Nenhum registro encontrado.'"
+          ></p>
+        </div>
+      </div>
+      <div class="row" data-ng-if="filtered.length == 0 && widget.showAddButton"
+        data-zh-touchstart="widget.onAdd()">
+        <div class="col-xs-12">
+          <p class="text-center zh-text-search-not-found zh-add-when-empty">
+            <span zh-icon="no-border plus"></span>
+            {{ widget.addButtonText || ('Add a record'|i18n) }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search box toggle:
+    - This box is shown so you can toggle the visibility of the search box.
+    - It's located here so we didn't have to deal with z-index issues.
+    - @todo: Relocate and deal with possible z-index problems
+    -->
+    <span class="zh-search-box gantt"
+      zh-icon="no-border search"
+      data-ng-class="{'searchOpened': searchOpened}"
+      data-zh-click="toggleSearch($event)"></span>
+
+  </div>
+</section>

@@ -1,0 +1,34 @@
+{
+    "id": "1872295115269380031255",
+    "name": "confirmacao",
+    "showHeader": false,
+    "showMenu": false,
+    "label": "Login",
+    "showBack": false,
+    "events": [],
+    "showFooter": false,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "widgets": [
+        {
+            "id": "45818195134985428691256",
+            "name": "confirmacao",
+            "label": "Lista Pessoas",
+            "height": "100%",
+            "class": "12",
+            "isVisible": true,
+            "template": "widget/form.html",
+            "dataSource": {},
+            "events": [
+                {
+                    "id": "45818195116466671721257",
+                    "name": "WidgetOnEnter",
+                    "code": "OrderController.confirmLogout();"
+                }
+            ],
+            "fields": []
+        }
+    ]
+}

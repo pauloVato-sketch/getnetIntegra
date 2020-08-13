@@ -1,0 +1,44 @@
+<nav id="header" class="navbar navbar-default zh-navbar-default-header zh-custom-header" role="navigation" ng-controller="HeaderController as headerCtrl">
+	<div class="container-fluid">
+		<div class="zh-header-right">
+			<ul class="zh-notifications" data-ng-show="templateManager.container.showNotifications !== false">
+				<li zh-ripple-effect class="zh-ripple-effect" data-ng-repeat="notification in templateManager.project.notifications" data-zh-touchstart="notificationClick(notification)"
+					data-ng-show="notification.isVisible && notification.aclIsVisible">
+					<a data-zh-title-tooltip="{{ notification.tooltip }}">
+						<span class="notification-icon" data-ng-class="{'has-label': notification.label}">
+							<span zh-icon="inline-block {{notification.icon}}"></span>
+							<span class='zh-notification-hint' data-ng-show='notification.hint' data-zh-bind-translate='notification.hint'></span>
+						</span>
+						<span class='zh-notification-label' data-ng-show='notification.label' data-zh-bind-translate='notification.label'></span>
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="navbar-header">
+			<div
+				class="menu-items"
+				zh-touchstart="toggleSideMenu()"
+				ng-if="templateManager.container.showMenu">
+
+				<a
+					type="button"
+					class="navbar-toggle pull-left"
+					data-toggle="collapse"
+					data-target="#bs-example-navbar-collapse-1"
+					zh-update-scroller="100">
+
+					<div class="bars">
+						<span class="sr-only"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</div>
+					<span class="icon-logo {{ lang }}" ng-style="headerCtrl.getHeaderLogo()"></span>
+				</a>
+			</div>
+
+			<div class="navbar-brand zh-header-title" data-ng-bind-html="templateManager.container.label|i18n" data-ng-class="{'has-header-info': templateManager.headerInfo}"></div>
+			<div class="zh-header-info" data-ng-bind="templateManager.headerInfo" data-ng-if="templateManager.headerInfo"></div>
+		</div>
+	</div>
+</nav>

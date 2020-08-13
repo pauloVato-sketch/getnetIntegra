@@ -1,4 +1,4 @@
-package com.odhen.deviceintagrationfacade.Controllers
+package com.odhen.deviceintegrationfacade.Controllers
 
 import android.graphics.Bitmap
 import com.odhen.deviceintegrationfacade.Enums.Alinhamento

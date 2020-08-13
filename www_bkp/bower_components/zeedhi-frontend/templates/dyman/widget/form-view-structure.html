@@ -1,0 +1,33 @@
+<form class="zh-{{widget.name}}" role="form"
+	ng-controller="FormController as formCtrl">
+	<!-- Field groups -->
+	<section class="zh-field-group"
+		data-ng-repeat="fieldGroup in widget.fieldGroups"
+		data-ng-if="fieldGroup.rows.length > 0 && fieldGroup.isVisible && fieldGroup._hasVisibleFields">
+		<!-- Field group label -->
+		<label class="zh-field-group-control" zh-click="fieldGroup.opened = fieldGroup.collapsible !== false ? !fieldGroup.opened : fieldGroup.opened" data-ng-if="fieldGroup.label">
+			<span zh-icon="down no-border" data-ng-show="fieldGroup.collapsible !== false"
+				data-ng-class="{ 'opened' : fieldGroup.opened, 'closed' : !fieldGroup.opened }"></span>
+			<span class="zh-label zh-field-group-label"
+				data-zh-bind-translate="fieldGroup.label"></span>
+		</label>
+
+		<!-- Field group rows -->
+		<div class="field-group-rows"
+			ng-show="fieldGroup.opened">
+				<div class="row"
+					ng-repeat="row in fieldGroup.rows"
+					ng-show="widget.isVisible || true">
+					<div ng-controller="DecodeValueField as decode"
+						class="col-xs-{{field.class}} zh-field"
+						ng-repeat="field in row.fields"
+						data-ng-class="{'last-of-row': field.lastOfRow}"
+						ng-include src="decode.getViewTemplate(field)"
+						data-ng-if="field.aclIsVisible"
+						data-ng-show="field.isVisible && field.showOnView"
+						zh-post-repeat="templateManager.container.refresh()"
+					></div>
+			</div>
+		</div>
+	</section>
+</form>

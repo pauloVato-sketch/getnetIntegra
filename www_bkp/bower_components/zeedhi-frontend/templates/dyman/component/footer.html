@@ -1,0 +1,99 @@
+<div id="footer"
+	class="navbar zh-custom-footer zh-navbar-footer navbar-fixed-bottom"
+	data-ng-show="popupOpen || (templateManager.container.showFooter && !templateManager.container.innerFooter) || isSwipeOpen()"
+	data-ng-class="{ 'zh-navbar-footer-edit-mode' : templateManager.container.inEditMode() || templateManager.container.inInlineEditMode() || (isPopupOpen() && !fcontroller.isPopupNoBlock()) }"
+	data-ng-controller="FooterController as fcontroller">
+
+	<!-- Left actions -->
+	<div class="zh-footer-left">
+		<ul>
+			<li  zh-ripple-effect class="previous"
+				data-ng-repeat="action in fcontroller.sourceActions.getActionsByVisibility('back')"
+				data-zh-touchstart="actionClick(action, action.widget)"
+				data-zh-stop-propagation-click
+				data-zh-owner-element="action"
+				data-ng-class="{disabled: action.readOnly}">
+				<a data-zh-title-tooltip="{{ action.tooltip|i18n }}">
+					<span zh-icon="previous no-border icon-black" data-ng-hide="action.hideIcon"></span>
+					<span class="zh-footer-title-sprit" data-zh-bind-translate='action.label'></span>
+				</a>
+			</li>
+
+			<li  zh-ripple-effect class="previous"
+				data-zh-touchstart="goBack()"
+				data-zh-stop-propagation-click
+				data-ng-show="!menuBack && (templateManager.historyItems.length > 1 || isSwipeOpen() || isPopupOpen())">
+				<a>
+					<span zh-icon="previous no-border icon-black"></span>
+					<span class="zh-footer-title-sprit" data-zh-bind-translate="'Voltar'"></span>
+				</a>
+			</li>
+		</ul>
+	</div>
+
+	<!-- Central actions -->
+	<div class="zh-footer-center">
+		<ul>
+			<li zh-ripple-effect data-ng-show="action.isVisible" data-ng-if="action.aclIsVisible"
+				data-zh-touchstart="actionClick(action, action.widget)"
+				data-zh-stop-propagation-click
+				data-zh-owner-element="action"
+				data-ng-repeat="action in fcontroller.sourceActions.getActionsByVisibility(fcontroller.sourceActions.getActionsTypeToShow())"
+				data-ng-class="{disabled: action.readOnly}">
+				<a data-zh-title-tooltip="{{ action.tooltip|i18n }}">
+					<span class="action-icon" data-ng-class="{'has-label': action.label}">
+						<span zh-icon="{{action.icon}} icon-black"></span>
+						<span class='zh-action-hint' data-ng-show='action.hint' data-zh-bind-translate="action.hint"></span>
+					</span>
+					<span class='zh-action-label' data-ng-show='action.label' data-zh-bind-translate="action.label"></span>
+
+					<!-- WARNING:
+						The following div is only used for testing purposes,
+						please do not remove it
+					-->
+					<div class="zh-test-box"></div>
+				</a>
+			</li>
+		</ul>
+	</div>
+
+	<!-- Right actions -->
+	<div class="zh-footer-right"
+		zh-update-scroller="100"
+		data-ng-show="fcontroller.sourceActions.countActionsByVisibility('never') > 0">
+		<ul data-ng-init="actions_never = fcontroller.sourceActions.getActionsByVisibility('never')">
+
+			<!-- Ellipsis actions -->
+			<li zh-ripple-effect data-zh-touchstart="openActionsPopup()" data-zh-stop-propagation-click class='more-actions'
+				data-ng-if="fcontroller.sourceActions.countActionsByVisibility('never') > 1 || fcontroller.shouldShowNeverActionsAsGrouped()">
+				<a>
+					<span class="zh-footer-title-sprit" data-zh-bind-translate="'Actions'"></span>
+				</a>
+			</li>
+
+			<!-- Right action -->
+			<li data-ng-repeat="action in fcontroller.sourceActions.getActionsByVisibility('never')" zh-ripple-effect data-ng-show="action.isVisible"
+				data-ng-if="fcontroller.sourceActions.countActionsByVisibility('never') == 1 && !fcontroller.shouldShowNeverActionsAsGrouped() && action.aclIsVisible"
+				data-zh-touchstart="actionClick(action, action.widget)"
+				data-zh-stop-propagation-click
+				data-zh-owner-element="action"
+				data-ng-class="{disabled: action.readOnly}">
+				<a data-zh-title-tooltip="{{ action.tooltip|i18n }}">
+					<span class="zh-footer-title-sprit"
+						data-zh-bind-translate="action.label">
+					</span>
+
+					<span
+						data-ng-if="action.icon"
+						zh-icon="{{action.icon}} icon-black">
+					</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<!-- Inner Footer -->
+<aside data-ng-if="templateManager.container.innerFooter"
+	data-ng-include="templateManager.getTemplateURL(templateManager.container.innerFooter)">
+</aside>

@@ -5,7 +5,7 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 		'4': IntegrationRede,
 		'5': IntegrationSiTEF,
 		'7': IntegrationCielo,
-		'8': IntegrationGetnet
+		'9': IntegrationGetnet
 		};
 
 	var self = this;
@@ -168,7 +168,10 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 			CDLOJATEF: null,
 			CDTERTEF: null,
 			TRANSACTIONDATE: '',
-			NRCARTBANCO: ''
+			NRCARTBANCO: '',
+			//PagSeguro
+			TRANSACTIONCODE:'',
+			TRANSACTIONID:''
 		};
 	};
 }

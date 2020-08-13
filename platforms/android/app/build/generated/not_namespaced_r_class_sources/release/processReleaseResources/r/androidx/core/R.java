@@ -138,13 +138,14 @@ public final class R {
         public static final int tag_accessibility_heading = 0x7f0800ca;
         public static final int tag_accessibility_pane_title = 0x7f0800cb;
         public static final int tag_screen_reader_focusable = 0x7f0800cc;
-        public static final int tag_transition_group = 0x7f0800cd;
-        public static final int tag_unhandled_key_event_manager = 0x7f0800ce;
-        public static final int tag_unhandled_key_listeners = 0x7f0800cf;
-        public static final int text = 0x7f0800d0;
-        public static final int text2 = 0x7f0800d1;
-        public static final int time = 0x7f0800d4;
-        public static final int title = 0x7f0800d6;
+        public static final int tag_state_description = 0x7f0800cd;
+        public static final int tag_transition_group = 0x7f0800ce;
+        public static final int tag_unhandled_key_event_manager = 0x7f0800cf;
+        public static final int tag_unhandled_key_listeners = 0x7f0800d0;
+        public static final int text = 0x7f0800d1;
+        public static final int text2 = 0x7f0800d2;
+        public static final int time = 0x7f0800d5;
+        public static final int title = 0x7f0800d7;
     }
     public static final class integer {
         private integer() {}

@@ -1,0 +1,16 @@
+[CliSiTef]
+; Nao esquecer de habilitar no AndroidManifest.xml:
+; <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+DiretorioTrace=/sdcard
+HabilitaTrace=1
+
+[CliSiTefI]
+DiretorioTrace=/sdcard
+HabilitaTrace=1
+
+[PinPad]
+HabilitaTraceStatusPinPad=1
+HabilitaTrace=1
+ChaveTrace=B2A26263C1F40F3B
+
+

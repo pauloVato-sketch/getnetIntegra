@@ -1,0 +1,21 @@
+<div class="container"
+	ng-controller="DashboardController as dashboardController">
+
+	<div class="zh-dashboard container"
+		ng-if="templateManager.container.template.indexOf('dashboard') !== -1"
+		zh-scroller>
+		<div data-zh-masonry-grid data-zh-masonry-grid-order="{{ templateManager.container.gridOrder }}">
+			<div
+				zh-ripple-effect
+				ng-repeat="widget in templateManager.container.widgets | filter: search"
+				class="zh-dashboard-widget {{ widget.class }}"
+				data-ng-class="{editing: grid.editing}"
+				id="masonry-item-{{widget.id}}"
+				ng-include="templateManager.getTemplateURL(widget.template)"
+				zh-post-repeat="initializeGrid(templateManager.container.widgets)">
+			</div>
+		</div>
+	</div>
+
+	<div data-ng-init="widget = templateManager.container" data-ng-show="widget.floatingControl !== false" data-ng-include="templateManager.getFrameworkTemplateURL('component/floating-control.html')"></div>
+</div>

@@ -1,0 +1,9 @@
+{
+	"IS_VALID_WITH_MESSAGE": "Error in field '__fieldLabel__' with message: __errorMessage__.\n",
+	"gridMultipleSelected": "__nrRows__ rows selected",
+	"gridSingleSelected": "__nrRows__ row selected",
+	"MORE_ROWS_DISPLAY": "There are more rows that are not being displayed. Do you want to check them?",
+	"BROWSER_NOT_SUITABLE": "The current browser or version is not fully compatible with Zeedhi Framework Frontend!",
+	"BROWSER_SUITABLE": "You're usign a browser compatible with Zeedhi Framework Frontend!",
+	"PLEASE_SELECT_COLOR": "Please select at least __nrColors__ __nmColors__!"
+}

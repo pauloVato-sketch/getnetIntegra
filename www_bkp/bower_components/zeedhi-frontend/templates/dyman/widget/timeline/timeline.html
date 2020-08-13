@@ -1,0 +1,14 @@
+<section class="zh-widget" data-zh-widget-events>
+  <div class="container zh-timeline-container"
+       data-ng-controller="TimelineController as controller"
+       data-zh-scroller>
+    <div class="zh-timeline-inner-container">
+      <div class="zh-timeline-axis"></div>
+      <div class="zh-timeline-item" data-ng-repeat="item in widget.dataSource.data">
+        <span class="zh-timeline-date" data-ng-bind="item.dateStr" data-ng-if="$index == 0 || item.dateStr != widget.dataSource.data[$index-1].dateStr"></span>
+        <span class="zh-timeline-time" data-ng-bind="item.timeStr" data-ng-if="widget.showTime !== false"></span>
+        <span data-ng-include="templateManager.getTemplateURL((item.template || widget.defaultItemTemplate))"></span>
+      </div>
+    </div>
+  </div>
+</section>

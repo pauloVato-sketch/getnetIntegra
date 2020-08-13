@@ -1,0 +1,35 @@
+<section
+	class="dashboard-grid-container "
+	zh-click="dashboardController.itemClick(widget)"
+	ng-controller="DecodeValueField as decode">
+	<!-- Title -->
+	<div class="title">
+		<span zh-icon="{{widget.icon}} no-border"></span>
+		<span class="main-label" ng-bind="widget.label"></span>
+		<span class="highlight-label" ng-bind="widget.highlight"></span>
+	</div>
+
+	<!-- Grid -->
+	<div class="dashboard-table-container {{widget.grid_class}}">
+		<table class="dashboard-grid">
+			<thead ng-if="widget.showHeader">
+				<tr>
+					<th
+						ng-repeat="column in widget.fields"
+						ng-bind="column.label"
+						class="grid-align-{{ column.align || 'left' }}"
+					></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="row in widget.dataSource.data" zh-style>
+					<td
+						ng-repeat="column in widget.fields"
+						ng-bind="decode.model(column, row[column.name])"
+						class="grid-align-{{ column.align || 'left' }}"
+					></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</section>

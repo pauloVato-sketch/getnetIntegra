@@ -1,0 +1,14 @@
+<div
+	class="zh-carousel container"
+	ng-controller="CarouselController as Ctrl"
+	zh-widget-events
+	zh-carousel
+	zh-scroller>
+
+  <div
+  	class="carousel-child-widget"
+  	ng-repeat="widget in widget.widgets"
+  	ng-include="templateManager.getTemplateURL(widget.template)"
+  ></div>
+
+</div>

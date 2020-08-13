@@ -1,0 +1,232 @@
+{
+    "id": "13549497271283184341237",
+    "name": "closeRegister",
+    "label": "Fechar Caixa",
+    "showHeader": true,
+    "showMenu": true,
+    "showBack": true,
+    "showFooter": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "popup": "component/popup.html",
+    "template": "container/window.html",
+    "events": [
+        {
+            "id": "190199575534697044071254",
+            "name": "ContainerAfterinit",
+            "code": "RegisterController.handleShowSideMenu(args.owner);"
+        }
+    ],
+    "widgets": [
+        {
+            "id": "19019957553626198621238",
+            "name": "registerPaymentsList",
+            "label": "Recebimentos",
+            "template": "widget/grid.html",
+            "showCheckbox": false,
+            "isVisible": true,
+            "allowSelectOnLongTap": false,
+            "floatingControl": false,
+            "actions": [
+                {
+                    "id": "19019957552486850641248",
+                    "label": "Voltar",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "190199575529155935351249",
+                            "name": "ActionEvent",
+                            "code": "ScreenService.goBack();"
+                        }
+                    ]
+                },
+                {
+                    "id": "190199575512061103871250",
+                    "label": "Fechar Caixa",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "id": "19019957556657260121251",
+                            "name": "ActionEvent",
+                            "code": "RegisterController.closeRegister(args.owner.widget);"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "id": "19019957554046135671252",
+                    "name": "WidgetOnEnter",
+                    "code": "RegisterController.getClosingPayments(args.owner);"
+                },
+                {
+                    "id": "19019957554468937551253",
+                    "name": "WidgetAfterMoveRow",
+                    "code": "RegisterController.openPopupPaymentValue(args.owner);"
+                }
+            ],
+            "dataSource": {
+                "rest": false,
+                "memoryStorage": true,
+                "name": "/RegisterClosingPayments"
+            },
+            "fields": [
+                {
+                    "id": "190199575521247068681246",
+                    "name": "NMTIPORECE",
+                    "label": "Recebimentos",
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnGrid": true,
+                    "defaultValue": "",
+                    "class": "2"
+                },
+                {
+                    "id": "190199575538571623891247",
+                    "name": "LABELVRMOVIVEND",
+                    "label": "Valor",
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnGrid": true,
+                    "defaultValue": "",
+                    "class": "4"
+                }
+            ],
+            "widgets": [
+                {
+                    "id": "190199575518905045931239",
+                    "name": "paymentValue",
+                    "template": "widget/form.html",
+                    "label": "",
+                    "isVisible": true,
+                    "showDescriptionOrder": false,
+                    "actions": [
+                        {
+                            "id": "190199575537615766321241",
+                            "label": "Confirmar",
+                            "name": "confirm",
+                            "isVisible": true,
+                            "readOnly": false,
+                            "showOnForm": true,
+                            "showOnList": false,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "id": "190199575536939468821242",
+                                    "name": "ActionEvent",
+                                    "code": "RegisterController.savePaymentValue(args.owner.widget,args.owner.widget.container.widgets[0]);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "190199575528156001501243",
+                            "label": "Voltar",
+                            "isVisible": true,
+                            "showOnForm": true,
+                            "showOnList": false,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "190199575531310269501244",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        }
+                    ],
+                    "dataSource": {},
+                    "events": [],
+                    "fields": [
+                        {
+                            "id": "19019957551771863641240",
+                            "name": "LABELVRMOVIVEND",
+                            "label": "Valor do recebimento",
+                            "showOnForm": true,
+                            "validations": {
+                                "required": true
+                            },
+                            "focused": true,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "template": "field/text-number.html",
+                            "class": "6 center-align-field",
+                            "descriptionField": "VALOR",
+                            "events": [
+                                {
+                                    "id": "15995324232638265591635",
+                                    "name": "FieldOnKeydown",
+                                    "code": "RegisterController.handleEnterButton(args);"
+                                }
+                            ],
+                            "mask": {
+                                "type": "currency",
+                                "params": {
+                                    "showSymbol": false,
+                                    "precision": 2,
+                                    "thousands": "",
+                                    "decimal": ",",
+                                    "allowNegative": false
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "report",
+                    "label": "Relatórios de Fechamento",
+                    "isVisible": true,
+                    "template": "widget/form.html",
+                    "actions": [
+                        {
+                            "name": "print",
+                            "label": "Imprimir e Continuar",
+                            "showAsAction": "always|view|edit",
+                            "icon": "printer",
+                            "isVisible": true,
+                            "events": [
+                                {
+                                    "id": "29208878614401171721309",
+                                    "name": "ActionEvent",
+                                    "code": "RegisterController.printCloseRegister(true);"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "continue",
+                            "label": "Continuar",
+                            "showAsAction": "never",
+                            "isVisible": true,
+                            "events": [
+                                {
+                                    "id": "29208878614401171721309",
+                                    "name": "ActionEvent",
+                                    "code": "RegisterController.handleCloseRegister(true);"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "name": "report",
+                            "class": 12,
+                            "isVisible": true,
+                            "readOnly": true,
+                            "defaultValue": null,
+                            "template": "field/textarea.html",
+                            "textRows": 15,
+                            "events": []
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -272,8 +272,6 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 					.where('paymentData').equals(paymentData)
 					.where('currentPayment').equals(currentPayment);
 
-                console.log(paymentData);
-                console.log(currentPayment);
 				return SavePayment.download(query).then(function(paymentData){
 					resolve();
 				});
@@ -762,6 +760,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
     	OperatorRepository.findOne().then(function(operatorData){
 			if (!_.isEmpty(dadosImpressao)){
 				if (_.get(dadosImpressao, 'TEXTOCUPOM1VIA')){
+                    
 
 					PrinterService.printerCommand(PrinterService.TEXT_COMMAND, dadosImpressao.TEXTOCUPOM1VIA);
 					PrinterService.printerCommand(PrinterService.BARCODE_COMMAND, dadosImpressao.TEXTOCODIGOBARRAS);
@@ -788,6 +787,8 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 				if (_.get(dadosImpressao, 'TEFVOUCHER')) {
 					dadosImpressao.TEFVOUCHER.forEach(function (tefVoucher) {
 						if (!_.isEmpty(tefVoucher.STLPRIVIA)) {
+
+						    console.log("??");
 							PrinterService.printerCommand(PrinterService.TEXT_COMMAND, tefVoucher.STLPRIVIA);
 						 	self.printerSpaceCommand(2);
 

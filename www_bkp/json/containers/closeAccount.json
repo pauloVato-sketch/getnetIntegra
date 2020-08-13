@@ -1,0 +1,1084 @@
+{
+    "id": "129731530112500178001192",
+    "name": "closeAccount",
+    "label": "Fechar Conta",
+    "showHeader": true,
+    "showMenu": true,
+    "showBack": true,
+    "showFooter": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "popup": "component/popup.html",
+    "events": [
+        {
+            "id": "1115953432143201851235",
+            "name": "ContainerAfterinit",
+            "code": "UtilitiesService.setHeader(args.owner);"
+        },
+        {
+            "id": "1115953434243874741236",
+            "name": "ContainerOnBack",
+            "code": "UtilitiesService.handleBack(args.owner.name);"
+        }
+    ],
+    "template": "container/window.html",
+    "widgets": [
+        {
+            "name": "closeAccountDetailsWindow",
+            "label": "Conta",
+            "template": "widget/tabbedWidget.html",
+            "isVisible": true,
+            "fields": [],
+            "events": [
+                {
+                    "id": "1115953439073276071234",
+                    "name": "WidgetOnEnter",
+                    "code": "AccountController.prepareAccountDetails(args.owner.container.getWidget('closeAccount')); AccountController.controlVisible(args.owner.container.getWidget('closeAccount')); AccountController.limpaDesconto(args.owner.container.getWidget('discountPopup'));"
+                }
+            ],
+            "widgets": [
+                {
+                    "id": "1115953433230589731193",
+                    "name": "closeAccount",
+                    "label": "Fechar Conta",
+                    "template": "widget/form.html",
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "id": "11159534339176482771230",
+                            "label": "Voltar",
+                            "isVisible": true,
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "1115953439026682241231",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.goBack();"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "transmitir",
+                            "isVisible": true,
+                            "icon": "price-tag",
+                            "showAsAction": "always",
+                            "events": [
+                                {
+                                    "id": "92987010311953589261105",
+                                    "name": "ActionEvent",
+                                    "code": "AccountController.openDiscount(args.owner.widget)"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "alterservico",
+                            "isVisible": true,
+                            "icon": "money-charge",
+                            "showAsAction": "always",
+                            "events": [
+                                {
+                                    "id": "92987010311953589261106",
+                                    "name": "ActionEvent",
+                                    "code": "AccountController.handleOpenCharge(args.owner.widget);"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Fechar Conta",
+                            "name": "BtncloseAccount",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "id": "1115953437470791251233",
+                                    "name": "ActionEvent",
+                                    "code": "TableController.closeAccount(args.owner.widget, args.owner.widget.container.getWidget('changeCharge').dataSource.data[0].value);"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "name": "lblVendedorAbert",
+                            "label": "Mesa aberta por",
+                            "class": "6 odh-account-font",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": true,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "name": "NMVENDEDORABERT",
+                            "label": "",
+                            "class": "6 odh-account-font",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "id": "11159534333828857941201",
+                            "name": "lblQtdPessoas",
+                            "label": "Quantidade de Pessoas",
+                            "class": "6 odh-account-font",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "bolt": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "id": "11159534334423792531202",
+                            "name": "NRPESMESAVEN",
+                            "label": "",
+                            "class": "6 odh-account-font",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "breakline": false,
+                            "newLine": true,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "id": "11159534312642613331203",
+                            "name": "lblPermanencia",
+                            "label": "Permanência",
+                            "class": "6 odh-account-font",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "bolt": true,
+                            "newLine": true,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "id": "1115953433193717541204",
+                            "name": "permanencia",
+                            "label": "",
+                            "class": "6 odh-account-font",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "id": "11159534335905345561205",
+                            "name": "lblProdutos",
+                            "label": "Produtos",
+                            "class": "6 odh-account-font",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "breakline": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "id": "11159534314818436551206",
+                            "name": "produtos",
+                            "label": "",
+                            "class": "6 odh-account-font",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "name": "lbldesconto",
+                            "label": "Desconto",
+                            "class": "6 odh-account-font",
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "breakline": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "name": "desconto",
+                            "label": "",
+                            "class": "6 odh-account-font",
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "id": "11159534337551308131207",
+                            "name": "lblservico",
+                            "label": "Serviço",
+                            "class": "6 odh-account-font",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "breakline": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "id": "11159534310589478011208",
+                            "name": "servico",
+                            "label": "",
+                            "class": "3 odh-account-font",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "id": "11159534339302395361209",
+                            "name": "swiservico",
+                            "paramName": "servico",
+                            "permissionName": "retirarTaxaServico",
+                            "label": "",
+                            "class": "3 odh-account-font",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/switch.html",
+                            "events": [
+                                {
+                                    "id": "11159534314112879521210",
+                                    "name": "FieldOnChange",
+                                    "code": "AccountController.changeSwitch(args.owner.field.widget, args.owner.field.paramName, args.owner.field.permissionName);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "11159534321286016901211",
+                            "name": "lblconsumacao",
+                            "label": "Consumação",
+                            "class": "6 odh-account-font",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "breakline": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "id": "1115953436594632311212",
+                            "name": "consumacao",
+                            "label": "",
+                            "class": "3 odh-account-font",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "id": "1115953438627344841213",
+                            "name": "swiconsumacao",
+                            "paramName": "consumacao",
+                            "permissionName": "retirarConsumacao",
+                            "label": "",
+                            "class": "3 odh-account-font",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/switch.html",
+                            "events": [
+                                {
+                                    "id": "11159534326432642901214",
+                                    "name": "FieldOnChange",
+                                    "code": "AccountController.changeSwitch(args.owner.field.widget, args.owner.field.paramName, args.owner.field.permissionName);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "1115953431648484541215",
+                            "name": "lblcouvert",
+                            "label": "Couvert",
+                            "class": "6 odh-account-font",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "breakline": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "id": "1115953432950145291216",
+                            "name": "couvert",
+                            "label": "",
+                            "class": "3 odh-account-font",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "id": "11159534337785944721217",
+                            "name": "swicouvert",
+                            "paramName": "couvert",
+                            "permissionName": "retirarCouvert",
+                            "label": "",
+                            "class": "3 odh-account-font",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/switch.html",
+                            "events": [
+                                {
+                                    "id": "1115953436995667181218",
+                                    "name": "FieldOnChange",
+                                    "code": "AccountController.changeSwitch(args.owner.field.widget, args.owner.field.paramName, args.owner.field.permissionName);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "11159534333544951291219",
+                            "name": "lblTotal",
+                            "label": "Total",
+                            "class": "6 odh-account-font",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "breakline": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "id": "11159534331600720431220",
+                            "name": "total",
+                            "label": "",
+                            "class": "6 odh-account-font",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "id": "11159534335382870921221",
+                            "name": "spacer",
+                            "label": "",
+                            "class": 12,
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "id": "1115953434672699831222",
+                            "name": "cpfField",
+                            "label": "CPF",
+                            "placeholder": null,
+                            "readOnly": false,
+                            "isVisible": false,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "maxlength": 11,
+                            "template": "field/text-edit.html",
+                            "dataSource": [],
+                            "events": [
+                                {
+                                    "id": "1115953435318498221223",
+                                    "name": "FieldOnBlur",
+                                    "code": "AccountController.storeCPF(args.owner.field.widget);"
+                                }
+                            ],
+                            "class": 4,
+                            "mask": {
+                                "type": "fix",
+                                "params": {
+                                    "mask": "999.999.999-99"
+                                }
+                            }
+                        },
+                        {
+                            "id": "11159534323169301451224",
+                            "name": "theCheckBox",
+                            "class": 4,
+                            "label": "CPF Único",
+                            "readOnly": false,
+                            "isVisible": false,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": false,
+                            "newLine": true,
+                            "valueToTrue": false,
+                            "valueToFalse": true,
+                            "spin": true,
+                            "template": "field/checkbox.html",
+                            "events": [
+                                {
+                                    "id": "11159534312443808321225",
+                                    "name": "FieldOnClick",
+                                    "code": "AccountController.togglePositions(args.owner.field.widget);"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "11159534317954721701226",
+                            "name": "positions",
+                            "label": "Posição",
+                            "class": 12,
+                            "readOnly": false,
+                            "isVisible": false,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": false,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "../../../../templates/field/waiter_position.html",
+                            "fields": [],
+                            "position": 0,
+                            "actions": [],
+                            "events": [
+                                {
+                                    "id": "1115953434686049361227",
+                                    "name": "FieldOnClick",
+                                    "code": "AccountController.loadPositionOrders(args.owner.field.widget, args);"
+                                }
+                            ],
+                            "dataSource": {}
+                        },
+                        {
+                            "id": "1115953439655400041228",
+                            "name": "spacer",
+                            "label": "",
+                            "class": 12,
+                            "readOnly": false,
+                            "isVisible": false,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "showOnList": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/label.html",
+                            "events": []
+                        },
+                        {
+                            "id": "111595343486711281229",
+                            "name": "positionProducts",
+                            "label": "",
+                            "size": 500,
+                            "class": 12,
+                            "sameLine": false,
+                            "showOnForm": true,
+                            "isVisible": false,
+                            "readOnly": true,
+                            "maxlength": 2000,
+                            "template": "field/textarea.html"
+                        }
+                    ],
+                    "widgets": [
+                        {
+                            "id": "159953242321643900801637",
+                            "name": "discountPopup",
+                            "label": "Desconto",
+                            "fieldGroup": "FIELDS_DISCOUNT",
+                            "template": "widget/form.html",
+                            "isVisible": false,
+                            "actions": [
+                                {
+                                    "label": "Voltar",
+                                    "name": "btnBack",
+                                    "isVisible": true,
+                                    "showAsAction": "back",
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "ScreenService.closePopup();"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "label": "Limpar Desconto",
+                                    "name": "btnBack",
+                                    "isVisible": true,
+                                    "icon": "trash",
+                                    "showAsAction": "always",
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "AccountController.cancelDiscount(args.owner.widget)"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "label": "Aplicar desconto",
+                                    "name": "aplDesconto",
+                                    "isVisible": true,
+                                    "showAsAction": "never",
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "AccountController.applyDiscount(args.owner.widget)"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "events": [],
+                            "dataSource": {},
+                            "fieldGroups": [
+                                {
+                                    "name": "FIELDS_DISCOUNT",
+                                    "collapsible": false,
+                                    "isVisible": true,
+                                    "opened": true
+                                },
+                                {
+                                    "name": "FIELDS_OBSERVATION",
+                                    "label": "Motivo do Desconto",
+                                    "collapsible": true,
+                                    "isVisible": true,
+                                    "opened": true
+                                }
+                            ],
+                            "fields": [
+                                {
+                                    "name": "PRODUCTSONACCOUNT",
+                                    "label": "Produtos",
+                                    "fieldGroup": "FIELDS_DISCOUNT",
+                                    "template": "field/select-multiple.html",
+                                    "isVisible": true,
+                                    "showOnForm": true,
+                                    "showOnView": true,
+                                    "descriptionField": "DSBUTTON",
+                                    "valueField": "NRPRODCOMVEN",
+                                    "events": [],
+                                    "validations": {
+                                        "required": true
+                                    },
+                                    "dataSource": {
+                                        "memoryStorage": true,
+                                        "name": "/AccountGetAccountItems",
+                                        "lazyLoad": false
+                                    },
+                                    "fields": [
+                                        {
+                                            "name": "DSBUTTON",
+                                            "label": "Nome",
+                                            "class": 3,
+                                            "isVisible": true,
+                                            "showOnList": true,
+                                            "template": "field/text-edit.html"
+                                        },
+                                        {
+                                            "name": "quantidade",
+                                            "label": "Quantidade",
+                                            "class": 3,
+                                            "isVisible": true,
+                                            "showOnList": true,
+                                            "template": "field/text-edit.html"
+                                        },
+                                        {
+                                            "name": "preco",
+                                            "label": "Preço",
+                                            "class": 3,
+                                            "isVisible": true,
+                                            "showOnList": true,
+                                            "template": "field/text-edit.html"
+                                        },
+                                        {
+                                            "name": "desconto",
+                                            "label": "Desconto",
+                                            "class": 3,
+                                            "isVisible": true,
+                                            "showOnList": true,
+                                            "template": "field/text-edit.html"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "159953242312586394731638",
+                                    "name": "TIPODESCONTO",
+                                    "label": "Tipo de desconto",
+                                    "fieldGroup": "FIELDS_DISCOUNT",
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": true,
+                                    "sameLine": true,
+                                    "class": 6,
+                                    "focused": true,
+                                    "validations": {
+                                        "required": true
+                                    },
+                                    "defaultOption": 1,
+                                    "valueField": "value",
+                                    "descriptionField": "name",
+                                    "template": "field/radio-group.html",
+                                    "events": [
+                                        {
+                                            "id": "159953242322155315081639",
+                                            "name": "FieldOnChange",
+                                            "code": "AccountController.handleDiscountRadioChange(args.owner.widget);"
+                                        }
+                                    ],
+                                    "dataSource": {
+                                        "name": "tipoDescontos",
+                                        "rest": false,
+                                        "localStorage": false,
+                                        "data": [
+                                            {
+                                                "name": "Percentual",
+                                                "value": "P"
+                                            },
+                                            {
+                                                "name": "Valor",
+                                                "value": "V"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "id": "159953242317057581971640",
+                                    "name": "VRDESCONTO",
+                                    "label": "Valor",
+                                    "fieldGroup": "FIELDS_DISCOUNT",
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": true,
+                                    "sameLine": true,
+                                    "class": 6,
+                                    "focused": true,
+                                    "validations": {
+                                        "required": {}
+                                    },
+                                    "range": {
+                                        "max": null,
+                                        "min": 0.01
+                                    },
+                                    "defaultValue": null,
+                                    "template": "field/text-edit.html",
+                                    "events": [
+                                        {
+                                            "name": "FieldOnKeydown",
+                                            "code": "AccountController.handleEnterButton(args);"
+                                        }
+                                    ],
+                                    "mask": {
+                                        "type": "currency",
+                                        "params": {
+                                            "showSymbol": false,
+                                            "precision": 2,
+                                            "thousands": "",
+                                            "decimal": ",",
+                                            "allowNegative": false
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "CDOCORR",
+                                    "valueField": "CDOCORR",
+                                    "label": "DSOCORR",
+                                    "fieldGroup": "FIELDS_OBSERVATION",
+                                    "color": "NRCORSINAL",
+                                    "complement": "NRCORSINALC",
+                                    "class": 12,
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "template": "field/observations.html",
+                                    "events": [
+                                        {
+                                            "name": "FieldOnChange",
+                                            "code": "AccountController.handleShowObsDesc(args);"
+                                        }
+                                    ],
+                                    "dataSource": {
+                                        "memoryStorage": true,
+                                        "name": "/ParamsMensDescontoObs",
+                                        "lazyLoad": false
+                                    }
+                                },
+                                {
+                                    "name": "MOTIVODESCONTO",
+                                    "label": "Descrição",
+                                    "fieldGroup": "FIELDS_OBSERVATION",
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": true,
+                                    "sameLine": true,
+                                    "class": 12,
+                                    "focused": true,
+                                    "events": [],
+                                    "defaultValue": null,
+                                    "template": "field/textarea.html",
+                                    "textRows": 1
+                                }
+                            ]
+                        },
+                        {
+                            "name": "changeCharge",
+                            "label": "Alterar Taxa de Serviço",
+                            "isVisible": true,
+                            "showAsModal": false,
+                            "template": "widget/form.html",
+                            "actions": [
+                                {
+                                    "name": "cancel",
+                                    "label": "Cancelar",
+                                    "showAsAction":"back",
+                                    "isVisible": true,
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "ScreenService.closePopup();"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "confirm",
+                                    "label": "Aplicar",
+                                    "showAsAction":"never",
+                                    "isVisible": true,
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "AccountController.applyCharge(args.owner.widget);"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "events": [
+                                {
+                                    "name": "WidgetOnEnter",
+                                    "code": "AccountController.handleShowChangeCharge(args.owner);"
+                                }
+                            ],
+                            "dataSource": {
+                                "data": [
+                                    {
+                                        "value": null
+                                    }
+                                ]
+                            },
+                            "fields": [
+                                {
+                                    "name": "radioChargeChange",
+                                    "label": "Tipo",
+                                    "class": 12,
+                                    "sameLine": true,
+                                    "newLine": false,
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "template": "field/radio-group.html",
+                                    "events": [
+                                        {
+                                            "name": "FieldOnChange",
+                                            "code": "AccountController.radioChargeChange(args.owner, args.owner.widget.getField('radioCharge'), args.owner.widget.getField('TIPOGORJETA'), args.owner.widget.getField('vlrservico'));"
+                                        }
+                                    ],
+                                    "valueField": "value",
+                                    "descriptionField": "name",
+                                    "defaultOption": 0,
+                                    "defaultValue" : "P",
+                                    "dataSource": {
+                                        "data": [
+                                            {
+                                                "name": "Parametrizado",
+                                                "value": "P"
+                                            },
+                                            {
+                                                "name": "Manual",
+                                                "value": "M"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "radioCharge",
+                                    "label": "Opções",
+                                    "class": 6,
+                                    "sameLine": true,
+                                    "newLine": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": true,
+                                    "template": "field/radio-group.html",
+                                    "events": [],
+                                    "focused": true,
+                                    "valueField": "value",
+                                    "defaultOption": 0,
+                                    "defaultValue" : null,
+                                    "descriptionField": "name",
+                                    "dataSource": {
+                                        "data": [
+                                            {
+                                                "name": "",
+                                                "value": ""
+                                            }
+                                        ]
+                                    },
+                                    "validations": {
+                                        "required": true
+                                    }
+                                },
+                                {
+                                    "name": "TIPOGORJETA",
+                                    "label": "Tipo de gorjeta",
+                                    "readOnly": false,
+                                    "isVisible": false,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": true,
+                                    "sameLine": false,
+                                    "class": 6,
+                                    "focused": false,
+                                    "defaultValue": "P",
+                                    "validations": {
+                                        "required": true
+                                    },
+                                    "defaultOption": 0,
+                                    "valueField": "value",
+                                    "descriptionField": "name",
+                                    "template": "field/radio-group.html",
+                                    "events": [],
+                                    "dataSource": {
+                                        "name": "tipoGorjetas",
+                                        "rest": false,
+                                        "localStorage": false,
+                                        "data": [
+                                            {
+                                                "name": "Percentual",
+                                                "value": "P"
+                                            },
+                                            {
+                                                "name": "Valor",
+                                                "value": "V"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "vlrservico",
+                                    "label": "Valor",
+                                    "readOnly": false,
+                                    "isVisible": false,
+                                    "isVisibleForm": true,
+                                    "isVisibleGrid": false,
+                                    "newLine": true,
+                                    "sameLine": true,
+                                    "class": 6,
+                                    "focused": false,
+                                    "validations": {
+                                        "required": true
+                                    },
+                                    "range": {
+                                        "max": null,
+                                        "min": 0.0
+                                    },
+                                    "defaultValue": 0.0,
+                                    "template": "field/text-number.html",
+                                    "events": [
+                                        {
+                                            "name": "FieldOnKeydown",
+                                            "code": "AccountController.handleEnterButton(args);"
+                                        }
+                                    ],
+                                    "mask": {
+                                        "type": "currency",
+                                        "params": {
+                                            "showSymbol": false,
+                                            "precision": 2,
+                                            "thousands": "",
+                                            "decimal": ",",
+                                            "allowNegative": false
+                                        }
+                                    }
+                                }
+                            ],
+                            "widgets": []
+                        }
+                    ]
+                },
+                {
+                    "name": "closeAccountItemsTable",
+                    "label": "Pedidos Realizados",
+                    "template": "../../../../templates/widget/list-grouped-position.html",
+                    "isVisible": false,
+                    "allowSelectOnLongTap": false,
+                    "actions": [
+                        {
+                            "id": "14185299782777314138979",
+                            "label": "Voltar",
+                            "isVisible": true,
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.goBack();"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "11159534326648197161232",
+                            "label": "Fechar Conta",
+                            "name": "BtncloseAccount",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "TableController.closeAccount(args.owner.widget.container.getWidget('closeAccount'), args.owner.widget.container.getWidget('changeCharge').dataSource.data[0].value);"
+                                }
+                            ]
+                        }
+                    ],
+                    "groupProp": "posicao",
+                    "detailPriceProp": "preco",
+                    "detailDescProp": "DSBUTTON",
+                    "detailSubDescProp": "TXPRODCOMVEN",
+                    "orderDate": "DTHRINCOMVEN",
+                    "addDisplay": "toGoText",
+                    "events": [],
+                    "dataSource": {},
+                    "fields": []
+                },
+                {
+                    "name": "closeAccountItemsBill",
+                    "label": "Pedidos Realizados",
+                    "template": "../../../../templates/widget/list-grouped-default.html",
+                    "isVisible": false,
+                    "allowSelectOnLongTap": false,
+                    "actions": [
+                        {
+                            "id": "14185299782777314138979",
+                            "label": "Voltar",
+                            "isVisible": true,
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.goBack();"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "11159534326648197161232",
+                            "label": "Receber",
+                            "name": "BtncloseAccount",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "TableController.closeAccount(args.owner.widget.container.getWidget('closeAccount'), args.owner.widget.container.getWidget('changeCharge').dataSource.data[0].value);"
+                                }
+                            ]
+                        }
+                    ],
+                    "groupProp": "GRUPO",
+                    "detailPriceProp": "preco",
+                    "detailDescProp": "DSBUTTON",
+                    "detailSubDescProp": "TXPRODCOMVEN",
+                    "orderDate": "DTHRINCOMVEN",
+                    "addDisplay": "toGoText",
+                    "events": [],
+                    "dataSource": {},
+                    "fields": []
+                }
+            ]
+        }
+    ]
+}

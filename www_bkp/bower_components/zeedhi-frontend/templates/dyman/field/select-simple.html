@@ -1,0 +1,17 @@
+
+<div>
+	<label class="zh-label show" ng-bind="field.label" ng-show="field.label"></label>
+		<select
+		data-zh-style
+		data-zh-events
+		data-ng-readonly="field.isReadOnly()"
+		data-ng-disabled="field.isReadOnly()"
+		data-ng-model="fieldRow"
+		data-ng-options="item[field.valueField] as item[field.descriptionField]  for item in field.dataSource.data"
+		name="{{field.name}}"
+		id="{{field.name}}"
+		class="form-input-margin-bottom mousetrap zh-text-align-{{field.align || 'left'}}"
+		>
+			<option value='' data-ng-if='field.labelToAll' data-zh-bind-translate="field.labelToAll"></option>
+		</select>
+</div>

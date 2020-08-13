@@ -1,0 +1,37 @@
+<div data-ng-controller="SelectMultipleController as selMultipleCtrl" data-ng-show="field.isVisible" zh-schema-validator="field/select-multiple.html.json">
+	<!-- Label Include -->
+	<div ng-include="templateManager.getTemplateURL('field/select-label-with-tooltip.html')"></div>
+
+	<!-- Validation  -->
+	<div class="zh-validation" data-ng-if="widget.currentRow.$error[field.name].length>0">
+		<span zh-validations class="zh-validation-error" data-ng-repeat="error in widget.currentRow.$error[field.name]">
+			{{error.message}}
+		</span>
+	</div>
+
+	<!-- Field -->
+	<div
+		class="zh-select-multiple mousetrap zh-field-{{field.name}} zh-text-align-{{field.align || 'left'}}"
+		id="{{field.name}}"
+		name="{{field.name}}"
+		data-zh-select-multiple
+		data-zh-events
+		data-zh-validate
+		data-ng-model="fieldRow"
+		data-ng-readonly="field.isReadOnly()"
+		data-ng-disabled="field.isReadOnly()"
+		data-zh-touchstart="openField(field)"
+		data-ng-class="{ 'zh-disabled' : field.isReadOnly() }"
+		data-zh-focus-field="{{ field.focused }}"
+		data-zh-contenteditable="{{ !field.isReadOnly() }}">
+		<div class="zh-options-container"></div>
+		<span
+			data-ng-if="field.placeholder && !selMultipleCtrl.hasSelectedRows(field)"
+			class="zh-select-text"
+			data-ng-class="{placeholder: !selMultipleCtrl.hasSelectedRows(field)}"
+			data-zh-bind-translate="field.placeholder">
+		</span>
+		<span class="left-search" zh-ripple-effect="grey" zh-icon="no-border search"></span>
+		<span class="right-search" zh-ripple-effect="grey" zh-icon="no-border search"></span>
+	</div>
+</div>
