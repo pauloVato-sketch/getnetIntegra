@@ -11,24 +11,31 @@ class Payment {
 	protected $tableService;
 	protected $impressaoUtil;
 	protected $impressaoPedido;
-    protected $databaseUtil;
+	protected $databaseUtil;
+	protected $impressaoPedidoSmart;
 
-	public function __construct(\Doctrine\ORM\EntityManager $entityManager, \Util\WaiterMessage $waiterMessage, \Util\Util $util, \Service\Table $tableService, \Odhen\API\Lib\ImpressaoUtil $impressaoUtil, \Odhen\API\Service\ImpressaoPedido $impressaoPedido, \Odhen\API\Util\Database $databaseUtil){
+
+	public function __construct(\Doctrine\ORM\EntityManager $entityManager, \Util\WaiterMessage $waiterMessage, \Util\Util $util, \Service\Table $tableService, \Odhen\API\Lib\ImpressaoUtil $impressaoUtil, \Odhen\API\Service\ImpressaoPedido $impressaoPedido, \Odhen\API\Util\Database $databaseUtil, \Odhen\API\Service\ImpressaoPedidoSmart $impressaoPedidoSmart){
 		$this->entityManager = $entityManager;
 		$this->waiterMessage = $waiterMessage;
 		$this->util = $util;
 		$this->tableService = $tableService;
  		$this->impressaoUtil = $impressaoUtil;
 		$this->impressaoPedido = $impressaoPedido;
-        $this->databaseUtil = $databaseUtil;
+		$this->databaseUtil = $databaseUtil;
+		$this->impressaoPedidoSmart = $impressaoPedidoSmart;
 	}
 
-	public function getMoneyCurrency($CDFILIAL, $NRCONFTELA) {
+	public function getMoneyCurrency($CDFILIAL, $NRCONFTELA, $DTINIVIGENCIA) {
 		$params = array(
 			'CDFILIAL' => $CDFILIAL,
-			'NRCONFTELA' => $NRCONFTELA
+			'NRCONFTELA' => $NRCONFTELA,
+            'DTINIVIGENCIA' => new \DateTime($DTINIVIGENCIA)
 		);
-		return $this->entityManager->getConnection()->fetchAssoc("SQL_GET_MONEY_CURRENCY", $params);
+        $types = array(
+            'DTINIVIGENCIA' => \Doctrine\DBAL\Types\Type::DATETIME
+        );
+		return $this->entityManager->getConnection()->fetchAssoc("SQL_GET_MONEY_CURRENCY", $params, $types);
 	}
 
 	public function getOcorTxts($ocorrGroup, $ocorrIds) {
@@ -159,7 +166,8 @@ class Payment {
 		$result = array(
 			'error' => true,
 			'message' => '',
-			'data' => array()
+			'data' => array(),
+			'paramsImpressora' => array()
 		);
 
 		try {
@@ -182,7 +190,7 @@ class Payment {
 						$STLPRIVIA = str_replace("\n", $printerParams['comandoEnter'], $STLPRIVIA);
 						$STLSEGVIA = str_replace("\n", $printerParams['comandoEnter'], $STLSEGVIA);
 					}
-					
+
 					return array(
 						'STLPRIVIA' => $STLPRIVIA,
 						'STLSEGVIA' => $STLSEGVIA
@@ -195,8 +203,14 @@ class Payment {
 					);
 					foreach ($arrTEFVoucher as $tefVoucher) {
 						$tefVoucherResult = $this->impressaoUtil->imprimeNaoFiscal($tefVoucher['STLPRIVIA'], $dadosImpressora);
+						if(isset($tefVoucherResult['saas'])&&$tefVoucherResult['saas']){
+							array_push($result['paramsImpressora'], $tefVoucherResult['paramsImpressora']);
+						}
 						if (!$tefVoucherResult['error'] && $tefVoucher['STLSEGVIA'] !== ''){
 							$tefVoucherResult = $this->impressaoUtil->imprimeNaoFiscal($tefVoucher['STLSEGVIA'], $dadosImpressora);
+							if(isset($tefVoucherResult['saas'])&&$tefVoucherResult['saas']){
+								array_push($result['paramsImpressora'], $tefVoucherResult['paramsImpressora']);
+							}
 						}
 
 						if ($tefVoucherResult['error']){
@@ -205,7 +219,7 @@ class Payment {
 					}
 
 					if ($tefVoucherResult['error']){
-						$message = !empty($tefVoucherResult['exceptionMessage']) ? 
+						$message = !empty($tefVoucherResult['exceptionMessage']) ?
 							$dadosImpressora['NMIMPRLOJA'] . ': ' . $tefVoucherResult['exceptionMessage'] : $tefVoucherResult['message'];
 						$result['message'] = 'Ocorreu um problema na impressão do comprovante TEF.<br><br>' . $message;
 					} else {
@@ -257,7 +271,7 @@ class Payment {
 			'NRCOMANDA' => $NRCOMANDA,
 			'CDORDERWAITER' => $CDORDERWAITER
 		);
-		
+
 		return $this->entityManager->getConnection()->fetchAssoc("SQL_CHECK_ORDERCODE", $params);
 	}
 
@@ -307,7 +321,7 @@ class Payment {
 		$NRCOMANDA = !empty($NRCOMANDA) ? $NRCOMANDA : 'X';
 	}
 
-	public function printOrderCupom($CDFILIAL, $CDLOJA, $ITEMVENDA, $CDVENDEDOR, $CDSENHAPED){
+	public function printOrderCupom($CDFILIAL, $CDLOJA, $ITEMVENDA, $CDVENDEDOR, $CDSENHAPED, $NRSEQVENDA, $CDCAIXA){
 		try {
 			// adiciona produtos filhos a serem impressos
 			$arrProduct = array();
@@ -331,8 +345,25 @@ class Payment {
 				'B',
 				'',
 				false,
+				true,
+				$NRSEQVENDA,
+				$CDCAIXA
+			);
+
+			$result['PedidoSmart'] = $this->impressaoPedidoSmart->imprimePedidoSmart(
+				$CDFILIAL,
+				$CDLOJA,
+				$arrProduct,
+				$CDVENDEDOR,
+				null,
+				null,
+				$CDSENHAPED,
+				'B',
+				'',
+				false,
 				true
 			);
+
 		} catch (\Exception $e) {
 			Exception::logException($e);
 			$result = array(
@@ -380,7 +411,7 @@ class Payment {
     }
 
     public function getPaymentDelivery($cdfilial, $nrvendarest, $nrcomanda){
-    	
+
     	$params = array(
     		'CDFILIAL' 	  => $cdfilial,
     		'NRCOMANDA'   => $nrcomanda,
@@ -432,15 +463,16 @@ class Payment {
 	public function savePayment($paymentData, $session) {
 		$dateTime = new \DateTime('NOW', new \DateTimeZone('America/Sao_Paulo'));
 		$this->util->newCode('MOVCAIXAMOB' . $session['CDFILIAL']);
-		var_dump($paymentData);die;
+
+		// Validacao dos campos NRVENDAREST, NRCOMANDA E NRMESA para o modo balcÃ£o que nÃ£o possui essas informaÃ§Ãµes.
 	    $params = array(
 	        'CDFILIAL' 		 => $session['CDFILIAL'],
 	        'CDCAIXA' 		 => $session['CDCAIXA'],
 	        'CDVENDEDOR' 	 => $session['CDVENDEDOR'],
-	        'NRVENDAREST' 	 => $paymentData['NRVENDAREST'],
-	        'NRCOMANDA' 	 => $paymentData['NRCOMANDA'],
+	        'NRVENDAREST' 	 => empty($paymentData['NRVENDAREST']) ? '0' : $paymentData['NRVENDAREST'],
+	        'NRCOMANDA' 	 => empty($paymentData['NRCOMANDA']) ? '0' : $paymentData['NRCOMANDA'],
 	        'NRSEQVENDA' 	 => null,
-	        'NRMESA' 		 => $paymentData['NRMESA'],
+	        'NRMESA' 		 => empty($paymentData['NRMESA']) ? '0' : $paymentData['NRMESA'],
 	        'NRLUGARMESA' 	 => '00',
 	        'NRSEQMOVMOB' 	 => $this->util->getNewCode('MOVCAIXAMOB' . $session['CDFILIAL'], 10),
 	        'DTHRINCMOV' 	 => $dateTime,
@@ -463,7 +495,7 @@ class Payment {
             'CDCONSUMIDOR' 	 => $paymentData['CDCONSUMIDOR'],
             'IDSTMOV' 		 => '1',
             'NRCARTBANCO' 	 => $paymentData['eletronicTransacion']['data']['NRCARTBANCO'],
-            'IDTIPORECE' 	 => $paymentData['eletronicTransacion']['data']['IDTIPORECE']            
+            'IDTIPORECE' 	 => $paymentData['tiporece']['IDTIPORECE']
 	    );
 
 		$types = array(
@@ -483,19 +515,19 @@ class Payment {
 				}
 
 				$params['NRLUGARMESA'] = str_pad($lugares[$i], 2, "0", STR_PAD_LEFT);
-				$result =  $this->entityManager->getConnection()->fetchAll("SQL_INSERT_MOVCAIXAMOB", $params, $types);	
+				$result =  $this->entityManager->getConnection()->executeQuery("SQL_INSERT_MOVCAIXAMOB", $params, $types);
 			}
 
 			return $result;
 		} else {
-	    	return $this->entityManager->getConnection()->fetchAll("SQL_INSERT_MOVCAIXAMOB", $params, $types);
+	    	return $this->entityManager->getConnection()->executeQuery("SQL_INSERT_MOVCAIXAMOB", $params, $types);
 		}
 	}
 
 	public function handleRemovePayment($paymentData, $session) {
 		if(isset($paymentData['DATA'])) {
 			$paymentData = $paymentData['DATA'];
-		} 
+		}
 		return $this->removePayment($paymentData, $session);
 	}
 
@@ -505,13 +537,14 @@ class Payment {
 
 		if($NRPESMESAVEN === 0)
 			$NRPESMESAVEN++;
-
 		if($lugaresLength === 0) {
 			$NRLUGARMESA = array('00');
 		} else if ($lugaresLength < $NRPESMESAVEN){
 			$NRLUGARMESA = array_map(function($lugar) {
 				return str_pad($lugar, 2, "0", STR_PAD_LEFT);
 			}, $payment["NRLUGARMESA"]);
+		}else{
+			$NRLUGARMESA = array('00');
 		}
 
 		$params = array(
@@ -520,7 +553,7 @@ class Payment {
 	        'NRCOMANDA' 	 => empty($payment['NRCOMANDA']) ? '' : $payment['NRCOMANDA'],
             'NRADMCODE' 	 => array_column($payment, 'NRCONTROLTEF'),
             'CDNSUTEFMOB' 	 => array_column($payment, 'CDNSUHOSTTEF'),
-            'NRLUGARMESA'    => $NRLUGARMESA, 
+            'NRLUGARMESA'    => $NRLUGARMESA,
             'NRORG' 		 => $session['NRORG']
 	    );
 
@@ -530,7 +563,7 @@ class Payment {
 			'NRLUGARMESA' => \Doctrine\DBAL\Connection::PARAM_STR_ARRAY
 		);
 
-	    return $this->entityManager->getConnection()->fetchAll("SQL_DELETE_MOVCAIXAMOB", $params, $types);
+	    return $this->entityManager->getConnection()->executeQuery("SQL_DELETE_MOVCAIXAMOB", $params, $types);
 	}
 
 	public function getPayments($paymentData, $session) {
@@ -543,4 +576,60 @@ class Payment {
 
 		return $this->entityManager->getConnection()->fetchAll("SQL_BUSCA_MOVCAIXAMOB", $params);
 	}
+
+    public function validateVoucher($CDPRODUTO, $NRVENDAREST, $NRCOMANDA, $CDCUPOMDESCFOS){
+        $session = $this->util->getSessionVars(null);
+
+        $CDCUPOMDESCFOS = trim($CDCUPOMDESCFOS);
+
+        if (empty($CDCUPOMDESCFOS)) throw new \Exception("Código do voucher vazio - favor informar o código.");
+
+        $params = array(
+            'CDPRODUTO'      => $CDPRODUTO,
+            'CDCUPOMDESCFOS' => $CDCUPOMDESCFOS,
+        );
+        $voucher = $this->entityManager->getConnection()->fetchAssoc("SQL_BUSCA_VOUCHER", $params);
+        if (empty($voucher)){
+            throw new \Exception("O código informado não existe, ou não pode ser utilizado neste produto.");
+        }
+
+        $params = array(
+            'CDCUPOMDESCFOS' => $CDCUPOMDESCFOS
+        );
+        $voucherData = $this->entityManager->getConnection()->fetchAssoc("SQL_VALIDATE_VOUCHER", $params);
+        if (empty($voucherData)){
+            throw new \Exception("O cupom informado encontra-se fora do prazo de validade.");
+        }
+
+        $validation = $this->entityManager->getConnection()->fetchAll("SQL_FILIAL_CUPOM", $params);
+        if (!empty($validation)){
+            $match = false;
+            foreach ($validation as $CDFILIAL){
+                if ($CDFILIAL['CDFILIAL'] == $session['CDFILIAL']){
+                    $match = true;
+                    break;
+                }
+            }
+            if (!$match) throw new \Exception("O cupom informado não pode ser utilizado nesta filial.");
+        }
+
+        if ($voucherData['IDUSOUNICO'] === 'S'){
+            $usageCheck = $this->entityManager->getConnection()->fetchAll("SQL_VOUCHER_USAGE", $params);
+
+            $params = array(
+                'CDFILIAL' => $session['CDFILIAL'],
+                'NRVENDAREST' => $NRVENDAREST,
+                'NRCOMANDA' => $NRCOMANDA,
+                'CDCUPOMDESCFOS' => $CDCUPOMDESCFOS
+            );
+            $voucheredProducts = $this->entityManager->getConnection()->fetchAssoc("SQL_GET_VOUCHERED_PRODUCTS", $params);
+
+            if (!empty($usageCheck) || !empty($voucheredProducts)){
+                throw new \Exception("O cupom informado já foi utilizado.");
+            }
+        }
+
+        return $voucherData;
+    }
+
 }

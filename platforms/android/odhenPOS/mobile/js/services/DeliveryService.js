@@ -19,7 +19,7 @@ function DeliveryService(DeliveryRepository, DeliveryControlRepository, PaymentP
 		return DeliveryControlRepository.download(query);
 	};
 
-	this.generatePayment = function(cdfilial, nrvendarest, status, saleCode, datasale, nrcomanda){
+	this.generatePayment = function(cdfilial, nrvendarest, status, saleCode, datasale, nrcomanda, email){
 		var saleCodeObj = {
 			'saleCode': saleCode
 		};
@@ -53,7 +53,8 @@ function DeliveryService(DeliveryRepository, DeliveryControlRepository, PaymentP
 						.where('saleCode').equals(saleCodeObj.saleCode)
 						.where('DATASALE').equals(dataSale)
 						.where('IDSTCOMANDA').equals(status)
-						.where('NRCOMANDA').equals(nrcomanda);
+						.where('NRCOMANDA').equals(nrcomanda)
+						.where('EMAIL').equals(email);
 		return PaymentPayAccount.download(query);
 	};
 

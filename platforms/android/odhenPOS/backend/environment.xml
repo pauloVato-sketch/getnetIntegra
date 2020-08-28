@@ -9,10 +9,10 @@
         <parameter key="connection_params" type="collection">
             <parameter key="wrapperClass">\Odhen\API\Util\MultipleDatabaseConnection</parameter>
             <parameter key="driver">%database_driver%</parameter>
-            <parameter key="user">teknisa</parameter>
-            <parameter key="password">Teknisa@1</parameter>
-            <parameter key="host">localhost</parameter>
-            <parameter key="dbname">NFCE1117</parameter>
+            <parameter key="user"></parameter>
+            <parameter key="password"></parameter>
+            <parameter key="host"></parameter>
+            <parameter key="dbname"></parameter>
             <parameter key="charset">UTF-8</parameter>
             <parameter key="platform" type="service" id="sqlSrvPlatforn"></parameter>
             <parameter key="isEncrypted">false</parameter>
@@ -35,6 +35,15 @@
         <parameter key="UTILIZA_IMPRESSAO_PONTE">true</parameter>
         <parameter key="UTILIZA_IMPRESSAO_PHP">false</parameter>
         <parameter key="PONTE_URL"></parameter>
+
+        <!-- PARÂMETROS API PAINEL DE SENHAS -->
+        <parameter key="USE_PUBLISHER">false</parameter>
+        <parameter key="ENDPOINT_AUTH"></parameter>
+        <parameter key="ENDPOINT_PSD"></parameter>
+        <parameter key="EMAIL"></parameter>
+        <parameter key="PWD"></parameter>
+
+        <parameter key="RECRIA_CONFTELA">false</parameter>
 
     </parameters>
 

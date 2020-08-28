@@ -1,0 +1,104 @@
+{
+    "id": "203942902437196013901029",
+    "name": "saleCancelContainer",
+    "label": "Cancelar Venda",
+    "showHeader": true,
+    "showMenu": true,
+    "showBack": false,
+    "showFooter": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "events": [],
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "widgets": [
+        {
+            "id": "42257279526589144271030",
+            "name": "saleCancelWidget",
+            "label": "",
+            "template": "widget/form.html",
+            "isVisible": true,
+            "actions": [
+                {
+                    "id": "42257279517284272691069",
+                    "name": "back",
+                    "label":"Voltar",
+                    "isVisible": true,
+                    "icon": "back icon-black",
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "422572795414953431070",
+                            "name": "ActionEvent",
+                            "code": "UtilitiesService.backMainScreen();"
+                        }
+                    ]
+                },
+                {
+                    "id": "42257279525499925571071",
+                    "label": "Cancelar Venda",
+                    "name": "saleCancelAction",
+                    "isVisible": true,
+                    "showAsAction": "never",
+                    "icon": "",
+                    "events": [
+                        {
+                            "id": "42257279534370270151072",
+                            "name": "ActionEvent",
+                            "code": "SaleCancelController.saleCancel(args.owner.widget);"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "name": "WidgetOnEnter",
+                    "code": "SaleCancelController.clearScreen(args.owner);"
+                }
+            ],
+            "dataSource": {},
+            "fields": [
+                {
+                    "id": "4225727952534864841064",
+                    "name": "LBLCODIGOCUPOM",
+                    "class": 12,
+                    "label": "Digite o código do cupom:",
+                    "readOnly": true,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "defaultValue": null,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "42257279516309648891065",
+                    "name": "CODIGOCUPOM",
+                    "class": 12,
+                    "label": "",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": true,
+                    "defaultValue": null,
+                    "template": "field/number-keyboard.html",
+                    "maxlength": 9,
+                    "showSignalButton": false,
+                    "showSeparatorButton": false,
+                    "spin": false,
+                    "events": [
+                        {
+                            "id": "42257279523085176891066",
+                            "name": "FieldOnConfirm",
+                            "code": "SaleCancelController.saleCancel(args.owner.field.widget);"
+                        }
+                    ],
+                    "size": 22
+                }
+            ],
+            "widgets": []
+        }
+    ]
+}

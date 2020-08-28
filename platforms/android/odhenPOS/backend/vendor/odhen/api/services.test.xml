@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <!-- PATH DO SISTEMA (TEKNISA) -->
+        <parameter key="SYSTEM_PATH">./mocks</parameter>        
+    </parameters>
+    <!-- CONNECTION -->
+    <services>
+
+        <!-- Mockando os servicos de impressao para testes unitarios nao utilizarem impressao fisica -->
+        <service id="curlRequest" class="\Odhen\API\Test\cURLRequestMock">
+            <argument>http://ponte.odhen.com</argument>
+        </service>
+
+        <service id="\Odhen\API\Remote\Printer\Printer" class="\Odhen\API\Remote\Printer\Printer">
+        	<argument type="service" id="curlRequest" />
+        </service>
+
+        <service id="\Odhen\API\Remote\SAT\SAT" class="\Odhen\API\Remote\SAT\SAT">
+            <argument type="service" id="curlRequest" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+        </service>
+        <!-- Mockando os servicos de impressao para testes unitarios nao utilizarem impressao fisica -->
+
+        <service id="\Odhen\API\Test\ConnectionMock" class="\Odhen\API\Test\ConnectionMock"
+                factory-class="Doctrine\DBAL\DriverManager"
+                factory-method="getConnection">
+            <argument>%connection_params%</argument>
+            <argument type="service" id="entityMetaDataConfig"/>
+            <argument type="service" id="eventManager"/>
+            <call method="setDataBaseDriver">
+                <argument>%database_driver%</argument>
+            </call>
+        </service>
+
+        <service id="eventManager" class="%eventManager.class%">
+            <call method="addEventSubscriber">
+                <argument type="service" id="sessionInit"/>
+            </call>
+        </service>
+
+        <service id="entityManager" class="%entityManager.class%"
+                 factory-class="%entityManager.class%"
+                 factory-method="create">
+            <argument type="service" id="\Odhen\API\Test\ConnectionMock"/>
+            <argument type="service" id="entityMetaDataConfig"/>
+            <argument type="service" id="eventManager"/>
+        </service>
+
+        <service id="\Odhen\API\Test\VendaTest" class="\Odhen\API\Test\VendaTest">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Test\NotaFiscalTest" />
+            <argument type="service" id="\Odhen\API\Service\Estoque" />
+            <argument type="service" id="\Odhen\API\Util\GetParametro" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+            <argument type="service" id="\Odhen\API\Service\SAT" />
+            <argument type="service" id="\Odhen\API\Util\Database" />
+            <argument type="service" id="\Odhen\API\Service\Preco" />
+            <argument type="service" id="\Odhen\API\Service\Comanda" />
+            <argument type="service" id="\Odhen\API\Service\VendaValidacao" />
+            <argument type="service" id="\Odhen\API\Service\VendaNormalizacao" />
+        </service>
+
+        <service id="\Odhen\API\Test\ImpressaoUtilTest" class="\Odhen\API\Test\ImpressaoUtilTest">
+            <argument type="service" id="\Odhen\API\Util\Util" />
+        	<argument type="service" id="instanceManager" />
+        	<argument type="service" id="\Odhen\API\Remote\Printer\Printer" />
+        	<argument type="service" id="\Odhen\API\Lib\ImpressaoDelphi" />
+            <argument type="service" id="entityManager"/>
+        </service>
+
+        <service id="\Odhen\API\Test\ImpressaoNFCETest" class="\Odhen\API\Test\ImpressaoNFCETest">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Test\ImpressaoUtilTest" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+        </service>
+        
+        <service id="\Odhen\API\Test\NotaFiscalTest" class="\Odhen\API\Test\NotaFiscalTest">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+            <argument type="service" id="\Odhen\API\Util\Database" />
+            <argument type="service" id="\Odhen\API\Test\ImpressaoNFCETest" />
+            <argument type="service" id="instanceManager" />
+        </service>
+
+    </services>
+</container>

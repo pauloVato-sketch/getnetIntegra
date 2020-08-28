@@ -4,20 +4,17 @@ namespace Service;
 
 class Produto {
 
-	protected $precoService;
 	protected $entityManager;
 	protected $util;
 	protected $tableService;
 	protected $billService;
 
 	public function __construct(
-		\Odhen\API\Service\Preco $precoService,
 		\Doctrine\ORM\EntityManager $entityManager,
 		\Util\Util $util,
 		\Service\Table $tableService,
 		\Service\Bill $billService
-	) {
-		$this->precoService = $precoService;
+	){
 		$this->entityManager = $entityManager;
 		$this->util = $util;
 		$this->tableService = $tableService;
@@ -29,14 +26,16 @@ class Produto {
 		$NRCOMANDA = $dataset['NRCOMANDA'];
 		$NRVENDAREST = $dataset['NRVENDAREST'];
 		$session = $this->util->getSessionVars($dataset['chave']);
+        $FILIALVIGENCIA = $session['FILIALVIGENCIA'];
 		$NRCONFTELA = $session['NRCONFTELA'];
-		if ($dataset['mode'] === 'C') {
+        $DTINIVIGENCIA = new \DateTime($session['DTINIVIGENCIA']);
+		if ($dataset['mode'] === 'C'){
 			// valida e busca dados da comanda
 			$valComanda = $this->billService->dadosComanda($session['CDFILIAL'], $NRCOMANDA, $NRVENDAREST, $session['CDLOJA']);
 			$stNrVendaRest = $valComanda['NRVENDAREST'];
 			$stNrComanda = $valComanda['NRCOMANDA'];
 		}
-		else if ($dataset['mode'] === 'M') {
+		else if ($dataset['mode'] === 'M'){
 			// valida e busca os dados da mesa
 			$valMesa = $this->tableService->dadosMesa($session['CDFILIAL'], $session['CDLOJA'], $NRCOMANDA, $NRVENDAREST);
 
@@ -56,7 +55,7 @@ class Produto {
 			}
 		}
 
-		if (Empty($groupedTables)){
+		if (empty($groupedTables)){
 			$stComandaVens = "_".$stNrComanda."_";
 		}
 		else {
@@ -69,7 +68,7 @@ class Produto {
 
 		if ($impPosicao == '') $impPosicao = 'T';
 
-		if(is_array($impPosicao)){
+		if (is_array($impPosicao)){
 			$arrayPosicoes = $impPosicao;
 			$impPosicao = implode(",", $arrayPosicoes);
 		} else {
@@ -79,31 +78,28 @@ class Produto {
 		}
 
 		$stPosicoes = $impPosicao;
-		if($impPosicao != "T"){
+		if ($impPosicao != "T"){
 			$stPosicoes = "_";
-			foreach ($arrayPosicoes as $posicao) {
+			foreach ($arrayPosicoes as $posicao){
 				$stPosicoes .= $posicao . "_";
 			}
 		}
 
 		$result = array();
 		$params = array(
-			$NRCONFTELA,
-			$session['CDFILIAL'],
-			$NRCONFTELA,
-			$session['CDFILIAL'],
-			$stComandaVens,
-			$stPosicoes,
-			$impPosicao,
-			$NRCONFTELA,
-			$session['CDFILIAL'],
-			$NRCONFTELA,
-			$session['CDFILIAL'],
-			$stComandaVens,
-			$stPosicoes,
-			$impPosicao
+            'FILIALVIGENCIA' => $FILIALVIGENCIA,
+			'NRCONFTELA' => $NRCONFTELA,
+            'DTINIVIGENCIA' => $DTINIVIGENCIA,
+			'CDFILIAL' => $session['CDFILIAL'],
+			'NRCOMANDA' => $stComandaVens,
+			'NRLUGARMESA' => $stPosicoes,
+			'IMPPOSICAO' => $impPosicao
 		);
-		$r_ItensDetalhados = $this->entityManager->getConnection()->fetchAll("SQL_ITENS_DETALHADOS_SEM_COMBO", $params);
+        $types = array(
+            'DTINIVIGENCIA' => \Doctrine\DBAL\Types\Type::DATETIME
+        );
+
+		$r_ItensDetalhados = $this->entityManager->getConnection()->fetchAll("SQL_ITENS_DETALHADOS_SEM_COMBO", $params, $types);
 		if (empty($r_ItensDetalhados)){
 			if ($dataset['mode'] == 'M') return array('funcao' => '0', 'error' => '006'); // Não foi realizado nenhum pedido para esta mesa/comanda.
 			else return array('funcao' => '0', 'error' => '430');
@@ -123,7 +119,7 @@ class Produto {
 					'GRUPO'          => $item['GRUPO'],
 					'codigo'         => $item['CDPRODUTO'],
 					'quantidade'     => round($item['QTPRODCOMVEN'], 0),
-					'preco'          => number_format(round(($item['VRPRECCOMVEN'] - $item['VRDESCCOMVEN'] + $item['VRACRCOMVEN']), 2),2,',','.'),
+					'preco'          => number_format(round(($item['QTPRODCOMVEN'] * ($item['VRPRECCOMVEN'] + $item['VRPRECCLCOMVEN']) - $item['VRDESCCOMVEN'] + $item['VRACRCOMVEN']), 2),2,',','.'),
 					'desconto'       => $item['VRDESCCOMVEN'],
 					'posicao'        => $item['NRLUGARMESA'],
 					'composicao'     => null,
@@ -137,14 +133,6 @@ class Produto {
 
 		$listaItens['funcao'] = '1';
 		return $listaItens;
-	}
-
-	private function buildArrayParams($params, $arrayPosicoes){
-		//REFATORAR
-		array_splice($params, 5 , 0, $arrayPosicoes);
-		array_splice($params, 11 + count($arrayPosicoes) , 0, $arrayPosicoes);
-		return $params;
-
 	}
 
 	private function buscaComposicao($filial, $nrVendaRest, $nrComanda, $nrProdComVen, $nrSeqProdCom){

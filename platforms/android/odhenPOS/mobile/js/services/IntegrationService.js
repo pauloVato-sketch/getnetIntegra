@@ -1,27 +1,22 @@
-function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, IntegrationSiTEF, IntegrationCielo, IntegrationGetnet,OperatorRepository) {
+function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, IntegrationSiTEF, IntegrationCielo, IntegrationGetnet, OperatorRepository) {
 	var INTEGRATION_TYPE = {
 		'2': IntegrationCappta,
 		'3': IntegrationNTK,
 		'4': IntegrationRede,
 		'5': IntegrationSiTEF,
 		'7': IntegrationCielo,
-		'9': IntegrationGetnet
-		};
+		'8': IntegrationGetnet
+	};
 
 	var self = this;
-	var PAYMENT_CONFIRMATION = false;
-    var REMOVE_ALL_INTEGRATIONS = false;
 	var IntegrationClass = null;
 	var VALUES_NOT_FOUND = 'Tipo do TEF não reconhecido pelo sistema.';
-	var MESSAGE_INTEGRATION_FAIL = 'Não foi possível chamar a integração. Sua instância não existe.';
-    var MESSAGE_NULL_RESPONSE = 'Não foi possível obter o retorno da integração.';
 
 	this.reversalWaiting = Array();
 
 	this.integrationPayment = function(currentRow) {
 		return OperatorRepository.findOne().then(function(operatorData) {
 			currentRow.eletronicTransacion.data.IDTPTEF = operatorData.IDTPTEF;
-
 			IntegrationClass = self.chooseIntegration(operatorData.IDTPTEF);
 			if (IntegrationClass){
 				return new Promise(function(resolve) {
@@ -56,41 +51,45 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 	this.cancelIntegration = function(tiporeceData){
 		return new Promise(function(resolve) {
 			IntegrationClass = self.chooseIntegration(tiporeceData.IDTPTEF);
-            window.returnIntegration = _.bind(IntegrationClass.cancelIntegrationResult, IntegrationClass, resolve);
-            IntegrationClass.cancelIntegration(tiporeceData);
-		}.bind(this));
+			if (IntegrationClass){
+				window.returnIntegration = _.bind(IntegrationClass.cancelIntegrationResult, IntegrationClass, resolve);
+				IntegrationClass.cancelIntegration(tiporeceData);
+			} else {
+				resolve(self.invalidIntegrationValues());
+			}
+		}.bind(this));	
 	};
 
 	this.completeIntegration = function(integrations){
-    	// pega IDTPTEF da primeira posição pois será o mesmo para qualquer recebimento
-    	return new Promise(function(resolve) {
-    		IntegrationClass = self.chooseIntegration(integrations[0].IDTPTEF);
-    		if (IntegrationClass){
-    			window.returnIntegration = _.bind(IntegrationClass.completeIntegrationResult, IntegrationClass, resolve);
-    			IntegrationClass.completeIntegration();
-    		} else {
-    			resolve(self.invalidIntegrationValues());
-    		}
-    	}.bind(this));
-    };
+		// pega IDTPTEF da primeira posição pois será o mesmo para qualquer recebimento
+		return new Promise(function(resolve) {
+			IntegrationClass = self.chooseIntegration(integrations[0].IDTPTEF);
+			if (IntegrationClass){			
+				window.returnIntegration = _.bind(IntegrationClass.completeIntegrationResult, IntegrationClass, resolve);
+				IntegrationClass.completeIntegration();
+			} else {
+				resolve(self.invalidIntegrationValues());
+			}
+		}.bind(this));
+	};	
 
 	this.callRecursive = null;
 
-	this.reversalIntegration = function(removePaymentSale, integrations){
-        // pega IDTPTEF da primeira posição pois será o mesmo para qualquer recebimento
-        return new Promise(function(reversalResolve) {
-        	IntegrationClass = self.chooseIntegration(integrations[0].IDTPTEF);
-        	if(IntegrationClass){
-        		self.reversalWaiting = _.clone(integrations);
-            	self.callRecursive = _.bind(this.recursiveReversalIntegration, self, reversalResolve, Array());
-            	self.callRecursive(removePaymentSale, IntegrationClass);
-            } else {
-            	reversalResolve(self.invalidIntegrationValues());
-            }
-        }.bind(this));
+	this.reversalIntegration = function(removePaymentSale, integrations){		
+		// pega IDTPTEF da primeira posição pois será o mesmo para qualquer recebimento
+		return new Promise(function(reversalResolve) {
+			IntegrationClass = self.chooseIntegration(integrations[0].IDTPTEF);
+			if(IntegrationClass){			
+				self.reversalWaiting = _.clone(integrations);	
+				self.callRecursive = _.bind(this.recursiveReversalIntegration, self, reversalResolve, Array());
+				self.callRecursive(removePaymentSale, IntegrationClass);
+			} else {
+				reversalResolve(self.invalidIntegrationValues());
+			}
+		}.bind(this));
 	};
 
-	this.recursiveReversalIntegration = function(reversalResolve, data, removePaymentSale){
+	this.recursiveReversalIntegration = function(reversalResolve, data, removePaymentSale, IntegrationClass){
 		// função recursiva utilizada para estornar todas as transações realizadas na venda
 		var integrationToReverse = self.reversalWaiting.shift();
 		var toRemove = {
@@ -98,10 +97,10 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 			'CDNSUHOSTTEF': null,
 			'DTHRINCOMVEN': null
 		};
-        console.log("Ativa o cyberpunk");
+
 		new Promise(function(resolve){
-		    //definimos um parametro do objeto global window como uma função que é a reversalIntegrationResult
-		    //com ambiente self e argumento resolve
+			// definimos um parametro do objeto global window como uma função que é a reversalIntegrationResult
+		    // com ambiente self e argumento resolve
 			window.returnIntegration = _.bind(IntegrationClass.reversalIntegrationResult, IntegrationClass, resolve);
             IntegrationClass.reversalIntegration(integrationToReverse);
 		}.bind(this)).then(function(resolved){
@@ -114,13 +113,13 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 				resolved.data.toRemove = toRemove;	 
 				data.push(resolved.data);
 				resolved.data = data;		
+
 				if (self.reversalWaiting.length > 0){
 					// realiza estorno da próxima transação
-					self.callRecursive(removePaymentSale);
-
+					self.callRecursive(removePaymentSale, IntegrationClass);
 				} else {
 					// estorno realizado com sucesso
-					reversalResolve(resolved);
+					reversalResolve(resolved);		
 				}					
 			} else {
 				// erro ao realizar estorno
@@ -145,6 +144,7 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 		result.message = VALUES_NOT_FOUND;
 		return result;
 	};
+
     IntegrationCappta.formatResponse = self.formatResponse;
 	IntegrationNTK.formatResponse = self.formatResponse;
 	IntegrationRede.formatResponse = self.formatResponse;
@@ -173,7 +173,8 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 			TRANSACTIONCODE:'',
 			TRANSACTIONID:''
 		};
-	};
+	};	
+
 }
 
 Configuration(function(ContextRegister) {

@@ -1,0 +1,1 @@
+../vendor/bin/phpunit --log-junit results.xml --coverage-clover  cover.xml .

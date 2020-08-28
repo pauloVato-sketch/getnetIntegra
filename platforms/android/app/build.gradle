@@ -296,6 +296,7 @@ dependencies {
 //    implementation fileTree(dir: 'libs', include: '*.jar')
 //    implementation fileTree(dir: 'libs', include: '*.aar')
     // SUB-PROJECT DEPENDENCIES START
+    implementation files('../getnetintegration/libs/libposdigital-1.4.0-2-release.aar')
     implementation(project(path: ":CordovaLib"))
     implementation(project(path: ":deviceintegrationfacade"))
     implementation(project(path: ":getnetintegration"))

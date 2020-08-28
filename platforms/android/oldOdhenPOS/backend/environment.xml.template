@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <parameters>
+
+        <parameter key="database_driver">ODHEN_DRIVER</parameter>
+
+        <parameter key="connection_params" type="collection">
+            <parameter key="wrapperClass">\Odhen\API\Util\MultipleDatabaseConnection</parameter>
+            <parameter key="driver">%database_driver%</parameter>
+            <parameter key="user">ODHEN_USER</parameter>
+            <parameter key="password">ODHEN_PASSWORD</parameter>
+            <parameter key="host">ODHEN_HOST</parameter>
+            <parameter key="port"></parameter>
+            <parameter key="dbname">ODHEN_DBNAME</parameter>
+            <parameter key="charset">ODHEN_CHARSET</parameter>
+            <parameter key="platform" type="service" id="sqlSrvPlatforn"></parameter>
+            <parameter key="service">ODHEN_SERVICE</parameter>
+            <parameter key="isEncrypted">ODHEN_CRYPT</parameter>
+            <parameter key="useVpd">USE_VPD</parameter>
+            <parameter key="vpdWithWallet">VPD_WITH_WALLET</parameter>
+        </parameter>
+
+        <!-- PARÂMETROS SAT -->
+        <parameter key="URL_NODE_SERVER"></parameter>
+        <parameter key="PATH_NFCE_SAT">../../../SAT</parameter>
+
+        <!-- PARÂMETROS NFCE -->
+        <parameter key="NFCE_PATH">../../../NFCE</parameter>
+        <parameter key="PROXY_IP">ODHEN_IP</parameter>
+        <parameter key="PROXY_PORT">ODHEN_PORT</parameter>
+        <parameter key="PROXY_USER">ODHEN_USER</parameter>
+        <parameter key="PROXY_PASSWORD">ODHEN_PASSWORD</parameter>
+
+        <!-- PARÂMETROS IMPRESSÃO -->
+        <parameter key="UTILIZA_IMPRESSAO_PONTE">true</parameter>
+        <parameter key="UTILIZA_IMPRESSAO_PHP">false</parameter>
+        <parameter key="PONTE_URL"></parameter>
+
+    </parameters>
+
+    <services>
+        <service id="sqlSrvPlatforn" class="Odhen\API\DBAL\Platforms\customOraclePlatform"></service>
+        <service id="sessionInit" class="%sessionInit.class%">
+            <argument type="collection">
+                <argument key="NLS_DATE_FORMAT">YYYY-MM-DD HH24:MI:SS</argument>
+                <argument key="NLS_LANGUAGE">PORTUGUESE</argument>
+                <argument key="NLS_NUMERIC_CHARACTERS">.,</argument>
+            </argument>
+        </service>
+    </services>
+
+</container>

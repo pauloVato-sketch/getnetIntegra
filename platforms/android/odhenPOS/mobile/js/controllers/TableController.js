@@ -1618,6 +1618,12 @@ function TableController($rootScope, PermissionService, TableService, TableRepos
 				NMRAZSOCCLIE.readOnly = false;
 				NMCONSUMIDOR.readOnly = false;
 				consumerSearch.readOnly = false;
+                NMCONSUMIDOR.dataSourceFilter = [];
+                NMCONSUMIDOR.dataSourceFilter[0] = {
+                    "name": "CDCLIENTE",
+                    "operator": "=",
+                    "value": ""
+                };
 
 				TableActiveTable.findOne().then(function (tableData) {
 					OperatorRepository.findOne().then(function (operatorData) {

@@ -88,21 +88,33 @@ class Account {
 
 				$precProduct = $this->precoAPI->buscaPreco($produto['CDFILIAL'], $client, $produto['CDPRODUTO'], $produto['CDLOJA'], $consumer, null, $DATETIME);
 				if (!$precProduct['error']){
-	                if ($produto['CDPRODPROMOCAO']){
-	                    $promoDiscount = $this->pedidoService->calculaDesconto($produto['CDFILIAL'], $produto['CDPRODPROMOCAO'], $produto['CDPRODUTO'], $precProduct['PRECO']+$precProduct['PRECOCLIE'], array());
-	                    if ($promoDiscount < 0) $precProduct['DESC'] -= $promoDiscount;
-	                    else $precProduct['ACRE'] += $promoDiscount;
-                        $chave = $produto['CDPRODPROMOCAO'].$produto['NRSEQPRODCOM'];
-                        if (!array_key_exists($chave, $promocoes)){
-                            $promocoes[$chave] = array();
+                    // Somente produtos promoção onde os filhos são cobrados.
+	                if ($produto['NRSEQPRODCOM'] != null){
+                        // Verifica o tipo de promoção olhando se existem produtos na ITCOMANDAEST.
+                        $params = array(
+                            'CDFILIAL' => $CDFILIAL,
+                            'NRVENDAREST' => $produto['NRVENDAREST'],
+                            'NRCOMANDA' => $produto['NRCOMANDA'],
+                            'NRPRODCOMVEN' => $produto['NRPRODCOMVEN']
+                        );
+                        $produtosEST = $this->entityManager->getConnection()->fetchAll("SELECT_ITCOMANDAEST_SPECIFIC", $params);
+
+                        if (empty($produtosEST)){
+                            $chave = $produto['CDPRODPROMOCAO'].$produto['NRSEQPRODCOM'];
+                            if (!array_key_exists($chave, $promocoes)){
+                                $promocoes[$chave] = array();
+                            }
+                            array_push($promocoes[$produto['CDPRODPROMOCAO'].$produto['NRSEQPRODCOM']], $produto);
                         }
-                        array_push($promocoes[$produto['CDPRODPROMOCAO'].$produto['NRSEQPRODCOM']], $produto);
 	                }
 
 	                $produto['VRPRECCOMVEN'] = $precProduct['PRECO'];
 					$produto['VRPRECCLCOMVEN'] = $precProduct['PRECOCLIE'];
 					$produto['VRDESCCOMVEN'] = floatval(bcmul(str_replace(',','.',strval($precProduct['DESC'])), str_replace(',','.',strval($produto['QTPRODCOMVEN'])), '2'));
 					$produto['VRACRCOMVEN'] = floatval(bcmul(str_replace(',','.',strval($precProduct['ACRE'])), str_replace(',','.',strval($produto['QTPRODCOMVEN'])), '2'));
+                    // Aplica o desconto do voucher.
+                    $produto['VRDESCCOMVEN'] = $this->adjustVoucherDiscount($produto);
+
 					$paramsUpdate = $this->formatUpdateITCOMANDAVEN($produto, $produto['VRPRECCOMVEN'], $produto['VRPRECCLCOMVEN'],
 						$produto['VRDESCCOMVEN'], $produto['VRACRCOMVEN'], $produto['DSOBSDESCIT'], $produto['CDGRPOCORDESCIT'], 'N');
 					$this->entityManager->getConnection()->executeQuery("UPDATE_PRICE_ON_ITCOMANDAVEN", $paramsUpdate);
@@ -119,12 +131,35 @@ class Account {
 				$this->handleItensPromo($arrayItens);
 			}
 
-            // Campanha promocional.
+            // Campanha promocional e produtos promoção.
             $this->recalculoCampanha($CDFILIAL, $CDLOJA, $CDCLIENTE, $CDCONSUMIDOR, $promocoes, $positions);
 		}
 
 		return $result;
 	}
+
+    private function adjustVoucherDiscount($produto){
+        $params = array(
+            'CDCUPOMDESCFOS' => $produto['CDCUPOMDESCFOS']
+        );
+        $voucherData = $this->entityManager->getConnection()->fetchAssoc("SQL_VOUCHER_DATA", $params);
+
+        $total = floatval(bcsub(strval($produto['QTPRODCOMVEN'] * ($produto['VRPRECCOMVEN'] + $produto['VRPRECCLCOMVEN']) + $produto['VRACRCOMVEN']), strval($produto['VRDESCCOMVEN']), 2));
+        if ($voucherData['IDTIPODESC'] === "P"){
+            $voucherDiscount = bcmul(strval($total), strval($voucherData['VRDESCCUPOM']/100), 2);
+        }
+        else {
+            $voucherDiscount = $voucherData['VRDESCCUPOM'];
+        }
+        $totalDiscount = $produto['VRDESCCOMVEN'] + floatval($voucherDiscount);
+
+        $realPrice = $produto['QTPRODCOMVEN'] * ($produto['VRPRECCOMVEN'] + $produto['VRPRECCLCOMVEN']) + $produto['VRACRCOMVEN'];
+        if ($totalDiscount >= $realPrice){
+            $totalDiscount = floatval(bcsub(strval($realPrice), strval($produto['QTPRODCOMVEN'] * 0.01), 2));
+        }
+
+        return $totalDiscount;
+    }
 
     private function recalculoCampanha($CDFILIAL, $CDLOJA, $CDCLIENTE, $CDCONSUMIDOR, $promocoes, $positions){
         if (!empty($promocoes)){
@@ -149,6 +184,7 @@ class Account {
                     $item['TXPRODCOMVEN'] = null;
                     $item['IMPRESSORA'] = null;
                     $item['DATETIME'] = $DATETIME;
+                    $item['VOUCHER'] = array('CDCUPOMDESCFOS' => $promoItem['CDCUPOMDESCFOS']);
                     array_push($products, $item);
                 }
 
@@ -260,7 +296,7 @@ class Account {
 						$CDCONSUMIDOR = $tableData['CDCONSUMIDOR'];
 					}
 					// busca junção de mesas, se houver
-					$tableGroup = $this->tableService->getTablesFromTableGrouping($CDFILIAL, $NRVENDAREST, $NRCOMANDA, $tableData['NRMESA'], $session['NRORG']);
+					$tableGroup = $this->tableService->getTablesFromTableGrouping($CDFILIAL, $NRVENDAREST, $NRCOMANDA, $tableData['NRMESA'], $session['NRORG'], $session['IDMODULO']);
 					// busca itens a partir da NRVENDAREST, NRCOMANDA e posições
 					$arrayItens = $this->vendaAPI->buscaItensPedidos($CDFILIAL, $CDLOJA, $tableGroup, array_column($positions, 'NRLUGARMESA'));
 					$arrayItens = $this->removeCancelItens($arrayItens);
@@ -321,7 +357,9 @@ class Account {
 		$NRCOMANDA = $dataset['NRCOMANDA'];
 		$NRVENDAREST = $dataset['NRVENDAREST'];
 		$session = $this->util->getSessionVars($dataset['chave']);
+        $FILIALVIGENCIA = $session['FILIALVIGENCIA'];
 		$NRCONFTELA = $session['NRCONFTELA'];
+        $DTINIVIGENCIA = new \DateTime($session['DTINIVIGENCIA']);
 		if ($dataset['mode'] === 'C') {
 			// valida e busca dados da comanda
 			$valComanda = $this->billService->dadosComanda($session['CDFILIAL'], $NRCOMANDA, $NRVENDAREST, $session['CDLOJA']);
@@ -384,26 +422,18 @@ class Account {
 
 		$result = array();
 		$params = array(
-			$NRCONFTELA,
-			$session['CDFILIAL'],
-			$NRCONFTELA,
-			$session['CDFILIAL'],
-			$stComandaVens,
-			$stPosicoes,
-			$impPosicao,
-			$NRCONFTELA,
-			$session['CDFILIAL'],
-			$NRCONFTELA,
-			$session['CDFILIAL'],
-			$stComandaVens,
-			$stPosicoes,
-			$impPosicao,
-			$session['CDFILIAL'],
-			$stComandaVens,
-			$stPosicoes,
-			$impPosicao
+            'FILIALVIGENCIA' => $FILIALVIGENCIA,
+			'NRCONFTELA' => $NRCONFTELA,
+            'DTINIVIGENCIA' => $DTINIVIGENCIA,
+			'CDFILIAL' => $session['CDFILIAL'],
+			'NRCOMANDA' => $stComandaVens,
+			'NRLUGARMESA' => $stPosicoes,
+			'IMPPOSICAO' => $impPosicao
 		);
-		$r_ItensDetalhados = $this->entityManager->getConnection()->fetchAll("SQL_ITENS_DETALHADOS", $params);
+        $types = array(
+            'DTINIVIGENCIA' => \Doctrine\DBAL\Types\Type::DATETIME
+        );
+		$r_ItensDetalhados = $this->entityManager->getConnection()->fetchAll("SQL_ITENS_DETALHADOS", $params, $types);
         $r_ItensDetalhados = $this->precoAPI->subgroupDiscountTableInterface($r_ItensDetalhados, $session['CDFILIAL'], $session['CDLOJA']);
 
 		if (empty($r_ItensDetalhados)){
@@ -482,58 +512,78 @@ class Account {
 
 			$session      = $this->util->getSessionVars($dataset['chave']);
 			$CDFILIAL     = $session['CDFILIAL'];
+            $FILIALVIGENCIA = $session['FILIALVIGENCIA'];
 			$NRCONFTELA   = $session['NRCONFTELA'];
+            $DTINIVIGENCIA = new \DateTime($session['DTINIVIGENCIA']);
 			$NRVENDAREST  = $dataset["NRVENDAREST"];
 			$NRCOMANDA    = $dataset["NRCOMANDA"];
-			$NRPRODCOMVEN = $dataset["NRPRODCOMVEN"];
+			$NRPRODCOMVENS = $dataset["NRPRODCOMVENS"];
 			$NRLUGARMESA  = $dataset["NRLUGARMESA"];
 
 			$NRCOMANDA = $NRCOMANDA[0];
 			$NRVENDAREST = $NRVENDAREST[0];
 
 			$numberOfParts = count($NRLUGARMESA);
+            $sequenceArray = array(); // Array para guardar NRSEQPRODCOM de promoções.
 
-			for ($index = 0; $index < count($NRPRODCOMVEN); $index++) {
-
+			foreach ($NRPRODCOMVENS as $NRPRODCOMVEN){
+                // Busca o produto.
 				$params = array(
-					$NRCONFTELA,
-					$CDFILIAL,
-					$NRCONFTELA,
-					$CDFILIAL,
-					$NRCOMANDA,
-					$NRVENDAREST,
-					$NRPRODCOMVEN[$index],
-					$NRCONFTELA,
-					$CDFILIAL,
-					$NRCONFTELA,
-					$CDFILIAL,
-					$NRCOMANDA,
-					$NRVENDAREST,
-					$NRPRODCOMVEN[$index]
+                    'FILIALVIGENCIA' => $FILIALVIGENCIA,
+					'NRCONFTELA' => $NRCONFTELA,
+                    'DTINIVIGENCIA' => $DTINIVIGENCIA,
+					'CDFILIAL' => $CDFILIAL,
+					'NRCOMANDA' => $NRCOMANDA,
+					'NRVENDAREST' => $NRVENDAREST,
+					'NRPRODCOMVEN' => $NRPRODCOMVEN
 				);
-				$itemToSplit = $this->entityManager->getConnection()->fetchAssoc('SQL_ITENS_COMANDA', $params);
-
+                $types = array(
+                    'DTINIVIGENCIA' => \Doctrine\DBAL\Types\Type::DATETIME
+                );
+				$itemToSplit = $this->entityManager->getConnection()->fetchAssoc('SQL_ITENS_COMANDA', $params, $types);
+                // Insere produto original na ITCMDVENORIG.
 				$params = array(
 					$CDFILIAL,
 					$NRVENDAREST,
 					$NRCOMANDA,
-					$NRPRODCOMVEN[$index]
+					$NRPRODCOMVEN
 				);
 				$this->entityManager->getConnection()->executeQuery('SQL_INSERE_ITEM_COMANDA_ORIG', $params);
+                // Verifica o tipo da promoção. Se tiver itens na ITCOMANDAEST, precisam ser inseridos na ITCMDESTORIG.
+                $produtosEST = array();
+                if ($itemToSplit['CDPRODPROMOCAO']){
+                    $params = array(
+                        'CDFILIAL' => $CDFILIAL,
+                        'NRVENDAREST' => $NRVENDAREST,
+                        'NRCOMANDA' => $NRCOMANDA,
+                        'NRPRODCOMVEN' => $NRPRODCOMVEN
+                    );
+                    $produtosEST = $this->entityManager->getConnection()->fetchAll("SELECT_ITCOMANDAEST_SPECIFIC", $params);
+                    // Insere produto na ITCMDESTORIG.
+                    foreach ($produtosEST as $promoItem){
+                        $params = array(
+                            $promoItem['CDFILIAL'],
+                            $promoItem['NRVENDAREST'],
+                            $promoItem['NRCOMANDA'],
+                            $promoItem['NRPRODCOMVEN'],
+                            $promoItem['CDPRODUTO']
+                        );
+                        $this->entityManager->getConnection()->executeQuery('SQL_INSERE_ITEMEST_ORIG', $params);
+                    }
+                }
 
-				$itemsToInsert = array();
-				$adicionalItem = 0;
-
+                $adicionalItem = 0;
+                // Divide o produto pelas posições escolhidas.
 				for ($pos = 0; $pos < $numberOfParts; $pos++) {
-
+                    // Calcula um novo NRPRODCOMVEN.
 					$posicao = $NRLUGARMESA[$pos];
 					$this->util->newCode('ITCOMANDAVEN'.$CDFILIAL.$NRCOMANDA);
 					$NRPRODCOMVENNOVO = $this->util->getNewCode('ITCOMANDAVEN'.$CDFILIAL.$NRCOMANDA , 6);
-
+                    // Divide o desconto, acréscimo, e quantidade.
 					$itemDesc = $this->trunc($itemToSplit['VRDESCCOMVEN'] / $numberOfParts, 2);
 					$itemAcr = $this->trunc($itemToSplit['VRACRCOMVEN'] / $numberOfParts, 2);
 					$itemQuantity = $this->trunc($itemToSplit['QTPRODCOMVEN'] / $numberOfParts, 3);
-
+                    // Ajusta os valores do último item para compensar.
 					if ($pos == $numberOfParts - 1) {
 						$multipliedItem = $this->trunc($itemToSplit['VRPRECCOMVEN'] * $itemQuantity, 2);
 						$itemCalculatedValue = $multipliedItem * ($numberOfParts - 1);
@@ -549,52 +599,87 @@ class Account {
 							$adicionalItem = intval(($itemOriginalValue - $itemCalculatedValue) * 100);
 						}
 					}
+                    $NRSEQPRODCOM = null;
+                    // Se o produto for promoção, calcula um novo NRSEQPRODCOM.
+                    if ($itemToSplit['CDPRODPROMOCAO']){
+                        // Verifica se o NRSEQPRODCOM para o conjunto de produtos de uma promoção já foi calculado.
+                        if (!empty($sequenceArray[$itemToSplit['NRSEQPRODCOM']][$pos])){
+                            $NRSEQPRODCOM = $sequenceArray[$itemToSplit['NRSEQPRODCOM']][$pos];
+                        }
+                        else {
+                            // Cria um novo NRSEQPRODCOM e armazena no array.
+                            $params = array(
+                                'CDFILIAL' => $CDFILIAL,
+                                'NRVENDAREST' => $NRVENDAREST,
+                                'NRCOMANDA' => $NRCOMANDA,
+                                'NRORG' => $session['NRORG']
+                            );
+                            $NRSEQPRODCOM = $this->entityManager->getConnection()->fetchAssoc("SQL_GET_NRSEQCOM", $params);
+                            $NRSEQPRODCOM = str_pad((string) (intval($NRSEQPRODCOM['NRSEQPRODCOM']) + 1), 3, '0', STR_PAD_LEFT);
 
+                            $sequenceArray[$itemToSplit['NRSEQPRODCOM']][$pos] = $NRSEQPRODCOM;
+                        }
+
+                    }
+                    // Insere item novo na ITCOMANDAVEN com quantidade, desconto, e acréscimo ajustados.
 					$currentItem = array(
 						$NRPRODCOMVENNOVO,
 						$itemQuantity,
 						$itemDesc,
 						$posicao,
 						$itemAcr,
-						$NRPRODCOMVEN[$index],
+                        $NRSEQPRODCOM,
+						$NRPRODCOMVEN,
 						$CDFILIAL,
 						$NRVENDAREST,
 						$NRCOMANDA,
-						$NRPRODCOMVEN[$index]
+						$NRPRODCOMVEN
 					);
 					$this->entityManager->getConnection()->executeQuery('SQL_INSERE_ITEM_POSICAO', $currentItem);
+                    // Insere produtos na ITCOMANDAEST caso existam.
+                    foreach ($produtosEST as $promoItem){
+                        $itemEST = array(
+                            $promoItem['CDFILIAL'],
+                            $NRVENDAREST,
+                            $NRCOMANDA,
+                            $NRPRODCOMVENNOVO,
+                            $promoItem['CDPRODUTO'],
+                            $itemQuantity,
+                            $promoItem['VRPRECCOMEST'],
+                            $promoItem['VRDESITCOMEST'],
+                            $promoItem['TXPRODCOMVENEST'],
+                            $promoItem['NRATRAPRODCOES'],
+                            $promoItem['DSOBSPEDDIGEST']
+                        );
+                        $this->entityManager->getConnection()->executeQuery('SQL_INS_ITCOMANDAEST', $itemEST);
+                    }
 				}
-
-				$params = array(
-					$CDFILIAL,
-					$NRVENDAREST,
-					$NRCOMANDA,
-					$NRPRODCOMVEN[$index]
-				);
+                // Apaga produtos associados da ITCOMANDAEST.
+                $params = array(
+                    $CDFILIAL,
+                    $NRVENDAREST,
+                    $NRCOMANDA,
+                    $NRPRODCOMVEN
+                );
+                if (!empty($produtosEST)){
+                    $this->entityManager->getConnection()->executeQuery('SQL_DELETA_PROMOEST_ORIGINAL', $params);
+                }
+                // Apaga o produto original da ITCOMANDAVEN.
 				$this->entityManager->getConnection()->executeQuery('SQL_DELETA_PRODUTO_ORIGINAL', $params);
-
-				$params = array(
-					$CDFILIAL,
-					$NRVENDAREST,
-					$NRCOMANDA,
-					$NRPRODCOMVEN[$index]
-				);
-
+                // Valida valores.
 				$values = $this->entityManager->getConnection()->fetchAll('SQL_VALIDA_VALORES', $params);
-
-				foreach ($values as $value) {
-					if (round($value['VRTOTAL'], 2) <= 0) {
-
-						$this->entityManager->getConnection()->executeQuery('SQL_DELETA_PRODUTO_ORIGINAL', $params);
-
-						$params = array(
-							'CDFILIAL' => $CDFILIAL,
-							'NRVENDAREST' => $NRVENDAREST,
-							'NRCOMANDA' => $NRCOMANDA,
-							'NRPRODCOMVEN' => $NRPRODCOMVEN[$index],
-							'IDPRODPRODUZ' => null
-						);
-
+				foreach ($values as $value){
+                    // Cancela a divisão caso o total fique negativo.
+					if (round($value['VRTOTAL'], 2) <= 0){
+                        $params = array(
+                            'CDFILIAL' => $CDFILIAL,
+                            'NRVENDAREST' => $NRVENDAREST,
+                            'NRCOMANDA' => $NRCOMANDA,
+                            'NRPRODCOMVEN' => $NRPRODCOMVEN
+                        );
+                        $this->entityManager->getConnection()->executeQuery('SQL_INSERE_ITEM_COMANDAEST', $params);
+                        $this->entityManager->getConnection()->executeQuery('SQL_DELETA_CMD_EST_ORIG', $params);
+						$params['IDPRODPRODUZ'] = null;
 						$this->entityManager->getConnection()->executeQuery('SQL_INSERE_ITEM_COMANDA', $params);
 						$this->entityManager->getConnection()->executeQuery('SQL_DELETA_CMD_VEN_ORIG', $params);
 					}
@@ -622,7 +707,7 @@ class Account {
 	}
 
 	private function trunc($value, $decimals = 2) {
-		return floatval(bcdiv(str_replace(',','.',strval($value)), '1', str_replace(',','.',strval($decimals))));
+		return floatval(bcdiv(str_replace(',','.',strval($value)), '1', $decimals));
 	}
 
 	public function fechaContaMesa($dataset){ //Detaset Params: consumacao, couvert, mesa, pessoas, servico, valorConsumacao
@@ -713,7 +798,8 @@ class Account {
 				'NRVENDAREST' => $dataset['NRVENDAREST'],
 				'funcao'      => $dataset['IMPRIMEPARCIAL'],
 				'agrupamento' => array(),
-				'posicao'     => null
+				'posicao'     => null,
+                'updateDiscount' => false
 			);
 
 			$dadosParcial = $this->dadosParcial($parcialData);
@@ -1046,7 +1132,7 @@ class Account {
 			$fidelityValue = 0;
 			$fidelityDiscount = 0;
 			// calcula valores do Crédito Fidelidade
-			self::adjustDiscountFidelity($cdfilial, $nrvendarest, $produtosParcial, $cdprodcouver, $cdprodconsum, $total, $numeroProdutos, $arrayPosicoes, $VRDESCFID, $fidelityValue, $fidelityDiscount, $totalProdutosTaxa, $totalSubsidy);
+			self::adjustDiscountFidelity($cdfilial, $nrvendarest, $produtosParcial, $cdprodcouver, $cdprodconsum, $total, $numeroProdutos, $arrayPosicoes, $VRDESCFID, $fidelityValue, $fidelityDiscount, $totalProdutosTaxa, $totalSubsidy, $dataset['updateDiscount']);
 
 			/* Open connection and begin transaction. */
 			$connection = $this->entityManager->getConnection();
@@ -1092,7 +1178,7 @@ class Account {
 
 			// calcula taxa de serviço
 			$taxaDeServico = self::taxaDeServico($dataset['chave'], $totalProdutosTaxa, $cdfilial, $nrvendarest, $nrcomanda, $IDSTMESAAUX, $produtosParcial);
-			$total += $taxaDeServico;
+			$total += $taxaDeServico['calculada'];
 
 			// calcula tempo de permanência
 			$tempoPermanencia = self::calculaTempoPermanencia($cdfilial, $nrvendarest, $nrcomanda);
@@ -1113,7 +1199,7 @@ class Account {
 			if ($tipo === "I"){
 				$this->impressaoService->imprimeParcial($produtosParcial ,$dataset['chave'], $cdfilial, $stVendaRests,
 				 $stComandaVens, $cdprodcouver, $modo, $nrvendarest, $nrcomanda, $cdloja, $nrmesa, $impPosicao, $nrpessoas,
-				 $totalSemDesconto, $totalDesconto, $taxaDeServico, $total, $totalPorPessoa, $horas, $minutos,
+				 $totalSemDesconto, $totalDesconto, $taxaDeServico['calculada'], $total, $totalPorPessoa, $horas, $minutos,
 				 $segundos, $dscomanda, $dadosImpressao, $fidelityValue, $couvert);
 			}
 
@@ -1145,7 +1231,7 @@ class Account {
 				"produtos"         		=> $this->util->formataPreco($totalSemDesconto),
 				"desconto"         		=> $this->util->formataPreco($totalDesconto),
 				"lblDesconto"	   		=> $this->util->formataPreco($totalDesconto + $fidelityValue),
-				"servico"          		=> $this->util->formataPreco($taxaDeServico),
+				"servico"          		=> $this->util->formataPreco($taxaDeServico['calculada']),
 				"couvert"          		=> $this->util->formataPreco($couvert),
 				"consumacao"       		=> $this->util->formataPreco($consumacao),
 				"total"            		=> $this->util->formataPreco($total),
@@ -1158,7 +1244,8 @@ class Account {
 				'fidelityDiscount' 		=> $fidelityDiscount,
 				'fidelityValue'    		=> $fidelityValue,
 				'vlrprodcobtaxa'   		=> $totalProdutosTaxa,
-				'NMVENDEDORABERT'		=> isset($NMVENDEDORABERT) ? $NMVENDEDORABERT : ""
+				'NMVENDEDORABERT'		=> isset($NMVENDEDORABERT) ? $NMVENDEDORABERT : "",
+				'taxaOriginal'          => $taxaDeServico['original']
 			);
 		} catch(\Exception $e) {
 			Exception::logException($e);
@@ -1217,7 +1304,11 @@ class Account {
 	private function taxaDeServico($chave, $totalProdutos, $cdfilial, $nrvendarest, $nrcomanda, $IDSTMESAAUX, $produtosParcial){
 		$session = $this->util->getSessionVars($chave);
 		$idcomisvenda = $session["IDCOMISVENDA"];
-		$taxaDeServico = 0;
+		$taxaDeServico = array();
+		// Original - Taxa de serviço com o valor inalterado.
+		// Calculada - Após alterações manuais da taxa de serviço pelo usuário.
+		$taxaDeServico['calculada'] = $taxaDeServico['original'] = 0;
+
 		$params = array(
 			'CDFILIAL' => $cdfilial,
 			'NRVENDAREST' => $nrvendarest,
@@ -1231,6 +1322,7 @@ class Account {
         	} else {
         		$taxaCalculada = $this->util->truncate($totalProdutos * floatval($dadosComissao["VRCOMISPOR"])/100, 2);
         	}
+        	$taxaDeServico['original'] = $this->util->truncate($totalProdutos * floatval($session["VRCOMISVENDA"])/100, 2);
         }
         else if ($idcomisvenda === "G"){
             $taxaCalculada = 0;
@@ -1242,13 +1334,14 @@ class Account {
                     }
                 }
             }
+            $taxaDeServico['original'] = $taxaCalculada;
         }
 
         if ($idcomisvenda !== "N"){
             // caso existir, retorna o valor calculado se for diferente de zero; se não, salva e retorna
             if ($IDSTMESAAUX !== 'O') {
 				if (floatval($dadosComissao['VRCOMISVENDE']) != 0 || $dadosComissao['VRCOMISPOR'] > 0) {
-					$taxaDeServico = $taxaCalculada;
+					$taxaDeServico['calculada'] = $taxaCalculada;
 				}
 			} else {
 				if ($taxaCalculada > 0) {
@@ -1260,10 +1353,9 @@ class Account {
 					);
 					$this->entityManager->getConnection()->executeQuery("UPDATE_COMISSAO_VENDA", $params);
 				}
-				$taxaDeServico = $taxaCalculada;
+				$taxaDeServico['calculada'] = $taxaCalculada;
 			}
         }
-
 		return $taxaDeServico;
 	}
 
@@ -1488,12 +1580,11 @@ class Account {
                             $subProduct['VRPRECITEMCL'] = $priceData['PRECOCLIE'];
                             $price = floatval(bcadd(str_replace(',','.',strval($productActualPrice)), str_replace(',','.',strval($promoDiscount)), '2'));
 
-                            $subProduct['DISCOUNT'] = -1 * $promoDiscount;
                             if ($promoDiscount > 0){
-                                $subProduct['VRACRITVEND'] = floatval(bcadd(str_replace(',','.',strval($priceData['ACRE'])), str_replace(',','.',strval($subProduct['DISCOUNT'])), '2'));
+                                $subProduct['VRACRITVEND'] = floatval(bcadd(str_replace(',','.',strval($priceData['ACRE'])), str_replace(',','.',strval($promoDiscount)), '2'));
                             }
                             else {
-                                $subProduct['VRDESITVEND'] = floatval(bcadd(str_replace(',','.',strval($priceData['DESC'])), str_replace(',','.',strval($subProduct['DISCOUNT'])), '2'));
+                                $subProduct['VRDESITVEND'] = floatval(bcadd(str_replace(',','.',strval($priceData['DESC'])), str_replace(',','.',strval(-1 * $promoDiscount)), '2'));
                             }
 
                             $subProduct['PRICE'] = $subProduct['TOTPRICE'] = $price;
@@ -1552,7 +1643,33 @@ class Account {
         foreach ($products as &$product){
             if (!empty($product['PRODUTOS']) && $product['IDIMPPRODUTO'] == '2'){
                 foreach ($product['PRODUTOS'] as &$subProduct){
+
+                    if (!empty($subProduct['VOUCHER'])){
+                        $params = array(
+                            'CDCUPOMDESCFOS' => $subProduct['VOUCHER']['CDCUPOMDESCFOS']
+                        );
+                        $voucherData = $this->entityManager->getConnection()->fetchAssoc("SQL_VOUCHER_DATA", $params);
+
+                        $total = floatval(bcmul(strval($subProduct['PRECO'] + $subProduct['VRPRECITEMCL'] + $subProduct['VRACRITVEND'] - $subProduct['VRDESITVEND']), strval($subProduct['QTPRODCOMVEN']), 2));
+                        if ($voucherData['IDTIPODESC'] === "P"){
+                            $voucherDiscount = bcmul(strval($total), strval($voucherData['VRDESCCUPOM']/100), 2);
+                        }
+                        else {
+                            $voucherDiscount = $voucherData['VRDESCCUPOM'];
+                        }
+
+                        $subProduct['VOUCHERDISCOUNT'] = floatval($voucherDiscount);
+                        if ($subProduct['VOUCHERDISCOUNT'] >= $total){
+                            $subProduct['VOUCHERDISCOUNT'] = floatval(bcsub(strval($subProduct['QTPRODCOMVEN'] * ($subProduct['PRECO'] + $subProduct['VRPRECITEMCL'] + $subProduct['VRACRITVEND'])), strval($subProduct['QTPRODCOMVEN'] * 0.01), 2));
+                        }
+                    }
+                    else {
+                        $subProduct['VOUCHERDISCOUNT'] = 0;
+                    }
+
                     $valorVenda += floatval(bcmul(str_replace(',','.',strval($product['QTPRODCOMVEN'] * $subProduct['QTPRODCOMVEN'])), str_replace(',','.',strval($subProduct['PRICE'])), '2')) + $subProduct['totalObsAcrescimo'];
+                    // Aplica o desconto o desconto do voucher.
+                    $valorVenda = floatval(bcsub(strval($valorVenda), strval($subProduct['VOUCHERDISCOUNT']), 2));
                     $subsidioTotal += floatval(bcmul(str_replace(',','.',strval($product['QTPRODCOMVEN'] * $subProduct['QTPRODCOMVEN'])), str_replace(',','.',strval($subProduct['VRPRECITEMCL'])), '2'));
                     $subProduct['REALSUBSIDY'] = self::calculateSubsidy($subProduct['PRECO'], $subProduct['VRPRECITEMCL'], $subProduct['VRDESITVEND']);
                     $subProduct['REALSUBSIDY'] = floatval(bcmul(str_replace(',','.',strval($product['QTPRODCOMVEN'] * $subProduct['QTPRODCOMVEN'])), str_replace(',','.',strval($subProduct['REALSUBSIDY'])), '2'));
@@ -1567,6 +1684,30 @@ class Account {
                 }
             }
             else {
+
+                if (!empty($product['VOUCHER'])){
+                    $params = array(
+                        'CDCUPOMDESCFOS' => $product['VOUCHER']['CDCUPOMDESCFOS']
+                    );
+                    $voucherData = $this->entityManager->getConnection()->fetchAssoc("SQL_VOUCHER_DATA", $params);
+
+                    $total = floatval(bcmul(strval($product['PRECO'] + $product['VRPRECITEMCL'] + $product['VRACRITVEND'] - $product['VRDESITVEND']), strval($product['QTPRODCOMVEN']), 2));
+                    if ($voucherData['IDTIPODESC'] === "P"){
+                        $voucherDiscount = bcmul(strval($total), strval($voucherData['VRDESCCUPOM']/100), 2);
+                    }
+                    else {
+                        $voucherDiscount = $voucherData['VRDESCCUPOM'];
+                    }
+
+                    $product['VOUCHERDISCOUNT'] = floatval($voucherDiscount);
+                    if ($product['VOUCHERDISCOUNT'] >= $total){
+                        $product['VOUCHERDISCOUNT'] = floatval(bcsub(strval($product['QTPRODCOMVEN'] * ($product['PRECO'] + $product['VRPRECITEMCL'] + $product['VRACRITVEND'])), strval($product['QTPRODCOMVEN'] * 0.01), 2));
+                    }
+                }
+                else {
+                    $product['VOUCHERDISCOUNT'] = 0;
+                }
+
                 $product['QTPRODCOMVEN'] = str_replace(',','.', strval($product['QTPRODCOMVEN']));
                 $product['PRECO'] = str_replace(',','.', strval($product['PRECO']));
                 $product['VRPRECITEMCL'] = str_replace(',','.', strval($product['VRPRECITEMCL']));
@@ -1575,6 +1716,8 @@ class Account {
 
                 $valorVenda += floatval(bcsub(floatval(bcmul($product['QTPRODCOMVEN'], ($product['PRECO'] + $product['VRPRECITEMCL']), 2)) + floatval(bcmul($product['QTPRODCOMVEN'], $product['VRACRITVEND'], 2)), floatval(bcmul($product['QTPRODCOMVEN'], $product['VRDESITVEND'], 2)), 2));
                 $valorVenda += $product['totalObsAcrescimo'];
+                // Aplica o desconto o desconto do voucher.
+                $valorVenda = floatval(bcsub(strval($valorVenda), strval($product['VOUCHERDISCOUNT']), 2));
                 $subsidioTotal += floatval(bcmul(str_replace(',','.',strval($product['QTPRODCOMVEN'])), str_replace(',','.',strval($product['VRPRECITEMCL'])), '2'));
                 $product['REALSUBSIDY'] = self::calculateSubsidy($product['PRECO'], $product['VRPRECITEMCL'], $product['VRDESITVEND']);
                 $product['REALSUBSIDY'] = floatval(bcmul(str_replace(',','.',strval($product['QTPRODCOMVEN'])), str_replace(',','.',strval($product['REALSUBSIDY'])), '2'));
@@ -1672,11 +1815,14 @@ class Account {
             'CDFILIAL' => $session['CDFILIAL'],
 			'CDLOJA' => $session['CDLOJA'],
 			'NRORG' => $session['NRORG'],
+            'FILIALVIGENCIA' => $session['FILIALVIGENCIA'],
 			'NRCONFTELA' => $session['NRCONFTELA'],
+            'DTINIVIGENCIA' => new \DateTime($session['DTINIVIGENCIA']),
 			'CDPRODUTO' => array_unique(array_merge(array_column($prodfilho, 'CDPRODUTO'), array_column($produtos, 'CDPRODUTO')))
 		);
 		$type = array(
-			'CDPRODUTO' => \Doctrine\DBAL\Connection::PARAM_STR_ARRAY
+			'CDPRODUTO' => \Doctrine\DBAL\Connection::PARAM_STR_ARRAY,
+            'DTINIVIGENCIA' => \Doctrine\DBAL\Types\Type::DATETIME
 		);
 
         return $this->entityManager->getConnection()->fetchAll("BUSCA_NOMEPRODBLOQ", $params, $type);
@@ -1715,13 +1861,17 @@ class Account {
 	public function filterProducts($session, $filter, $FIRST, $LAST){
 		$CDFILIAL = $session['CDFILIAL'];
 		$CDLOJA = $session['CDLOJA'];
+        $FILIALVIGENCIA = $session['FILIALVIGENCIA'];
 		$NRCONFTELA = $session['NRCONFTELA'];
+        $DTINIVIGENCIA = new \DateTime($session['DTINIVIGENCIA']);
 		$now = $this->date->getDataAtual("d/m/Y");
 
 		$params = array(
 			'CDFILIAL' => $CDFILIAL,
 			'CDLOJA' => $CDLOJA,
+            'FILIALVIGENCIA' => $FILIALVIGENCIA,
 			'NRCONFTELA' => $NRCONFTELA,
+            'DTINIVIGENCIA' => $DTINIVIGENCIA,
 			'DATAATUAL' => $now,
 			'FILTER' => strtoupper($filter),
 			'FIRST' => $FIRST,
@@ -1730,6 +1880,7 @@ class Account {
 		);
 
 		$types = array(
+            'DTINIVIGENCIA' => \Doctrine\DBAL\Types\Type::DATETIME,
 			'DATAATUAL' => \Doctrine\DBAL\TypeS\Type::DATE
 		);
 
@@ -1851,24 +2002,71 @@ class Account {
 	        );
 
 	        for ($i = 0; $i < count($CDPRODUTO); $i++) {
+	        	// Geração de um novo código de controle.
 	        	$this->util->newCode('ITCOMANDAVEN' . $session['CDFILIAL'] . $comandaDestino);
 				$maxNRPRODCOMVEN = $this->util->getNewCode('ITCOMANDAVEN' . $session['CDFILIAL'] . $comandaDestino, 6);
 
+		        // Manipulação das tabelas itcomandaest e obsitcomandaest na transferência.
+				$antigo = array(
+					'NRVENDAREST' => $vendaRestComandaAtual,
+					'NRCOMANDA' => $comandaAtual
+				);
+				$novo = array(
+					'NRVENDAREST' => $vendaRestComandaDestino,
+					'NRCOMANDA' => $comandaDestino,
+					'NRPRODCOMVEN' => str_pad($maxNRPRODCOMVEN, 6, "0", STR_PAD_LEFT)
+				);
+				$this->tableService->alteraComandaEst($antigo, $novo, $NRPRODCOMVEN[$i]);
+
+				// Preparação dos parâmetros para transferência nas tabelas itcomandaven e obsitcomandaven.
 		        $params = array(
 		            'CDFILIAL' => $session['CDFILIAL'],
-		            'COMANDAATUAL' => $comandaAtual,
-		            'VRCOMANDAATUAL' => $vendaRestComandaAtual,
-		            'MAXNRPRODCOMVEN' => str_pad($maxNRPRODCOMVEN, 6, "0", STR_PAD_LEFT),
+		            'NRCOMANDA' => $comandaAtual,
+		            'NRVENDAREST' => $vendaRestComandaAtual,
 		            'CDPRODUTO' => $CDPRODUTO[$i],
 		            'NRPRODCOMVEN' => $NRPRODCOMVEN[$i],
+		            'CDSUPERVISOR' => $CDSUPERVISOR,
 		            'COMANDADEST' => $comandaDestino,
 		            'VRCOMANDADEST' => $vendaRestComandaDestino,
-		            'CDSUPERVISOR' => $CDSUPERVISOR
+		            'MAXNRPRODCOMVEN' => str_pad($maxNRPRODCOMVEN, 6, "0", STR_PAD_LEFT)
 		        );
 
 		        $produtosLog .= $produtosLog == '' ? $CDPRODUTO[$i] : ', ' . $CDPRODUTO[$i];
 
-				$this->entityManager->getConnection()->executeQuery('UPDATE_ITCOMANDAVEN_TRANSFER', $params);
+		        // Captura dos dados de transferência.
+		        $dadosProdutos = $this->entityManager->getConnection()->fetchAll('SQL_ITCOMANDAVEN_NRPRODCOMVEN', $params);
+		        $dadosObsitcomandaven = $this->entityManager->getConnection()->fetchAll('SQL_GET_OBSERVATIONS_VEN', $params);
+
+
+				// Inserção dos dados nas tabelas.
+		        foreach ($dadosProdutos as $produto) {
+		        	$produto['NRCOMANDA'] = $comandaDestino;
+		        	$produto['NRVENDAREST'] = $vendaRestComandaDestino;
+		        	$produto['NRPRODCOMVEN'] = str_pad($maxNRPRODCOMVEN, 6, "0", STR_PAD_LEFT);
+
+		        	if ($this->utilAPI->databaseIsOracle()){
+	                    $produto['DTHRINCOMVEN'] = \DateTime::createFromFormat('Y-m-d H:i:s', $produto['DTHRINCOMVEN']);
+	                }
+	                else {
+	                    $produto['DTHRINCOMVEN'] = \DateTime::createFromFormat('Y-m-d H:i:s.u', $produto['DTHRINCOMVEN']);
+	                }
+
+		        	$this->entityManager->getConnection()->executeQuery("SQL_INSERE_ITEM_COMANDA_VEN", $produto);
+		        }
+
+		        foreach ($dadosObsitcomandaven as $obs) {
+		        	$obs['NRCOMANDA'] = $comandaDestino;
+		        	$obs['NRVENDAREST'] = $vendaRestComandaDestino;
+		        	$obs['NRPRODCOMVEN'] = str_pad($maxNRPRODCOMVEN, 6, "0", STR_PAD_LEFT);
+
+		        	$this->entityManager->getConnection()->executeQuery("SQL_INS_OBSITCOMANDAVEN", $obs);
+		        }
+
+		        // Deleção dos dados das tabelas.
+		        $paramsDelItcomandaven = array($session['CDFILIAL'], $vendaRestComandaAtual, $comandaAtual, $NRPRODCOMVEN[$i]);
+				$this->entityManager->getConnection()->executeQuery("SQL_DEL_PROD", $paramsDelItcomandaven);
+				$this->entityManager->getConnection()->executeQuery("SQL_DELETE_OBSITCOMANDAVEN", $params);
+
 			}
 
 			$this->util->logFOS($session['CDFILIAL'], $session['CDCAIXA'], 'TRA_PRO', $session['CDOPERADOR'], $CDSUPERVISOR,
@@ -1882,8 +2080,11 @@ class Account {
 		}
 	}
 
-	public function setDiscountFidelity($CDFILIAL, $NRVENDAREST, $NRCOMANDA, $positions, $VRDESCFID){
+	public function setDiscountFidelity($NRVENDAREST, $NRCOMANDA, $positions, $VRDESCFID){
+        $session = $this->util->getSessionVars(null);
 		$connection = null;
+
+        $CDFILIAL = $session['CDFILIAL'];
 
 		try {
 			$connection = $this->entityManager->getConnection();
@@ -1923,11 +2124,11 @@ class Account {
 			if ($connection != null) {
             	$connection->rollback();
         	}
-			throw new $e;
+			throw $e;
 		}
 	}
 
-	public function adjustDiscountFidelity($cdfilial, $nrvendarest, $produtosParcial, $cdprodcouver, $cdprodconsum, $total, $numeroProdutos, $arrayPosicoes, $VRDESCFID, &$fidelityValue, &$fidelityDiscount, &$totalProdutosTaxa, &$totalSubsidy){
+	public function adjustDiscountFidelity($cdfilial, $nrvendarest, $produtosParcial, $cdprodcouver, $cdprodconsum, $total, $numeroProdutos, $arrayPosicoes, $VRDESCFID, &$fidelityValue, &$fidelityDiscount, &$totalProdutosTaxa, &$totalSubsidy, $updateDiscount){
         // parcial solicitada por posição
         if ($arrayPosicoes[0] != 'T'){
         	// valor de desconto deve ser controlado por posição
@@ -1975,6 +2176,12 @@ class Account {
 					$item['VRDESCCOMVEN'] += $desc;
 					$arrProdDesc[$key] = $item;
 					$vrTotDescCalc += $desc;
+                    // Atualiza ITCOMANDAVEN com os descontos.
+                    if ($updateDiscount){
+                        $paramsUpdate = $this->formatUpdateITCOMANDAVEN($item, $item['VRPRECCOMVEN'], $item['VRPRECCLCOMVEN'],
+                            $item['VRDESCCOMVEN'], $item['VRACRCOMVEN'], $item['DSOBSDESCIT'], $item['CDGRPOCORDESCIT'], 'N');
+                        $this->entityManager->getConnection()->executeQuery("UPDATE_PRICE_ON_ITCOMANDAVEN", $paramsUpdate);
+                    }
 				}
 			}
 			if ($vrTotDescCalc < $fidelityValue){
@@ -2105,7 +2312,20 @@ class Account {
             if (!empty($produto['PRODUTOS']) && $produto['IDIMPPRODUTO'] == '2' && $produto['IDTIPOCOMPPROD'] !== 'C'){
                 $totalPrice = 0;
                 foreach($produto['PRODUTOS'] as &$subProduto){
-                    $totalPrice += floatval(bcmul(str_replace(',','.',strval($subProduto['QTPRODCOMVEN'])), str_replace(',','.',strval($subProduto['PRICE'])), '2'));
+                    $subProductPrice = floatval(bcmul(str_replace(',','.',strval($subProduto['QTPRODCOMVEN'])), str_replace(',','.',strval($subProduto['PRICE'])), '2'));
+                    // Aplica o desconto do voucher.
+                    if (!empty($subProduto['VOUCHER'])){
+                        if ($subProduto['VOUCHER']['IDTIPODESC'] === "P"){
+                            $voucherDiscount = $subProductPrice * $subProduto['VOUCHER']['VRDESCCUPOM'] / 100;
+                        }
+                        else {
+                            $voucherDiscount = $subProduto['VOUCHER']['VRDESCCUPOM'];
+                        }
+                        $subProduto['VOUCHERDISCOUNT'] = floatval(bcmul(strval($voucherDiscount), "1", 2));
+                        if ($subProduto['VOUCHERDISCOUNT'] >= $subProductPrice) $subProduto['VOUCHERDISCOUNT'] = $subProductPrice - 0.01 * $subProduto['QTPRODCOMVEN'];
+                        $subProductPrice = floatval(bcsub(strval($subProductPrice), strval($subProduto['VOUCHERDISCOUNT']), 2));
+                    }
+                    $totalPrice += $subProductPrice;
                 }
                 $produto['PRITOTITEM'] = $totalPrice + $produto['EXTRAS'];
             }
@@ -2134,10 +2354,10 @@ class Account {
 
         if ($TIPOGORJETA === 'V'){
             $VRCOMISVENDE = $VRACRESCIMO;
-            $VRCOMISPOR = round($VRACRESCIMO / $TOTALPRODS * 100, 3);
+            $VRCOMISPOR = bcmul(strval($VRACRESCIMO) / strval($TOTALPRODS), '100', 3);
         }
         else {
-            $VRCOMISVENDE = round($TOTALPRODS * ($VRACRESCIMO / 100), 2);
+            $VRCOMISVENDE = bcmul(strval($TOTALPRODS), strval($VRACRESCIMO / 100), 2);
             $VRCOMISPOR = $VRACRESCIMO;
         }
 

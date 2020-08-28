@@ -25,7 +25,7 @@ class Delivery{
 		try{
 			$paramsOrders = array(
 				'CDFILIAL' => $params['CDFILIAL'],
-				'CDLOJA' 	 => $params['CDLOJA']
+				'CDLOJA'   => $params['CDLOJA']
 			);
 			$orders = $this->entityManager->getConnection()->fetchAll("GET_DELIVERY_ORDERS", $paramsOrders);
 			
@@ -380,6 +380,43 @@ class Delivery{
 
 			$this->entityManager->getConnection()->executeQuery("CONCLUDE_ORDERDLV", $params, $types);
 
+		} catch(\Exception $e){
+			Exception::logException($e);
+			throw new \Exception ($e->getMessage());
+		}
+	}
+
+	public function getAllDeliveryOrders($params){
+		try{
+			$paramsOrders = array(
+				'CDFILIAL' => $params['CDFILIAL'],
+				'CDLOJA'   => $params['CDLOJA']
+			);
+			$orders = $this->entityManager->getConnection()->fetchAll("GET_ALL_DELIVERY_ORDERS", $paramsOrders);
+
+			
+			//Busca tipos de recebimento e produtos de cada pedido
+			foreach ($orders as $key => $order) {
+				$paramsOrder = array(
+					'CDFILIAL'		=> $params['CDFILIAL'],
+					'NRVENDAREST' 	=> $order['NRVENDAREST']
+				);
+				$orders[$key]['DATASALE'] = $this->getMovcaixadlv($paramsOrder);
+				$orders[$key]['PRODUTOS'] = $this->getProdutosDlv($paramsOrder);	
+				$sale_propries = array();
+				if($orders[$key]['IDSTCOMANDA'] == 'P' || $orders[$key]['IDSTCOMANDA'] == '5'){
+					$paramsSale = array(
+						'CDFILIAL' 	=> $orders[$key]['CDFILIAL'],
+						'CDLOJA'   	=> $orders[$key]['CDLOJA'],
+						'NRCOMANDA' => $orders[$key]['NRCOMANDA']
+					);
+					$sale_propries = $this->entityManager->getConnection()->fetchAll("GET_SALE_DELIVERY_PROPRIES", $paramsSale);
+					$sale_propries = $sale_propries[0];
+				}
+				$orders[$key] = array_merge($orders[$key], $sale_propries);
+			}
+			return $orders;
+		
 		} catch(\Exception $e){
 			Exception::logException($e);
 			throw new \Exception ($e->getMessage());

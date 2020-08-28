@@ -4,22 +4,22 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 
 	// define por IDTIPORECE se pagamento tem valor máximo e se possibilita editar valor de pagamento
 	var PAYMENT_TYPE = {
-		'1': { max: true },
-		'2': { max: true },
-		'3': { max: false },
-		'4': { max: false },
-		'5': { max: false },
-		'6': { max: false },
-		'7': { max: false },
-		'8': { max: false },
-		'9': { max: true },
-		'A': { max: true },
-		'B': { max: false },
-		'C': { max: false },
-		'E': { max: true },
-		'F': { max: true },
-		'G': { max: true },
-		'H': { max: true }
+		'1': { max: true, repique: true },
+		'2': { max: true, repique: true },
+		'3': { max: false, repique: false },
+		'4': { max: false, repique: true },
+		'5': { max: false, repique: false },
+		'6': { max: false, repique: false },
+		'7': { max: false, repique: false },
+		'8': { max: false, repique: false },
+		'9': { max: true, repique: false },
+		'A': { max: true, repique: false },
+		'B': { max: false, repique: false },
+		'C': { max: false, repique: false },
+		'E': { max: true, repique: false },
+		'F': { max: true, repique: true },
+		'G': { max: true, repique: true },
+		'H': { max: true, repique: true }
 	};
 	var MESSAGE = {
 		VR_MIN: 'Valor inválido.',
@@ -67,11 +67,11 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 					switch (tiporece.IDTIPORECE) {
 						// debito pessoal
 						case 'A':
-							self.receivePersonalDebit(paymentData, widget, tiporece, toPay);
+							self.recievePersonalDebit(paymentData, widget, tiporece, toPay);
 							break;
 						// credito pessoal
 						case '9':
-							self.receivePersonalCredit(paymentData, widget, tiporece, toPay);
+							self.recievePersonalCredit(paymentData, widget, tiporece, toPay);
 							break;
 						default:
 							self.openPaymentPopup(widget.container.getWidget('paymentPopup'), tiporece, toPay, false);
@@ -83,7 +83,7 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 		});
 	};
 
-	this.receivePersonalDebit = function (paymentData, widget, tiporece, toPay) {
+	this.recievePersonalDebit = function (paymentData, widget, tiporece, toPay) {
 		if (!paymentData.CDCLIENTE || !paymentData.CDCONSUMIDOR) {
 			ScreenService.showMessage(MESSAGE.INFORM_CLIENT, 'alert');
 			return;
@@ -140,7 +140,7 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 		});
 	};
 
-	this.receivePersonalCredit = function (paymentData, widget, tiporece, toPay) {
+	this.recievePersonalCredit = function (paymentData, widget, tiporece, toPay) {
 		if (paymentData.DATASALE.FIDELITYDISCOUNT > 0) {
 			ScreenService.showMessage(MESSAGE.BLOCK_CREDIT_MULTIPLE, 'alert');
 			return;
@@ -175,16 +175,22 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 	};
 
 	this.setPaymentPopupProperty = function (openPopup, tiporece, toPay, locked) {
-		var fieldValue = openPopup.getField('VRMOVIVEND');
-		var fieldNSU = openPopup.getField('CDNSUHOSTTEF');
-
-		openPopup.label = tiporece.DSBUTTON;
-		openPopup.currentRow = self.currentRowDefaultValue(tiporece);
-		fieldValue.range.max = (PAYMENT_TYPE[tiporece.IDTIPORECE].max) ? toPay : null;
-		fieldValue.setValue(toPay);
-		fieldValue.readOnly = locked;
-
 		return OperatorRepository.findOne().then(function (operatorData) {
+			var fieldValue = openPopup.getField('VRMOVIVEND');
+			var fieldNSU = openPopup.getField('CDNSUHOSTTEF');
+
+			openPopup.label = tiporece.DSBUTTON;
+			openPopup.currentRow = self.currentRowDefaultValue(tiporece);
+
+			//Controle de valores máximos possíveis no pagamento do repique, respeitando a parametrização.
+			if (operatorData.IDTPCONTRREPIQ !== 'N' && tiporece.IDUTCONTRREPIQ !== 'N' && PAYMENT_TYPE[tiporece.IDTIPORECE].repique) {
+				fieldValue.range.max = null;
+			} else {
+				fieldValue.range.max = (PAYMENT_TYPE[tiporece.IDTIPORECE].max) ? toPay : null;
+			}
+			fieldValue.setValue(toPay);
+			fieldValue.readOnly = locked;
+
 			fieldNSU.maxlength = operatorData.QTDMAXDIGNSU || 10;
 
 			if (!self.showFieldNSU(tiporece, operatorData)) {
@@ -213,26 +219,103 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 	this.setPayment = function (widget) {
 		var currentRow = _.clone(widget.currentRow);
 		var widgetPayment = widget.container.getWidget('paymentMenu');
+		var valorRecebimento = UtilitiesService.getFloat(widget.getField('VRMOVIVEND').value());
 
 		if (widget.isValid()) {
 			currentRow.VRMOVIVEND = UtilitiesService.getFloat(currentRow.VRMOVIVEND);
 			widget.getField('VRMOVIVEND').setValue(currentRow.VRMOVIVEND);
 			currentRow.eletronicTransacion.data.CDNSUHOSTTEF = currentRow.CDNSUHOSTTEF;
-
 			if (self.validValue(widget.getField('VRMOVIVEND'), '')) {
-				ScreenService.showLoader();
-				PaymentService.handlePayment(currentRow).then(function (handlePaymentResult) {
-				    console.log("Result do Payment:");
-				    console.log(handlePaymentResult);
-					ScreenService.hideLoader();
-					if (!handlePaymentResult.error) {
-						self.paymentFinish(widgetPayment, handlePaymentResult.data);
-					} else {
-						self.handleSetPaymentError(handlePaymentResult);
-					}
-				}.bind(this));
+				self.trataRepique(currentRow, widgetPayment, valorRecebimento);
 			}
 		}
+	};
+
+	this.trataRepique = function (currentRow, widgetPayment, valorRecebimento) {
+		PaymentRepository.findOne().then(function (paymentData) {
+			OperatorRepository.findOne().then(function(operatorData){
+				var valorRepique, valorMaximoRepique, VRPEMAXREPIQVND, fieldValorRepique;
+
+				// Algumas das parametrizações do repique já são tratadas na variável showRepique no paymentService.js
+				if (paymentData.showRepique && PAYMENT_TYPE[currentRow.tiporece.IDTIPORECE].repique && (valorRecebimento > paymentData.DATASALE.FALTANTE) && currentRow.tiporece.IDUTCONTRREPIQ !== 'N') {
+					VRPEMAXREPIQVND = UtilitiesService.getFloat(operatorData.VRPEMAXREPIQVND);
+					valorMaximoRepique = Math.trunc(((VRPEMAXREPIQVND / 100) * paymentData.DATASALE.TOTAL) * 100) / 100;
+					valorRepique = Math.round((valorRecebimento - paymentData.DATASALE.FALTANTE) * 100) / 100;
+					fieldValorRepique = widgetPayment.container.getWidget('Repique').getField('valorRepique');
+
+					if (operatorData.IDTPCONTRREPIQ === 'V' && currentRow.tiporece.IDUTCONTRREPIQ === 'S') {
+						ScreenService.confirmMessage("Deseja alterar o valor do repique? ", 'question',
+							function () {
+								ScreenService.openPopup(widgetPayment.container.getWidget('Repique')).then(function(){
+									fieldValorRepique.label = "Valor: (Troco: " + UtilitiesService.toCurrency(valorRepique) + ")";
+									fieldValorRepique.clearValue();
+								});
+							}, function () {
+								if (VRPEMAXREPIQVND > 0 && valorRepique > valorMaximoRepique) {
+									ScreenService.showMessage('Operação bloqueada. O valor do repique excede o valor máximo possível.');
+								} else {
+									currentRow.REPIQUE = valorRepique;
+									self.handlePaymentData(currentRow, widgetPayment);
+								}
+							}
+						);
+					} else {
+						if (VRPEMAXREPIQVND > 0 && valorRepique > valorMaximoRepique) {
+							ScreenService.showMessage('Operação bloqueada. O valor do repique excede o valor máximo possível.');
+						} else {
+							currentRow.REPIQUE = valorRepique;
+							self.handlePaymentData(currentRow, widgetPayment);
+						}
+					}
+				} else {
+					self.handlePaymentData(currentRow, widgetPayment);
+				}
+			}.bind(this));
+		}.bind(this));
+	};
+
+	this.alteraRepique = function (widgetRepique) {
+		PaymentRepository.findOne().then(function (paymentData) {
+			OperatorRepository.findOne().then(function(operatorData){
+				var VRPEMAXREPIQVND = UtilitiesService.getFloat(operatorData.VRPEMAXREPIQVND);
+				var paymentPopup = widgetRepique.container.getWidget('paymentPopup');
+				var currentRow = _.clone(paymentPopup.currentRow);
+				var valorRecebimento = UtilitiesService.getFloat(paymentPopup.getField('VRMOVIVEND').value());
+				var widgetPayment = widgetRepique.container.getWidget('paymentMenu');
+				var valorRepique = UtilitiesService.getFloat(widgetRepique.getField('valorRepique').value());
+
+				valorTroco = Math.round((valorRecebimento - paymentData.DATASALE.FALTANTE) * 100) / 100;
+
+				if (valorRepique > 0){
+					if (valorRepique <= valorTroco) {
+						var valorMaximoRepique = Math.trunc(((VRPEMAXREPIQVND / 100) * paymentData.DATASALE.TOTAL) * 100) / 100;
+						if (VRPEMAXREPIQVND > 0 && valorRepique > valorMaximoRepique) {
+							ScreenService.showMessage('Operação bloqueada. O valor do repique excede o valor máximo possível.');
+						} else {
+							currentRow.REPIQUE = valorRepique;
+							self.handlePaymentData(currentRow, widgetPayment);
+						}
+					} else {
+						ScreenService.showMessage('Operação bloqueada. O valor do repique precisa ser menor ou igual ao valor do troco.');
+					}
+				} else {
+					ScreenService.showMessage('Digite o valor do repique a ser alterado.');
+				}
+			}.bind(this));
+		}.bind(this));
+	};
+
+	this.handlePaymentData = function (currentRow, widgetPayment) {
+		ScreenService.closePopup();
+		ScreenService.showLoader();
+		PaymentService.handlePayment(currentRow).then(function (handlePaymentResult) {
+			ScreenService.hideLoader();
+			if (!handlePaymentResult.error) {
+				self.paymentFinish(widgetPayment, handlePaymentResult.data);
+			} else {
+				self.handleSetPaymentError(handlePaymentResult);
+			}
+		}.bind(this));
 	};
 
 	this.handleSetPaymentError = function (handlePaymentResult) {
@@ -287,7 +370,7 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 		self.attStripeData(widgetPayment);
 		ScreenService.closePopup();
 
-		if (!DATASALE.FALTANTE && !DATASALE.TROCO) {
+		if (!DATASALE.FALTANTE && !DATASALE.TROCO && !DATASALE.REPIQUE) {
 			self.verifyFinishPayment(widgetPayment.container.getWidget('consumerCPFPopup'));
 		}
 	};
@@ -484,19 +567,13 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 		}
 	};
 
+
 	this.payAccount = function () {
 		PaymentService.payAccount().then(function (payAccountResult) {
 			if (!_.isEmpty(_.get(payAccountResult, 'data.paramsImpressora'))) {
 				PerifericosService.print(payAccountResult.data.paramsImpressora).then(function (result) {
-				/*var notaTEF = JSON.stringify({"codigoBarras" : payAccountResult.data.dadosImpressao.TEXTOCODIGOBARRAS,
-				                              "cupomPriVia"  : payAccountResult.data.dadosImpressao.TEXTOCUPOM1VIA,
-				                              "cupomSegVia"  : payAccountResult.data.dadosImpressao.TEXTOCUPOM2VIA,
-				                              "qrcode"       : payAccountResult.data.dadosImpressao.TEXTOQRCODE,
-				                              "rodape"       : payAccountResult.data.dadosImpressao.TEXTORODAPE,
-				                              "flag" : "printPayment"});*/
-				//var result = window.cordova.plugins.IntegrationService.print(notaTEF,true,null);
 					if (!payAccountResult.error) {
-						if (result) {
+						if (!_.isEmpty(result.message)) {
 							self.handlePrintNote(payAccountResult);
 						} else self.payAccountFinish(payAccountResult);
 					} else {
@@ -505,7 +582,7 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 							PaymentService.updateSaleCode();
 						}
 					}
-                });
+				});
 			} else {
 				if (!payAccountResult.error) {
 					if (!_.isEmpty(payAccountResult.data.dadosImpressao)) {
@@ -518,7 +595,10 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 						PaymentService.updateSaleCode();
 					}
 				}
-
+			}
+			// Realiza impressão de pedidos na maquininha no modo balcão.
+			if (!_.isEmpty(_.get(payAccountResult, 'data.impressaoPedidoSmart'))) {
+				self.printOrderIntegration(payAccountResult.data.impressaoPedidoSmart);
 			}
 		}.bind(this));
 	};
@@ -543,6 +623,11 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 		if (_.get(payAccount, 'data.mensagemImpressao')) {
 			message += '<br><br>' + _.get(payAccount, 'data.mensagemImpressao');
 		}
+
+		if (!_.isEmpty(_.get(payAccount, 'data.errPainelSenha'))) {
+			ScreenService.notificationMessage(payAccount.data.errPainelSenha, 'error');
+		}
+
 		ScreenService.showMessage(message);
 
 		if (_.get(payAccount, 'data.IDSTMESAAUX') === 'R') {
@@ -560,11 +645,14 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 			stripeWidget.getField('limitDebito').isVisible = _.get(paymentData, "limitDebito.LIMITE_ATUAL");
 			stripeWidget.getField('limitCreditoLabel').isVisible = _.get(paymentData, "limitCredito[0].VRLIMDEBCONS");
 			stripeWidget.getField('limitCredito').isVisible = _.get(paymentData, "limitCredito[0].VRLIMDEBCONS");
+			stripeWidget.getField('repiqueLabel').isVisible = _.get(paymentData, "showRepique");
+			stripeWidget.getField('REPIQUE').isVisible = _.get(paymentData, "showRepique");
 			stripeWidget.currentRow = {
 				TOTALVENDA: UtilitiesService.toCurrency(paymentData.DATASALE.TOTALVENDA),
 				VALORPAGO: UtilitiesService.toCurrency(paymentData.DATASALE.VALORPAGO),
 				FALTANTE: UtilitiesService.toCurrency(paymentData.DATASALE.FALTANTE),
 				TROCO: UtilitiesService.toCurrency(paymentData.DATASALE.TROCO),
+				REPIQUE: UtilitiesService.toCurrency(UtilitiesService.removeCurrency((_.get(paymentData, "DATASALE.REPIQUE", 0)) || 0)),
 				limitDebito: UtilitiesService.toCurrency(UtilitiesService.removeCurrency((_.get(paymentData, "limitDebito.LIMITE_ATUAL", 0)) || 0)),
 				limitCredito: UtilitiesService.toCurrency(UtilitiesService.removeCurrency((_.get(paymentData, "limitCredito[0].VRLIMDEBCONS", 0)) || 0) / 100)
 			};
@@ -1247,6 +1335,27 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 			}.bind(this)
 		);
 	};
+
+	this.printOrderIntegration = function (impressaoPedidoSmart) {
+		var texto = '';
+		impressaoPedidoSmart.forEach(function(pedidos){
+			if (!pedidos.saas && ((pedidos.impressora.IDMODEIMPRES == '25' && !!window.cordova && !!cordova.plugins.GertecPrinter) || (pedidos.impressora.IDMODEIMPRES == '27' && !!window.ZhCieloAutomation) || pedidos.impressora.IDMODEIMPRES == '28')) {
+				pedidos.comandos.forEach(function(comandos){
+					texto += comandos.parameters.text;
+					if (!!~comandos.parameters.text.search('SENHA')) {
+						PrinterService.printerCommand(PrinterService.TEXT_COMMAND, texto);
+						PrinterService.printerSpaceCommand(2);
+						texto = '';
+					}
+				});
+			}
+		}.bind(this));
+		PrinterService.printerInit().then(function (result) {
+			if (result.error)
+				ScreenService.alertNotification(result.message);
+		});
+	};
+
 }
 
 Configuration(function (ContextRegister) {

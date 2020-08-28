@@ -40,6 +40,7 @@ function WindowService(ScreenService) {
 		ORDER_ACCESS_SCREEN: "orderAccess",
 		ORDER_MENU_SCREEN: "orderMenu",
 		NEW_CONSUMER_SCREEN: "newConsumer",
+        COMPRE_GANHE_SCREEN: "compreGanhe",
 
 		// register screens
 		OPEN_REGISTER_SCREEN: "openRegister",

@@ -240,6 +240,145 @@ function MenuFunctionsController (PermissionService, AccountController, TableCon
 		}
 	};
 
+	this.selectToGroupBills = function(mainBillField) {
+		mainBillField.clearValue();
+		mainBillField.dataSource.data = Array();
+		BillController.getBills(function(comandas) {
+		 	mainBillField.dataSource.data = comandas;
+		}.bind(this));
+	};
+
+	this.handleSelectBills = function(mainBillField, selectBillsToGroupField){
+		BillService.selectGroupBills().then(function (groupBills){
+			if (!_.isEmpty(mainBillField.value())) {
+				selectBillsToGroupField.readOnly = false;
+				currentRow = mainBillField.getParent().currentRow;
+				comandas = _.clone(mainBillField.dataSource.data);
+
+				_.forEach(groupBills, function(value, key) {
+				  	_.remove(comandas, function(c){
+				  		return c.NRCOMANDA == value.NRCOMANDA && c.NRVENDAREST == value.NRVENDAREST;
+				  	});
+				});
+
+				selectBillsToGroupField.dataSource.data = _.filter(comandas, function(datasetBills) {
+					return datasetBills.NRCOMANDA != currentRow.MAINNRCOMANDA && datasetBills.NRVENDAREST != currentRow.MAINNRVENDAREST;
+				});
+			} else {
+				selectBillsToGroupField.readOnly = true;
+				selectBillsToGroupField.dataSource.data = Array();
+			}
+		}.bind(this));
+	};
+
+	this.selectToUngroupBills = function(ungroupBillsWidget) {
+		var sortedGroupBills = Array();
+		ungroupBillsWidget.dataSource.data = Array();
+		BillService.selectGroupBills().then(function (groupBills){
+			_.forEach(groupBills, function(value, key) {
+				if (value.DSCOMANDAPRI == null) {
+					value.DSCOMANDAPRI = 'PRINCIPAL';
+					sortedGroupBills.push(value);
+					groupedBills = _.filter(groupBills, function(gpBill) {
+						return value.DSCOMANDA == gpBill.DSCOMANDAPRI;
+					});
+					sortedGroupBills.push(groupedBills);
+				}
+			});
+		 	ungroupBillsWidget.dataSource.data = sortedGroupBills.flat();
+		}.bind(this));
+	};
+
+	this.eraseGroupBillData = function (widget) {
+		groupWidget = widget.container.getWidget('group');
+		ungroupWidget = widget.container.getWidget('ungroup');
+		groupWidget.getField('mainBill').clearValue();
+		groupWidget.getField('mainBill').dataSource.data = Array();
+		groupWidget.getField('selectBillsToGroup').clearValue();
+		groupWidget.getField('selectBillsToGroup').dataSource.data = Array();
+		groupWidget.getField('selectBillsToGroup').readOnly = true;
+		ungroupWidget.dataSource.checkedRows = [];
+		ungroupWidget.dataSource.data = Array();
+	};
+
+	this.groupDisgroupBills = function (widget) {
+		if (widget.currentWidget.name == 'group') {
+			// Realiza o agrupamento das comandas.
+			groupWidget = widget.currentWidget;
+			if (!_.isEmpty(groupWidget.currentRow.mainBill)) {
+				if (!_.isEmpty(groupWidget.getField('selectBillsToGroup').value())) {
+					currentRow = groupWidget.currentRow;
+					
+					mainBill = {
+						"MAINBILL": {
+							"DSCOMANDA": currentRow.MAINDSCOMANDA,
+							"NRVENDAREST": currentRow.MAINNRVENDAREST,
+							"NRCOMANDA": currentRow.MAINNRCOMANDA
+						}
+					};
+
+					toGroupBills = Array();
+					for (i = 0; i < currentRow.selectBillsToGroup.length; i++) {
+						arr  = {
+							"DSCOMANDA": currentRow.TOGROUPDSCOMANDA[i],
+							"NRVENDAREST": currentRow.TOGROUPNRVENDAREST[i],
+							"NRCOMANDA": currentRow.TOGROUPNRCOMANDA[i]
+						};
+						toGroupBills.push(arr);
+					}
+
+					BillService.groupBills(mainBill, toGroupBills).then(function(result){
+						AccountController.getAccountData(function(accountData) {
+							ScreenService.showMessage("Comandas agrupadas com sucesso. ");
+							groupWidget.getField('mainBill').clearValue();
+							groupWidget.getField('selectBillsToGroup').clearValue();
+							groupWidget.getField('selectBillsToGroup').readOnly = true;
+							ScreenService.closePopup();
+							// Se a comanda atual estiver entre as comandas que serão agrupadas retorna para a tela principal.
+							comandaAtual = _.filter(toGroupBills, function(c){
+								return c.DSCOMANDA == accountData[0].DSCOMANDA && c.DSCOMANDA == accountData[0].DSCOMANDA && c.DSCOMANDA == accountData[0].DSCOMANDA;
+							}.bind(this));
+							if (!_.isEmpty(comandaAtual)) {
+								UtilitiesService.backMainScreen();
+							}
+						}.bind(this));
+					}.bind(this));
+
+				} else {
+					ScreenService.showMessage("Selecione as comandas a serem agrupadas.", 'alert');
+				}
+			} else {
+				ScreenService.showMessage("Selecione a comanda principal.", 'alert');
+			}
+		} else {
+			// Realiza o desagrupamento das comandas.
+			ungroupWidget = widget.currentWidget;
+			var selectedBills = ungroupWidget.getCheckedRows();
+			if (!_.isEmpty(selectedBills)) {
+
+				toUngroupBills = Array();
+				for (i = 0; i < selectedBills.length; i++) {
+					arr  = {
+						"DSCOMANDA": selectedBills[i].DSCOMANDA,
+						"NRVENDAREST": selectedBills[i].NRVENDAREST,
+						"NRCOMANDA": selectedBills[i].NRCOMANDA,
+						"DSCOMANDAPRI": selectedBills[i].DSCOMANDAPRI
+					};
+					toUngroupBills.push(arr);
+				}
+				
+				BillService.ungroupBills(toUngroupBills).then(function(result){
+					ScreenService.showMessage("Comandas desagrupadas com sucesso. ");
+					ungroupWidget.dataSource.checkedRows = [];
+					ScreenService.closePopup();
+				}.bind(this));
+
+			} else {
+				ScreenService.showMessage("Selecione as comandas a serem desagrupadas.", 'alert');
+			}
+		}
+	};
+
 }
 
 Configuration(function(ContextRegister){

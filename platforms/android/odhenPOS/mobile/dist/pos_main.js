@@ -6,7 +6,7 @@ Object.keys = _.keys;
 var projectConfig = {
 	currentMode: 'M',
 	serviceUrl: '/odhenPOS/backend/service/index.php',
-	frontVersion : '6.0.8'
+	frontVersion : '6.0.9'
 };
 
 // FILE: js/repositories/AccountCancelProduct.js
@@ -199,6 +199,35 @@ Configuration(function(ContextRegister, RepositoryFactory) {
 Configuration(function(ContextRegister, RepositoryFactory) {
     var CalculaDescontoSubgrupo = RepositoryFactory.factory('/CalculaDescontoSubgrupo', 'MEMORY', 1, 20000);
     ContextRegister.register('CalculaDescontoSubgrupo', CalculaDescontoSubgrupo);
+});
+
+// FILE: js/repositories/CampanhaFlag.js
+Configuration(function(ContextRegister, RepositoryFactory) {
+    var CampanhaFlag = RepositoryFactory.factory('/CampanhaFlag', 'MEMORY', 1, 20000);
+    ContextRegister.register('CampanhaFlag', CampanhaFlag);
+});
+
+// FILE: js/repositories/CampanhaProducts.js
+Configuration(function(ContextRegister, RepositoryFactory) {
+    var CampanhaProducts = RepositoryFactory.factory('/CampanhaProducts', 'MEMORY', 1, 20000);
+    /*
+    var itensInMemory = [];
+    CampanhaProducts.findInMemory = function() {
+        return ZHPromise.when(itensInMemory);
+    };
+
+    //var oldSave = CampanhaProducts.save;
+
+    CampanhaProducts.saveInMemory = function(obj) {
+        itensInMemory.push(obj) ;
+        oldSave(obj);
+        return ZHPromise.when(obj);
+    };
+
+    CampanhaProducts.save = CampanhaProducts.saveInMemory;
+    */
+
+    ContextRegister.register('CampanhaProducts', CampanhaProducts);
 });
 
 // FILE: js/repositories/CancelCreditRepository.js
@@ -464,6 +493,12 @@ Configuration(function(ContextRegister, RepositoryFactory) {
 Configuration(function(ContextRegister, RepositoryFactory) {
 	var GetTransactionCode = RepositoryFactory.factory('/GetTransactionCode', 'MEMORY', 1, 20000);
 	ContextRegister.register('GetTransactionCode', GetTransactionCode);
+});
+
+// FILE: js/repositories/GroupBills.js
+Configuration(function(ContextRegister, RepositoryFactory) {
+	var GroupBills = RepositoryFactory.factory('/GroupBills', 'MEMORY', 1, 20000);
+	ContextRegister.register('GroupBills', GroupBills);
 });
 
 // FILE: js/repositories/GroupPriceChart.js
@@ -910,6 +945,12 @@ Configuration(function(ContextRegister, RepositoryFactory) {
     ContextRegister.register('SelectComandaProducts', SelectComandaProducts);
 });
 
+// FILE: js/repositories/SelectGroupBills.js
+Configuration(function(ContextRegister, RepositoryFactory) {
+	var SelectGroupBills = RepositoryFactory.factory('/SelectGroupBills', 'MEMORY', 1, 20000);
+	ContextRegister.register('SelectGroupBills', SelectGroupBills);
+});
+
 // FILE: js/repositories/SelectProducts.js
 Configuration(function(ContextRegister, RepositoryFactory) {
     var SelectProducts = RepositoryFactory.factory('/SelectProducts', 'MEMORY', 1, 20000);
@@ -1192,6 +1233,12 @@ Configuration(function(ContextRegister, RepositoryFactory) {
     ContextRegister.register('UnblockProducts', UnblockProducts);
 });
 
+// FILE: js/repositories/UngroupBills.js
+Configuration(function(ContextRegister, RepositoryFactory) {
+	var UngroupBills = RepositoryFactory.factory('/UngroupBills', 'MEMORY', 1, 20000);
+	ContextRegister.register('UngroupBills', UngroupBills);
+});
+
 // FILE: js/repositories/UpdateCanceledTransaction.js
 Configuration(function(ContextRegister, RepositoryFactory) {
 	var UpdateCanceledTransaction = RepositoryFactory.factory('/UpdateCanceledTransaction', 'MEMORY');
@@ -1259,6 +1306,12 @@ Configuration(function(ContextRegister, RepositoryFactory) {
 	ContextRegister.register('VerificaProdutosBloqueados', VerificaProdutosBloqueados);
 });
 
+// FILE: js/repositories/VoucherRepository.js
+Configuration(function(ContextRegister, RepositoryFactory) {
+    var VoucherRepository = RepositoryFactory.factory('/VoucherRepository', 'MEMORY', 1, 20000);
+    ContextRegister.register('VoucherRepository', VoucherRepository);
+});
+
 // FILE: js/services/WindowService.js
 function WindowService(ScreenService) {
 	const WINDOWS = {
@@ -1302,6 +1355,7 @@ function WindowService(ScreenService) {
 		ORDER_ACCESS_SCREEN: "orderAccess",
 		ORDER_MENU_SCREEN: "orderMenu",
 		NEW_CONSUMER_SCREEN: "newConsumer",
+        COMPRE_GANHE_SCREEN: "compreGanhe",
 
 		// register screens
 		OPEN_REGISTER_SCREEN: "openRegister",
@@ -1482,11 +1536,11 @@ function IntegrationCielo(PaymentRepository){
                 // cria nova Ordem caso não existir pagamento por integração na venda
                 if(_.isEmpty(_.find(payment.TIPORECE, Array('TRANSACTION.status', true)))){
                     newOrder.create = true;
-                    newOrder.accountValue = (payment.DATASALE.TOTALVENDA) * 100;
+                    newOrder.accountValue = parseFloat((payment.DATASALE.TOTALVENDA * 100).toFixed(2));
                 }
                 newOrder = JSON.stringify(newOrder);
                 
-                var paymentValue = (currentRow.VRMOVIVEND.toFixed(2)) * 100;
+                var paymentValue = parseFloat((currentRow.VRMOVIVEND * 100).toFixed(2));
                 
                 ZhCieloAutomation.payment(newOrder, paymentValue, currentRow.tiporece.IDTIPORECE);
             });
@@ -1735,7 +1789,7 @@ function IntegrationRede(){
     var REMOVE_ALL_INTEGRATIONS = false;
 
     var MESSAGE_INTEGRATION_FAIL = 'Não foi possível chamar a integração. Sua instância não existe.';
-    var MESSAGE_NULL_RESPONSE = 'Não foi possível obter o retorno da integração.';
+    var MESSAGE_NULL_RESPONSE = 'Não foi pissível obter o retorno da integração.';
 
 	this.integrationPayment = function(operatorData, currentRow) {
 		if(!!window.cordova && !!cordova.plugins.GertecRede) {
@@ -2105,7 +2159,9 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
                 window.hideUserInterfaces = self.hideUserInterfaces;
                 window.showCancelButton = self.showCancelButton;
 
+                // QRCode Mercado Pago
                 if (params.paymentType == 122){
+                	sitefWidget.getAction("btnBack").isVisible = true;
                     if (operatorData.CDURLQRCODE){
                         var qrcode = new QRCode($(".sitef-field")[0], {
                             width : 150,
@@ -2176,211 +2232,6 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
 Configuration(function(ContextRegister) {
 	ContextRegister.register('IntegrationSiTEF', IntegrationSiTEF);
 });
-
-// FILE: js/integrations/IntegrationStone.js
-function IntegrationStone(templateManager,ScreenService,OperatorRepository){
-
-    var self = this;
-    var PAYMENT_CONFIRMATION = false;
-    var REMOVE_ALL_INTEGRATIONS = false;
-    var MESSAGE_INTEGRATION_FAIL = 'Não foi possível chamar a integração. Sua instância não existe.';
-
-    this.integrationPayment = function(operatorData, currentRow){
-
-        if(!!window.cordova.plugins) {
-            var params = self.getPaymentFromCurrentRow(currentRow);
-            window.cordova.plugins.IntegrationService.payment(params,window.returnIntegration,null);
-        } else {
-            window.returnIntegration(self.invalidIntegrationInstance());
-        }
-    };
-
-//    this.setMessage = function(message) {
-//        templateManager.containers.login.getWidget("pagsegpayment").getField("userInterfacePag").value(_.toUpper(message));
-//    };
-//
-//    this.setLabel = function(label) {
-//    	templateManager.containers.login.getWidget("pagsegpayment").label = label;
-//    };
-//
-//    this.promptBoolean = function(message) {
-//    	ScreenService.confirmMessage(message, 'question',
-//    		function(){
-//    			self.continueSitefProcess(SITEF_YES);
-//    		},
-//    		function(){
-//    			self.continueSitefProcess(SITEF_NO);
-//    		}
-//    	);
-//    };
-//
-//    this.promptCommand = function(message, minLength, maxLength, tipoCampo) {
-//    	self.setMessage(message);
-//        self.hideUserInterfaces();
-//    	var widget = templateManager.containers.login.getWidget("pagsegpayment");
-//    	widget.currentRow.tipoCampo = tipoCampo;
-//    	widget.getAction("btnConfirm").isVisible = true;
-//    	widget.getAction("btnBack").isVisible = true;
-//
-//    	var field = widget.getField("userInput");
-//   		field.isVisible = true;
-//   		field.minlength = minLength;
-//   		field.maxlength = maxLength;
-//   		field.setValue("");
-//
-//   		self.hideUserInterfaces();
-//   	};
-//
-//    this.hideUserInterfaces = function() {
-//    	var widget = templateManager.containers.login.getWidget("pagsegpayment");
-//    	widget.getAction("btnBack").isVisible = widget.getAction("btnConfirm").isVisible =
-//    		widget.getField("userInput").isVisible = false;
-//    };
-//
-//   this.showCancelButton = function() {
-//    	templateManager.containers.login.getWidget("pagsegpayment").getAction("btnBack").isVisible = true;
-//   };
-
-    this.integrationPaymentResult = function(resolve, javaResult){
-         console.log("JAVARES");
-         console.log(javaResult);
-         //Realiza validação dos dados,e envia a resposta de volta com o resolve
-         var integrationResult = {};
-         if(javaResult !== null) {
-         	if (!javaResult.error){
-            	integrationResult.error = false;
-            	javaResult = javaResult.data;
-            	integrationResult.data = {
-            		CDBANCARTCR: javaResult.flag,
-            		CDNSUHOSTTEF: javaResult.nsu,
-            		NRCONTROLTEF: javaResult.AUTO,
-            		PAYMENTCONFIRMATION : PAYMENT_CONFIRMATION,
-            		REMOVEALLINTEGRATIONS : REMOVE_ALL_INTEGRATIONS
-            	};
-            } else {
-                integrationResult.error = javaResult.error;
-            	integrationResult.message = javaResult.message;
-            }
-         } else {
-         	integrationResult.message = MESSAGE_NULL_RESPONSE;
-         }
-         resolve(integrationResult);
-    };
-
-    this.cancelIntegration = function(tiporeceData){
-        self.reversalIntegration(tiporeceData);
-    };
-
-    this.cancelIntegrationResult = function(resolve, javaResult){
-        self.reversalIntegrationResult(resolve, javaResult);
-    };
-
-    this.reversalIntegration = function(tiporeceData){
-        //Verificamos a existência do plugin no momento
-        if(!!window.cordova.plugins) {
-        	//Definimos os parametros como sendo os dados necessários para realizar o reembolso em forma de string JSON
-        	var params = self.getRefundFromSaleCancelResult(tiporeceData);
-            //Chama-se a função da integração(KT) com os parametros,a função que é pra onde o código seguirá caso sucesso,e null
-            window.cordova.plugins.IntegrationService.refund(params, window.returnIntegration, null);
-        } else {
-        	window.returnIntegration(self.invalidIntegrationInstance());
-        }
-
-    };
-
-    this.reversalIntegrationResult = function(resolve, javaResult){
-        var integrationResult = self.formatResponse();
-        javaResult = self.handleJavaResult(javaResult);
-        console.log("java ESTORNO");
-        console.log(javaResult);
-
-        if (javaResult.errorCode == 0){
-            integrationResult.error = false;
-        } else {
-            integrationResult.message = javaResult.message;
-        }
-
-        resolve(integrationResult);
-    };
-
-    this.completeIntegration = function(){
-        return true;
-    };
-
-    this.completeIntegrationResult = function(resolve, javaResult){
-        return true;
-    };
-
-    this.formatResponse = function(){
-        return {
-            error: true,
-            message: '',
-            data: {}
-        };
-    };
-
-    this.invalidIntegrationInstance = function(){
-        return {
-            statusCode: '2',
-            message: MESSAGE_INTEGRATION_FAIL
-        };
-    };
-
-    this.handleJavaResult = function(javaResult){
-        if(typeof(javaResult) === 'string')
-            javaResult = JSON.parse(javaResult);
-
-        return javaResult;
-    };
-
-    this.getPaymentFromCurrentRow = function (currentRow){
-       return JSON.stringify(
-            {"paymentType": currentRow.tiporece.IDTIPORECE,
-             "paymentValue": currentRow.VRMOVIVEND,
-             "paymentNSU": "123"
-            }
-       );
-    };
-
-     this.getRefundFromSaleCancelResult = function (integrations){
-        return JSON.stringify(
-         	{"refundType" : integrations.IDTIPORECE,
-           	 "refundValue": integrations.VRMOVIVEND,
-        	 "refundDate" : integrations.TRANSACTIONDATE,
-        	 "refundCV"   : integrations.NRCONTROLTEF,
-        	 "TRANSACTIONCODE":integrations.TRANSACTIONCODE,
-             "TRANSACTIONID":integrations.TRANSACTIONID
-        	 }
-        );
-     };
-
-
-
-}
-
-Configuration(function(ContextRegister) {
-    ContextRegister.register('IntegrationStone', IntegrationStone);
-});
-
-
-
-/*var NRCARTBANCO = integrationResponse.data.binCard + integrationResponse.data.lastNumbersCard;
-    						var transactionDate = integrationResponse.data.date;
-    						transactionDate = transactionDate.slice(6, 8) + transactionDate.slice(4, 6) + transactionDate.substring(0, 4);
-    						integrationResponse.data.eletronicTransacion = currentRow.eletronicTransacion;
-    						integrationResponse.data.eletronicTransacion.data.CDBANCARTCR = integrationResponse.data.cardBrandName? integrationResponse.data.cardBrandName: '';
-    						integrationResponse.data.eletronicTransacion.data.STLPRIVIA = '';
-    						integrationResponse.data.eletronicTransacion.data.STLSEGVIA = '';
-    						integrationResponse.data.eletronicTransacion.data.CDNSUHOSTTEF = integrationResponse.data.uniqueSequentialNumber;
-    						integrationResponse.data.eletronicTransacion.data.TRANSACTIONDATE = transactionDate;
-    						integrationResponse.data.eletronicTransacion.data.NRCONTROLTEF= integrationResponse.data.CV;
-    						//alterar nome dos campos nas outras integrações
-    						integrationResponse.data.eletronicTransacion.data.IDTIPORECE= integrationResponse.data.OperationType;
-    						integrationResponse.data.eletronicTransacion.data.NRCARTBANCO = NRCARTBANCO;
-    						integrationResponse.data.eletronicTransacion.data.VRMOVIVEND = currentRow.VRMOVIVEND;
-    						integrationResponse.data.VRMOVIVEND = currentRow.VRMOVIVEND;
-    						integrationResponse.data.tiporece = currentRow.tiporece;
-    						*/
 
 // FILE: js/printer/PrinterCieloLio.js
 function PrinterCieloLio(){
@@ -2716,102 +2567,8 @@ Configuration(function(ContextRegister) {
 	ContextRegister.register('PrinterPoynt', PrinterPoynt);
 });
 
-// FILE: js/printer/PrinterStone.js
-function PrinterStone(){
-
-    var self = this;
-
-    var INVALID_PRINTER_INSTANCE = 'Não foi possível chamar a impressora. Sua instância não existe.';
-
-    this.printText = function(text){
-
-        if (!!window.cordova.plugins.IntegrationService){
-
-        	var params = JSON.stringify({"texto":text,
-        	                              "flag":"printText"});
-            //Chamada da função de impressão da integração
-            //window.returnPrintResult contém a função printResult desse mesmo arquivo
-            window.cordova.plugins.IntegrationService.print(params, window.returnPrintResult,null);
-
-        } else {
-        	window.returnPrintResult(self.invalidPrinterInstance());
-        }
-    };
-
-    this.printQRCode = function(qrCode){
-
-        var params = JSON.stringify({"qrcode":qrCode,
-                                     "flag":"qrCode"});
-        window.cordova.plugins.IntegrationService.print(params, window.returnPrintResult,null);
-
-    };
-
-    this.printBarCode = function(barCode){
-
-        var params = JSON.stringify({"barcode":barCode,
-                                     "flag":"barCode"});
-        window.cordova.plugins.IntegrationService.print(params, window.returnPrintResult,null);
-
-    };
-
-    this.reprintTEFVoucher = function(){
-
-        //window.returnPrintResult(self.invalidPrinterInstance());
-    };
-
-
-    this.printResult = function(resolve, javaResult){
-        javaResult = self.codeToString(javaResult);
-        resolve(javaResult);
-    };
-
-    this.printerDelay = function(){
-        setTimeout(function(){
-        	var returnObj = self.formatResponse();
-        	returnObj.error = false;
-        	window.returnPrintResult(JSON.stringify(returnObj));
-        }.bind(this),5000);
-    };
-
-    this.invalidPrinterInstance = function(){
-        return JSON.stringify({
-            'error': true,
-            'message': INVALID_PRINTER_INSTANCE
-        });
-    };
-
-    this.formatResponse = null;
-
-    this.codeToString = function(javaResult){
-        switch(javaResult.message){
-            case 0: javaResult.message = "OK"; break;
-            case 1: javaResult.message = "Imprimindo"; break;
-            case 2: javaResult.message = "Impressora não iniciada"; break;
-            case 3: javaResult.message = "Impressora superaquecida"; break;
-            case 4: javaResult.message = "Fila de impressão muito grande"; break;
-            case 5: javaResult.message = "Parametros incorretos"; break;
-            case 10: javaResult.message = "Porta da impressora aberta"; break;
-            case 11: javaResult.message = "Temperatura baixa demais para impressão"; break;
-            case 12: javaResult.message = "Sem bateria suficiente para impressão"; break;
-            case 13: javaResult.message = "Motor de passo com problemas"; break;
-            case 15: javaResult.message = "Sem bonina"; break;
-            case 16: javaResult.message = "Bobina acabando"; break;
-            case 17: javaResult.message = "Bobina travada"; break;
-            case 1000:
-            case null: javaResult.message = "Não foi possível definir o erro"; break;
-        }
-        return javaResult;
-    };
-
-}
-
-
-Configuration(function(ContextRegister) {
-	ContextRegister.register('PrinterStone', PrinterStone);
-});
-
 // FILE: js/services/PrinterService.js
-function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, PrinterGertec,PrinterGetnet,WindowService) {
+function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, PrinterGertec, PrinterGetnet, WindowService) {
 
 	var self = this;
 
@@ -2820,7 +2577,7 @@ function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, Print
 		'25': PrinterGertec,
 		'26': PrinterPoynt,
 		'27': PrinterCieloLio,
-		'28': PrinterGetnet
+		'38': PrinterGetnet
 	};
 
 	var COMMANDS_NOT_FOUND = 'Comandos de impressora não foram adicionados.';
@@ -2857,7 +2614,7 @@ function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, Print
 		return OperatorRepository.findOne().then(function(operatorData) {
 			if (!_.isEmpty(self.printerCommands)){
 				PrinterClass = self.choosePrinter(operatorData.IDMODEIMPRES);
-				console.log(PrinterClass);
+
 				if (PrinterClass){
 					return new Promise(function(resolve){
 						self.callRecursivePrintCommands = _.bind(self.printCommands, self, resolve, PrinterClass);
@@ -2882,9 +2639,9 @@ function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, Print
 	this.printCommands = function(impressionResolved, PrinterClass){
 		// função recursiva utilizada para chamar as funções de impressão
 		var currentPrinterCommand = self.printerCommands.shift();		
+
 		new Promise(function(resolve){
-		    console.log("currentprintercommand  =   "+currentPrinterCommand);
-			window.returnPrintResult = _.bind(PrinterClass.printResult, PrinterClass, resolve);
+			window.returnPrintResult = _.bind(PrinterClass.printResult, PrinterClass, resolve);					
 			PrinterClass[currentPrinterCommand.type](currentPrinterCommand.parameter);
 		}.bind(this)).then(function(resolved){
 			if (!resolved.error) {
@@ -2899,7 +2656,6 @@ function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, Print
 				// erro ao realizar impressão
 				resolved.message = PRINT_ERROR + resolved.message;
 				impressionResolved(resolved);
-
 			}
 		}.bind(this));
 	};
@@ -2951,7 +2707,7 @@ function AccountService(Query, AccountOrder, AccountCancelProduct, AccountGetAcc
                         ConsumerSearchRepository, ParamsMenuRepository, VerificaProdutosBloqueados, ParamsCardsRepository,
                         TransferCreditRepository, ConsumerBalanceRepository, FilterProducts, TransferPositionRepository,
                         ValidatePassword, SelectComandaProducts, UpdateComandaProducts, SetDiscountFidelity, ProdutosDesistencia,
-                        CalculaDescontoSubgrupo, UpdateServiceTax, OperatorLogout, GetPayments){
+                        CalculaDescontoSubgrupo, UpdateServiceTax, OperatorLogout, GetPayments, VoucherRepository){
 
     this.order = function (chave, mode, cartPool, nrvendarest, pedidos, orderCode, vendedorAut, saleProdPass) {
         var pedido = JSON.stringify(pedidos);
@@ -3001,7 +2757,9 @@ function AccountService(Query, AccountOrder, AccountCancelProduct, AccountGetAcc
         return AccountGetOriginalAccountItems.download(query);
     };
 
-    this.getAccountDetails = function (chave, modo, nrcomanda, nrvendarest, funcao, posicao) {
+    this.getAccountDetails = function (chave, modo, nrcomanda, nrvendarest, funcao, posicao, updateDiscount) {
+
+        if (updateDiscount == null) updateDiscount = false;
 
         var query = Query.build()
                         .where('chave').equals(chave)
@@ -3009,7 +2767,8 @@ function AccountService(Query, AccountOrder, AccountCancelProduct, AccountGetAcc
                         .where('nrcomanda').equals(nrcomanda)
                         .where('nrvendarest').equals(nrvendarest)
                         .where('funcao').equals(funcao)
-                        .where('posicao').equals(posicao);
+                        .where('posicao').equals(posicao)
+                        .where('updateDiscount').equals(updateDiscount);
 
         return AccountGetAccountDetails.download(query);
     };
@@ -3306,6 +3065,15 @@ function AccountService(Query, AccountOrder, AccountCancelProduct, AccountGetAcc
         return GetPayments.download(query);
     };
 
+    this.checkVoucher = function(CDPRODUTO, NRVENDAREST, NRCOMANDA, CDCUPOMDESCFOS){
+        var query = Query.build()
+                        .where('CDPRODUTO').equals(CDPRODUTO)
+                        .where('NRVENDAREST').equals(NRVENDAREST)
+                        .where('NRCOMANDA').equals(NRCOMANDA)
+                        .where('CDCUPOMDESCFOS').equals(CDCUPOMDESCFOS);
+        return VoucherRepository.download(query);
+    };
+
 }
 
 Configuration(function(ContextRegister) {
@@ -3333,7 +3101,7 @@ Configuration(function(ContextRegister) {
 });
 
 // FILE: js/services/BillService.js
-function BillService(Query, BillRepository, BillOpenBill, BillValidateBill, SetTableRepository, BillCancelOpen){
+function BillService(Query, BillRepository, BillOpenBill, BillValidateBill, SetTableRepository, BillCancelOpen, SelectGroupBills, GroupBills, UngroupBills){
 
 	this.getBills = function (chave){
 		var query = Query.build()
@@ -3376,6 +3144,24 @@ function BillService(Query, BillRepository, BillOpenBill, BillValidateBill, SetT
 						.where('NRCOMANDA').equals(NRCOMANDA);
 		return BillCancelOpen.download(query);
 	};
+
+	this.selectGroupBills = function() {
+        var query = Query.build();
+        return SelectGroupBills.download(query);
+    };
+
+    this.groupBills = function (mainBill, toGroupBills) {
+    	var query = Query.build()
+    					.where('mainBill').equals(mainBill)
+    					.where('toGroupBills').equals(toGroupBills);
+    	return GroupBills.download(query);
+    };
+
+    this.ungroupBills = function (billsToUngroup) {
+    	var query = Query.build()
+    					.where('billsToUngroup').equals(billsToUngroup);
+    	return UngroupBills.download(query);
+    };
 
 }
 
@@ -3437,7 +3223,7 @@ function DeliveryService(DeliveryRepository, DeliveryControlRepository, PaymentP
 		return DeliveryControlRepository.download(query);
 	};
 
-	this.generatePayment = function(cdfilial, nrvendarest, status, saleCode, datasale, nrcomanda){
+	this.generatePayment = function(cdfilial, nrvendarest, status, saleCode, datasale, nrcomanda, email){
 		var saleCodeObj = {
 			'saleCode': saleCode
 		};
@@ -3471,7 +3257,8 @@ function DeliveryService(DeliveryRepository, DeliveryControlRepository, PaymentP
 						.where('saleCode').equals(saleCodeObj.saleCode)
 						.where('DATASALE').equals(dataSale)
 						.where('IDSTCOMANDA').equals(status)
-						.where('NRCOMANDA').equals(nrcomanda);
+						.where('NRCOMANDA').equals(nrcomanda)
+						.where('EMAIL').equals(email);
 		return PaymentPayAccount.download(query);
 	};
 
@@ -3687,30 +3474,25 @@ Configuration(function(ContextRegister) {
 });
 
 // FILE: js/services/IntegrationService.js
-function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, IntegrationSiTEF, IntegrationCielo, IntegrationGetnet,OperatorRepository) {
+function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, IntegrationSiTEF, IntegrationCielo, IntegrationGetnet, OperatorRepository) {
 	var INTEGRATION_TYPE = {
 		'2': IntegrationCappta,
 		'3': IntegrationNTK,
 		'4': IntegrationRede,
 		'5': IntegrationSiTEF,
 		'7': IntegrationCielo,
-		'9': IntegrationGetnet
-		};
+		'8': IntegrationGetnet
+	};
 
 	var self = this;
-	var PAYMENT_CONFIRMATION = false;
-    var REMOVE_ALL_INTEGRATIONS = false;
 	var IntegrationClass = null;
 	var VALUES_NOT_FOUND = 'Tipo do TEF não reconhecido pelo sistema.';
-	var MESSAGE_INTEGRATION_FAIL = 'Não foi possível chamar a integração. Sua instância não existe.';
-    var MESSAGE_NULL_RESPONSE = 'Não foi possível obter o retorno da integração.';
 
 	this.reversalWaiting = Array();
 
 	this.integrationPayment = function(currentRow) {
 		return OperatorRepository.findOne().then(function(operatorData) {
 			currentRow.eletronicTransacion.data.IDTPTEF = operatorData.IDTPTEF;
-
 			IntegrationClass = self.chooseIntegration(operatorData.IDTPTEF);
 			if (IntegrationClass){
 				return new Promise(function(resolve) {
@@ -3745,41 +3527,45 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 	this.cancelIntegration = function(tiporeceData){
 		return new Promise(function(resolve) {
 			IntegrationClass = self.chooseIntegration(tiporeceData.IDTPTEF);
-            window.returnIntegration = _.bind(IntegrationClass.cancelIntegrationResult, IntegrationClass, resolve);
-            IntegrationClass.cancelIntegration(tiporeceData);
-		}.bind(this));
+			if (IntegrationClass){
+				window.returnIntegration = _.bind(IntegrationClass.cancelIntegrationResult, IntegrationClass, resolve);
+				IntegrationClass.cancelIntegration(tiporeceData);
+			} else {
+				resolve(self.invalidIntegrationValues());
+			}
+		}.bind(this));	
 	};
 
 	this.completeIntegration = function(integrations){
-    	// pega IDTPTEF da primeira posição pois será o mesmo para qualquer recebimento
-    	return new Promise(function(resolve) {
-    		IntegrationClass = self.chooseIntegration(integrations[0].IDTPTEF);
-    		if (IntegrationClass){
-    			window.returnIntegration = _.bind(IntegrationClass.completeIntegrationResult, IntegrationClass, resolve);
-    			IntegrationClass.completeIntegration();
-    		} else {
-    			resolve(self.invalidIntegrationValues());
-    		}
-    	}.bind(this));
-    };
+		// pega IDTPTEF da primeira posição pois será o mesmo para qualquer recebimento
+		return new Promise(function(resolve) {
+			IntegrationClass = self.chooseIntegration(integrations[0].IDTPTEF);
+			if (IntegrationClass){			
+				window.returnIntegration = _.bind(IntegrationClass.completeIntegrationResult, IntegrationClass, resolve);
+				IntegrationClass.completeIntegration();
+			} else {
+				resolve(self.invalidIntegrationValues());
+			}
+		}.bind(this));
+	};	
 
 	this.callRecursive = null;
 
-	this.reversalIntegration = function(removePaymentSale, integrations){
-        // pega IDTPTEF da primeira posição pois será o mesmo para qualquer recebimento
-        return new Promise(function(reversalResolve) {
-        	IntegrationClass = self.chooseIntegration(integrations[0].IDTPTEF);
-        	if(IntegrationClass){
-        		self.reversalWaiting = _.clone(integrations);
-            	self.callRecursive = _.bind(this.recursiveReversalIntegration, self, reversalResolve, Array());
-            	self.callRecursive(removePaymentSale, IntegrationClass);
-            } else {
-            	reversalResolve(self.invalidIntegrationValues());
-            }
-        }.bind(this));
+	this.reversalIntegration = function(removePaymentSale, integrations){		
+		// pega IDTPTEF da primeira posição pois será o mesmo para qualquer recebimento
+		return new Promise(function(reversalResolve) {
+			IntegrationClass = self.chooseIntegration(integrations[0].IDTPTEF);
+			if(IntegrationClass){			
+				self.reversalWaiting = _.clone(integrations);	
+				self.callRecursive = _.bind(this.recursiveReversalIntegration, self, reversalResolve, Array());
+				self.callRecursive(removePaymentSale, IntegrationClass);
+			} else {
+				reversalResolve(self.invalidIntegrationValues());
+			}
+		}.bind(this));
 	};
 
-	this.recursiveReversalIntegration = function(reversalResolve, data, removePaymentSale){
+	this.recursiveReversalIntegration = function(reversalResolve, data, removePaymentSale, IntegrationClass){
 		// função recursiva utilizada para estornar todas as transações realizadas na venda
 		var integrationToReverse = self.reversalWaiting.shift();
 		var toRemove = {
@@ -3787,10 +3573,10 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 			'CDNSUHOSTTEF': null,
 			'DTHRINCOMVEN': null
 		};
-        console.log("Ativa o cyberpunk");
+
 		new Promise(function(resolve){
-		    //definimos um parametro do objeto global window como uma função que é a reversalIntegrationResult
-		    //com ambiente self e argumento resolve
+			// definimos um parametro do objeto global window como uma função que é a reversalIntegrationResult
+		    // com ambiente self e argumento resolve
 			window.returnIntegration = _.bind(IntegrationClass.reversalIntegrationResult, IntegrationClass, resolve);
             IntegrationClass.reversalIntegration(integrationToReverse);
 		}.bind(this)).then(function(resolved){
@@ -3803,13 +3589,13 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 				resolved.data.toRemove = toRemove;	 
 				data.push(resolved.data);
 				resolved.data = data;		
+
 				if (self.reversalWaiting.length > 0){
 					// realiza estorno da próxima transação
-					self.callRecursive(removePaymentSale);
-
+					self.callRecursive(removePaymentSale, IntegrationClass);
 				} else {
 					// estorno realizado com sucesso
-					reversalResolve(resolved);
+					reversalResolve(resolved);		
 				}					
 			} else {
 				// erro ao realizar estorno
@@ -3834,6 +3620,7 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 		result.message = VALUES_NOT_FOUND;
 		return result;
 	};
+
     IntegrationCappta.formatResponse = self.formatResponse;
 	IntegrationNTK.formatResponse = self.formatResponse;
 	IntegrationRede.formatResponse = self.formatResponse;
@@ -3862,7 +3649,8 @@ function IntegrationService(IntegrationCappta, IntegrationNTK, IntegrationRede, 
 			TRANSACTIONCODE:'',
 			TRANSACTIONID:''
 		};
-	};
+	};	
+
 }
 
 Configuration(function(ContextRegister) {
@@ -4285,22 +4073,13 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 		return self.checkIfMustCallIntegration(currentRow.tiporece).then(function (mustCallIntegration) {
 			if (mustCallIntegration) {
 				// chama integração
-				console.log(IntegrationService);
 				return IntegrationService.integrationPayment(currentRow).then(function (integrationResult) {
-				    console.log("Resultado da integração:   ");
-				    console.log(integrationResult);
-				    if (!integrationResult.error) {
-				        try{
-					        return self.savePayment(integrationResult.data).then(function(){
-					            console.log("TTTTTTTT");
-					            console.log(integrationResult);
-						        // self.handlePrintPayment(integrationResult.data.eletronicTransacion.data).then(function(){
-							    return self.setPaymentSale(integrationResult.data);
-						        //}.bind(this));
-					        }.bind(this));
-				        }catch(e){
-                            console.log(e);
-				        }
+					 if (!integrationResult.error) {
+				        return self.savePayment(integrationResult.data).then(function(){
+					        //self.handlePrintPayment(integrationResult.data.eletronicTransacion.data).then(function(){
+						    	return self.setPaymentSale(integrationResult.data);
+					        //}.bind(this));
+				        }.bind(this));
 				    } else {
                         ApplicationContext.UtilitiesService.backAfterFinish();
 					    return integrationResult;
@@ -4321,8 +4100,6 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 
 	this.handlePrintPayment = function(dataPrinter) {
-		console.log("dataPrinter");
-	    console.log(dataPrinter);
 		return new Promise(function(resolve) {
 			var tefObject = {
 				TEFVOUCHER: [{
@@ -4332,10 +4109,9 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 			};
 
 			self.handlePrintReceipt(tefObject, false);
-
-            console.log("Message is up");
+			
 			ScreenService.confirmMessage(
-				'Deseja imprimir a via do cliente?', 'question',
+				'Deseja imprimir a via do cliente?', 'question', 
 				function(){
 					var tefPrintVoucher = tefObject.TEFVOUCHER[0];
 					tefPrintVoucher.STLPRIVIA = '';
@@ -4372,8 +4148,6 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 	this.setPaymentSale = function (currentRow) {
 		return PaymentRepository.findOne().then(function (payment) {
-		    console.log("Resultado da integração SETPAYMENSALE:   ");
-            console.log(payment);
 			// seta recebimento
 			self.formatPriceChart(payment.TIPORECE, currentRow);
 			// calcula valor pago no total da venda
@@ -4438,7 +4212,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 		DATASALE.VALORPAGO = amountPaid;
 		if (DATASALE.TOTALVENDA < amountPaid) {
-
+		
 			DATASALE.FALTANTE = 0;
 			DATASALE.REPIQUE = repique;
 			DATASALE.TROCO = parseFloat((amountPaid - DATASALE.TOTALVENDA).toFixed(2));
@@ -4701,9 +4475,9 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 							reversedPayment = {
 								'CDNSUHOSTTEF': reversedPayment.toRemove.CDNSUHOSTTEF,
-								'NRCONTROLTEF': reversedPayment.REVERSEDNRCONTROLTEF
+								'NRCONTROLTEF': reversedPayment.REVERSEDNRCONTROLTEF 
 							};
-							reversedPayments.push(reversedPayment);
+							reversedPayments.push(reversedPayment); 
 						});
 
 						return self.removePayment(reversedPayments).then(function(){
@@ -4836,8 +4610,6 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 	};
 
     this.handlePrintReceipt = function(dadosImpressao, delayPrint) {
-        console.log('Dados impressao handlePrintReceipt');
-        console.log(dadosImpressao);
     	if(_.isUndefined(delayPrint)) {
     		delayPrint = true;
     	}
@@ -4845,8 +4617,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
     	OperatorRepository.findOne().then(function(operatorData){
 			if (!_.isEmpty(dadosImpressao)){
 				if (_.get(dadosImpressao, 'TEXTOCUPOM1VIA')){
-                    
-
+					
 					PrinterService.printerCommand(PrinterService.TEXT_COMMAND, dadosImpressao.TEXTOCUPOM1VIA);
 					PrinterService.printerCommand(PrinterService.BARCODE_COMMAND, dadosImpressao.TEXTOCODIGOBARRAS);
 					PrinterService.printerCommand(PrinterService.QRCODE_COMMAND, dadosImpressao.TEXTOQRCODE);
@@ -4872,8 +4643,6 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 				if (_.get(dadosImpressao, 'TEFVOUCHER')) {
 					dadosImpressao.TEFVOUCHER.forEach(function (tefVoucher) {
 						if (!_.isEmpty(tefVoucher.STLPRIVIA)) {
-
-						    console.log("??");
 							PrinterService.printerCommand(PrinterService.TEXT_COMMAND, tefVoucher.STLPRIVIA);
 						 	self.printerSpaceCommand(2);
 
@@ -5551,7 +5320,7 @@ Configuration(function(ContextRegister) {
 });
 
 // FILE: js/services/UtilitiesService.js
-function UtilitiesService(OperatorRepository, ScreenService, templateManager, ApplicationContext, eventAggregator, ConfigIpRepository, ZHPromise, PermissionService, WindowService, UtilitiesTest, UtilitiesRequestsRepository, Query, ValidationEngine, SaveLogin,AccountCart) {
+function UtilitiesService(OperatorRepository, ScreenService, templateManager, ApplicationContext, eventAggregator, ConfigIpRepository, ZHPromise, PermissionService, WindowService, UtilitiesTest, UtilitiesRequestsRepository, Query, ValidationEngine, SaveLogin, AccountCart) {
 
 	var self = this;
 
@@ -5898,7 +5667,7 @@ function UtilitiesService(OperatorRepository, ScreenService, templateManager, Ap
 
 	this.removeCurrency = function (value) {
 		if (typeof value == 'string') {
-			value = parseFloat(value.split('.').join('').replace(',', '.').replace('R$', ''));
+			value = parseFloat(value.replace(',', '.').replace('R$', ''));
 		}
 		return value;
 	};
@@ -6003,7 +5772,8 @@ function UtilitiesService(OperatorRepository, ScreenService, templateManager, Ap
 			'btnSendMessage',
 			'btnCancelProduct',
 			'btnTransferProductComanda',
-			'btnCloseAccount'
+			'btnCloseAccount',
+			'btnBillGrouping'
 		],
 		'B': [
 			'btnSendMessage',
@@ -6337,7 +6107,7 @@ function UtilitiesService(OperatorRepository, ScreenService, templateManager, Ap
 		});
 	};
 
-	 this.backAfterFinish = function () {
+	this.backAfterFinish = function () {
     	OperatorRepository.findOne().then(function (operatorData) {
     		if (operatorData.modoHabilitado === 'B') {
     			AccountCart.remove(Query.build());
@@ -6346,6 +6116,7 @@ function UtilitiesService(OperatorRepository, ScreenService, templateManager, Ap
            	self.backMainScreen();
     	});
     };
+    
 }
 
 Configuration(function (ContextRegister) {
@@ -6473,8 +6244,6 @@ function WaiterOrdersCatCtrl($scope, templateManager, ScreenService, $rootScope,
 		};
 
 		var that = this;
-
-
 	}
 
 	angular.element(document).ready(function () {
@@ -6548,7 +6317,6 @@ function WaiterGroupController($scope, ApplicationContext) {
 
 
 
-
 // FILE: js/services/WaiterNamedPositionsState.js
 function WaiterNamedPositionsState() {
 
@@ -6596,7 +6364,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 	OperatorService, TotalCartRepository, AccountLastOrders, TimestampRepository, TransactionsService, PaymentService,
 	WindowService, WaiterNamedPositionsState, PermissionService, CartPool, ParamsPriceTimeRepository, metaDataFactory, PrinterService,
 	SubPromoGroups, SubPromoProds, SubPromoTray, PaymentRepository, ParamsMensDescontoObs, SellerControl, CarrinhoDesistencia, ProdutosDesistencia,
-	BillService, PerifericosService, ProdSenhaPed) {
+	BillService, PerifericosService, ProdSenhaPed, CampanhaFlag, CampanhaProducts){
 
 	var self = this;
 	var allObservations = [];
@@ -7046,7 +6814,12 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 											REFIL: produto.refilSet || false,
 											NRCOMANDA: produto.NRCOMANDA || null,
 											NRVENDAREST: produto.NRVENDAREST || null,
-											VRPRECCLCOMVEN: produto.VRPRECITEMCL || null
+											VRPRECCLCOMVEN: produto.VRPRECITEMCL || null,
+                                            VOUCHER: produto.VOUCHER || null,
+                                            VOUCHERDISCOUNT: produto.VOUCHERDISCOUNT || 0,
+                                            CAMPANHA: produto.CAMPANHA || null,
+                                            DTINIVGCAMPCG: produto.DTINIVGCAMPCG || null,
+                                            DESCCOMPGANHE: produto.DESCCOMPGANHE || null
 										};
 
 										produtos.push(produtoMontado);
@@ -7267,8 +7040,12 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 
 						product.PRECO = UtilitiesService.formatFloat(product.PRITOTITEM);
 					}
+                    totalOrderPrice += quantidade * product.PRITOTITEM;
+                    // Aplica o desconto do voucher.
+                    if (product.VOUCHER){
+                        totalOrderPrice = parseFloat((totalOrderPrice - product.VOUCHERDISCOUNT).toFixed(2));
+                    }
 
-					totalOrderPrice += quantidade * product.PRITOTITEM;
 					product.PRECO = parseFloat(product.PRITOTITEM).toFixed(2).replace('.', ',');
 					// Coloca a quantidade na frente do preço.
 					if (!(operatorData.modoHabilitado === 'O' || (product.QTPRODCOMVEN !== 1))) {
@@ -7322,6 +7099,19 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 		}.bind(this));
 	};
 
+    this.getVoucherDiscount = function(total, voucher, quantidade, precoReal){
+        var voucherDiscount = 0;
+        if (voucher.IDTIPODESC === "P"){
+             voucherDiscount = total * voucher.VRDESCCUPOM / 100;
+        }
+        else {
+            voucherDiscount = parseFloat(voucher.VRDESCCUPOM);
+        }
+        if (voucherDiscount >= precoReal) voucherDiscount = precoReal - 0.01 * quantidade;
+
+        return parseFloat(voucherDiscount.toFixed(2));
+    };
+
 	this.obsToText = function (observations, custom) {
 		var obss = [];
 		if (observations) {
@@ -7364,7 +7154,17 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 
                     var total = parseFloat((comboProduct.QTPRODCOMVEN * (comboProduct.PRECO + comboProduct.VRPRECITEMCL + comboProduct.VRACRITVEND - comboProduct.VRDESITVEND)).toFixed(2));
                     if (total < 0.01){
-                        throw comboProduct;
+                    	if (comboProduct.IDPESAPROD == 'S') {
+                    		total = 0.01;
+                    	} else {
+                        	throw comboProduct;
+                        }
+                    }
+                    // Aplica o desconto do voucher.
+                    if (comboProduct.VOUCHER){
+                        var precoReal = parseFloat((comboProduct.QTPRODCOMVEN * (comboProduct.PRECO + comboProduct.VRPRECITEMCL + comboProduct.VRACRITVEND)).toFixed(2));
+                        comboProduct.VOUCHERDISCOUNT = self.getVoucherDiscount(total, comboProduct.VOUCHER, comboProduct.QTPRODCOMVEN, precoReal);
+                        total = parseFloat((total - comboProduct.VOUCHERDISCOUNT).toFixed(2));
                     }
 
                     comboProdValue += total;
@@ -7373,9 +7173,14 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 
                 if (product.IDIMPPRODUTO === '1') {
                     prodValue = parseFloat((product.PRITEM + product.VRPRECITEMCL + product.VRACRITVEND - product.VRDESITVEND).toFixed(2));
+                    if (product.VOUCHER){
+                        var precoReal = parseFloat((product.QTPRODCOMVEN * (product.PRITEM + product.VRPRECITEMCL + product.VRACRITVEND)).toFixed(2));
+                        product.VOUCHERDISCOUNT = self.getVoucherDiscount(product.QTPRODCOMVEN * prodValue, product.VOUCHER, product.QTPRODCOMVEN, precoReal);
+                    }
                     prodSubsidy = product.VRPRECITEMCL;
                     qntProd = 1;
                 } else {
+                    product.PRITOTITEM = comboProdValue;
                     prodValue = comboProdValue;
                     prodSubsidy = comboProdSubsidy;
                     qntProd = product.PRODUTOS.length;
@@ -7413,7 +7218,11 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
                     }
                     comboProduct.TOTPRICE = UtilitiesService.floatFormat(comboProduct.PRICE * comboProduct.QTPRODCOMVEN);
                     if (comboProduct.TOTPRICE < 0.01){
-                        throw comboProduct;
+                    	if (comboProduct.IDPESAPROD == 'S') {
+                    		comboProduct.TOTPRICE = 0.01;
+                    	} else {
+	                        throw comboProduct;
+                        }
                     }
                     comboProdValue += comboProduct.TOTPRICE;
 
@@ -7598,6 +7407,16 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 													productValue = parseFloat(productValue.toFixed(2));
 												}
 											}
+                                            // Aplica o desconto do voucher.
+                                            if (product.VOUCHER){
+                                                if (product.VOUCHER.IDTIPODESC === "P"){
+                                                    productValue = parseFloat((productValue * (1 - product.VOUCHER.VRDESCCUPOM/100)).toFixed(2));
+                                                }
+                                                else {
+                                                    productValue = parseFloat((productValue - product.VOUCHER.VRDESCCUPOM).toFixed(2));
+                                                }
+                                                if (productValue < 0.01 * product.QTPRODCOMVEN) productValue = 0.01 * product.QTPRODCOMVEN;
+                                            }
 											vlrtotal += productValue;
 											totalSubsidy += Math.trunc(product.VRPRECITEMCL * product.QTPRODCOMVEN * 100) / 100;
 											numeroProdutos += product.numeroProdutos;
@@ -7824,80 +7643,81 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 	};
 
 	var isSmartPromo = function (product) {
-		return product.IDTIPOCOMPPROD == '3';
+		return product.IDTIPOCOMPPROD == '3' || product.IDTIPOCOMPPROD == '6';
 	};
 
-	var buildCartItem = function (product, position, refilSet) {
-		return self.getAccountData(function (accountData) {
-			return self.getOrderCodeProductID().then(function (id) {
-				var time = new Date();
-				var dscomanda = '';
+    this.buildCartItem = function(product, position, cartItems, refilSet, accountData){
+        var id = self.getOrderCodeProductID(cartItems);
+        var time = new Date();
+        var dscomanda = '';
 
-				if (!_.isEmpty(accountData)) {
-					dscomanda = accountData[0].LABELDSCOMANDA;
-				}
+        if (!_.isEmpty(accountData)){
+            dscomanda = accountData[0].LABELDSCOMANDA;
+        }
 
-				var cartItem = {
-					ID: id,
-					UNIQUEID: id,
-					GRUPO: product.NMGRUPO,
-					CDPRODUTO: product.CDPRODUTO,
-					DSBUTTON: product.DSBUTTON,
-					DSBUTTONSHOW: product.DSBUTTON,
-					POSITION: "posição " + position,
-					POS: position,
-					PRECO: product.PRECO,
-					PRITEM: product.PRITEM,
-					PRITOTITEM: parseFloat((product.PRITEM + product.VRPRECITEMCL + product.VRACRITVEND - product.VRDESITVEND).toFixed(2)),
-					VRPRECITEMCL: product.VRPRECITEMCL,
-					REALSUBSIDY: 0,
-					VRDESITVEND: product.VRDESITVEND,
-					VRACRITVEND: product.VRACRITVEND,
-					CDOCORR: [],
-					IDIMPPRODUTO: product.IDIMPPRODUTO,
-					IDTIPOCOMPPROD: product.IDTIPOCOMPPROD,
-					IDTIPCOBRA: product.IDTIPCOBRA,
-					IDPESAPROD: product.IDPESAPROD,
-					OBSERVATIONS: product.OBSERVATIONS,
-					IMPRESSORAS: product.IMPRESSORAS,
-					ATRASOPROD: "N",
-					TOGO: "N",
-					holdText: '',
-					toGoText: '',
-					PRODUTOS: Array(),
-					refilSet: refilSet,
-					NRQTDMINOBS: product.NRQTDMINOBS,
-					NRCOMANDA: _.get(accountData, '[0].NRCOMANDA') || null,
-					NRVENDAREST: _.get(accountData, '[0].NRVENDAREST') || null,
-					DSCOMANDA: dscomanda,
-					numeroProdutos: 1,
-					AGRUPAMENTO: '',
-					IDENTIFYKEY: time.getTime(),
-                    QTPRODCOMVEN: 1
-				};
-				if (refilSet) {
-					cartItem.PRECO = '0,00';
-					cartItem.PRITEM = 0;
-					cartItem.PRITOTITEM = 0;
-					cartItem.VRACRITVEND = 0;
-					cartItem.VRDESITVEND = 0;
-					cartItem.VRPRECITEMCL = 0;
-				}
-				return cartItem;
-			});
+        var cartItem = {
+            ID: id,
+            UNIQUEID: id,
+            GRUPO: product.NMGRUPO,
+            CDPRODUTO: product.CDPRODUTO,
+            DSBUTTON: product.DSBUTTON,
+            DSBUTTONSHOW: product.DSBUTTON,
+            POSITION: "posição " + position,
+            POS: position,
+            PRECO: product.PRECO,
+            PRITEM: product.PRITEM,
+            PRITOTITEM: parseFloat((product.PRITEM + product.VRPRECITEMCL + product.VRACRITVEND - product.VRDESITVEND).toFixed(2)),
+            VRPRECITEMCL: product.VRPRECITEMCL,
+            REALSUBSIDY: 0,
+            VRDESITVEND: product.VRDESITVEND,
+            VRACRITVEND: product.VRACRITVEND,
+            CDOCORR: [],
+            IDIMPPRODUTO: product.IDIMPPRODUTO,
+            IDTIPOCOMPPROD: product.IDTIPOCOMPPROD,
+            IDTIPCOBRA: product.IDTIPCOBRA,
+            IDPESAPROD: product.IDPESAPROD,
+            OBSERVATIONS: product.OBSERVATIONS,
+            IMPRESSORAS: product.IMPRESSORAS,
+            ATRASOPROD: "N",
+            TOGO: "N",
+            holdText: '',
+            toGoText: '',
+            PRODUTOS: Array(),
+            refilSet: refilSet,
+            NRQTDMINOBS: product.NRQTDMINOBS,
+            NRCOMANDA: _.get(accountData, '[0].NRCOMANDA') || null,
+            NRVENDAREST: _.get(accountData, '[0].NRVENDAREST') || null,
+            DSCOMANDA: dscomanda,
+            numeroProdutos: 1,
+            AGRUPAMENTO: '',
+            IDENTIFYKEY: time.getTime(),
+            QTPRODCOMVEN: 1,
+            VOUCHER: null,
+            VOUCHERDISCOUNT: 0,
+            CAMPANHA: product.CAMPANHA,
+            DTINIVGCAMPCG: product.DTINIVGCAMPCG,
+            QTCOMPGANHE: product.QTCOMPGANHE,
+            DESCCOMPGANHE: null
+        };
+        if (refilSet){
+            cartItem.PRECO = '0,00';
+            cartItem.PRITEM = 0;
+            cartItem.PRITOTITEM = 0;
+            cartItem.VRACRITVEND = 0;
+            cartItem.VRDESITVEND = 0;
+            cartItem.VRPRECITEMCL = 0;
+        }
+        return cartItem;
+    };
+
+	this.getOrderCodeProductID = function (cartItems){
+		var nextID = 0;
+		cartItems.forEach(function (item){
+			if (item.ID > nextID){
+				nextID = item.ID;
+			}
 		});
-	};
-
-	this.getOrderCodeProductID = function () {
-		return AccountCart.findAll().then(function (cartItems) {
-			var nextID = 0;
-			cartItems.forEach(function (item) {
-				if (item.ID > nextID) {
-					nextID = item.ID;
-				}
-			});
-			return nextID + 1;
-		});
+		return nextID + 1;
 	};
 
 	var restartDataSourceWidget = function (widget) {
@@ -7924,19 +7744,24 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 				ID: cartItem.ID,
 				IDPESAPROD: cartItem.IDPESAPROD,
 				NRSEQIMPRLOJA: [],
-				NMIMPRLOJA: ""
+				NMIMPRLOJA: "",
+                CAMPANHA: cartItem.CAMPANHA,
+                DTINIVGCAMPCG: cartItem.DTINIVGCAMPCG,
+                QTCOMPGANHE: cartItem.QTCOMPGANHE
 			};
 
 			var printersField = productWidget.getField('NRSEQIMPRLOJA');
-			printersField.dataSource.data = printers;
-			printersField.isVisible = printers.length > 1;
+            if (printersField){
+                printersField.dataSource.data = printers;
+                printersField.isVisible = printers.length > 1;
 
-			if (printers.length > 0) {
-				data.NRSEQIMPRLOJA.push(printers[0].NRSEQIMPRLOJA);
-				if (printers.length > 1) {
-					data.NMIMPRLOJA = getPrinterName(printers[0].NRSEQIMPRLOJA, printers);
-				}
-			}
+                if (printers.length > 0) {
+                    data.NRSEQIMPRLOJA.push(printers[0].NRSEQIMPRLOJA);
+                    if (printers.length > 1) {
+                        data.NMIMPRLOJA = getPrinterName(printers[0].NRSEQIMPRLOJA, printers);
+                    }
+                }
+            }
 
 			productWidget.setCurrentRow(data);
 			productWidget.container.restoreDefaultMode();
@@ -8047,27 +7872,36 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
         }.bind(this));
     };
 
+    this.defineCart = function(flagProduct){
+        if (_.isEmpty(flagProduct)) return AccountCart;
+        else return CampanhaProducts;
+    };
+
     var addItemToCart = function(productWidget, product, position, actionQtCart, innerCart, refilSet){
         if (product.IDPRODBLOQ === 'N'){
-            AccountCart.findAll().then(function(cart){
-                actionQtCart.hint = cart.length+1;
-                innerCart.hint = cart.length+1;
-                buildCartItem(product, position, refilSet).then(function (cartItem){
-                    restartDataSourceWidget(productWidget);
-                    prepareProductWidget(productWidget, cartItem).then(function (dataSource){
-                        productWidget.dataSource.data[0].IDPESAPROD = dataSource.IDPESAPROD;
-                        cartItem.IDPESAPROD    = dataSource.IDPESAPROD;
-                        cartItem.NRSEQIMPRLOJA = dataSource.NRSEQIMPRLOJA;
-                        cartItem.NMIMPRLOJA    = dataSource.NMIMPRLOJA;
-                        if (dataSource.IDPESAPROD === 'S') cartItem.QTPRODCOMVEN = null;
-                        else cartItem.QTPRODCOMVEN = 1;
-                        AccountCart.save(cartItem).then(function(){
-                            OperatorRepository.findOneInMemory().then(function (operatorData){
-                                updateWidgetLabel(operatorData, cartItem, productWidget);
+            self.getAccountData(function (accountData){
+                CampanhaFlag.findOne().then(function (flagProduct){
+                    var ProductRepository = self.defineCart(flagProduct);
+                    ProductRepository.findAll().then(function (cart){
+                        actionQtCart.hint = cart.length+1;
+                        innerCart.hint = cart.length+1;
+                        var cartItem = self.buildCartItem(product, position, cart, refilSet, accountData);
+                        restartDataSourceWidget(productWidget);
+                        prepareProductWidget(productWidget, cartItem).then(function (dataSource){
+                            productWidget.dataSource.data[0].IDPESAPROD = dataSource.IDPESAPROD;
+                            cartItem.IDPESAPROD    = dataSource.IDPESAPROD;
+                            cartItem.NRSEQIMPRLOJA = dataSource.NRSEQIMPRLOJA;
+                            cartItem.NMIMPRLOJA    = dataSource.NMIMPRLOJA;
+                            if (dataSource.IDPESAPROD === 'S') cartItem.QTPRODCOMVEN = null;
+                            else cartItem.QTPRODCOMVEN = 1;
+                            ProductRepository.save(cartItem).then(function(){
+                                OperatorRepository.findOneInMemory().then(function (operatorData){
+                                    updateWidgetLabel(operatorData, cartItem, productWidget);
+                                });
+                                updateFieldObservationsDataSource(productWidget.getField('CDOCORR'), product);
+                                productWidget.currentRow.QTPRODCOMVEN = "1";
+                                openProductPopUp(productWidget);
                             });
-                            updateFieldObservationsDataSource(productWidget.getField('CDOCORR'), product);
-                            productWidget.currentRow.QTPRODCOMVEN = "1";
-                            openProductPopUp(productWidget);
                         });
                     });
                 });
@@ -8078,32 +7912,38 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
     };
 
     var openProductPopUp = function(productWidget){
-        OperatorRepository.findOneInMemory().then(function (operatorData){
-            var parentWidget = productWidget.container.getWidget('menu') || productWidget.container.getWidget('smartPromo') || productWidget.container.getWidget('subPromo');
+        CampanhaFlag.findOne().then(function (flagProduct){
+            OperatorRepository.findOneInMemory().then(function (operatorData){
+                var parentWidget = productWidget.container.getWidget('menu') || productWidget.container.getWidget('smartPromo') || productWidget.container.getWidget('subPromo');
 
-            productWidget.getField('ATRASOPROD').isVisible = operatorData.NRATRAPADRAO > 0;
-            productWidget.getField('TOGO').isVisible = operatorData.IDCTRLPEDVIAGEM === 'S';
-            if (parentWidget.container.name !== 'menu' || operatorData.IDUTLQTDPED === 'S'){
-                productWidget.getField('QTPRODCOMVEN').isVisible = true;
-                productWidget.getField('QTPRODCOMVEN').spin = true;
-                productWidget.getField('QTPRODCOMVEN').label = "Quantidade (un)";
-                productWidget.getField('QTPRODCOMVEN').blockInputEdit = true;
-            }
-            else {
-                productWidget.getField('QTPRODCOMVEN').isVisible = false;
-            }
-            if (productWidget.currentRow.IDPESAPROD === 'S'){
-                productWidget.getField('QTPRODCOMVEN').isVisible = true;
-                productWidget.getField('QTPRODCOMVEN').spin = false;
-                productWidget.getField('QTPRODCOMVEN').label = "Quantidade (kg)";
-                productWidget.currentRow.QTPRODCOMVEN = "";
-                productWidget.getField('QTPRODCOMVEN').blockInputEdit = false;
-            }
-			ScreenService.openPopup(productWidget);
+                productWidget.getField('ATRASOPROD').isVisible = operatorData.NRATRAPADRAO > 0;
+                productWidget.getField('TOGO').isVisible = operatorData.IDCTRLPEDVIAGEM === 'S';
 
-			parentWidget.activate(); //To show the correct action on the button bar.
-			parentWidget.container.restoreDefaultMode();
-		});
+                if (parentWidget.container.name !== 'menu' || operatorData.IDUTLQTDPED === 'S'){
+                    productWidget.getField('QTPRODCOMVEN').isVisible = true;
+                    productWidget.getField('QTPRODCOMVEN').spin = true;
+                    productWidget.getField('QTPRODCOMVEN').label = "Quantidade (un)";
+                    productWidget.getField('QTPRODCOMVEN').blockInputEdit = true;
+                }
+                else {
+                    productWidget.getField('QTPRODCOMVEN').isVisible = false;
+                }
+                if (productWidget.currentRow.IDPESAPROD === 'S'){
+                    productWidget.getField('QTPRODCOMVEN').isVisible = true;
+                    productWidget.getField('QTPRODCOMVEN').spin = false;
+                    productWidget.getField('QTPRODCOMVEN').label = "Quantidade (kg)";
+                    productWidget.currentRow.QTPRODCOMVEN = "";
+                    productWidget.getField('QTPRODCOMVEN').blockInputEdit = false;
+                }
+                if (parentWidget.container.name === 'compreGanhe'){
+                    productWidget.getField('QTPRODCOMVEN').isVisible = false;
+                }
+                ScreenService.openPopup(productWidget);
+
+                parentWidget.activate(); //To show the correct action on the button bar.
+                parentWidget.container.restoreDefaultMode();
+            });
+        });
 	};
 
     /* - SMART PROMO MECHANICS - */
@@ -8130,7 +7970,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
             }, 0);
 
             if (currentGroupProducts < product.QTPRGRUPPROMOC){
-                product.quantity = 1;
+                //product.quantity = 1;
                 newTray.push(product);
             }
         });
@@ -8315,6 +8155,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
             DISPLAY:        currentCategory.NMGRUPROMOC,
             QTPRGRUPPROMOC: currentCategory.QTPRGRUPPROMOC,
             QTPRGRUPROMIN:  currentCategory.QTPRGRUPROMIN,
+            IDIMPGRPROMO:   currentCategory.IDIMPGRPROMO,
             CDGRUPMUTEX:    currentCategory.CDGRUPMUTEX,
             SELECTED:       false,
             DISABLED:       false
@@ -8353,6 +8194,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
             IDPRODBLOQ:      currentProduct.IDPRODBLOQ,
             QTPRGRUPPROMOC:  currentCategory.QTPRGRUPPROMOC,
             QTPRGRUPROMIN:   currentCategory.QTPRGRUPROMIN,
+            IDIMPGRPROMO:    currentCategory.IDIMPGRPROMO,
             CDGRUPMUTEX:     currentCategory.CDGRUPMUTEX,
             IMPRESSORAS:     currentProduct.IMPRESSORAS,
             IDPRODPRESELEC:  currentProduct.IDPRODPRESELEC,
@@ -8369,6 +8211,8 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
             VRDESITVEND:     currentProduct.VRDESITVEND,
             VRACRITVEND:     currentProduct.VRACRITVEND,
             VRPRECITEMCL:    currentProduct.VRPRECITEMCL,
+            VOUCHER:         null,
+            VOUCHERDISCOUNT: 0,
             quantity:        0
         };
     };
@@ -8394,24 +8238,27 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
                         groupCount++;
                         self.buildTrayItem(product, promoValues).then(function (trayItem){
                             PromoTray.save(trayItem).then(function (){
-                                AccountCart.findAll().then(function (cart){
-                                    if (productWidget.container.name === "smartPromo" && product.IDTIPOCOMPPROD == '3' && cart[0].CDPRODUTO != product.CDPRODUTO && product.IDIMPPRODUTO != '1'){
-                                        self.openPromoScreen(product, productWidget.container.getWidget('products'), true);
-                                    }
-                                    else {
-                                        product.quantity++;
-                                        self.updateGroupQuantityHeader(productWidget, groupCount);
-                                        if (!_.isEmpty(product.OBSERVATIONS)){
-                                            // Se não tiver observações, não abre o popup.
-                                            self.openPromoPopup(productWidget, product, promoValues);
+                                CampanhaFlag.findOne().then(function (flagProduct){
+                                    var ProductRepository = self.defineCart(flagProduct);
+                                    ProductRepository.findAll().then(function (cart){
+                                        if (productWidget.container.name === "smartPromo" && product.IDTIPOCOMPPROD == '3' && cart[0].CDPRODUTO != product.CDPRODUTO && product.IDIMPPRODUTO != '1'){
+                                            self.openPromoScreen(product, productWidget.container.getWidget('products'), true);
                                         }
                                         else {
-                                            PromoTray.findAll().then(function (newTray){
-                                                self.handleMutex(productWidget.container.getWidget('categories').dataSource.data, product.CDGRUPMUTEX, product.CDGRUPO, newTray);
-                                                self.advanceGroup(productWidget.container.getWidget('categories'), newTray);
-                                            });
+                                            product.quantity++;
+                                            self.updateGroupQuantityHeader(productWidget, groupCount);
+                                            if (!_.isEmpty(product.OBSERVATIONS) || product.IDPESAPROD === 'S'){
+                                                // Se não tiver observações, não abre o popup.
+                                                self.openPromoPopup(productWidget, product, promoValues);
+                                            }
+                                            else {
+                                                PromoTray.findAll().then(function (newTray){
+                                                    self.handleMutex(productWidget.container.getWidget('categories').dataSource.data, product.CDGRUPMUTEX, product.CDGRUPO, newTray);
+                                                    self.advanceGroup(productWidget.container.getWidget('categories'), newTray);
+                                                });
+                                            }
                                         }
-                                    }
+                                    });
                                 });
                             });
                         });
@@ -8516,6 +8363,11 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
             }
         }
 
+        if (product.IDIMPGRPROMO === 'S'){
+            discount = 0;
+            addition = 0;
+        }
+
         var strDesconto = '';
         if (discount > 0){
             if (product.IDPERVALORDES === 'P'){
@@ -8571,6 +8423,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
                 DSBUTTON: product.DSBUTTON,
                 IDAPLICADESCPR: product.IDAPLICADESCPR,
                 IDOBRPRODSELEC: product.IDOBRPRODSELEC,
+                IDIMPGRPROMO: product.IDIMPGRPROMO,
                 IDPERVALORDES: product.IDPERVALORDES,
                 VRDESPRODPROMOC: promoValues.discount,
                 PRECO: product.VRPRECITEM,
@@ -8601,6 +8454,8 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
                 VRDESCONTO: promoValues.originalDiscount,
                 IDPESAPROD: product.IDPESAPROD,
                 QTPRGRUPPROMOC: product.QTPRGRUPPROMOC,
+                VOUCHER: product.VOUCHER,
+                VOUCHERDISCOUNT: 0,
                 QTPRODCOMVEN: 1
             };
         });
@@ -8712,15 +8567,23 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
     };
 
     this.backSmartPromo = function(widget){
-        AccountCart.findAll().then(function (cart){
-            AccountCart.remove(Query.build()).then(function (){
-                var newCart = cart.filter(function (item){
-                    return item.ID !== cart[0].ID;
-                });
+        CampanhaFlag.findOne().then(function (flagProduct){
+            var ProductRepository = self.defineCart(flagProduct);
+            ProductRepository.findAll().then(function (cart){
+                ProductRepository.remove(Query.build()).then(function (){
+                    var newCart = cart.filter(function (item){
+                        return item.ID !== cart[0].ID;
+                    });
 
-                AccountCart.save(newCart).then(function (){
-                    self.resetGroupHighlight(widget);
-                    WindowService.openWindow('MENU_SCREEN');
+                    ProductRepository.save(newCart).then(function (){
+                        self.resetGroupHighlight(widget);
+                        if (_.isEmpty(flagProduct)){
+                            WindowService.openWindow('MENU_SCREEN');
+                        }
+                        else {
+                            WindowService.openWindow('COMPRE_GANHE_SCREEN');
+                        }
+                    });
                 });
             });
         });
@@ -8877,36 +8740,78 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
     };
 
     this.confirmSmartPromo = function(widget){
-        AccountCart.findAll().then(function (cart){
-            SmartPromoTray.findAll().then(function (tray){
-                if (validateGroupRequirements(widget.dataSource.data, tray, cart[0].IDTIPCOBRA)){
-                    handlePrintersProductForRoom(cart[0]).then(function (printers){
-                        cart[0].NRSEQIMPRLOJA = [];
-                        if (printers.length > 0){
-                            cart[0].NRSEQIMPRLOJA.push(printers[0].NRSEQIMPRLOJA);
-                        }
-                        self.trataCampanha(tray).then(function (tray){
-                            cart[0].PRODUTOS = tray;
-                            var calcResult = self.calcProductValue(cart[0]);
-                            if (calcResult == null){
-                                AccountCart.save(cart[0]).then(function (){
-                                    if (cart[0].IDIMPPRODUTO == '1'){
-                                        WindowService.openWindow('CHECK_PROMO_SCREEN');
+        CampanhaFlag.findOne().then(function (flagProduct){
+            var ProductRepository = self.defineCart(flagProduct);
+            ProductRepository.findAll().then(function (cart){
+                SmartPromoTray.findAll().then(function (tray){
+                    if (validateGroupRequirements(widget.dataSource.data, tray, cart[0].IDTIPCOBRA)){
+                        handlePrintersProductForRoom(cart[0]).then(function (printers){
+                            cart[0].NRSEQIMPRLOJA = [];
+                            if (printers.length > 0){
+                                cart[0].NRSEQIMPRLOJA.push(printers[0].NRSEQIMPRLOJA);
+                            }
+
+                            self.removeSeparateProducts(tray, cart, flagProduct).then(function (tray){
+                                self.trataCampanha(tray).then(function (tray){
+                                    cart[0].PRODUTOS = tray;
+                                    var calcResult = self.calcProductValue(cart[0]);
+                                    if (calcResult == null){
+                                        ProductRepository.save(cart[0]).then(function (){
+                                            if (cart[0].IDIMPPRODUTO == '1' || cart[0].IDTIPOCOMPPROD == '6'){
+                                                WindowService.openWindow('CHECK_PROMO_SCREEN');
+                                            }
+                                            else {
+                                                self.resetGroupHighlight(widget);
+                                                if (_.isEmpty(flagProduct)){
+                                                    WindowService.openWindow('MENU_SCREEN');
+                                                }
+                                                else {
+                                                    WindowService.openWindow('COMPRE_GANHE_SCREEN');
+                                                }
+                                            }
+                                        });
                                     }
                                     else {
-                                        self.resetGroupHighlight(widget);
-                                        WindowService.openWindow('MENU_SCREEN');
+                                        ScreenService.showMessage("O valor calculado para o produto " + calcResult.DSBUTTON + " ficou abaixo de R$0,01. Verifique a parametrização.");
                                     }
                                 });
-                            }
-                            else {
-                                ScreenService.showMessage("O valor calculado para o produto " + calcResult.DSBUTTON + " ficou abaixo de R$0,01. Verifique a parametrização.");
-                            }
+                            });
                         });
-                    });
-                }
+                    }
+                }.bind(this));
             }.bind(this));
         }.bind(this));
+    };
+
+    this.removeSeparateProducts = function(tray, cart, flagProduct){
+        return self.getAccountData(function (accountData){
+            var newTray = [];
+            var separateProducts = [];
+            if (_.isEmpty(flagProduct)){
+                tray.forEach(function (trayItem){
+                    if (trayItem.IDIMPGRPROMO === 'S'){
+                        trayItem.IDTIPCOBRA = null;
+                        trayItem.IDTIPOCOMPPROD = '1';
+                        trayItem.IMPRESSORAS = Array();
+                        var cartItem = self.buildCartItem(trayItem, cart[0].POS, cart, false, accountData);
+                        cartItem.NRSEQIMPRLOJA = Array();
+                        cartItem.CDOCORR = trayItem.CDOCORR;
+                        cartItem.TXPRODCOMVEN = trayItem.TXPRODCOMVEN;
+                        cartItem.QTPRODCOMVEN = trayItem.QTPRODCOMVEN;
+                        separateProducts.push(cartItem);
+                    }
+                    else {
+                        newTray.push(trayItem);
+                    }
+                });
+            }
+            else {
+                newTray = tray;
+            }
+            return AccountCart.save(separateProducts).then(function (){
+                return newTray;
+            });
+        });
     };
 
     this.confirmSubPromo = function(widget){
@@ -9206,36 +9111,47 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
     };
 
 	this.storeParentObservations = function(widget){
-		AccountCart.findAll().then(function (cart){
-			cart[0].CDOCORR = widget.currentRow.CDOCORR || [];
-			cart[0].DSOCORR_CUSTOM = widget.currentRow.DSOCORR_CUSTOM || null;
-			AccountCart.save(cart[0]).then(function (){
-				widget.setCurrentRow({'CDOCORR': [], 'DSOCORR_CUSTOM': null});
-				WindowService.openWindow('MENU_SCREEN');
-			});
-		}.bind(this));
+        CampanhaFlag.findOne().then(function (flagProduct){
+            var ProductRepository = self.defineCart(flagProduct);
+            ProductRepository.findAll().then(function (cart){
+                cart[0].CDOCORR = widget.currentRow.CDOCORR || [];
+                cart[0].DSOCORR_CUSTOM = widget.currentRow.DSOCORR_CUSTOM || null;
+                ProductRepository.save(cart[0]).then(function (){
+                    widget.setCurrentRow({'CDOCORR': [], 'DSOCORR_CUSTOM': null});
+                    if (_.isEmpty(flagProduct)){
+                        WindowService.openWindow('MENU_SCREEN');
+                    }
+                    else {
+                        WindowService.openWindow('COMPRE_GANHE_SCREEN');
+                    }
+                });
+            }.bind(this));
+        }.bind(this));
 	};
 
 	this.checkPromoDatasourceHandler = function (widget) {
 		delete widget.dataSource.data;
-		AccountCart.findAll().then(function (cart) {
-			SmartPromoTray.findAll().then(function (tray) {
-				tray.forEach(function (product) {
-					product.TXPRODCOMVEN = this.obsToText(product.CDOCORR, product.DSOCORR_CUSTOM);
-					if (product.ATRASOPROD === 'Y') product.holdText = 'SEGURA';
-					else product.holdText = '';
-					if (product.TOGO === 'Y') product.toGoText = 'PARA VIAGEM';
-					else product.toGoText = '';
-				}.bind(this));
-				widget.dataSource.data = tray;
+        CampanhaFlag.findOne().then(function (flagProduct){
+            var ProductRepository = self.defineCart(flagProduct);
+            ProductRepository.findAll().then(function (cart) {
+                SmartPromoTray.findAll().then(function (tray) {
+                    tray.forEach(function (product) {
+                        product.TXPRODCOMVEN = this.obsToText(product.CDOCORR, product.DSOCORR_CUSTOM);
+                        if (product.ATRASOPROD === 'Y') product.holdText = 'SEGURA';
+                        else product.holdText = '';
+                        if (product.TOGO === 'Y') product.toGoText = 'PARA VIAGEM';
+                        else product.toGoText = '';
+                    }.bind(this));
+                    widget.dataSource.data = tray;
 
-				// Prepares the parent product observation popup.
-				widget.widgets[1].getField('CDOCORR').dataSource.data = this.getObservations(cart[0].OBSERVATIONS);
-				widget.widgets[1].label = "Observações Adicionais - " + cart[0].DSBUTTON;
+                    // Prepares the parent product observation popup.
+                    widget.widgets[1].getField('CDOCORR').dataSource.data = this.getObservations(cart[0].OBSERVATIONS);
+                    widget.widgets[1].label = "Observações Adicionais - " + cart[0].DSBUTTON;
 
-				ScreenService.openPopup(widget.widgets[1]);
-			}.bind(this));
-		}.bind(this));
+                    ScreenService.openPopup(widget.widgets[1]);
+                }.bind(this));
+            }.bind(this));
+        }.bind(this));
 	};
 
 	this.getObservations = function (arrayCDOCORR) {
@@ -9270,6 +9186,27 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 			return array.indexOf(este) === i;
 		});
 	};
+
+    this.checkForVouchers = function(widget, stripe){
+        if (!_.isEmpty(widget.currentRow.PRODUTOS) && widget.currentRow.IDIMPPRODUTO == '2'){
+            var voucherCount = 0;
+            widget.currentRow.PRODUTOS.forEach(function (comboItem){
+                if (comboItem.VOUCHER){
+                    voucherCount++;
+                }
+            });
+            if (voucherCount > 0){
+                widget.currentRow.QTPRODCOMVEN = 1;
+                ScreenService.showMessage("Não é possível alterar a quantidade de promoções que possuem vouchers aplicados nos seus filhos.");
+            }
+            else {
+                self.updateCart(widget, stripe);
+            }
+        }
+        else {
+            self.updateCart(widget, stripe);
+        }
+    };
 
 	this.updateCart = function (widget, stripe) {
 		return new Promise(function (resolve) {
@@ -9385,33 +9322,36 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 	};
 
 	this.updateObservations = function (widget) {
-		return AccountCart.findAll().then(function (data) {
-			widget.currentRow.QTPRODCOMVEN = parseFloat(String(widget.currentRow.QTPRODCOMVEN).replace(',', '.'));
-			handleOneChoiceOnly(widget.currentRow, 'NRSEQIMPRLOJA');
-			data[0].CDOCORR = widget.currentRow.CDOCORR || [];
-			data[0].DSOCORR_CUSTOM = widget.currentRow.DSOCORR_CUSTOM || null;
-			data[0].ATRASOPROD = widget.currentRow.ATRASOPROD;
-			data[0].TOGO = widget.currentRow.TOGO;
-			data[0].holdText = (widget.currentRow.ATRASOPROD === 'Y') ? 'SEGURA' : '';
-			data[0].toGoText = (widget.currentRow.TOGO === 'Y') ? 'PARA VIAGEM' : '';
-			data[0].NRSEQIMPRLOJA = widget.currentRow.NRSEQIMPRLOJA || [];
-			data[0].TXPRODCOMVEN = self.obsToText(widget.currentRow.CDOCORR, widget.currentRow.DSOCORR_CUSTOM);
-			data[0].NMIMPRLOJA = getPrinterName(widget.currentRow.NRSEQIMPRLOJA[0], data[0].IMPRESSORAS);
-			if (widget.currentRow.IDPESAPROD === 'S') {
-				if (widget.currentRow.QTPRODCOMVEN !== null && !isNaN(widget.currentRow.QTPRODCOMVEN)) {
-					data[0].QTPRODCOMVEN = parseFloat(widget.currentRow.QTPRODCOMVEN.toFixed(3));
-				}
-				else {
-					widget.currentRow.QTPRODCOMVEN = "";
-					data[0].QTPRODCOMVEN = 1;
-				}
-			}
-			else {
-				data[0].QTPRODCOMVEN = parseInt(widget.currentRow.QTPRODCOMVEN);
-			}
-			self.calcProductValue(data[0]);
-			return AccountCart.save(data[0]);
-		}.bind(this));
+        return CampanhaFlag.findOne().then(function (flagProduct){
+            var ProductRepository = self.defineCart(flagProduct);
+            return ProductRepository.findAll().then(function (data) {
+                widget.currentRow.QTPRODCOMVEN = parseFloat(String(widget.currentRow.QTPRODCOMVEN).replace(',', '.'));
+                handleOneChoiceOnly(widget.currentRow, 'NRSEQIMPRLOJA');
+                data[0].CDOCORR = widget.currentRow.CDOCORR || [];
+                data[0].DSOCORR_CUSTOM = widget.currentRow.DSOCORR_CUSTOM || null;
+                data[0].ATRASOPROD = widget.currentRow.ATRASOPROD;
+                data[0].TOGO = widget.currentRow.TOGO;
+                data[0].holdText = (widget.currentRow.ATRASOPROD === 'Y') ? 'SEGURA' : '';
+                data[0].toGoText = (widget.currentRow.TOGO === 'Y') ? 'PARA VIAGEM' : '';
+                data[0].NRSEQIMPRLOJA = widget.currentRow.NRSEQIMPRLOJA || [];
+                data[0].TXPRODCOMVEN = self.obsToText(widget.currentRow.CDOCORR, widget.currentRow.DSOCORR_CUSTOM);
+                data[0].NMIMPRLOJA = getPrinterName(widget.currentRow.NRSEQIMPRLOJA[0], data[0].IMPRESSORAS);
+                if (widget.currentRow.IDPESAPROD === 'S') {
+                    if (widget.currentRow.QTPRODCOMVEN !== null && !isNaN(widget.currentRow.QTPRODCOMVEN)) {
+                        data[0].QTPRODCOMVEN = parseFloat(widget.currentRow.QTPRODCOMVEN.toFixed(3));
+                    }
+                    else {
+                        widget.currentRow.QTPRODCOMVEN = "";
+                        data[0].QTPRODCOMVEN = 1;
+                    }
+                }
+                else {
+                    data[0].QTPRODCOMVEN = parseInt(widget.currentRow.QTPRODCOMVEN);
+                }
+                self.calcProductValue(data[0]);
+                return ProductRepository.save(data[0]);
+            }.bind(this));
+        }.bind(this));
 	};
 
 	this.handleObservations = function (data, widget) {
@@ -9474,32 +9414,38 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 	};
 
 	this.undoOrder = function (product, cartAction) {
-		AccountCart.findAll().then(function (Cart) {
-			AccountCart.remove(Query.build()).then(function () {
-				var newCart = Cart.filter(function (item) {
-					return item.ID !== product.ID;
-				});
+        CampanhaFlag.findOne().then(function (flagProduct){
+            var ProductRepository = self.defineCart(flagProduct);
+            ProductRepository.findAll().then(function (Cart) {
+                ProductRepository.remove(Query.build()).then(function () {
+                    var newCart = Cart.filter(function (item) {
+                        return item.ID !== product.ID;
+                    });
 
-				AccountCart.save(newCart).then(function () {
-					ScreenService.closePopup();
-				});
+                    ProductRepository.save(newCart).then(function () {
+                        ScreenService.closePopup();
+                    });
 
-				cartAction.hint = cartAction.hint - 1;
-			});
-		});
+                    cartAction.hint = cartAction.hint - 1;
+                });
+            });
+        });
 	};
 
-	this.prepareMenu = function (widgets) {
-		ParamsGroupRepository.findAll().then(function (data) {
-			widgets[0].dataSource.data = data;
-			widgets[0].setCurrentRow(data[0]);
-			ParamsMenuRepository.findAll().then(function (data) {
-				widgets[1].dataSource.data = data;
-				widgets[1].setCurrentRow(data[0]);
-			});
-		});
-
-	};
+    this.prepareMenu = function (widgets) {
+        ParamsGroupRepository.findAll().then(function (data){
+            CampanhaProducts.remove(Query.build()).then(function (){
+                CampanhaFlag.remove(Query.build()).then(function (){
+                    widgets[0].dataSource.data = data;
+                    widgets[0].setCurrentRow(data[0]);
+                    ParamsMenuRepository.findAll().then(function (data){
+                        widgets[1].dataSource.data = data;
+                        widgets[1].setCurrentRow(data[0]);
+                    });
+                });
+            });
+        });
+    };
 
 	this.updateCancelObservations = function (row, callback) {
 		var CDOCORR = row.CDOCORR;
@@ -9956,7 +9902,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 
 	// esta função é utilizada na parcial do waiter
 	// usar quando o template for "waiter_position"
-	this.refreshAccountDetails = function (widgetsFilhos, position, forceRefresh) {
+	this.refreshAccountDetails = function (widgetsFilhos, position, forceRefresh, updateDiscount) {
 		// pega as duas tabs
 		var pageDetails = widgetsFilhos[0];
 		var pageItems = widgetsFilhos[1];
@@ -9976,7 +9922,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 
 			this.getAccountData(function (accountData) {
 				OperatorRepository.findAll().then(function (params) {
-					AccountService.getAccountDetails(params[0].chave, params[0].modoHabilitado, accountData[0].NRCOMANDA, accountData[0].NRVENDAREST, 'M', position).then(function (databack) {
+					AccountService.getAccountDetails(params[0].chave, params[0].modoHabilitado, accountData[0].NRCOMANDA, accountData[0].NRVENDAREST, 'M', position, updateDiscount).then(function (databack) {
 						var accountDetails = databack.AccountGetAccountDetails[0];
 
 						var dataset = {
@@ -10048,7 +9994,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 
 	// esta função é utilizada no pagamento do waiter
 	//Usar quando o template for "waiter_position_multiple"
-	this.refreshAccountDetailsMultiplePositions = function (widgetsFilhos, position, positionsField) {
+	this.refreshAccountDetailsMultiplePositions = function (widgetsFilhos, position, positionsField, updateDiscount) {
 		// pega as duas tabs
 		var pageDetails = widgetsFilhos[0];
 		var pageItems = widgetsFilhos[1];
@@ -10110,7 +10056,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 			if (position !== undefined && position.length > 0) {
 				this.getAccountData(function (accountData) {
 					OperatorRepository.findAll().then(function (params) {
-						AccountService.getAccountDetails(params[0].chave, params[0].modoHabilitado, accountData[0].NRCOMANDA, accountData[0].NRVENDAREST, 'M', position).then(function (databack) {
+						AccountService.getAccountDetails(params[0].chave, params[0].modoHabilitado, accountData[0].NRCOMANDA, accountData[0].NRVENDAREST, 'M', position, updateDiscount).then(function (databack) {
 							pageDetails.currentRow = databack.AccountGetAccountDetails[0];
 
 							if (pageItems.dataSource.data && pageItems.dataSource.data.length > 0) {
@@ -10508,7 +10454,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 	this.selectedProduct = {};
 
 	this.prepareCheckOrder = function (product, field, widget, listaFilhos, stripe) {
-		OperatorRepository.findAll().then(function (operatorData) {
+		OperatorRepository.findOne().then(function (operatorData) {
 			if (this.selectedProduct !== product) {
 				field.dataSource.data = this.getObservations(product.OBSERVATIONS);
 				widget.currentRow = product;
@@ -10525,13 +10471,13 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 				}
 
 				/* Define se será mostrado o checkbox de atraso de produtos. */
-				if (operatorData[0].modoHabilitado !== 'O') {
-					widget.getField('ATRASOPROD').isVisible = (operatorData[0].NRATRAPADRAO > 0);
+				if (operatorData.modoHabilitado !== 'O') {
+					widget.getField('ATRASOPROD').isVisible = (operatorData.NRATRAPADRAO > 0);
 				}
 
-				widget.getField('TOGO').isVisible = operatorData[0].IDCTRLPEDVIAGEM === 'S';
+				widget.getField('TOGO').isVisible = operatorData.IDCTRLPEDVIAGEM === 'S';
 
-				if (operatorData[0].IDUTLQTDPED === 'S') {
+				if (operatorData.IDUTLQTDPED === 'S' && product.IDTIPOCOMPPROD !== '6'){
 					widget.getField('QTPRODCOMVEN').isVisible = true;
 					widget.getField('QTPRODCOMVEN').spin = true;
 					widget.getField('QTPRODCOMVEN').label = "Quantidade (un)";
@@ -10551,6 +10497,20 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 					printersField.isVisible = printers.length > 1;
 					printersField.dataSource.data = printers;
 				});
+
+                if (operatorData.IDUTCUPOMDESC === 'S' && product.IDIMPPRODUTO == '1'){
+                    widget.getField('voucher').isVisible = true;
+                    if (_.isEmpty(product.VOUCHER)){
+                        widget.getField('voucher').label = "Voucher";
+                    }
+                    else {
+                        widget.getField('voucher').label = "Voucher: " + product.VOUCHER.CDCUPOMDESCFOS;
+                    }
+                }
+                else {
+                    widget.getField('voucher').isVisible = false;
+                }
+
 				templateManager.updateTemplate();
 			}
 		}.bind(this));
@@ -10561,6 +10521,19 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 			if (product) {
 				popup.fields[0].dataSource.data = this.getObservations(product.OBSERVATIONS);
 				popup.currentRow = product;
+                if (operatorData[0].IDUTCUPOMDESC === 'S' && popup.container.getWidget('checkOrder').currentRow.IDIMPPRODUTO == '1'){
+                    popup.getAction('btnVoucher').isVisible = false;
+                }
+                else {
+                    popup.getAction('btnVoucher').isVisible = true;
+                    if (_.isEmpty(product.VOUCHER)){
+                        popup.getAction('btnVoucher').label = "Voucher";
+                    }
+                    else {
+                        popup.getAction('btnVoucher').label = "Voucher: " + product.VOUCHER.CDCUPOMDESCFOS;
+                    }
+                }
+
 				ScreenService.openPopup(popup);
 			}
 		}.bind(this));
@@ -10696,42 +10669,17 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 					if (obsReturn.error) {
 						ScreenService.showMessage(obsReturn.message);
 					} else {
-						ScreenService.closePopup();
+                        // Se o produto fizer parte de uma campanha "Compre e Ganhe", abre a tela.
+                        if (widget.currentRow.CAMPANHA){
+                            CampanhaFlag.save(widget.currentRow).then(function (){
+                                WindowService.openWindow('COMPRE_GANHE_SCREEN');
+                            });
+                        }
+                        else {
+						  ScreenService.closePopup();
+                        }
 					}
 				}.bind(this));
-			}
-		});
-	};
-
-	this.handlePositionsFieldInit = function (widgetCloseAccount) {
-		var positionsField = widgetCloseAccount.getField('positionsField');
-		var radioTablePositions = widgetCloseAccount.getField('radioTablePositions');
-		widgetCloseAccount.setCurrentRow({});
-		radioTablePositions.applyDefaultValue();
-		self.setActionLabel(positionsField);
-	};
-
-	this.prepareAccountClosingWidget = function (widgetCloseAccount, formWidget, openFidelityPopup, fidelitySearch) {
-		var positionsField = widgetCloseAccount.getField('positionsField');
-		var radioTablePositions = widgetCloseAccount.getField('radioTablePositions');
-
-		OperatorRepository.findOne().then(function (operatorData) {
-			if ((operatorData.modoHabilitado === 'M') && (operatorData.IDLUGARMESA === 'S')) {
-				TableActiveTable.findOne().then(function (activeTable) {
-					var positionsObject = _.get(activeTable, 'posicoes', {});
-
-					WaiterNamedPositionsState.initializeTemplate();
-
-					positionsField.dataSource.data[0].NRPOSICAOMESA = activeTable.NRPOSICAOMESA;
-					positionsField.dataSource.data[0].clientMapping = ApplicationContext.TableController.buildClientMapping(positionsObject);
-					positionsField.dataSource.data[0].consumerMapping = ApplicationContext.TableController.buildConsumerMapping(positionsObject);
-					positionsField.dataSource.data[0].positionNamedMapping = ApplicationContext.TableController.buildPositionNamedMapping(positionsObject);
-					ApplicationContext.TableController.updatePositionsCopy(positionsField);
-
-					if (openFidelityPopup) {
-						self.openTableFidelity(formWidget, positionsField, radioTablePositions, fidelitySearch);
-					}
-				});
 			}
 		});
 	};
@@ -10751,7 +10699,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 				positionsField.isVisible = false;
 				$('.zh-widget-accountItemsTable').css('top', topMargin - 55 + 'px');
 				WaiterNamedPositionsState.unselectAllPositions();
-				this.refreshAccountDetails(widgetCloseAccount.widgets, '', positionsField, true);
+				this.refreshAccountDetails(widgetCloseAccount.widgets, '', true);
 			}
 			self.setActionLabel(positionsField);
 		}.bind(self));
@@ -10768,7 +10716,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 					}
 					else {
 						positionsField.widget.fields[0].setValue('M');
-						self.refreshAccountDetails(positionsField.widget.widgets, '', positionsField, true);
+						self.refreshAccountDetails(positionsField.widget.widgets, '', true);
 					}
 					self.setActionLabel(positionsField);
 				}
@@ -10827,64 +10775,6 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 			} else {
 				positionsField.isVisible = false;
 			}
-		});
-	};
-
-	this.handlePositionsRadioChangeAccount = function (widgetCloseAccount) {
-		var positionsField = widgetCloseAccount.getField('positionsField');
-		var radioTablePositions = widgetCloseAccount.getField('radioTablePositions');
-
-		var topMargin = parseInt($('.zh-widget-accountItemsTable').css('top'));
-
-		TableActiveTable.findOne().then(function (activeTable) {
-			if (radioTablePositions.value() === 'P') {
-				positionsField.isVisible = true;
-				positionsField.dataSource.data[0].NRPOSICAOMESA = activeTable.NRPOSICAOMESA;
-				$('.zh-widget-accountItemsTable').css('top', topMargin + 55 + 'px');
-			} else {
-				positionsField.isVisible = false;
-				$('.zh-widget-accountItemsTable').css('top', topMargin - 55 + 'px');
-				WaiterNamedPositionsState.unselectAllPositions();
-				this.refreshAccountDetails(widgetCloseAccount.widgets, '', positionsField, true);
-			}
-			self.setActionLabel(positionsField);
-		}.bind(self));
-	};
-
-	this.handleCloseTablePositionChange = function (positionsField) {
-		TableActiveTable.findOne().then(function (activeTable) {
-			TableService.positionControl(activeTable.NRVENDAREST, positionsField.newPosition + 1, !~positionsField.position.indexOf(positionsField.newPosition), positionsField.position).then(function (result) {
-				if (result[0].message == null) {
-					self.showPositionActions(positionsField);
-					if (positionsField.position.length > 0) {
-						positionsField.widget.fields[0].setValue('P');
-						self.refreshAccountDetailsMultiplePositions(positionsField.widget.widgets, positionsField.position, positionsField);
-					}
-					else {
-						positionsField.widget.fields[0].setValue('M');
-						self.refreshAccountDetails(positionsField.widget.widgets, '', positionsField, true);
-					}
-					self.setActionLabel(positionsField);
-				}
-				else {
-					positionsField._buttons[positionsField.newPosition].selected = false;
-					positionsField.position.pop(positionsField.newPosition);
-					if (positionsField.position.length == 0) {
-						self.hidePositionActions(positionsField);
-					}
-				}
-			});
-		});
-	};
-
-	this.showPositionActions = function (positionsField) {
-		OperatorRepository.findOne().then(function (operatorData) {
-			positionsField.widget.container.getWidget('accountDetailsTable').getAction('changePositions').isVisible = true;
-			positionsField.widget.container.getWidget('accountDetailsTable').getAction('pagar').isVisible = true;
-			positionsField.widget.container.getWidget('accountItemsTable').getAction('transfer').isVisible = true;
-			positionsField.widget.container.getWidget('accountItemsTable').getAction('pagar').isVisible = true;
-			positionsField.widget.container.getWidget('accountDetailsTable').getAction('partialPrint').isVisible = true;
-			positionsField.widget.container.getWidget('accountDetailsTable').getField('servicoBtn').isVisible = operatorData.IDCOMISVENDA == "S";
 		});
 	};
 
@@ -11834,47 +11724,109 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 
     this.handleSelectedProduct = function (widget, product, position){
         OperatorRepository.findOne().then(function (operatorData){
-            self.priceUpdate(product, function (result){
-                if (result){
-                    widget.reload();
-                    product = result[0];
-                }
-
-                product.HRINIVENPROD = !product.HRINIVENPROD ? 0 : product.HRINIVENPROD;
-                product.HRFIMVENPROD = !product.HRFIMVENPROD ? 0 : product.HRFIMVENPROD;
-
-                var validaProduto = self.validateProducts(product, operatorData.IDCOLETOR);
-                if (_.isEmpty(validaProduto)){
-                    if (product.GRUPOS){ // Produto do cardápio principal.
-                        if (!isSmartPromo(product) && product.IDTIPOCOMPPROD !== 'C'){
-                            /* - Produto Normal - */
-                            self.addToCart(widget.container.getWidget("addProduct"), product, position, widget.container.getWidget("addProduct").getAction("cart"), widget.container.getWidget("menu").getAction("cart"), false, false);
-                            ScreenService.closePopup();
+            CampanhaFlag.findOne().then(function (flagProduct){
+                CampanhaProducts.findAll().then(function (campanhaProducts){
+                    var ProductRepository = self.defineCart(flagProduct);
+                    self.priceUpdate(product, function (result){
+                        if (result){
+                            widget.reload();
+                            product = result[0];
                         }
-                        else {
-                            /* - Promoção Inteligente - */
-                            self.buildPromoItem(product, position, false, false, function (refil){
-                                buildCartItem(product, position, refil).then(function (cartItem){
-                                    // Fixa a quantidade do produto.
-                                    cartItem.QTPRODCOMVEN = 1;
-                                    // Adiciona o produto pai no carrinho.
-                                    AccountCart.save(cartItem).then(function (){
-                                        self.openPromoScreen(product, widget, false);
+
+                        product.HRINIVENPROD = !product.HRINIVENPROD ? 0 : product.HRINIVENPROD;
+                        product.HRFIMVENPROD = !product.HRFIMVENPROD ? 0 : product.HRFIMVENPROD;
+
+                        var validaProduto = self.validateProducts(product, operatorData.IDCOLETOR);
+                        if (_.isEmpty(validaProduto)){
+                            if (product.GRUPOS){ // Produto do cardápio principal.
+                                if (_.isEmpty(flagProduct) || campanhaProducts.length < flagProduct.QTCOMPGANHE){
+                                    if (!isSmartPromo(product) && product.IDTIPOCOMPPROD !== 'C'){
+                                        /* - Produto Normal - */
+                                        self.addToCart(widget.container.getWidget("addProduct"), product, position, widget.container.getWidget("addProduct").getAction("cart"), widget.container.getWidget("menu").getAction("cart"), false, false);
                                         ScreenService.closePopup();
-                                    });
-                                });
-                            });
+                                    }
+                                    else {
+                                        /* - Promoção Inteligente - */
+                                        TableActiveTable.findOne().then(function (tableData){
+                                            ProductRepository.findAll().then(function (cart){
+                                                var rodizio = product.IDTIPOCOMPPROD === '6';
+                                                // Validação de produtos rodízio.
+                                                var rodizioValidation;
+                                                if (rodizio){
+                                                    rodizioValidation = self.validateRodizio(product, cart, position, tableData.DTHRABERMESA, operatorData.HRTEMPOROD);
+                                                }
+                                                if (!rodizio || (rodizio && rodizioValidation.result)){
+                                                    self.getAccountData(function (accountData){
+                                                        self.buildPromoItem(product, position, false, false, function (refil){
+                                                            var cartItem = self.buildCartItem(product, position, cart, refil, accountData);
+                                                            // Fixa a quantidade do produto.
+                                                            cartItem.QTPRODCOMVEN = 1;
+                                                            // Adiciona o produto pai no carrinho.
+                                                            ProductRepository.save(cartItem).then(function (){
+                                                                self.openPromoScreen(product, widget, false);
+                                                                ScreenService.closePopup();
+                                                            });
+                                                        });
+                                                    });
+                                                }
+                                                else {
+                                                    ScreenService.showMessage(rodizioValidation.rodizioMessage);
+                                                }
+                                            });
+                                        });
+                                    }
+                                }
+                                else {
+                                    ScreenService.showMessage("Quantidade de brindes excedida.");
+                                }
+                            }
+                            else { // Produto dentro de uma promoção.
+                                self.addToTray(widget.container.getWidget("addProduct"), product);
+                                ScreenService.closePopup();
+                            }
+                        } else {
+                            ScreenService.showMessage(validaProduto);
                         }
-                    }
-                    else { // Produto dentro de uma promoção.
-                        self.addToTray(widget.container.getWidget("addProduct"), product);
-                        ScreenService.closePopup();
-                    }
-                } else {
-                    ScreenService.showMessage(validaProduto);
-                }
+                    });
+                });
             });
         });
+    };
+
+    this.validateRodizio = function(product, cart, position, DTHRABERMESA, HRTEMPOROD){
+        var rodizioValidation;
+        var rodizioMessage;
+        var tempoRodizio;
+
+        var tempoAtual = Date.now();
+        if (HRTEMPOROD == null){
+            tempoRodizio = DTHRABERMESA + 1000;
+        }
+        else {
+            tempoRodizio = DTHRABERMESA + 3600 * parseInt(HRTEMPOROD.substr(0, 2)) + 60 * parseInt(HRTEMPOROD.substr(2));
+        }
+        if (tempoRodizio * 1000 > tempoAtual){
+            rodiziosPosicao = _.filter(cart, function (cartItem){
+                return cartItem.IDTIPOCOMPPROD === '6' && cartItem.POS === position && cartItem.CDPRODUTO === product.CDPRODUTO;
+            });
+            if (!_.isEmpty(rodiziosPosicao)){
+                rodizioValidation = false;
+                rodizioMessage = "Apenas um produto rodízio pode ser pedido por posição.";
+            }
+            else {
+                rodizioValidation = true;
+                rodizioMessage = "";
+            }
+        }
+        else {
+            rodizioValidation = false;
+            rodizioMessage = "O tempo de duração do rodízio está esgotado.";
+        }
+
+        return {
+            "result": rodizioValidation,
+            "rodizioMessage": rodizioMessage
+        };
     };
 
     this.validateProducts = function(product, IDCOLETOR){
@@ -11888,20 +11840,22 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
             if (product.VRPRECITEM == 0)
                 return "Produto sem preço.";
 
-            if (IDCOLETOR !== 'C'){
-                var message = 'Produto não pode ser vendido, pois não possui ';
-                var validate = {
-                    'CDCLASFISC': "NCM",
-                    'CDCFOPPFIS': "CFOP",
-                    'CDCSTICMS': "CST do ICMS",
-                    'VRALIQPIS': "Aliquota do PIS",
-                    'CDCSTPISCOF': "CST do PIS/COFINS",
-                    'VRALIQCOFINS': "Aliquota do COFINS"
-                };
+            if (!(isSmartPromo(product) && product.IDIMPPRODUTO == '2')){
+                if (IDCOLETOR !== 'C'){
+                    var message = 'Produto não pode ser vendido, pois não possui ';
+                    var validate = {
+                        'CDCLASFISC': "NCM",
+                        'CDCFOPPFIS': "CFOP",
+                        'CDCSTICMS': "CST do ICMS",
+                        'VRALIQPIS': "Aliquota do PIS",
+                        'CDCSTPISCOF': "CST do PIS/COFINS",
+                        'VRALIQCOFINS': "Aliquota do COFINS"
+                    };
 
-                for (var indexVaL in validate){
-                    if (_.isEmpty(product[indexVaL])) {
-                        return message + validate[indexVaL] + ' parametrizado.';
+                    for (var indexVaL in validate){
+                        if (_.isEmpty(product[indexVaL])) {
+                            return message + validate[indexVaL] + ' parametrizado.';
+                        }
                     }
                 }
             }
@@ -11959,14 +11913,22 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 						}
 					}
 					else {
-						var products = search.dataset.FilterProducts;
-						if (products.length == 1) {
-							popup.currentRow = products[0];
-							popup.getField('selectProducts').setValue(products[0].DSBUTTON);
-						} else if (products.length > 1) {
-							delete field.selectWidget;
-							field.openField();
-						}
+                        CampanhaFlag.findOne().then(function (flagProduct){
+                            var products = search.dataset.FilterProducts;
+                            if (!_.isEmpty(flagProduct)){
+                                delete field.selectWidget;
+                                field.openField();
+                            }
+                            else {
+                                if (products.length == 1){
+                                    popup.currentRow = products[0];
+                                    popup.getField('selectProducts').setValue(products[0].DSBUTTON);
+                                } else if (products.length > 1){
+                                    delete field.selectWidget;
+                                    field.openField();
+                                }
+                            }
+                        });
 					}
 				}
 			}.bind(this));
@@ -12094,10 +12056,10 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 							if (positionsField.position.length > 0) {
 								positionsField._isStatusChanged = true;
 								positionsField.widget.fields[0].setValue('P');
-								self.refreshAccountDetailsMultiplePositions(positionsField.widget.widgets, positionsField.position, positionsField);
+								self.refreshAccountDetailsMultiplePositions(positionsField.widget.widgets, positionsField.position, positionsField, true);
 							} else {
 								positionsField.widget.fields[0].setValue('M');
-								self.refreshAccountDetails(positionsField.widget.widgets, '', positionsField, true);
+								self.refreshAccountDetails(positionsField.widget.widgets, '', true, true);
 							}
 							ScreenService.closePopup(true);
 							widget.container.getWidget('accountDetailsTable').activate();
@@ -12412,6 +12374,226 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 			}
 		});
 	};
+
+    this.openVoucherPopup = function(row, voucherPopup, widget){
+        if (row.VOUCHER || (widget && widget.currentRow.VOUCHER)){
+            ScreenService.showMessage("Não é possível adicionar mais de um voucher no mesmo produto. Favor retirá-lo da bandeja e adicione-o novamente caso necessário remover ou alterar o voucher.");
+        }
+        else {
+            if (widget && widget.container.getWidget('checkOrder').currentRow.QTPRODCOMVEN > 1){
+                ScreenService.showMessage("Não é possível adicionar voucher em filhos de promoções que possuem quantidade maior que 1.");
+            }
+            else {
+                if (widget) voucherPopup.currentRow.PROMOPRODUCT = widget.currentRow;
+                else voucherPopup.currentRow.PROMOPRODUCT = null;
+                voucherPopup.currentRow.CDCUPOMDESCFOS = null;
+                ScreenService.openPopup(voucherPopup);
+            }
+        }
+
+    };
+
+    this.confirmVoucher = function(row, widget){
+        if (!_.isEmpty(row.CDCUPOMDESCFOS)){
+            var CDPRODUTO = null;
+            if (_.isEmpty(row.PROMOPRODUCT)){
+                CDPRODUTO = widget.currentRow.CDPRODUTO;
+            }
+            else {
+                CDPRODUTO = row.PROMOPRODUCT.CDPRODUTO;
+            }
+            AccountService.checkVoucher(CDPRODUTO, widget.currentRow.NRVENDAREST, widget.currentRow.NRCOMANDA, row.CDCUPOMDESCFOS).then(function (voucherData){
+                AccountCart.findAll().then(function (cart){
+                    if (voucherData[0].IDUSOUNICO === "N" || self.checkVoucherUsage(voucherData[0], cart)){
+                        // Acha o produto no carrinho.
+                        var selectedProduct = _.find(cart, function (cartItem){
+                            if (cartItem.IDENTIFYKEY == widget.currentRow.IDENTIFYKEY){
+                                return cartItem;
+                            }
+                        });
+
+                        if (_.isEmpty(row.PROMOPRODUCT)){ // Produtos normais.
+                            widget.container.getWidget('addProduct').getField('voucher').label = "Voucher: " + voucherData[0].CDCUPOMDESCFOS;
+                            selectedProduct.VOUCHER = voucherData[0];
+                            widget.currentRow.VOUCHER = voucherData[0];
+                        }
+                        else { // Promoções.
+                            // Acha o produto filho dentro da promoção.
+                            widget.container.getWidget('changeSmartPromoObservations').getAction('btnVoucher').label = "Voucher: " + voucherData[0].CDCUPOMDESCFOS;
+                            var selectedPromoItem = _.find(selectedProduct.PRODUTOS, function (promoItem){
+                                if (promoItem.ID == row.PROMOPRODUCT.ID){
+                                    return promoItem;
+                                }
+                            });
+                            selectedPromoItem.VOUCHER = voucherData[0];
+                            row.PROMOPRODUCT.VOUCHER = voucherData[0];
+                        }
+
+                        AccountCart.remove(Query.build()).then(function (){
+                            AccountCart.save(cart).then(function (){
+                                self.updateCart(widget, widget.container.getWidget('checkOrderStripe')).then(function (){
+                                    ScreenService.closePopup();
+                                });
+                            });
+                        });
+
+                    }
+                    else {
+                        ScreenService.showMessage("Este voucher é de uso único e já está sendo aplicado em outro produto deste pedido.");
+                    }
+                });
+            });
+        }
+        else {
+            ScreenService.showMessage("Favor informar o código do voucher.");
+        }
+    };
+
+    this.checkVoucherUsage = function(voucherData, cart){
+        // Verifica se o voucher já foi aplicado em algum outro produto do carrinho.
+        for (var i in cart){
+            if (cart[i].VOUCHER){
+                if (cart[i].VOUCHER.CDCUPOMDESCFOS == voucherData.CDCUPOMDESCFOS){
+                    return false;
+                }
+            }
+        }
+        return true;
+    };
+
+    this.loadCompreGanhe = function(widget){
+        CampanhaFlag.findOne().then(function (flagProduct){
+            if (flagProduct.QTCOMPGANHE == 1){
+                widget.getField('labelCampanha').label = "Escolha " + flagProduct.QTCOMPGANHE + " produto.";
+            }
+            else {
+                widget.getField('labelCampanha').label = "Escolha " + flagProduct.QTCOMPGANHE + " produtos.";
+            }
+            self.refreshCampanhaProducts(widget);
+        });
+    };
+
+    this.refreshCampanhaProducts = function(widget){
+        var productsField = widget.getField('product');
+        CampanhaProducts.findAll().then(function (products) {
+            productsField.dataSource.checkedRows = [];
+            for (var i in products){
+                if (products[i].quantidade != 1) {
+                    products[i].DSBUTTON = products[i].DSBUTTON;
+                }
+            }
+            productsField.dataSource.data = products;
+        });
+    };
+
+    this.cancelCompreGanhe = function(widget){
+        CampanhaProducts.remove(Query.build()).then(function (){
+            CampanhaFlag.remove(Query.build()).then(function (){
+                AccountCart.findAll().then(function (cart){
+                    AccountCart.remove(Query.build()).then(function (){
+                        var newCart = cart.filter(function (item){
+                            return item.ID !== cart[0].ID;
+                        });
+                        AccountCart.save(newCart).then(function (){
+                            widget.container.getWidget('menu').getField('product').dataSource.data = [];
+                            WindowService.openWindow('MENU_SCREEN');
+                        });
+                    });
+                });
+            });
+        });
+    };
+
+    this.confirmCompreGanhe = function(widget){
+        AccountCart.findAll().then(function (cart){
+            CampanhaFlag.findOne().then(function (flagProduct){
+                CampanhaProducts.findAll().then(function (products){
+                    var qtBrindes = 0;
+                    products.forEach(function (campanhaProduct){
+
+                        // Define o ID.
+                        campanhaProduct.ID = self.getOrderCodeProductID(cart);
+
+                        // Coloca os preços dos brindes como 1 centavo.
+                        if (_.isEmpty(campanhaProduct.PRODUTOS) || campanhaProduct.IDIMPPRODUTO === "1"){
+                            // Produtos normais e promoções pai.
+                            var precoMin = 0.01;
+                            var quant = 1;
+                            if (!_.isEmpty(campanhaProduct.PRODUTOS)){
+                                quant = campanhaProduct.PRODUTOS.length;
+                                precoMin = quant * 0.01;
+                            }
+
+                            campanhaProduct.PRECO = precoMin.toString().replace('.', ',');
+                            campanhaProduct.PRITEM = precoMin;
+                            campanhaProduct.PRITOTITEM = precoMin;
+                            campanhaProduct.VRPRECITEMCL = 0;
+                            campanhaProduct.VRACRITVEND = 0;
+                            campanhaProduct.VRDESITVEND = 0;
+
+                            qtBrindes += quant;
+                        }
+                        else {
+                            // Promoções onde os filhos são cobrados.
+                            campanhaProducts.PRODUTOS.forEach(function (promoProducts){
+                                promoProducts.PRECO = 0.01;
+                                promoProducts.PRICE = 0.01;
+                                promoProducts.PRITEM = 0.01;
+                                promoProducts.TOTPRICE = 0.01;
+                                promoProducts.REALPRICE = 0.01;
+
+                                promoProducts.VRPRECITEMCL = 0;
+
+                                promoProducts.ADDITION = 0;
+                                promoProducts.VRACRITVEND = 0;
+
+                                promoProducts.DISCOUNT = 0;
+                                promoProducts.VRDESCONTO = 0;
+                                promoProducts.VRDESITVEND = 0;
+                                promoProducts.VRDESPRODPROMOC = 0;
+                            });
+
+                            qtBrindes += campanhaProducts.PRODUTOS.length;
+                        }
+
+                        campanhaProduct.CAMPANHA = flagProduct.CAMPANHA;
+                        campanhaProduct.DTINIVGCAMPCG = flagProduct.DTINIVGCAMPCG;
+
+                        // Coloca o produto no carrinho.
+                        cart.push(campanhaProduct);
+                    });
+
+                    // Altera o preço do produto principal.
+                    var cartFlagProduct = cart.filter(function (cartItem){
+                        return cartItem.ID == flagProduct.ID;
+                    });
+                    var adjustedPrice = parseFloat(cartFlagProduct[0].PRITOTITEM - 0.01 * qtBrindes);
+                    if (adjustedPrice <= 0.01 * cartFlagProduct[0].QTPRODCOMVEN){
+                        adjustedPrice = 0.01 * cartFlagProduct[0].QTPRODCOMVEN;
+                    }
+
+                    cartFlagProduct[0].PRECO = adjustedPrice.toString().replace('.', ',');
+                    cartFlagProduct[0].PRICE = adjustedPrice;
+                    cartFlagProduct[0].PRITEM = adjustedPrice;
+                    cartFlagProduct[0].PRITOTITEM = adjustedPrice;
+                    cartFlagProduct[0].DESCCOMPGANHE = 0.01 * qtBrindes;
+
+                    cartFlagProduct[0].CAMPANHA = null;
+                    cartFlagProduct[0].DTINIVGCAMPCG = null;
+
+                    AccountCart.remove(Query.build()).then(function (){
+                        AccountCart.save(cart).then(function (){
+                            CampanhaProducts.remove(Query.build()).then(function (){
+                                CampanhaFlag.remove(Query.build()).then(function (){
+                                    WindowService.openWindow('MENU_SCREEN');
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    };
 
 }
 
@@ -15511,6 +15693,12 @@ function TableController($rootScope, PermissionService, TableService, TableRepos
 				NMRAZSOCCLIE.readOnly = false;
 				NMCONSUMIDOR.readOnly = false;
 				consumerSearch.readOnly = false;
+                NMCONSUMIDOR.dataSourceFilter = [];
+                NMCONSUMIDOR.dataSourceFilter[0] = {
+                    "name": "CDCLIENTE",
+                    "operator": "=",
+                    "value": ""
+                };
 
 				TableActiveTable.findOne().then(function (tableData) {
 					OperatorRepository.findOne().then(function (operatorData) {
@@ -16234,8 +16422,23 @@ function BillController(AccountController, OperatorRepository, BillService, Scre
 
 	this.prepareBillList = function(widgetToShow) {
 		this.getBills(function(data) {
-			widgetToShow.dataSource.data = data;
-			ScreenService.openPopup(widgetToShow);
+			BillService.selectGroupBills().then(function (groupBills){
+				for (i = 0; i < data.length; i++) {
+					for (j = 0; j < groupBills.length; j++) {
+						if (data[i].DSCOMANDA == groupBills[j].DSCOMANDAPRI) {
+							if (!('AGRUPAMENTO' in data[i])) {
+								data[i].AGRUPAMENTO = 'AGRUPAMENTO ';
+							}
+							data[i].AGRUPAMENTO += groupBills[j].DSCOMANDA + ', ';
+						}
+					}
+					if ('AGRUPAMENTO' in data[i]) {
+						data[i].AGRUPAMENTO = data[i].AGRUPAMENTO.substr(0, data[i].AGRUPAMENTO.length - 2);
+					}
+				}
+				widgetToShow.dataSource.data = data;
+				ScreenService.openPopup(widgetToShow);
+			});
 		});
 	};
 
@@ -18456,6 +18659,145 @@ function MenuFunctionsController (PermissionService, AccountController, TableCon
 		}
 	};
 
+	this.selectToGroupBills = function(mainBillField) {
+		mainBillField.clearValue();
+		mainBillField.dataSource.data = Array();
+		BillController.getBills(function(comandas) {
+		 	mainBillField.dataSource.data = comandas;
+		}.bind(this));
+	};
+
+	this.handleSelectBills = function(mainBillField, selectBillsToGroupField){
+		BillService.selectGroupBills().then(function (groupBills){
+			if (!_.isEmpty(mainBillField.value())) {
+				selectBillsToGroupField.readOnly = false;
+				currentRow = mainBillField.getParent().currentRow;
+				comandas = _.clone(mainBillField.dataSource.data);
+
+				_.forEach(groupBills, function(value, key) {
+				  	_.remove(comandas, function(c){
+				  		return c.NRCOMANDA == value.NRCOMANDA && c.NRVENDAREST == value.NRVENDAREST;
+				  	});
+				});
+
+				selectBillsToGroupField.dataSource.data = _.filter(comandas, function(datasetBills) {
+					return datasetBills.NRCOMANDA != currentRow.MAINNRCOMANDA && datasetBills.NRVENDAREST != currentRow.MAINNRVENDAREST;
+				});
+			} else {
+				selectBillsToGroupField.readOnly = true;
+				selectBillsToGroupField.dataSource.data = Array();
+			}
+		}.bind(this));
+	};
+
+	this.selectToUngroupBills = function(ungroupBillsWidget) {
+		var sortedGroupBills = Array();
+		ungroupBillsWidget.dataSource.data = Array();
+		BillService.selectGroupBills().then(function (groupBills){
+			_.forEach(groupBills, function(value, key) {
+				if (value.DSCOMANDAPRI == null) {
+					value.DSCOMANDAPRI = 'PRINCIPAL';
+					sortedGroupBills.push(value);
+					groupedBills = _.filter(groupBills, function(gpBill) {
+						return value.DSCOMANDA == gpBill.DSCOMANDAPRI;
+					});
+					sortedGroupBills.push(groupedBills);
+				}
+			});
+		 	ungroupBillsWidget.dataSource.data = sortedGroupBills.flat();
+		}.bind(this));
+	};
+
+	this.eraseGroupBillData = function (widget) {
+		groupWidget = widget.container.getWidget('group');
+		ungroupWidget = widget.container.getWidget('ungroup');
+		groupWidget.getField('mainBill').clearValue();
+		groupWidget.getField('mainBill').dataSource.data = Array();
+		groupWidget.getField('selectBillsToGroup').clearValue();
+		groupWidget.getField('selectBillsToGroup').dataSource.data = Array();
+		groupWidget.getField('selectBillsToGroup').readOnly = true;
+		ungroupWidget.dataSource.checkedRows = [];
+		ungroupWidget.dataSource.data = Array();
+	};
+
+	this.groupDisgroupBills = function (widget) {
+		if (widget.currentWidget.name == 'group') {
+			// Realiza o agrupamento das comandas.
+			groupWidget = widget.currentWidget;
+			if (!_.isEmpty(groupWidget.currentRow.mainBill)) {
+				if (!_.isEmpty(groupWidget.getField('selectBillsToGroup').value())) {
+					currentRow = groupWidget.currentRow;
+					
+					mainBill = {
+						"MAINBILL": {
+							"DSCOMANDA": currentRow.MAINDSCOMANDA,
+							"NRVENDAREST": currentRow.MAINNRVENDAREST,
+							"NRCOMANDA": currentRow.MAINNRCOMANDA
+						}
+					};
+
+					toGroupBills = Array();
+					for (i = 0; i < currentRow.selectBillsToGroup.length; i++) {
+						arr  = {
+							"DSCOMANDA": currentRow.TOGROUPDSCOMANDA[i],
+							"NRVENDAREST": currentRow.TOGROUPNRVENDAREST[i],
+							"NRCOMANDA": currentRow.TOGROUPNRCOMANDA[i]
+						};
+						toGroupBills.push(arr);
+					}
+
+					BillService.groupBills(mainBill, toGroupBills).then(function(result){
+						AccountController.getAccountData(function(accountData) {
+							ScreenService.showMessage("Comandas agrupadas com sucesso. ");
+							groupWidget.getField('mainBill').clearValue();
+							groupWidget.getField('selectBillsToGroup').clearValue();
+							groupWidget.getField('selectBillsToGroup').readOnly = true;
+							ScreenService.closePopup();
+							// Se a comanda atual estiver entre as comandas que serão agrupadas retorna para a tela principal.
+							comandaAtual = _.filter(toGroupBills, function(c){
+								return c.DSCOMANDA == accountData[0].DSCOMANDA && c.DSCOMANDA == accountData[0].DSCOMANDA && c.DSCOMANDA == accountData[0].DSCOMANDA;
+							}.bind(this));
+							if (!_.isEmpty(comandaAtual)) {
+								UtilitiesService.backMainScreen();
+							}
+						}.bind(this));
+					}.bind(this));
+
+				} else {
+					ScreenService.showMessage("Selecione as comandas a serem agrupadas.", 'alert');
+				}
+			} else {
+				ScreenService.showMessage("Selecione a comanda principal.", 'alert');
+			}
+		} else {
+			// Realiza o desagrupamento das comandas.
+			ungroupWidget = widget.currentWidget;
+			var selectedBills = ungroupWidget.getCheckedRows();
+			if (!_.isEmpty(selectedBills)) {
+
+				toUngroupBills = Array();
+				for (i = 0; i < selectedBills.length; i++) {
+					arr  = {
+						"DSCOMANDA": selectedBills[i].DSCOMANDA,
+						"NRVENDAREST": selectedBills[i].NRVENDAREST,
+						"NRCOMANDA": selectedBills[i].NRCOMANDA,
+						"DSCOMANDAPRI": selectedBills[i].DSCOMANDAPRI
+					};
+					toUngroupBills.push(arr);
+				}
+				
+				BillService.ungroupBills(toUngroupBills).then(function(result){
+					ScreenService.showMessage("Comandas desagrupadas com sucesso. ");
+					ungroupWidget.dataSource.checkedRows = [];
+					ScreenService.closePopup();
+				}.bind(this));
+
+			} else {
+				ScreenService.showMessage("Selecione as comandas a serem desagrupadas.", 'alert');
+			}
+		}
+	};
+
 }
 
 Configuration(function(ContextRegister){
@@ -18485,6 +18827,10 @@ function OrderDeliveryController(DeliveryService, ScreenService, WindowService, 
                 var cdfilial = currentRow.CDFILIAL; 
                 var status = currentRow.IDSTCOMANDA;
                 var nrcomanda = currentRow.DSCOMANDA;
+                var email = null;
+                if(currentRow.EMAIL){
+                    email = currentRow.EMAIL;
+                }
                 var saleCode = getLocalVar('saleCode');
                 self.getInfoFormasPagamento(widget.container.getWidget('formaPagamentoPopup'));
                 var datasale = widget.container.getWidget('formaPagamentoPopup').dataSource.data;
@@ -18494,7 +18840,7 @@ function OrderDeliveryController(DeliveryService, ScreenService, WindowService, 
                     ScreenService.openPopup(widget.container.getWidget('formaPagamentoPopup'));
                     ScreenService.showMessage('Informe a forma de pagamento');
                 }else{
-                    DeliveryService.generatePayment(cdfilial, nrvendarest, status, saleCode, datasale, nrcomanda).then(function(response){
+                    DeliveryService.generatePayment(cdfilial, nrvendarest, status, saleCode, datasale, nrcomanda, email).then(function(response){
                         if(!response[0].error){
                             WindowService.openWindow('DELIVERY_ORDERS_SCREEN').then(function(){
                                 var message = PAYMENT_COMPLETED;
@@ -18871,22 +19217,22 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 
 	// define por IDTIPORECE se pagamento tem valor máximo e se possibilita editar valor de pagamento
 	var PAYMENT_TYPE = {
-		'1': { max: true },
-		'2': { max: true },
-		'3': { max: false },
-		'4': { max: false },
-		'5': { max: false },
-		'6': { max: false },
-		'7': { max: false },
-		'8': { max: false },
-		'9': { max: true },
-		'A': { max: true },
-		'B': { max: false },
-		'C': { max: false },
-		'E': { max: true },
-		'F': { max: true },
-		'G': { max: true },
-		'H': { max: true }
+		'1': { max: true, repique: true },
+		'2': { max: true, repique: true },
+		'3': { max: false, repique: false },
+		'4': { max: false, repique: true },
+		'5': { max: false, repique: false },
+		'6': { max: false, repique: false },
+		'7': { max: false, repique: false },
+		'8': { max: false, repique: false },
+		'9': { max: true, repique: false },
+		'A': { max: true, repique: false },
+		'B': { max: false, repique: false },
+		'C': { max: false, repique: false },
+		'E': { max: true, repique: false },
+		'F': { max: true, repique: true },
+		'G': { max: true, repique: true },
+		'H': { max: true, repique: true }
 	};
 	var MESSAGE = {
 		VR_MIN: 'Valor inválido.',
@@ -18934,11 +19280,11 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 					switch (tiporece.IDTIPORECE) {
 						// debito pessoal
 						case 'A':
-							self.receivePersonalDebit(paymentData, widget, tiporece, toPay);
+							self.recievePersonalDebit(paymentData, widget, tiporece, toPay);
 							break;
 						// credito pessoal
 						case '9':
-							self.receivePersonalCredit(paymentData, widget, tiporece, toPay);
+							self.recievePersonalCredit(paymentData, widget, tiporece, toPay);
 							break;
 						default:
 							self.openPaymentPopup(widget.container.getWidget('paymentPopup'), tiporece, toPay, false);
@@ -18950,7 +19296,7 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 		});
 	};
 
-	this.receivePersonalDebit = function (paymentData, widget, tiporece, toPay) {
+	this.recievePersonalDebit = function (paymentData, widget, tiporece, toPay) {
 		if (!paymentData.CDCLIENTE || !paymentData.CDCONSUMIDOR) {
 			ScreenService.showMessage(MESSAGE.INFORM_CLIENT, 'alert');
 			return;
@@ -19007,7 +19353,7 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 		});
 	};
 
-	this.receivePersonalCredit = function (paymentData, widget, tiporece, toPay) {
+	this.recievePersonalCredit = function (paymentData, widget, tiporece, toPay) {
 		if (paymentData.DATASALE.FIDELITYDISCOUNT > 0) {
 			ScreenService.showMessage(MESSAGE.BLOCK_CREDIT_MULTIPLE, 'alert');
 			return;
@@ -19042,16 +19388,22 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 	};
 
 	this.setPaymentPopupProperty = function (openPopup, tiporece, toPay, locked) {
-		var fieldValue = openPopup.getField('VRMOVIVEND');
-		var fieldNSU = openPopup.getField('CDNSUHOSTTEF');
-
-		openPopup.label = tiporece.DSBUTTON;
-		openPopup.currentRow = self.currentRowDefaultValue(tiporece);
-		fieldValue.range.max = (PAYMENT_TYPE[tiporece.IDTIPORECE].max) ? toPay : null;
-		fieldValue.setValue(toPay);
-		fieldValue.readOnly = locked;
-
 		return OperatorRepository.findOne().then(function (operatorData) {
+			var fieldValue = openPopup.getField('VRMOVIVEND');
+			var fieldNSU = openPopup.getField('CDNSUHOSTTEF');
+
+			openPopup.label = tiporece.DSBUTTON;
+			openPopup.currentRow = self.currentRowDefaultValue(tiporece);
+
+			//Controle de valores máximos possíveis no pagamento do repique, respeitando a parametrização.
+			if (operatorData.IDTPCONTRREPIQ !== 'N' && tiporece.IDUTCONTRREPIQ !== 'N' && PAYMENT_TYPE[tiporece.IDTIPORECE].repique) {
+				fieldValue.range.max = null;
+			} else {
+				fieldValue.range.max = (PAYMENT_TYPE[tiporece.IDTIPORECE].max) ? toPay : null;
+			}
+			fieldValue.setValue(toPay);
+			fieldValue.readOnly = locked;
+
 			fieldNSU.maxlength = operatorData.QTDMAXDIGNSU || 10;
 
 			if (!self.showFieldNSU(tiporece, operatorData)) {
@@ -19080,26 +19432,103 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 	this.setPayment = function (widget) {
 		var currentRow = _.clone(widget.currentRow);
 		var widgetPayment = widget.container.getWidget('paymentMenu');
+		var valorRecebimento = UtilitiesService.getFloat(widget.getField('VRMOVIVEND').value());
 
 		if (widget.isValid()) {
 			currentRow.VRMOVIVEND = UtilitiesService.getFloat(currentRow.VRMOVIVEND);
 			widget.getField('VRMOVIVEND').setValue(currentRow.VRMOVIVEND);
 			currentRow.eletronicTransacion.data.CDNSUHOSTTEF = currentRow.CDNSUHOSTTEF;
-
 			if (self.validValue(widget.getField('VRMOVIVEND'), '')) {
-				ScreenService.showLoader();
-				PaymentService.handlePayment(currentRow).then(function (handlePaymentResult) {
-				    console.log("Result do Payment:");
-				    console.log(handlePaymentResult);
-					ScreenService.hideLoader();
-					if (!handlePaymentResult.error) {
-						self.paymentFinish(widgetPayment, handlePaymentResult.data);
-					} else {
-						self.handleSetPaymentError(handlePaymentResult);
-					}
-				}.bind(this));
+				self.trataRepique(currentRow, widgetPayment, valorRecebimento);
 			}
 		}
+	};
+
+	this.trataRepique = function (currentRow, widgetPayment, valorRecebimento) {
+		PaymentRepository.findOne().then(function (paymentData) {
+			OperatorRepository.findOne().then(function(operatorData){
+				var valorRepique, valorMaximoRepique, VRPEMAXREPIQVND, fieldValorRepique;
+
+				// Algumas das parametrizações do repique já são tratadas na variável showRepique no paymentService.js
+				if (paymentData.showRepique && PAYMENT_TYPE[currentRow.tiporece.IDTIPORECE].repique && (valorRecebimento > paymentData.DATASALE.FALTANTE) && currentRow.tiporece.IDUTCONTRREPIQ !== 'N') {
+					VRPEMAXREPIQVND = UtilitiesService.getFloat(operatorData.VRPEMAXREPIQVND);
+					valorMaximoRepique = Math.trunc(((VRPEMAXREPIQVND / 100) * paymentData.DATASALE.TOTAL) * 100) / 100;
+					valorRepique = Math.round((valorRecebimento - paymentData.DATASALE.FALTANTE) * 100) / 100;
+					fieldValorRepique = widgetPayment.container.getWidget('Repique').getField('valorRepique');
+
+					if (operatorData.IDTPCONTRREPIQ === 'V' && currentRow.tiporece.IDUTCONTRREPIQ === 'S') {
+						ScreenService.confirmMessage("Deseja alterar o valor do repique? ", 'question',
+							function () {
+								ScreenService.openPopup(widgetPayment.container.getWidget('Repique')).then(function(){
+									fieldValorRepique.label = "Valor: (Troco: " + UtilitiesService.toCurrency(valorRepique) + ")";
+									fieldValorRepique.clearValue();
+								});
+							}, function () {
+								if (VRPEMAXREPIQVND > 0 && valorRepique > valorMaximoRepique) {
+									ScreenService.showMessage('Operação bloqueada. O valor do repique excede o valor máximo possível.');
+								} else {
+									currentRow.REPIQUE = valorRepique;
+									self.handlePaymentData(currentRow, widgetPayment);
+								}
+							}
+						);
+					} else {
+						if (VRPEMAXREPIQVND > 0 && valorRepique > valorMaximoRepique) {
+							ScreenService.showMessage('Operação bloqueada. O valor do repique excede o valor máximo possível.');
+						} else {
+							currentRow.REPIQUE = valorRepique;
+							self.handlePaymentData(currentRow, widgetPayment);
+						}
+					}
+				} else {
+					self.handlePaymentData(currentRow, widgetPayment);
+				}
+			}.bind(this));
+		}.bind(this));
+	};
+
+	this.alteraRepique = function (widgetRepique) {
+		PaymentRepository.findOne().then(function (paymentData) {
+			OperatorRepository.findOne().then(function(operatorData){
+				var VRPEMAXREPIQVND = UtilitiesService.getFloat(operatorData.VRPEMAXREPIQVND);
+				var paymentPopup = widgetRepique.container.getWidget('paymentPopup');
+				var currentRow = _.clone(paymentPopup.currentRow);
+				var valorRecebimento = UtilitiesService.getFloat(paymentPopup.getField('VRMOVIVEND').value());
+				var widgetPayment = widgetRepique.container.getWidget('paymentMenu');
+				var valorRepique = UtilitiesService.getFloat(widgetRepique.getField('valorRepique').value());
+
+				valorTroco = Math.round((valorRecebimento - paymentData.DATASALE.FALTANTE) * 100) / 100;
+
+				if (valorRepique > 0){
+					if (valorRepique <= valorTroco) {
+						var valorMaximoRepique = Math.trunc(((VRPEMAXREPIQVND / 100) * paymentData.DATASALE.TOTAL) * 100) / 100;
+						if (VRPEMAXREPIQVND > 0 && valorRepique > valorMaximoRepique) {
+							ScreenService.showMessage('Operação bloqueada. O valor do repique excede o valor máximo possível.');
+						} else {
+							currentRow.REPIQUE = valorRepique;
+							self.handlePaymentData(currentRow, widgetPayment);
+						}
+					} else {
+						ScreenService.showMessage('Operação bloqueada. O valor do repique precisa ser menor ou igual ao valor do troco.');
+					}
+				} else {
+					ScreenService.showMessage('Digite o valor do repique a ser alterado.');
+				}
+			}.bind(this));
+		}.bind(this));
+	};
+
+	this.handlePaymentData = function (currentRow, widgetPayment) {
+		ScreenService.closePopup();
+		ScreenService.showLoader();
+		PaymentService.handlePayment(currentRow).then(function (handlePaymentResult) {
+			ScreenService.hideLoader();
+			if (!handlePaymentResult.error) {
+				self.paymentFinish(widgetPayment, handlePaymentResult.data);
+			} else {
+				self.handleSetPaymentError(handlePaymentResult);
+			}
+		}.bind(this));
 	};
 
 	this.handleSetPaymentError = function (handlePaymentResult) {
@@ -19154,7 +19583,7 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 		self.attStripeData(widgetPayment);
 		ScreenService.closePopup();
 
-		if (!DATASALE.FALTANTE && !DATASALE.TROCO) {
+		if (!DATASALE.FALTANTE && !DATASALE.TROCO && !DATASALE.REPIQUE) {
 			self.verifyFinishPayment(widgetPayment.container.getWidget('consumerCPFPopup'));
 		}
 	};
@@ -19351,19 +19780,13 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 		}
 	};
 
+
 	this.payAccount = function () {
 		PaymentService.payAccount().then(function (payAccountResult) {
 			if (!_.isEmpty(_.get(payAccountResult, 'data.paramsImpressora'))) {
 				PerifericosService.print(payAccountResult.data.paramsImpressora).then(function (result) {
-				/*var notaTEF = JSON.stringify({"codigoBarras" : payAccountResult.data.dadosImpressao.TEXTOCODIGOBARRAS,
-				                              "cupomPriVia"  : payAccountResult.data.dadosImpressao.TEXTOCUPOM1VIA,
-				                              "cupomSegVia"  : payAccountResult.data.dadosImpressao.TEXTOCUPOM2VIA,
-				                              "qrcode"       : payAccountResult.data.dadosImpressao.TEXTOQRCODE,
-				                              "rodape"       : payAccountResult.data.dadosImpressao.TEXTORODAPE,
-				                              "flag" : "printPayment"});*/
-				//var result = window.cordova.plugins.IntegrationService.print(notaTEF,true,null);
 					if (!payAccountResult.error) {
-						if (result) {
+						if (!_.isEmpty(result.message)) {
 							self.handlePrintNote(payAccountResult);
 						} else self.payAccountFinish(payAccountResult);
 					} else {
@@ -19372,7 +19795,7 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 							PaymentService.updateSaleCode();
 						}
 					}
-                });
+				});
 			} else {
 				if (!payAccountResult.error) {
 					if (!_.isEmpty(payAccountResult.data.dadosImpressao)) {
@@ -19385,7 +19808,10 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 						PaymentService.updateSaleCode();
 					}
 				}
-
+			}
+			// Realiza impressão de pedidos na maquininha no modo balcão.
+			if (!_.isEmpty(_.get(payAccountResult, 'data.impressaoPedidoSmart'))) {
+				self.printOrderIntegration(payAccountResult.data.impressaoPedidoSmart);
 			}
 		}.bind(this));
 	};
@@ -19410,6 +19836,11 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 		if (_.get(payAccount, 'data.mensagemImpressao')) {
 			message += '<br><br>' + _.get(payAccount, 'data.mensagemImpressao');
 		}
+
+		if (!_.isEmpty(_.get(payAccount, 'data.errPainelSenha'))) {
+			ScreenService.notificationMessage(payAccount.data.errPainelSenha, 'error');
+		}
+
 		ScreenService.showMessage(message);
 
 		if (_.get(payAccount, 'data.IDSTMESAAUX') === 'R') {
@@ -19427,11 +19858,14 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 			stripeWidget.getField('limitDebito').isVisible = _.get(paymentData, "limitDebito.LIMITE_ATUAL");
 			stripeWidget.getField('limitCreditoLabel').isVisible = _.get(paymentData, "limitCredito[0].VRLIMDEBCONS");
 			stripeWidget.getField('limitCredito').isVisible = _.get(paymentData, "limitCredito[0].VRLIMDEBCONS");
+			stripeWidget.getField('repiqueLabel').isVisible = _.get(paymentData, "showRepique");
+			stripeWidget.getField('REPIQUE').isVisible = _.get(paymentData, "showRepique");
 			stripeWidget.currentRow = {
 				TOTALVENDA: UtilitiesService.toCurrency(paymentData.DATASALE.TOTALVENDA),
 				VALORPAGO: UtilitiesService.toCurrency(paymentData.DATASALE.VALORPAGO),
 				FALTANTE: UtilitiesService.toCurrency(paymentData.DATASALE.FALTANTE),
 				TROCO: UtilitiesService.toCurrency(paymentData.DATASALE.TROCO),
+				REPIQUE: UtilitiesService.toCurrency(UtilitiesService.removeCurrency((_.get(paymentData, "DATASALE.REPIQUE", 0)) || 0)),
 				limitDebito: UtilitiesService.toCurrency(UtilitiesService.removeCurrency((_.get(paymentData, "limitDebito.LIMITE_ATUAL", 0)) || 0)),
 				limitCredito: UtilitiesService.toCurrency(UtilitiesService.removeCurrency((_.get(paymentData, "limitCredito[0].VRLIMDEBCONS", 0)) || 0) / 100)
 			};
@@ -20114,6 +20548,27 @@ function PaymentController(ScreenService, UtilitiesService, PaymentService, Acco
 			}.bind(this)
 		);
 	};
+
+	this.printOrderIntegration = function (impressaoPedidoSmart) {
+		var texto = '';
+		impressaoPedidoSmart.forEach(function(pedidos){
+			if (!pedidos.saas && ((pedidos.impressora.IDMODEIMPRES == '25' && !!window.cordova && !!cordova.plugins.GertecPrinter) || (pedidos.impressora.IDMODEIMPRES == '27' && !!window.ZhCieloAutomation) || pedidos.impressora.IDMODEIMPRES == '28')) {
+				pedidos.comandos.forEach(function(comandos){
+					texto += comandos.parameters.text;
+					if (!!~comandos.parameters.text.search('SENHA')) {
+						PrinterService.printerCommand(PrinterService.TEXT_COMMAND, texto);
+						PrinterService.printerSpaceCommand(2);
+						texto = '';
+					}
+				});
+			}
+		}.bind(this));
+		PrinterService.printerInit().then(function (result) {
+			if (result.error)
+				ScreenService.alertNotification(result.message);
+		});
+	};
+
 }
 
 Configuration(function (ContextRegister) {
@@ -20481,12 +20936,10 @@ function RegisterController(OperatorController, OperatorRepository, ScreenServic
 			OperatorRepository.findOne().then(function (operatorData) {
 				RegisterService.openRegister(operatorData.chave, rowChangeFunds.VRMOVIVEND).then(function (registerOpen) {
 					registerOpen = registerOpen[0];
-
 					if (_.get(registerOpen, 'dadosImpressao.paramsImpressora')) {
 						PerifericosService.print(registerOpen.dadosImpressao.paramsImpressora).then(function () {
 							self.handleOpenRegister(false);
 						});
-
 					} else {
 						if (!_.isEmpty(registerOpen.dadosImpressao)) {
 							var openRegisterText = registerOpen.dadosImpressao.open;
@@ -20514,7 +20967,6 @@ function RegisterController(OperatorController, OperatorRepository, ScreenServic
 				if (result.error)
 					ScreenService.alertNotification(result.message);
 			});
-
 			self.handleOpenRegister(true);
 		});
 	};
@@ -20536,9 +20988,8 @@ function RegisterController(OperatorController, OperatorRepository, ScreenServic
 				GeneralFunctions.exportLogs(false);
 			}
 
-
+			OperatorController.bindedDoLogin();
 		}.bind(this));
-		OperatorController.bindedDoLogin();
 	};
 
 	this.closeRegister = function (paymentGrid) {
@@ -20585,7 +21036,6 @@ function RegisterController(OperatorController, OperatorRepository, ScreenServic
 				if (result.error)
 					ScreenService.alertNotification(result.message);
 			});
-
 			self.handleCloseRegister(true);
 		}.bind(this));
 	};
@@ -20694,8 +21144,6 @@ function SaleCancelController(AccountService, OperatorRepository, PermissionServ
 					saleCancelResult = saleCancelResult[0];
 					if (!saleCancelResult.error) {
 						self.clearScreen(widget);
-
-
 						UtilitiesService.backMainScreen();		
 						ScreenService.showMessage(saleCancelResult.message, 'success').then(function(){
 							self.handleSaleCancel(saleCancelResult.data);
@@ -20753,15 +21201,14 @@ function SaleCancelController(AccountService, OperatorRepository, PermissionServ
 
 	this.handleTransactionRefound = function(saleCancelResult){
 		var dataTEF = saleCancelResult.dataTEF;
-		console.log(dataTEF);
 		dataTEF = _.filter(dataTEF, function(tiporece) {
 			return PaymentService.checkIfMustCallIntegration(tiporece);
-
 		}.bind(this));
+
 		OperatorRepository.findOne().then(function(operatorData){
 			if (!_.isEmpty(dataTEF) && operatorData.IDUTILTEF === 'T' && (!!window.cordova || !!window.ZhCieloAutomation)){
 				self.tefRefound(dataTEF, operatorData);
-			}
+			}				
 		});
 	};
 
@@ -20769,26 +21216,24 @@ function SaleCancelController(AccountService, OperatorRepository, PermissionServ
 		// monta dados para estorno
 		dataTEF = _.map(dataTEF, function(tiporece){
 			tiporece.IDTPTEF = operatorData.IDTPTEF;
-			console.log(tiporece);
 			var transactionDate;
 			switch(tiporece.IDTPTEF) {
-				case '2':{
+				case '2':
 					tiporece.AUTHKEY = IntegrationCappta.getAUTHKEY(operatorData.AMBIENTEPRODUCAO);
 					break;
-				}
-				case '5':{
-					tiporece.DSENDIPSITEF = operatorData.DSENDIPSITEF;
+				case '5':
+					tiporece.DSENDIPSITEF = operatorData.DSENDIPSITEF; 
 					tiporece.CDLOJATEF = operatorData.CDLOJATEF;
 					tiporece.CDTERTEF = operatorData.CDTERTEF;
 					transactionDate = tiporece.DTHRINCMOV.split(" ")[0].replace('-', '').replace('-', '');
 					tiporece.TRANSACTIONDATE = transactionDate.slice(6, 8) + transactionDate.slice(4, 6) + transactionDate.substring(0, 4);
-				} break;
-				case '8':{
+					break;
+				case '8':
 					transactionDate = tiporece.DTHRINCMOV.split(" ")[0].replace('-', '').replace('-', '');
 					tiporece.TRANSACTIONDATE = transactionDate.slice(6, 8) + transactionDate.slice(4, 6) + transactionDate.substring(0, 4);
-                } break;
-
+                    break;
 			}
+
 			return tiporece;
 		}.bind(self));
 

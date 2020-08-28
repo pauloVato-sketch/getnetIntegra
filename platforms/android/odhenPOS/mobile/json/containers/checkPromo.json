@@ -37,21 +37,6 @@
             "addDisplay": "toGoText",
             "actions": [
                 {
-                    "id": "34147111625989435601184",
-                    "label": "Voltar",
-                    "isVisible": true,
-                    "showOnForm": true,
-                    "showOnList": true,
-                    "showAsAction": "back",
-                    "events": [
-                        {
-                            "id": "34147111639370344021185",
-                            "name": "ActionEvent",
-                            "code": "ScreenService.goBack();"
-                        }
-                    ]
-                },
-                {
                     "id": "34147111641506407061186",
                     "label": "Confirmar",
                     "name": "confirmar",
@@ -185,21 +170,6 @@
                     "template": "widget/form.html",
                     "isVisible": true,
                     "actions": [
-                        {
-                            "id": "3414711169693827311180",
-                            "label": "Voltar",
-                            "name": "desfazer",
-                            "isVisible": true,
-                            "showAsAction": "back",
-                            "icon": "",
-                            "events": [
-                                {
-                                    "id": "34147111638649698071181",
-                                    "name": "ActionEvent",
-                                    "code": "ScreenService.goBack();"
-                                }
-                            ]
-                        },
                         {
                             "id": "34147111619904787031182",
                             "label": "OK",

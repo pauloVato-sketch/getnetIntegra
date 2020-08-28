@@ -51,7 +51,7 @@ class Delivery extends \Zeedhi\Framework\Controller\Simple {
 			$params = $request->getFilterCriteria()->getConditions();
 			$params = $this->util->getParams($params);
 
-			$orders = $this->deliveryService->getDeliveryOrders($params);
+			$orders = $this->deliveryService->getAllDeliveryOrders($params);
 			
 			$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('DeliveryRepository', $orders));
 		} catch (\Exception $e) {
@@ -75,8 +75,10 @@ class Delivery extends \Zeedhi\Framework\Controller\Simple {
 	
 	public function getVendedores(Request\Filter $request, Response $response){
 		try{
-			$params = $this->util->getSessionVars(null);
-			$result = $this->deliveryService->getVendedores($params);
+			$params = $request->getFilterCriteria()->getConditions();
+			$params = $this->util->getParams($params);
+			$session = $this->util->getSessionVars(null);
+			$result = $this->deliveryService->getVendedores($session);
 			$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('DeliveryServiceVendedoresRepository', $result));
 		} catch (\Exception $e){
 			Exception::logException($e);
@@ -89,7 +91,9 @@ class Delivery extends \Zeedhi\Framework\Controller\Simple {
 			$params = $request->getFilterCriteria()->getConditions();
 			$params = $this->util->getParams($params);
     		$session = $this->util->getSessionVars(null);
-			$params['CDLOJA'] = $session['CDLOJA'];
+    		if(!isset($params['CDLOJA'])){
+				$params['CDLOJA'] = $session['CDLOJA'];
+    		}
 			$params['CDFILIAL'] = $session['CDFILIAL'];
 			$result = $this->deliveryService->getVendedoresChegada($params);
 			$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('DeliveryServiceVendedoresChegadaRepository', $result));
@@ -257,6 +261,13 @@ class Delivery extends \Zeedhi\Framework\Controller\Simple {
 			$params = $request->getFilterCriteria()->getConditions();
 			$params = $this->util->getParams($params);
 			$session = $this->util->getSessionVars(null);
+
+			if(isset($params['CDLOJA'])){
+				$cdloja = $params['CDLOJA'];
+			}else{
+				$cdloja = $session['CDLOJA'];
+			}
+
 			$DTHRPRODCANVEN = new \DateTime();
 
 			$this->deliveryService->deleteMovcaixadlv($params);		
@@ -307,10 +318,11 @@ class Delivery extends \Zeedhi\Framework\Controller\Simple {
 			$openingDate = new \DateTime($this->registerService->getRegisterOpeningDate($session['CDFILIAL'], $session['CDCAIXA'])['DTABERCAIX']);
 			$DTVENDA = new \DateTime();
 			$IDORIGEMVENDA = $this->paymentService->getIDORIGEMVENDADLV($params['NRVENDAREST']);
+
 			$result = $this->vendaAPI->vendaMesa(
 				$session['NRORG'],
 				$session['CDFILIAL'],
-				$session['CDLOJA'],
+				$cdloja,
 				$session['CDCAIXA'],
 				$session['CDVENDEDOR'],
 				$session['CDOPERADOR'],
@@ -357,6 +369,20 @@ class Delivery extends \Zeedhi\Framework\Controller\Simple {
 		} catch (\Exception $e){
 			Exception::logException($e);
 			$response->addMessage(new Message($e->getMessage()));	
+		}
+	}
+
+	public function getAllDeliveryOrders(Request\Filter $request, Response $response) {
+		try {
+			$params = $request->getFilterCriteria()->getConditions();
+			$params = $this->util->getParams($params);
+
+			$orders = $this->deliveryService->getAllDeliveryOrders($params);
+			
+			$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('DeliveryRepository', $orders));
+		} catch (\Exception $e) {
+			Exception::logException($e);
+			$response->addMessage(new Message($e->getMessage()));
 		}
 	}
 

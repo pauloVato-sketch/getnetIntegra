@@ -10,6 +10,7 @@ class Pedido {
 	protected $util;
 	protected $billService;
 	protected $tableService;
+    protected $paymentService;
 	protected $precoAPI;
 	protected $impressaoAPI;
 	protected $impressaoDelphiAPI;
@@ -21,19 +22,21 @@ class Pedido {
 		\Util\Util $util,
 		\Service\Bill $billService,
 		\Service\Table $tableService,
+        \Service\Payment $paymentService,
 		\Odhen\API\Service\Preco $precoAPI,
 		\Odhen\API\Service\ImpressaoPedido $impressaoAPI,
 		\Odhen\API\Lib\ImpressaoDelphi $impressaoDelphiAPI,
 		\Zeedhi\Framework\DependencyInjection\InstanceManager $instanceManager
 	){
-		$this->entityManager                   = $entityManager;
-		$this->util                            = $util;
-		$this->billService                     = $billService;
-		$this->tableService                    = $tableService;
-		$this->precoAPI                        = $precoAPI;
-		$this->impressaoAPI                    = $impressaoAPI;
-		$this->impressaoDelphiAPI              = $impressaoDelphiAPI;
-		$this->instanceManager                 = $instanceManager;
+		$this->entityManager      = $entityManager;
+		$this->util               = $util;
+		$this->billService        = $billService;
+		$this->tableService       = $tableService;
+        $this->paymentService    = $paymentService;
+		$this->precoAPI           = $precoAPI;
+		$this->impressaoAPI       = $impressaoAPI;
+		$this->impressaoDelphiAPI = $impressaoDelphiAPI;
+		$this->instanceManager    = $instanceManager;
 
 		$this->utilizaImpressaoPonte = $this->instanceManager->getParameter('UTILIZA_IMPRESSAO_PONTE');
         $this->utilizaImpressaoPHP = $this->instanceManager->getParameter('UTILIZA_IMPRESSAO_PHP');
@@ -71,6 +74,7 @@ class Pedido {
 				$consumidor = $valComanda['CDCONSUMIDOR'];
 				$nrMesa = str_pad($valComanda['NRMESA'], 4, '0', STR_PAD_LEFT);
 				$CDSALA = null;
+                $DTHRABERMESA = $valComanda['DTHRABERMESA'];
 			}
 			else if ($modo == 'M' || $modo == 'O'){
 				// Valida e busca dados da mesa.
@@ -99,6 +103,7 @@ class Pedido {
 				// Busca Cliente e Consumidor pelas posições
 				$posVendaEst = $this->tableService->getPosition($session, $nrVendaRest, array_unique(array_column($pedido, 'posicao')));
 				$posVendaEst = array_column($posVendaEst, null, 'NRLUGARMESA');
+                $DTHRABERMESA = $valMesa['DTHRABERMESA'];
 			}
 
 			/*** IMPEDE PEDIDOS DUPLICADOS ***/
@@ -198,6 +203,9 @@ class Pedido {
                 $NRTOTALPOSICOES += intval($mesa['NRPESMESAVEN']);
             }
 
+            // Armazena vouchers de uso único que estão sendo aplicados neste pedido.
+            $voucherUsage = array();
+
 			/////////////////////////////////////////////////////////////////////////////////////////////
 			/////////////////////////////////////////////////////////////////////////////////////////////
 			//                                        PARTE 2                                          //
@@ -262,10 +270,14 @@ class Pedido {
 				// busca nome do produto que deve aparecer na impressão
 				$params = array(
 					'CDPRODUTO' => $produto['codigo'],
-					'CDFILIAL' => $session['CDFILIAL'],
-					'NRCONFTELA' => $session['NRCONFTELA']
+					'CDFILIAL' => $session['FILIALVIGENCIA'],
+					'NRCONFTELA' => $session['NRCONFTELA'],
+                    'DTINIVIGENCIA' => new \DateTime($session['DTINIVIGENCIA'])
 				);
-				$descProduto = $this->entityManager->getConnection()->fetchAssoc("SQL_GET_PRODUCT_DESC", $params);
+                $types = array(
+                    'DTINIVIGENCIA' => \Doctrine\DBAL\Types\Type::DATETIME
+                );
+				$descProduto = $this->entityManager->getConnection()->fetchAssoc("SQL_GET_PRODUCT_DESC", $params, $types);
 				$produto['desc'] = !empty($descProduto['DESCPROD']) ? $descProduto['DESCPROD'] : $produto['desc'];
 
 				// Valida e busca os dados do produto pai.
@@ -282,13 +294,14 @@ class Pedido {
 							'IDPESAPROD' => 'N',
 							'IDTIPOCOMPPROD' => '3',
 							'IDIMPPRODUTO' => '2',
-							'IDCONTROLAREFIL' => 'N'
+							'IDCONTROLAREFIL' => 'N',
+                            'IDIMPRODUVEZ' => 'N'
 						);
 					}
 				}
 
 				// Caso for promoção inteligente, mostra o produto pai na descrição.
-				if ($r_valida_prod['IDTIPOCOMPPROD'] == '3'){
+				if ($r_valida_prod['IDTIPOCOMPPROD'] == '3' || $r_valida_prod['IDTIPOCOMPPROD'] == '6'){
 					foreach($produto['produtos'] as $produtos)
 						if ($produtos > 0) $NMPROMOCAO = $produto['desc'];
 				}
@@ -307,25 +320,74 @@ class Pedido {
 				}
 
 				// Busca o preço.
-				if($produto['IDTIPCOBRA'] != null){
+				if ($produto['IDTIPCOBRA'] != null){
 					$preco     = 0;
 					$desconto  = 0;
 					$acrescimo = 0;
                     $subsidy   = 0;
-				}else{
-					$r_retornaPreco = $this->precoAPI->buscaPreco($session['CDFILIAL'], $cdCliente, $produto['codigo'], $session['CDLOJA'], $cdConsumidor);
-					if (!$r_retornaPreco["error"]){
-						$preco     = floatval($r_retornaPreco['PRECO']);
-						$desconto  = floatval($r_retornaPreco['DESC']);
-						$acrescimo = floatval($r_retornaPreco['ACRE']);
+				}
+                else {
+                    $r_retornaPreco = $this->precoAPI->buscaPreco($session['CDFILIAL'], $cdCliente, $produto['codigo'], $session['CDLOJA'], $cdConsumidor);
+                    if (!$r_retornaPreco["error"]){
+                        $preco     = floatval($r_retornaPreco['PRECO']);
+                        $desconto  = floatval(bcmul(strval($r_retornaPreco['DESC']), strval($produto['quantidade']), 2));
+                        $acrescimo = floatval(bcmul(strval($r_retornaPreco['ACRE']), strval($produto['quantidade']), 2));
                         $subsidy   = floatval($r_retornaPreco['PRECOCLIE']);
-					} else if ((empty($preco) || $preco == 0) && $produto['IDTIPCOBRA'] == null){
-						return array('funcao' => '0', 'error' => '443', 'aux' => $produto);
-					}
+                    } else if ((empty($preco) || $preco == 0) && $produto['IDTIPCOBRA'] == null){
+                        return array('funcao' => '0', 'error' => '443', 'aux' => $produto);
+                    }
 				}
 
+                // Tratamento de voucher.
+                if ($produto['VOUCHER']){
+                    // Busca os dados do voucher e valida se o mesmo é válido.
+                    try {
+                        $voucher = $this->paymentService->validateVoucher($produto['codigo'], $nrVendaRest, $nrComanda, $produto['VOUCHER']['CDCUPOMDESCFOS']);
+                        if ($voucher['IDUSOUNICO'] === "S"){
+                            // Verifica se o voucher já foi utilizado neste pedido.
+                            if (in_array($voucher['CDCUPOMDESCFOS'], $voucherUsage)){
+                                throw new \Exception("O voucher " . $voucher['CDCUPOMDESCFOS'] . " é de uso único, mas está sendo aplicado em mais de um produto. Certifique-se de que apenas um produto esteja com este voucher aplicado.");
+                            }
+                            else {
+                                array_push($voucherUsage, $voucher['CDCUPOMDESCFOS']);
+                            }
+                        }
+                    } catch (\Exception $e){
+                        return array('funcao' => '0', 'message' => 'Erro ao aplicar o voucher no produto ' . $produto['desc'] . ':<br><br>' . $e->getMessage());
+                    }
+
+                    // Aplica o desconto do voucher sobre o preço do produto.
+                    $totalPrice = floatval(bcsub(strval($produto['quantidade'] * ($preco + $subsidy) + $acrescimo), strval($desconto), 2));
+                    if ($voucher['IDTIPODESC'] === "P"){
+                        $voucherDiscount = bcmul(strval($totalPrice), strval($voucher['VRDESCCUPOM']/100), 2);
+                    }
+                    else {
+                        $voucherDiscount = $voucher['VRDESCCUPOM'];
+                    }
+                    $desconto += floatval($voucherDiscount);
+                    $precoReal = floatval(bcadd(strval($produto['quantidade'] * ($preco + $subsidy)), strval($acrescimo), 2));
+                    if ($desconto >= $precoReal){
+                        $desconto = floatval(bcsub(strval($precoReal), '0.01', 2));
+                    }
+                    $produto['VOUCHER'] = $voucher['CDCUPOMDESCFOS'];
+                }
+
+                // Campanha compre e ganhe
+                $imp_produtos[$idx]['CDCAMPCOMPGANHE'] = $produto['CDCAMPCOMPGANHE'];
+                $imp_produtos[$idx]['DTINIVGCAMPCG'] = $produto['DTINIVGCAMPCG'];
+
+                if (!empty($produto['CDCAMPCOMPGANHE'])){
+                    $preco     = bcmul('0.01', strval($produto['quantidade'] * sizeof($produto['produtos'])), 2);
+                    $desconto  = 0;
+                    $acrescimo = 0;
+                    $subsidy   = 0;
+                }
+                if (!empty($produto['DESCCOMPGANHE'])){
+                    $preco = bcsub($preco, strval($produto['DESCCOMPGANHE']), 2);
+                }
+
 				// Código do tratamento do NRSEQPRODCOM (somente promoção inteligente).
-				if ($r_valida_prod['IDTIPOCOMPPROD'] == '3'){
+				if ($r_valida_prod['IDTIPOCOMPPROD'] == '3' || $r_valida_prod['IDTIPOCOMPPROD'] == '6'){
 					$nrSeqProdCom = str_pad((string) ($lastNRSEQPRODCOM + 1), 3, '0', STR_PAD_LEFT);
 					$lastNRSEQPRODCOM++;
 				}
@@ -340,7 +402,9 @@ class Pedido {
 				$imp_produtos[$idx]['NRMESA'] = $nrMesa;
 				$imp_produtos[$idx]['NMSALA'] = $ambiente;
 				$imp_produtos[$idx]['CDSALA'] = $CDSALA;
+                $imp_produtos[$idx]['FILIALVIGENCIA'] = $session['FILIALVIGENCIA'];
 				$imp_produtos[$idx]['NRCONFTELA'] = $session['NRCONFTELA'];
+                $imp_produtos[$idx]['DTINIVIGENCIA'] = $session['DTINIVIGENCIA'];
 				$imp_produtos[$idx]['NRVENDAREST'] = $nrVendaRest;
 				$imp_produtos[$idx]['NRCOMANDA'] = $nrComanda;
 				$imp_produtos[$idx]['CDPRODUTO'] = $produto['codigo'];
@@ -354,10 +418,13 @@ class Pedido {
 				$imp_produtos[$idx]['CDVENDEDOR'] = $cdVendedor;
 				$imp_produtos[$idx]['ORDEMIMP'] = $ordemImp++; // ordem de impressão (importante)
 				$imp_produtos[$idx]['QTPRODCOMVEN'] = $produto['quantidade']; // quantidade passada pelo client
+                $imp_produtos[$idx]['IDPESAPROD'] = $r_valida_prod['IDPESAPROD'];
+                $imp_produtos[$idx]['IDIMPRODUVEZ'] = $r_valida_prod['IDIMPRODUVEZ'];
 				$imp_produtos[$idx]['VRPRECCOMVEN'] = $preco;
 				$imp_produtos[$idx]['VRPRECCLCOMVEN'] = $subsidy;
-				$imp_produtos[$idx]['VRDESCCOMVEN'] = $produto['quantidade'] * $desconto;
-				$imp_produtos[$idx]['VRACRCOMVEN'] = $produto['quantidade'] * $acrescimo;
+				$imp_produtos[$idx]['VRDESCCOMVEN'] = $desconto;
+				$imp_produtos[$idx]['VRACRCOMVEN'] = $acrescimo;
+                $imp_produtos[$idx]['CDCUPOMDESCFOS'] = $produto['VOUCHER'];
 				$imp_produtos[$idx]['ocorrencias'] = $produto['ocorrencias']; // Código das observações.
 				// Observações a serem impressas.
 				if (empty($produto['observacao'])) $imp_produtos[$idx]['TXPRODCOMVEN'] = null;
@@ -385,17 +452,16 @@ class Pedido {
 				);
 
 				/*** PREPARA IMPRESSÃO DE PRODUTOS PAIS ***/
-				if ($r_valida_prod['IDTIPOCOMPPROD'] == '3'){ // Promoções intelignentes.
+				if ($r_valida_prod['IDTIPOCOMPPROD'] == '3' || $r_valida_prod['IDTIPOCOMPPROD'] == '6'){ // Promoções intelignentes.
 					if (($r_valida_prod['IDIMPPRODUTO'] == '') || ($r_valida_prod['IDIMPPRODUTO'] == '1')){
 						// Insere o produto pai na ITCOMANDAVEN e os filhos na ITCOMANDAEST.
 						$imp_produtos[$idx]['IDTIPOINSERCAO'] = 'V';
-						$imp_produtos[$idx]['CDPRODPROMOCAO'] = null;
 					}
 					else {
 						// Insere os filhos na ITCOMANDAVEN - o produto pai não será impresso.
 						$imp_produtos[$idx]['IDTIPOINSERCAO'] = 'N';
-						$imp_produtos[$idx]['CDPRODPROMOCAO'] = $produto['codigo'];
 					}
+                    $imp_produtos[$idx]['CDPRODPROMOCAO'] = $produto['codigo'];
 					$imp_produtos[$idx]['NMPRODPROMOCAO'] = $NMPROMOCAO;
 					$imp_produtos[$idx]['IDIMPPROMOCAO'] = 'S';
 				}
@@ -405,6 +471,46 @@ class Pedido {
 					$imp_produtos[$idx]['NMPRODPROMOCAO'] = null;
 					$imp_produtos[$idx]['IDIMPPROMOCAO'] = 'N';
 				}
+
+                // Mecânicas do rodízio.
+                $rodizioFlag = false;
+                if ($r_valida_prod['IDTIPOCOMPPROD'] == '6'){
+                    // Verifica se o rodízio já foi pedido para a posição atual.
+                    $params = array(
+                        'CDFILIAL' => $session['CDFILIAL'],
+                        'NRVENDAREST' => $nrVendaRest,
+                        'NRCOMANDA' => $nrComanda,
+                        'CDPRODUTO' => $produto['codigo']
+                    );
+                    $rodizioDetails = $this->entityManager->getConnection()->fetchAssoc("GET_RODIZIO", $params);
+
+                    if (!empty($rodizioDetails)){
+                        // Trata o tempo do rodízio que já foi pedido.
+                        if ($this->util->databaseIsOracle()){
+                            $DTHRABERMESA = \DateTime::createFromFormat('Y-m-d H:i:s', $DTHRABERMESA);
+                        }
+                        else {
+                            $DTHRABERMESA = \DateTime::createFromFormat('Y-m-d H:i:s.u', $DTHRABERMESA);
+                        }
+                        // Verifica se o tempo do rodízio foi definido.
+                        if (!empty($session['HRTEMPOROD'])){
+                            $tempoRodizio = $DTHRABERMESA->getTimestamp() + 3600 * intval(substr($session['HRTEMPOROD'], 0, 2)) + 60 * intval(substr($session['HRTEMPOROD'], 2));
+                        }
+                        else {
+                            // Se o tempo do rodízio não foi definido, o rodízio fica para sempre.
+                            $tempoRodizio = $DTHRABERMESA + 1;
+                        }
+                        $tempoAtual = $produto['DTHRINCOMVEN']->getTimestamp();
+                        // Verifica se o tempo do rodízio ainda é válido.
+                        if ($tempoRodizio > $tempoAtual){
+                            $imp_produtos[$idx]['IDTIPOINSERCAO'] = 'N';
+                            $rodizioFlag = true;
+                        }
+                        else {
+                            throw new \Exception("O tempo de dura&ccedil;&atilde;o do rod&iacute;zio est&aacute; esgotado.");
+                        }
+                    }
+                }
 
 				/*** FORMATAÇÃO PRODUTOS FILHO PARA INSERÇÃO ***/
 				if (is_array($promo_int)){
@@ -438,7 +544,9 @@ class Pedido {
 						$imp_produtos[$idx]['NRMESA'] = $nrMesa;
 						$imp_produtos[$idx]['NMSALA'] = $ambiente;
 						$imp_produtos[$idx]['CDSALA'] = $CDSALA;
+                        $imp_produtos[$idx]['FILIALVIGENCIA'] = $session['FILIALVIGENCIA'];
 						$imp_produtos[$idx]['NRCONFTELA'] = $session['NRCONFTELA'];
+                        $imp_produtos[$idx]['DTINIVIGENCIA'] = $session['DTINIVIGENCIA'];
 						$imp_produtos[$idx]['NRVENDAREST'] = $nrVendaRest;
 						$imp_produtos[$idx]['NRCOMANDA'] = $nrComanda;
 						$imp_produtos[$idx]['DTHRINCOMVEN'] = $produto['DTHRINCOMVEN'];
@@ -460,6 +568,8 @@ class Pedido {
 						$imp_produtos[$idx]['IDIMPPROMOCAO'] = 'N';
 						$imp_produtos[$idx]['ORDEMIMP'] = $produto_int['ORDEMIMP'] + $ordemImpPromoc; // ordem de impressão (importante)
 						$imp_produtos[$idx]['QTPRODCOMVEN'] = $produto['quantidade'] * $produto_int['QTPRODCOMVEN']; // quantidade
+                        $imp_produtos[$idx]['IDPESAPROD'] = $r_get_produto['IDPESAPROD'];
+                        $imp_produtos[$idx]['IDIMPRODUVEZ'] = $r_get_produto['IDIMPRODUVEZ'];
 						$imp_produtos[$idx]['ocorrencias'] = $produto_int['ocorrencias']; // código das observações
 						// Observações a serem impressas.
 						if (empty($produto_int['TXPRODCOMVEN'])) $imp_produtos[$idx]['TXPRODCOMVEN'] = null;
@@ -485,17 +595,25 @@ class Pedido {
 							$imp_produtos[$idx]['IDTIPOINSERCAO'] = 'V';
 							$imp_produtos[$idx]['VRPRECCOMVEN'] = $produto_int['VRPRECCOMVEN'];
                             $imp_produtos[$idx]['VRPRECCLCOMVEN'] = $produto_int['VRPRECCLCOMVEN'];
-							$imp_produtos[$idx]['VRDESCCOMVEN'] = $imp_produtos[$idx]['QTPRODCOMVEN'] * $produto_int['VRDESCCOMVEN'];
-							$imp_produtos[$idx]['VRACRCOMVEN'] = $imp_produtos[$idx]['QTPRODCOMVEN'] * $produto_int['VRACRCOMVEN'];
+							$imp_produtos[$idx]['VRDESCCOMVEN'] = $produto_int['VRDESCCOMVEN'];
+							$imp_produtos[$idx]['VRACRCOMVEN'] = $produto_int['VRACRCOMVEN'];
+                            $imp_produtos[$idx]['RODIZIO'] = false;
 						}
 						else {
 							$imp_produtos[$idx]['IDTIPOINSERCAO'] = 'E';
 							$imp_produtos[$idx]['VRPRECCOMVEN'] = $preco / count($produto_int);
 							$imp_produtos[$idx]['VRPRECCLCOMVEN'] = $subsidy;
-							$imp_produtos[$idx]['VRDESCCOMVEN'] = $produto['quantidade'] * $desconto / count($produto_int);
-							$imp_produtos[$idx]['VRACRCOMVEN'] = $produto['quantidade'] * $acrescimo / count($produto_int);
+							$imp_produtos[$idx]['VRDESCCOMVEN'] = $desconto / count($produto_int);
+							$imp_produtos[$idx]['VRACRCOMVEN'] = $acrescimo / count($produto_int);
+                            $imp_produtos[$idx]['RODIZIO'] = $rodizioFlag; // Marca se irá ser tratado como rodízio.
+                            // Se for rodizio, o produto irá ficar com o NRPRODCOMVEN do rodízio já inserido.
+                            if ($rodizioFlag) $imp_produtos[$idx]['NRPRODCOMVEN'] = $rodizioDetails['NRPRODCOMVEN'];
 						}
+                        $imp_produtos[$idx]['CDCUPOMDESCFOS'] = $produto_int['VOUCHER'];
 						$ordemImpPromoc += 0.01;
+
+                        $imp_produtos[$idx]['CDCAMPCOMPGANHE'] = $produto['CDCAMPCOMPGANHE'];
+                        $imp_produtos[$idx]['DTINIVGCAMPCG'] = $produto['DTINIVGCAMPCG'];
 					}
 				}
 				$idx++;
@@ -530,7 +648,7 @@ class Pedido {
 			    $nrPedido = $dataset['saleProdPass'];
 			}
 
-			
+
 			$params = array(
 				$session['CDFILIAL'],
 				$session['CDLOJA']
@@ -576,6 +694,18 @@ class Pedido {
                         return array('funcao' => '0', 'message' => 'O valor calculado para o produto ' . $ins_produto['NMPRODUTO'] . ' ficou abaixo de R$0,01. Verifique a parametrização.');
                     }
 
+                    if (!empty($ins_produto['DTINIVGCAMPCG'])){
+                        if ($this->util->databaseIsOracle()){
+                            $DTINIVGCAMPCG = \DateTime::createFromFormat('Y-m-d H:i:s', $ins_produto['DTINIVGCAMPCG']);
+                        }
+                        else {
+                            $DTINIVGCAMPCG = \DateTime::createFromFormat('Y-m-d H:i:s.u', $ins_produto['DTINIVGCAMPCG']);
+                        }
+                    }
+                    else {
+                        $DTINIVGCAMPCG = null;
+                    }
+
 					// Insere na ITCOMANDAVEN.
 					$params = array(
 						'CDFILIAL' => $ins_produto['CDFILIAL'],
@@ -606,10 +736,14 @@ class Pedido {
 						'DSOBSPEDDIGCMD' => $ins_produto['DSOBSPEDDIG'],
 						'IDPRODREFIL' => $ins_produto['REFIL'],
 						'QTITEMREFIL' => $ins_produto['QTITEMREFIL'],
-						'NRORG' => $session['NRORG']
+						'NRORG' => $session['NRORG'],
+                        'CDCUPOMDESCFOS' => $ins_produto['CDCUPOMDESCFOS'],
+                        'CDCAMPCOMPGANHE' => $ins_produto['CDCAMPCOMPGANHE'],
+                        'DTINIVGCAMPCG' => $DTINIVGCAMPCG
 					);
 					$types = array (
-						'DTHRINCOMVEN' => \Doctrine\DBAL\TypeS\Type::DATETIME
+						'DTHRINCOMVEN' => \Doctrine\DBAL\TypeS\Type::DATETIME,
+                        'DTINIVGCAMPCG' => \Doctrine\DBAL\TypeS\Type::DATETIME
 					);
 					$this->entityManager->getConnection()->executeQuery("SQL_INS_ITCOMANDAVEN", $params, $types);
 
@@ -617,12 +751,12 @@ class Pedido {
 					if (!empty($ins_produto['ocorrencias'])){
 						foreach($ins_produto['ocorrencias'] as $CDOCORR){
 							$params = array(
-								$ins_produto['CDFILIAL'],
-								$ins_produto['NRVENDAREST'],
-								$ins_produto['NRCOMANDA'],
-								$nrProdComVen,
-								$CDGRPOCORPED,
-								$CDOCORR
+								'CDFILIAL'     => $ins_produto['CDFILIAL'],
+								'NRVENDAREST'  => $ins_produto['NRVENDAREST'],
+								'NRCOMANDA'    => $ins_produto['NRCOMANDA'],
+								'NRPRODCOMVEN' => $nrProdComVen,
+								'CDGRPOCOR'    => $CDGRPOCORPED,
+								'CDOCORR'      => $CDOCORR
 							);
 							$this->entityManager->getConnection()->executeQuery("SQL_INS_OBSITCOMANDAVEN", $params);
 
@@ -632,42 +766,67 @@ class Pedido {
 					}
 				}
 				else if ($ins_produto['IDTIPOINSERCAO'] == 'E'){
-					// Insere na ITCOMANDAEST (somente promoção inteligente).
-					$params = array(
-						$ins_produto['CDFILIAL'],
-						$ins_produto['NRVENDAREST'],
-						$ins_produto['NRCOMANDA'],
-						$nrProdComVen,
-						$ins_produto['CDPRODUTO'],
-						$ins_produto['QTPRODCOMVEN'],
-						$ins_produto['VRPRECCOMVEN'],
-						intval($ins_produto['VRDESCCOMVEN']*100)/100,
-						$ins_produto['TXPRODCOMVEN'],
-						$ins_produto['ATRASOPROD'],
-						$ins_produto['DSOBSPEDDIG']
-					);
-					$this->entityManager->getConnection()->executeQuery("SQL_INS_ITCOMANDAEST", $params);
+                    $insereItem = true;
+                    if ($ins_produto['RODIZIO']){
+                        // Se for rodízio, precisa verificar se o item existe.
+                        $params = array(
+                            'CDFILIAL' => $ins_produto['CDFILIAL'],
+                            'NRVENDAREST' => $ins_produto['NRVENDAREST'],
+                            'NRCOMANDA' => $ins_produto['NRCOMANDA'],
+                            'NRPRODCOMVEN' => $ins_produto['NRPRODCOMVEN'],
+                            'CDPRODUTO' => $ins_produto['CDPRODUTO']
+                        );
+                        $itensRodizio = $this->entityManager->getConnection()->fetchAssoc("GET_RODIZIO_ITEMS", $params);
+                        // Se o item já existir, atualiza a quantidade ao invés de inserir.
+                        if (!empty($itensRodizio)){
+                            $params['QTPROCOMEST'] = floatval($itensRodizio) + $ins_produto['QTPRODCOMVEN'];
+                            $this->entityManager->getConnection()->executeQuery("ATUALIZA_RODIZIO", $params);
+                            $insereItem = false;
+                        }
+                        else {
+                            $nrProdComVen = $ins_produto['NRPRODCOMVEN'];
+                            $insereItem = true;
+                        }
+                    }
 
-					// Guarda as observações na tabela.
-					if (!empty($ins_produto['ocorrencias'])){
-						foreach($ins_produto['ocorrencias'] as $CDOCORR){
-							$params = array(
-								$ins_produto['CDFILIAL'],
-								$ins_produto['NRVENDAREST'],
-								$ins_produto['NRCOMANDA'],
-								$nrProdComVen,
-								$ins_produto['CDPRODUTO'],
-								$CDGRPOCORPED,
-								$CDOCORR
-							);
-							$this->entityManager->getConnection()->executeQuery("SQL_INS_OBSITCOMANDAEST", $params);
+                    // Insere na ITCOMANDAEST (somente promoção inteligente).
+                    if ($insereItem){ // Não insere se o produto foi modificado acima.
+                        $params = array(
+                            $ins_produto['CDFILIAL'],
+                            $ins_produto['NRVENDAREST'],
+                            $ins_produto['NRCOMANDA'],
+                            $nrProdComVen,
+                            $ins_produto['CDPRODUTO'],
+                            $ins_produto['QTPRODCOMVEN'],
+                            $ins_produto['VRPRECCOMVEN'],
+                            intval($ins_produto['VRDESCCOMVEN']*100)/100,
+                            $ins_produto['TXPRODCOMVEN'],
+                            $ins_produto['ATRASOPROD'],
+                            $ins_produto['DSOBSPEDDIG']
+                        );
+                        $this->entityManager->getConnection()->executeQuery("SQL_INS_ITCOMANDAEST", $params);
 
-							/*** INSERÇÃO DE ACRÉSCIMOS PEDIDOS NO BANCO ***/
-							$this->insereAcrescimo($ins_produto, $CDOCORR, $cdCliente, $idStPrComVen, $nrProdComCup, $nrPedido, $cdConsumidor, $session);
-						}
-					}
-				}
-			}
+                        // Guarda as observações na tabela.
+                        if (!empty($ins_produto['ocorrencias'])){
+                            foreach($ins_produto['ocorrencias'] as $CDOCORR){
+                                $params = array(
+                                    $ins_produto['CDFILIAL'],
+                                    $ins_produto['NRVENDAREST'],
+                                    $ins_produto['NRCOMANDA'],
+                                    $nrProdComVen,
+                                    $ins_produto['CDPRODUTO'],
+                                    $CDGRPOCORPED,
+                                    $CDOCORR
+                                );
+                                $this->entityManager->getConnection()->executeQuery("SQL_INS_OBSITCOMANDAEST", $params);
+
+                                /*** INSERÇÃO DE ACRÉSCIMOS PEDIDOS NO BANCO ***/
+                                $this->insereAcrescimo($ins_produto, $CDOCORR, $cdCliente, $idStPrComVen, $nrProdComCup, $nrPedido, $cdConsumidor, $session);
+                            }
+                        }
+                    }
+                }
+            }
 
             /////////////////////////////////////////////////////////////////////////////////////////////
             /////////////////////////////////////////////////////////////////////////////////////////////
@@ -800,9 +959,16 @@ class Pedido {
 					'IDPRODREFIL' => $ins_produto['REFIL'],
 					'QTITEMREFIL' => $ins_produto['QTITEMREFIL'],
                     'IDORIGEMVENDA' => $ins_produto['IDORIGEMVENDA'],
-					'NRORG' => $session['NRORG']
+					'NRORG' => $session['NRORG'],
+                    'CDCUPOMDESCFOS' => null,
+                    'CDCAMPCOMPGANHE' => $ins_produto['CDCAMPCOMPGANHE'],
+                    'DTINIVGCAMPCG' => $DTINIVGCAMPCG
 				);
-				$this->entityManager->getConnection()->executeQuery("SQL_INS_ITCOMANDAVEN", $params);
+				$types = array (
+					'DTHRINCOMVEN' => \Doctrine\DBAL\TypeS\Type::DATETIME,
+                    'DTINIVGCAMPCG' => \Doctrine\DBAL\TypeS\Type::DATETIME
+				);
+				$this->entityManager->getConnection()->executeQuery("SQL_INS_ITCOMANDAVEN", $params, $types);
 			}
 		}
 	}
@@ -866,6 +1032,17 @@ class Pedido {
 
 			$precoTotal = $precoPromocao["PRECO"] + $precoPromocao["PRECOCLIE"] - $precoPromocao["DESC"] + $precoPromocao["ACRE"];
 
+            // Busca voucher.
+            if (!empty($produto['VOUCHER'])){
+                $params = array(
+                    'CDCUPOMDESCFOS' => $produto['VOUCHER']['CDCUPOMDESCFOS']
+                );
+                $voucherData = $this->entityManager->getConnection()->fetchAssoc("SQL_VOUCHER_DATA", $params);
+            }
+            else {
+                $voucherData = null;
+            }
+
 			$item = array();
             $item["CDPRODUTO"]      = $produto['CDPRODUTO'];
             $item["CDPRODUTOPAI"]   = $CDPRODPROMOCAO;
@@ -879,9 +1056,10 @@ class Pedido {
             $item["ocorrencias"]    = $produto['CDOCORR'];
             $item["TXPRODCOMVEN"]   = $produto['TXPRODCOMVEN'];
             $item["IMPRESSORA"]     = $produto['IMPRESSORA'];
-            $item['VRDESCCOMVEN']   = floatval($precoPromocao['DESC']);
-            $item['VRACRCOMVEN']    = floatval($precoPromocao["ACRE"]);
+            $item['VRDESCCOMVEN']   = floatval(bcmul(strval($precoPromocao['DESC']), strval($item['QTPRODCOMVEN']), 2));
+            $item['VRACRCOMVEN']    = floatval(bcmul(strval($precoPromocao['ACRE']), strval($item['QTPRODCOMVEN']), 2));
             $item['PRECOREAL']      = $precoTotal;
+            $item['VOUCHER']        = $voucherData;
 
             if (!$isCombo){
                 $descontoPromocao = $this->calculaDesconto($cdfilial, $CDPRODPROMOCAO, $produto['CDPRODUTO'], $precoTotal, $treatedProducts);
@@ -957,6 +1135,26 @@ class Pedido {
                 else if ($campanha['IDAPLICADESACR'] == '4'){ // Aplica o valor do desconto em todos os itens.
                     $this->rateiaDescontoCampanha($composicao, $campanha);
                 }
+            }
+        }
+
+        // Aplica descontos do voucher.
+        foreach ($composicao as &$produto){
+            if ($produto['VOUCHER']){
+                $total = floatval(bcsub(strval($produto['QTPRODCOMVEN'] * ($produto['VRPRECCOMVEN'] + $produto['VRPRECCLCOMVEN']) + $produto['VRACRCOMVEN']), strval($produto['VRDESCCOMVEN']), 2));
+                if ($produto['VOUCHER']['IDTIPODESC'] === "P"){
+                    $voucherDiscount = bcmul(strval($total), strval($produto['VOUCHER']['VRDESCCUPOM']/100), 2);
+                }
+                else {
+                    $voucherDiscount = $produto['VOUCHER']['VRDESCCUPOM'];
+                }
+                $produto['VRDESCCOMVEN'] += floatval($voucherDiscount);
+
+                $precoReal = floatval(bcadd(strval($produto['QTPRODCOMVEN'] * ($produto['VRPRECCOMVEN'] + $produto['VRPRECCLCOMVEN'])), strval($produto['VRACRCOMVEN']), 2));
+                if ($produto['VRDESCCOMVEN'] >= $precoReal){
+                    $produto['VRDESCCOMVEN'] = floatval(bcsub(strval($precoReal), strval($produto['QTPRODCOMVEN'] * 0.01), 2));
+                }
+                $produto['VOUCHER'] = $produto['VOUCHER']['CDCUPOMDESCFOS'];
             }
         }
 
@@ -1144,7 +1342,7 @@ class Pedido {
 				$ultimaComanda = $params['DSCOMANDA'] == $this->impProdParams[count($this->impProdParams)-1]['DSCOMANDA'];
 				$resultImpressao = $this->impressaoAPI->imprimePedido($params['CDFILIAL'], $params['CDLOJA'],
 											$params['PRODUTOS'], $params['CDVENDEDOR'], $params['DSCOMANDA'], $params['NRMESA'],
-						    				$params['NRPEDIDO'], $params['MODO'], '', $multiplasComandas, $ultimaComanda);
+						    				$params['NRPEDIDO'], $params['MODO'], '', $multiplasComandas, $ultimaComanda, '', $params["PRODUTOS"][0]['CDCAIXA']);
 				if ($resultImpressao['error']) {
 					$result['error'] = true;
 					if (!in_array($resultImpressao['message'], $messages)) {
@@ -1154,7 +1352,7 @@ class Pedido {
 				}
 			}
 			if(isset($resultImpressao['paramsImpressora'])){
-				$result['paramsImpressora'] = $resultImpressao['paramsImpressora'];
+                $result['paramsImpressora'] = $resultImpressao['paramsImpressora'];
 			}
 		}
 		return $result;

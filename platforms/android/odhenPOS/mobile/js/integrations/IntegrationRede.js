@@ -4,7 +4,7 @@ function IntegrationRede(){
     var REMOVE_ALL_INTEGRATIONS = false;
 
     var MESSAGE_INTEGRATION_FAIL = 'Não foi possível chamar a integração. Sua instância não existe.';
-    var MESSAGE_NULL_RESPONSE = 'Não foi possível obter o retorno da integração.';
+    var MESSAGE_NULL_RESPONSE = 'Não foi pissível obter o retorno da integração.';
 
 	this.integrationPayment = function(operatorData, currentRow) {
 		if(!!window.cordova && !!cordova.plugins.GertecRede) {

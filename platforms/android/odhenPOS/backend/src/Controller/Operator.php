@@ -192,6 +192,8 @@ class Operator extends \Zeedhi\Framework\Controller\Simple {
                             $nextUpdateTime           = $paramsData['nextUpdateTime'];
                             $smartPromoProducts       = $paramsData['smartPromoProducts'];
                             $mensDescontoObs          = $paramsData['mensDescontoObs'];
+							$produtosSugestaoVenda 	  = $paramsData['produtosSugestaoVenda'];
+							$lojas 				      = $paramsData['lojas'];
 
 							// send datasets to frontend
 							$response->addDataSet(new Dataset('OperatorRepository', $loginData));
@@ -211,6 +213,8 @@ class Operator extends \Zeedhi\Framework\Controller\Simple {
                             $response->addDataSet(new Dataset('ParamsPriceTimeRepository', $nextUpdateTime));
                             $response->addDataSet(new Dataset('SmartPromoRepository', array(array(json_encode($smartPromoProducts)))));
                             $response->addDataSet(new Dataset('ParamsMensDescontoObs', $mensDescontoObs));
+                            $response->addDataSet(new Dataset('ParamsSugestaoVenda', $produtosSugestaoVenda));
+                            $response->addDataSet(new Dataset('LojasRepository', $lojas));
 
 							if (!empty($loginResult['mensagemFiscal'])) {
 								$response->addMessage(new Message($loginResult['mensagemFiscal']));
@@ -281,6 +285,7 @@ class Operator extends \Zeedhi\Framework\Controller\Simple {
 			'NRPOSINICODBARR'	  => $dataset['NRPOSINICODBARR'],
 			'NRPOSFINCODBARR'	  => $dataset['NRPOSFINCODBARR'],
             'IDLEITURAQRCODE'     => $dataset['IDLEITURAQRCODE'],
+            'CDURLQRCODE'         => $dataset['CDURLQRCODE'],
 			'NRMAXPESMES'     	  => $dataset['NRMAXPESMES'],
             'IDEXTCONSONLINE'     => $dataset['IDEXTCONSONLINE'],
             'IDCTRLPEDVIAGEM'     => $dataset['IDCTRLPEDVIAGEM'],
@@ -299,6 +304,10 @@ class Operator extends \Zeedhi\Framework\Controller\Simple {
             'PRECOCOUVERT'        => $dataset['PRECOCOUVERT'],
             'CDCLIENTE'           => $dataset['CDCLIENTE'],
             'NMFANTCLIE'          => $dataset['NMFANTCLIE'],
+            'IDTPCONTRREPIQ'      => $dataset['IDTPCONTRREPIQ'],
+            'VRPEMAXREPIQVND'     => $dataset['VRPEMAXREPIQVND'],
+            'IDUTCUPOMDESC'       => $dataset['IDUTCUPOMDESC'],
+            'HRTEMPOROD'          => $dataset['HRTEMPOROD'],
 			// permissões
 			'cancelaItemGenerico' => $dataset['CONTROLEACESSO']['cancelaItemGenerico'],
 			'cancelaMesaComanda'  => $dataset['CONTROLEACESSO']['cancelaMesaComanda'],

@@ -13,12 +13,10 @@ function RegisterController(OperatorController, OperatorRepository, ScreenServic
 			OperatorRepository.findOne().then(function (operatorData) {
 				RegisterService.openRegister(operatorData.chave, rowChangeFunds.VRMOVIVEND).then(function (registerOpen) {
 					registerOpen = registerOpen[0];
-
 					if (_.get(registerOpen, 'dadosImpressao.paramsImpressora')) {
 						PerifericosService.print(registerOpen.dadosImpressao.paramsImpressora).then(function () {
 							self.handleOpenRegister(false);
 						});
-
 					} else {
 						if (!_.isEmpty(registerOpen.dadosImpressao)) {
 							var openRegisterText = registerOpen.dadosImpressao.open;
@@ -46,7 +44,6 @@ function RegisterController(OperatorController, OperatorRepository, ScreenServic
 				if (result.error)
 					ScreenService.alertNotification(result.message);
 			});
-
 			self.handleOpenRegister(true);
 		});
 	};
@@ -68,9 +65,8 @@ function RegisterController(OperatorController, OperatorRepository, ScreenServic
 				GeneralFunctions.exportLogs(false);
 			}
 
-
+			OperatorController.bindedDoLogin();
 		}.bind(this));
-		OperatorController.bindedDoLogin();
 	};
 
 	this.closeRegister = function (paymentGrid) {
@@ -117,7 +113,6 @@ function RegisterController(OperatorController, OperatorRepository, ScreenServic
 				if (result.error)
 					ScreenService.alertNotification(result.message);
 			});
-
 			self.handleCloseRegister(true);
 		}.bind(this));
 	};

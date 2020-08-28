@@ -57,7 +57,7 @@ class Account extends \Zeedhi\Framework\Controller\Simple {
 			$produtos          = $params[4]['value'];
 			$orderCode         = $params[5]['value'];
 			$vendedorAut       = $params[6]['value'];
-			$saleProdPass	   = $params[7]['value'];
+			$saleProdPass	   = !empty($params[7]['value']) ? $params[7]['value'] : null;
 
 			$produtos          = json_decode($produtos, true);
 			$horaAtual         = new \DateTime();
@@ -96,6 +96,10 @@ class Account extends \Zeedhi\Framework\Controller\Simple {
 								'REFIL'        => $produto['REFIL'],
 								'NRCOMANDA'    => $produto['NRCOMANDA'],
 								'NRVENDAREST'  => $produto['NRVENDAREST'],
+                                'VOUCHER'      => $produto['VOUCHER'],
+                                'CDCAMPCOMPGANHE' => $produto['CAMPANHA'],
+                                'DTINIVGCAMPCG'   => $produto['DTINIVGCAMPCG'],
+                                'DESCCOMPGANHE'   => $produto['DESCCOMPGANHE'],
 								'DTHRINCOMVEN' => $horaAtual
 							)
 						);
@@ -113,7 +117,6 @@ class Account extends \Zeedhi\Framework\Controller\Simple {
 					'vendedorAut'   => $vendedorAut,
 					'saleProdPass'  => $saleProdPass
 				);
-
 				$answer = $this->pedidoService->fazPedido($dataset);
 				if (!$answer['funcao'] == '1') {
 					if (!empty($answer['message'])) {
@@ -319,7 +322,7 @@ class Account extends \Zeedhi\Framework\Controller\Simple {
 		}
 	}
 
-	public function handleAccountItemsWithoutCombo($dataset){
+	private function handleAccountItemsWithoutCombo($dataset){
 		$answer = $this->produtoService->action($dataset);
 
 		$itens = array();
@@ -344,7 +347,7 @@ class Account extends \Zeedhi\Framework\Controller\Simple {
 		return $itens;
 	}
 
-	public function handleAccountOriginalItems($dataset){
+	private function handleAccountOriginalItems($dataset){
 		$answer = $this->produtoOriginalService->action($dataset);
 
 		$itens = array();
@@ -391,6 +394,8 @@ class Account extends \Zeedhi\Framework\Controller\Simple {
 				}
 			}
 
+            $updateDiscount = $params[6]['value']; // Indica se irá atualizar os descontos do crédito fidelidade na ITCOMANDAVEN.
+
 			$dataset = array(
 				'chave'       => $chave,
 				'mode'        => $modo,
@@ -398,7 +403,8 @@ class Account extends \Zeedhi\Framework\Controller\Simple {
 				'NRVENDAREST' => $nrvendarest,
 				'funcao'      => $funcao,
 				'agrupamento' => array(),
-				'posicao'     => $posicao
+				'posicao'     => $posicao,
+                'updateDiscount' => $updateDiscount
 			);
 			$answer = $this->accountService->dadosParcial($dataset);
 			$details = array();
@@ -420,6 +426,7 @@ class Account extends \Zeedhi\Framework\Controller\Simple {
 					'vlrprodcobtaxa'   => $answer['vlrprodcobtaxa'],
 					'vlrdesconto'      => $this->util->strToFloat($answer['desconto']),
 					'vlrservico'       => $this->util->strToFloat($answer['servico']),
+					'vlrservoriginal'  => floatval($answer['taxaOriginal']),
 					'vlrcouvert'       => $this->util->strToFloat($answer['couvert']),
 					'vlrconsumacao'    => $this->util->strToFloat($answer['consumacao']),
 					'vlrtotal'         => $this->util->strToFloat($answer['total']),
@@ -433,16 +440,24 @@ class Account extends \Zeedhi\Framework\Controller\Simple {
 					'NMVENDEDORABERT'  => $answer['NMVENDEDORABERT']
 				));
 
-				if (!empty($answer['dadosImpressao'])){
-					$dadosImpressao['dadosImpressao'] = $answer['dadosImpressao'];
+				// Validação para impressão Front que vem como String, impressão Saas e Back vem como Array.
+				if(!empty($answer['dadosImpressao'])){
+					if (!is_array($answer['dadosImpressao']) || !array_key_exists('impressaoBack', $answer['dadosImpressao'])){
+						$dadosImpressao['dadosImpressao'] = $answer['dadosImpressao'];
+					}
 				}
 
 				$itens = $this->accountService->handleAccountItems($dataset);
 				if ($itens['funcao'] == '1') {
 					unset($itens['funcao']);
 					if ($funcao == 'I') {
-						$return = '417'; //Parcial impressa com sucesso.
-						$response->addNotification(new \Zeedhi\Framework\DTO\Response\Notification($this->waiterMessage->getMessage($return), \Zeedhi\Framework\DTO\Response\Notification::TYPE_SUCCESS));
+						if (!is_array($answer['dadosImpressao']) || !array_key_exists('impressaoBack', $answer['dadosImpressao']) || !$answer['dadosImpressao']['impressaoBack']['error']) {
+							//Parcial impressa com sucesso.
+							$response->addNotification(new \Zeedhi\Framework\DTO\Response\Notification($this->waiterMessage->getMessage('417'), \Zeedhi\Framework\DTO\Response\Notification::TYPE_SUCCESS));
+						} else {
+							//Erro na impressão da parcial de conta.
+							$response->addNotification(new \Zeedhi\Framework\DTO\Response\Notification('Não foi possível imprimir a parcial de conta. ' . $answer['dadosImpressao']['impressaoBack']['message'], \Zeedhi\Framework\DTO\Response\Notification::TYPE_ERROR));
+						}
 					}
 				} else {
 					if ($funcao == "I") {
@@ -1059,7 +1074,6 @@ class Account extends \Zeedhi\Framework\Controller\Simple {
 
 	public function setDiscountFidelity(Request\Filter $request, Response $response){
 		try {
-			$session = $this->util->getSessionVars(null);
 			$params = $request->getFilterCriteria()->getConditions();
 
 			$NRVENDAREST = $params[0]['value'];
@@ -1067,11 +1081,13 @@ class Account extends \Zeedhi\Framework\Controller\Simple {
 			$positions = $params[2]['value'];
 			$VRDESCFID = $params[3]['value'];
 
-			$this->accountService->setDiscountFidelity($session['CDFILIAL'], $NRVENDAREST, $NRCOMANDA, $positions, $VRDESCFID);
+            if (empty($positions)) $positions = array();
+
+			$this->accountService->setDiscountFidelity($NRVENDAREST, $NRCOMANDA, $positions, $VRDESCFID);
 			$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('nothing', array()));
 		} catch (\Exception $e) {
 			Exception::logException($e);
-			$response->addMessage(new Message('Erro ao salvar Crédito Fidelidade. Tente novamente.', 'error'));
+			$response->addMessage(new Message("Erro ao salvar Crédito Fidelidade.<br>Tente novamente.<br><br>" . $e->getMessage(), 'error'));
 		}
 	}
 

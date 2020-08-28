@@ -354,4 +354,178 @@ class Bill{
 		}
 	}
 
+	public function getGroupBills($CDFILIAL, $CDLOJA) {
+		$params = array(
+				"CDFILIAL"  => $CDFILIAL,
+				"CDLOJA" => $CDLOJA
+			);
+		$comandasAgrupadas = $this->entityManager->getConnection()->fetchAll("GET_COMANDAS_AGRUPAMENTO", $params);
+
+		return $comandasAgrupadas;
+	}
+
+	public function groupBills($CDFILIAL, $CDLOJA, $mainBill, $toGroupBills) {
+		$acrComandaven = 0;
+
+		for ($i = 0; $i < count($toGroupBills); $i++) {
+	        $params = array(
+	            'CDFILIAL'     => $CDFILIAL,
+	            'CDLOJA'       => $CDLOJA,
+	            'DSCOMANDAPRI' => $mainBill['DSCOMANDA'],
+	            'NRVENDAREST'  => $toGroupBills[$i]['NRVENDAREST'],
+	            'NRCOMANDA'    => $toGroupBills[$i]['NRCOMANDA'],
+	            'DSCOMANDA'    => $toGroupBills[$i]['DSCOMANDA'],
+	            'IDSTCOMANDA'  => '4'
+	        );
+			
+			$this->entityManager->getConnection()->executeQuery('UPDATE_COMANDAVEN_AGRUPAMENTO', $params);
+			
+			// Guarda o VRACRCOMANDA de todas as comandas do agrupamento para associar a comanda principal.	
+			$dados = $this->entityManager->getConnection()->fetchAssoc('GET_TAXA_ENTREGA', $params);
+			$acrComandaven += $dados['VRACRCOMANDA'];
+
+			$nrItcomandaven = $this->entityManager->getConnection()->fetchAll('GET_ITCOMANDAVEN_NRPRODCOMVEN', $params);
+
+			foreach ($nrItcomandaven as $nr) {
+				// Insere uma cópia dos pedidos realizados das comandas agrupadas na comanda principal.
+    			$this->util->newCode('ITCOMANDAVEN' . $CDFILIAL . $mainBill['NRCOMANDA']);
+    			$newCode = $this->util->getNewCode('ITCOMANDAVEN' . $CDFILIAL . $mainBill['NRCOMANDA'], 6);
+
+				$params = array (
+					'CDFILIAL'        => $CDFILIAL,
+					'NRCOMANDA'       => $toGroupBills[$i]['NRCOMANDA'],
+					'NRVENDAREST'     => $toGroupBills[$i]['NRVENDAREST'],
+					'NRPRODCOMVEN'    => $nr['NRPRODCOMVEN'],
+					'MBNRVENDAREST'   => $mainBill['NRVENDAREST'],
+					'MBNRCOMANDA'     => $mainBill['NRCOMANDA'],
+					'MAXNRPRODCOMVEN' => $newCode,
+					'DSCOMANDAORI'    => $toGroupBills[$i]['DSCOMANDA'],
+					'NRCOMANDAORI'    => $toGroupBills[$i]['NRCOMANDA'],
+					'NRPRODCOMORI'    => $nr['NRPRODCOMVEN']
+				);
+
+				$this->entityManager->getConnection()->executeQuery('INSERT_ITCOMANDAVEN_AGRUPAMENTO', $params);
+				$this->entityManager->getConnection()->executeQuery('INSERT_OBSITCOMANDAVEN_AGRUPAMENTO', $params);
+				$this->entityManager->getConnection()->executeQuery('INSERT_ITCOMANDAEST_AGRUPAMENTO', $params);
+				$this->entityManager->getConnection()->executeQuery('INSERT_OBSITCOMANDAEST_AGRUPAMENTO', $params);
+			}
+		}
+
+		// Tratamento para a comanda principal alterando o acréscimo da comanda e o número de pessoas.
+		$params = array (
+			'CDFILIAL'     => $CDFILIAL,
+			'CDLOJA'       => $CDLOJA,
+			'NRVENDAREST'  => $mainBill['NRVENDAREST'],
+			'NRCOMANDA'    => $mainBill['NRCOMANDA'],
+			'ACRCOMANDA'   => $acrComandaven,
+			'NRPESMESAVEN' => count($toGroupBills)
+		);
+
+		$this->entityManager->getConnection()->executeQuery('UPDATE_VRACRCOMANDA', $params);
+		$this->entityManager->getConnection()->executeQuery('UPDATE_NRPESMESAVEN', $params);
+	}
+
+	public function ungroupBills($CDFILIAL, $CDLOJA, $toUngroupBills) {
+		for ($i = 0; $i < count($toUngroupBills); $i++) {
+			if ($toUngroupBills[$i]['DSCOMANDAPRI'] === 'PRINCIPAL') {
+
+				$params = array (
+					'CDFILIAL' => $CDFILIAL,
+					'CDLOJA' => $CDLOJA,
+					'DSCOMANDA' => $toUngroupBills[$i]['DSCOMANDA']
+				);
+				$comandasAgrupamento = $this->entityManager->getConnection()->fetchAll("SELECT_BILLS_BY_GROUPING", $params);
+
+				// Verifica se existem outras comandas no agrupamento que não foram selecionadas para serem desagrupadas e realiza o tratamento.
+				$arrayDiff = array_filter($comandasAgrupamento, function ($element) use ($toUngroupBills) {
+				    return !in_array($element, $toUngroupBills);
+				});
+
+				if (count($arrayDiff) == 1) {
+					// Somente uma comanda não pode gerar novo agrupamento, comanda também é desagrupada.
+					$comanda = array (
+						'NRVENDAREST'  => $arrayDiff[0]['NRVENDAREST'],
+						'NRCOMANDA'    => $arrayDiff[0]['NRCOMANDA'],
+						'DSCOMANDAPRI' => $arrayDiff[0]['DSCOMANDAPRI'],
+						'DSCOMANDA'    => $arrayDiff[0]['DSCOMANDA']
+					);
+					$this->ungroupAssocBills($CDFILIAL, $CDLOJA, $comanda);
+
+				} else if (count($arrayDiff) > 1) {
+					// Se houver mais de uma comanda no agrupamento da comanda principal a primeira comanda ordenada pelo DSCOMANDA torna-se a principal e as demais se agrupam a ela.
+					//Rotina semelhante a do For Sale.
+					array_multisort($arrayDiff);
+					foreach ($arrayDiff as $diff) {
+						$comanda = array (
+				            'NRVENDAREST'  => $diff['NRVENDAREST'],
+				            'NRCOMANDA'    => $diff['NRCOMANDA'],
+				            'DSCOMANDAPRI' => $diff['DSCOMANDAPRI'],
+							'DSCOMANDA'    => $diff['DSCOMANDA']
+						);
+						$this->ungroupAssocBills($CDFILIAL, $CDLOJA, $comanda);
+					}
+
+					$mainBill = array_shift($arrayDiff);
+
+					$this->groupBills($CDFILIAL, $CDLOJA, $mainBill, $arrayDiff);
+				}
+
+			} else {
+				$this->ungroupAssocBills($CDFILIAL, $CDLOJA, $toUngroupBills[$i]);
+			}
+		}
+	}
+
+	private function ungroupAssocBills($CDFILIAL, $CDLOJA, $comanda) {
+		// Função criada para desagrupar comandas associadas a comanda principal.
+		$params = array(
+			'CDFILIAL'     => $CDFILIAL,
+			'CDLOJA'       => $CDLOJA,
+            'DSCOMANDAPRI' => null,
+            'NRVENDAREST'  => $comanda['NRVENDAREST'],
+            'NRCOMANDA'    => $comanda['NRCOMANDA'],
+			'DSCOMANDA'    => $comanda['DSCOMANDA'],
+			'IDSTCOMANDA'  => '1'
+		);
+		$this->entityManager->getConnection()->executeQuery("UPDATE_COMANDAVEN_AGRUPAMENTO", $params);
+
+		$nrItcomandaven = $this->entityManager->getConnection()->fetchAll("GET_ITCOMANDAVEN_NRPRODCOMVEN", $params);
+
+		// Recupera a informação de acréscimo(VRACRCOMANDA) da comanda para ser subtraido da comanda principal.
+		$dados = $this->entityManager->getConnection()->fetchAssoc('GET_TAXA_ENTREGA', $params);
+
+		$params = array (
+			'CDFILIAL'  => $CDFILIAL,
+			'CDLOJA'    => $CDLOJA,
+			'DSCOMANDA' => $comanda['DSCOMANDAPRI']
+		);
+		$comandaPrincipal = $this->entityManager->getConnection()->fetchAssoc("SQL_DADOS_COMANDA_ABERTURA", $params);
+
+		$params = array (
+			'CDFILIAL'     => $CDFILIAL,
+			'CDLOJA'       => $CDLOJA,
+            'NRVENDAREST'  => $comandaPrincipal['NRVENDAREST'],
+            'NRCOMANDA'    => $comandaPrincipal['NRCOMANDA'],
+            'DSCOMANDAORI' => $comanda['DSCOMANDA'],
+            'NRCOMANDAORI' => $comanda['NRCOMANDA'],
+            'NRPRODCOMORI' => array_column($nrItcomandaven, 'NRPRODCOMVEN'),
+            'ACRCOMANDA'   => - $dados['VRACRCOMANDA'],
+			'NRPESMESAVEN' => - 1
+			);
+
+		$types = array(
+			'NRPRODCOMORI' => \Doctrine\DBAL\Connection::PARAM_STR_ARRAY
+		);
+
+		$this->entityManager->getConnection()->executeQuery("DEL_OBSITCOMANDAEST_AGRUP", $params, $types);
+		$this->entityManager->getConnection()->executeQuery("DEL_ITCOMANDAEST_AGRUP", $params, $types);
+		$this->entityManager->getConnection()->executeQuery("DEL_OBSITCOMANDAVEN_AGRUP", $params, $types);
+		$this->entityManager->getConnection()->executeQuery("DEL_ITCOMANDAVEN_AGRUP", $params, $types);
+
+
+		// Atualiza os campos VRACRCOMANDA/NRPESMESAVEN da comanda principal.
+		$this->entityManager->getConnection()->executeQuery('UPDATE_VRACRCOMANDA', $params);
+		$this->entityManager->getConnection()->executeQuery('UPDATE_NRPESMESAVEN', $params);
+	}
+
 }

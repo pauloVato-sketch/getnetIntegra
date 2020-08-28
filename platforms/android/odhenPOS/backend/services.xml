@@ -94,6 +94,7 @@
             <argument type="service" id="\Util\Util" />
             <argument type="service" id="\Service\Bill"/>
             <argument type="service" id="\Service\Table" />
+            <argument type="service" id="\Service\Payment" />
             <argument type="service" id="\Odhen\API\Service\Preco"/>
             <argument type="service" id="\Odhen\API\Service\ImpressaoPedido" />
             <argument type="service" id="\Odhen\API\Lib\ImpressaoDelphi" />
@@ -106,7 +107,6 @@
             <argument type="service" id="\Service\Bill"/>
         </service>
         <service id="\Service\Produto" class="\Service\Produto">
-            <argument type="service" id="\Odhen\API\Service\Preco" />
             <argument type="service" id="entityManager"/>
             <argument type="service" id="\Util\Util" />
             <argument type="service" id="\Service\Table" />
@@ -130,6 +130,7 @@
             <argument type="service" id="\Odhen\API\Lib\ImpressaoUtil" />
             <argument type="service" id="\Odhen\API\Service\ImpressaoPedido" />
             <argument type="service" id="\Odhen\API\Util\Database" />
+            <argument type="service" id="\Odhen\API\Service\ImpressaoPedidoSmart" />
         </service>
         <service id="\Service\Register" class="\Service\Register">
             <argument type="service" id="entityManager"/>
@@ -167,6 +168,7 @@
             <argument type="service" id="\Service\Params" />
             <argument type="service" id="\Odhen\API\Service\Preco" />
             <argument type="service" id="\Odhen\API\Service\Venda" />
+            <argument type="service" id="\Odhen\API\Service\Caixa" />
             <argument type="service" id="\Service\Register" />
         </service>
         <service id="\Service\GeneralFunctions" class="\Service\GeneralFunctions">
@@ -317,6 +319,7 @@
         <!-- UTILITIES -->
         <service id="\Util\Util" class="\Util\Util">
             <argument type="service" id="entityManager" />
+            <argument type="service" id="instanceManager" />
             <argument type="service" id="\Helpers\Environment" />
         </service>
         <service id="\Util\WaiterMessage" class="\Util\WaiterMessage"/>

@@ -57,7 +57,6 @@ class Bill extends \Zeedhi\Framework\Controller\Simple {
 					);
 					array_push($bills, $temp);
 				}
-
 				$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('BillRepository', $bills));
 			} else {
 				$response->addMessage(new Message($this->waiterMessage->getMessage($answer['error'])));
@@ -145,38 +144,43 @@ class Bill extends \Zeedhi\Framework\Controller\Simple {
 
 			if ($answer['funcao'] == '1' ) {
 				$activeBill = array();
-				if($answer['vazio'] == 'N'){
-					if ($answer['dados']['IDSTCOMANDA'] == '7'){
-						//Comanda fechada
-						$response->addMessage(new Message($this->waiterMessage->getMessage('432')));
-					}
+				// Validação para comandas agrupadas.
+				if($answer['vazio'] == 'N' && !empty($answer['dados']['DSCOMANDAPRI']) && $answer['dados']['IDSTCOMANDA'] == '4') {
+					$response->addMessage(new Message('Operação bloqueada. A comanda informada está agrupada com a comanda ' . $answer['dados']['DSCOMANDAPRI']));	
+				} else {
+					if ($answer['vazio'] == 'N'){
+						if ($answer['dados']['IDSTCOMANDA'] == '7'){
+							//Comanda fechada
+							$response->addMessage(new Message($this->waiterMessage->getMessage('432')));
+						}
 
-					if (!empty($answer['dados']['CDCONSUMIDOR'])){
-						$balanceDetails = self::getBalanceDetails($chave, $answer['dados']['CDCLIENTE'], $answer['dados']['CDCONSUMIDOR']);
-					}
-					else {
-						$balanceDetails = null;
-					}
+						if (!empty($answer['dados']['CDCONSUMIDOR'])){
+							$balanceDetails = self::getBalanceDetails($chave, $answer['dados']['CDCLIENTE'], $answer['dados']['CDCONSUMIDOR']);
+						}
+						else {
+							$balanceDetails = null;
+						}
 
-					array_push($activeBill, array(
-						'DSCOMANDA'      => $answer['dados']['DSCOMANDA'],
-						'NRCOMANDA'      => $answer['dados']['NRCOMANDA'],
-						'NRVENDAREST'    => $answer['dados']['NRVENDAREST'],
-						'NRMESA'         => $answer['dados']['NRMESA'],
-						'CDCLIENTE'      => $answer['dados']['CDCLIENTE'],
-						'CDCONSUMIDOR'   => $answer['dados']['CDCONSUMIDOR'],
-						'CDVENDEDOR'     => $answer['dados']['CDVENDEDOR'],
-						'DETALHES'       => $balanceDetails,
-						'NMCONSUMIDOR'   => $answer['dados']['NMCONSUMIDOR'],
-						'LABELDSCOMANDA' => $answer['dados']['LABELDSCOMANDA']
-					));
-					//Parametro 'R' retira o produto Couvert e consumação da ITCOMANDAVEN
-					$this->tableService->controlaCouvert($chave, $answer['dados']['NRVENDAREST'], $answer['dados']['NRCOMANDA'], 'R', 'C');
-					$this->tableService->controlaConsumacao($chave, $answer['dados']['NRVENDAREST'], $answer['dados']['NRCOMANDA'], 'R');
+						array_push($activeBill, array(
+							'DSCOMANDA'      => $answer['dados']['DSCOMANDA'],
+							'NRCOMANDA'      => $answer['dados']['NRCOMANDA'],
+							'NRVENDAREST'    => $answer['dados']['NRVENDAREST'],
+							'NRMESA'         => $answer['dados']['NRMESA'],
+							'CDCLIENTE'      => $answer['dados']['CDCLIENTE'],
+							'CDCONSUMIDOR'   => $answer['dados']['CDCONSUMIDOR'],
+							'CDVENDEDOR'     => $answer['dados']['CDVENDEDOR'],
+							'DETALHES'       => $balanceDetails,
+							'NMCONSUMIDOR'   => $answer['dados']['NMCONSUMIDOR'],
+							'LABELDSCOMANDA' => $answer['dados']['LABELDSCOMANDA']
+						));
+						//Parametro 'R' retira o produto Couvert e consumação da ITCOMANDAVEN
+						$this->tableService->controlaCouvert($chave, $answer['dados']['NRVENDAREST'], $answer['dados']['NRCOMANDA'], 'R', 'C');
+						$this->tableService->controlaConsumacao($chave, $answer['dados']['NRVENDAREST'], $answer['dados']['NRCOMANDA'], 'R');
+					}
+					$activeBill[0]['VAZIO'] = $answer['vazio'];
+
+					$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('BillActiveBill', $activeBill));
 				}
-				$activeBill[0]['VAZIO'] = $answer['vazio'];
-
-				$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('BillActiveBill', $activeBill));
 			} else {
 				$response->addMessage(new Message($this->waiterMessage->getMessage($answer['error'])));
 			}
@@ -224,9 +228,9 @@ class Bill extends \Zeedhi\Framework\Controller\Simple {
 
 			$session = $this->util->getSessionVars($chave);
 
-			$dadosMesa = $this->tableService->getTablesFromTableGrouping($session['CDFILIAL'], $NRVENDAREST, $NRCOMANDA, $NRMESA, $session['NRORG']);
-			$arrayPosicoes = array (0 => '01');
-			$this->comandaAPI->liberaComanda($session['CDFILIAL'], $dadosMesa, $arrayPosicoes, $session['CDOPERADOR']);
+			$dadosMesa = $this->tableService->getTablesFromTableGrouping($session['CDFILIAL'], $NRVENDAREST, $NRCOMANDA, $NRMESA, $session['NRORG'], $session['IDMODULO']);
+			$arrayPosicoes = array ();
+			$this->comandaAPI->liberaComanda($session['CDFILIAL'], $dadosMesa, $arrayPosicoes, $session['CDOPERADOR'], $session['CDLOJA'], 'CMD_PKC');
 
 			$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('nothing', array('error' => false)));
 
@@ -236,6 +240,70 @@ class Bill extends \Zeedhi\Framework\Controller\Simple {
 			Exception::logException($e);
 			$response->addMessage(new Message($e->getMessage()));;
 		}
+	}
+
+	public function getGroupBills(Request\Filter $request, Response $response){
+		try {
+			$connection = $this->entityManager->getConnection();
+			$connection->beginTransaction();
+			
+			$session = $this->util->getSessionVars(null);
+
+			$comandasAgrupadas = $this->billService->getGroupBills($session['CDFILIAL'], $session['CDLOJA']);
+			$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('nothing', $comandasAgrupadas));
+
+		} catch (\Exception $e) {
+			Exception::logException($e);
+			$response->addMessage(new Message($e->getMessage()));;
+		}
+	}
+
+	public function groupBills(Request\Filter $request, Response $response) {
+		try {
+			$connection = $this->entityManager->getConnection();
+			$connection->beginTransaction();
+
+			$session = $this->util->getSessionVars(null);
+			$params       = $request->getFilterCriteria()->getConditions();
+
+			$mainBill     = $params[0]['value'];
+			$toGroupBills = $params[1]['value'];
+
+			$groupResult = $this->billService->groupBills($session['CDFILIAL'], $session['CDLOJA'], $mainBill, $toGroupBills);
+
+			$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('nothing', array()));
+
+			$this->entityManager->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->entityManager->getConnection()->rollBack();
+			Exception::logException($e);
+			$response->addMessage(new Message($e->getMessage()));;
+		}
+
+	}
+
+	public function ungroupBills(Request\Filter $request, Response $response) {
+		try {
+			$connection = $this->entityManager->getConnection();
+			$connection->beginTransaction();
+
+			$session = $this->util->getSessionVars(null);
+			$params  = $request->getFilterCriteria()->getConditions();
+
+			$toUngroupBills = $params[0]['value'];
+
+
+			$ungroupResult = $this->billService->ungroupBills($session['CDFILIAL'], $session['CDLOJA'], $toUngroupBills);
+
+			$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('nothing', array()));
+
+			$this->entityManager->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->entityManager->getConnection()->rollBack();
+			Exception::logException($e);
+			$response->addMessage(new Message($e->getMessage()));;
+		}
+
 	}
 
 }

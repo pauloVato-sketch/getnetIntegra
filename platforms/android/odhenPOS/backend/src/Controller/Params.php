@@ -38,30 +38,32 @@ class Params extends \Zeedhi\Framework\Controller\Simple {
 
             $result = $this->paramsService->carregaDados($dataset);
             if ($result['error'] == false) {
-                $result = $result['dados'];
+				$result = $result['dados'];
                 $result['recebimentos'] = $this->handleRecebimento($result['recebimentos'], $chave);
-
+				$cardapio = $this->handleCardapio($result['grupos'], $ip);
                 $paramsData = array(
-                    'funcao'               => '1',
-                    'ambientes'            => $this->handleAmbientes($result['ambientes']),
-                    'grupos'               => $this->handleGrupos($result['grupos']),
-                    'clientes'             => $this->handleClientes($result['clientes']),
-                    'familias'             => $this->paramsService->getFamilies($session['CDFILIAL']),
-                    'consumidores'         => $result['consumidores'],
-                    'vendedores'           => $this->handleVendedores($result['vendedores']),
-                    'cardapio'             => $this->handleCardapio($result['grupos'], $ip),
-                    'grupoRecebimentos'    => $this->handleGrupoRecebimentos($result['grupoRecebimentos'], $result['recebimentos']),
-                    'recebimentos'         => $result['recebimentos'],
-                    'impressoras'          => $this->handleImpressoras($result['impressoras']),
-                    'mensObservacao'       => $this->handleMensObservacao($result['mensObservacao']),
-                    'mensCancelamento'     => $this->handleMensCancelamento($result['mensCancelamento']),
-                    'mensProducao'         => $this->handleMensProducao($result['mensProducao']),
-                    'parametros'           => $this->handleParametros($result['parametros']),
-                    'ALL_THE_OBSERVATIONS' => $result['observacoes'],
-                    'nextUpdateTime'       => $this->util->getNextUpdateTime($result['horarioDePrecos']),
-                    'smartPromoProducts'   => $result['smartPromoProducts'],
-                    'mensDescontoObs'       => $this->handleMensDescontoObs($result['mensDescontoObs'])
-                );
+                    'funcao'                => '1',
+                    'ambientes'             => $this->handleAmbientes($result['ambientes']),
+                    'grupos'                => $this->handleGrupos($result['grupos']),
+                    'clientes'              => $this->handleClientes($result['clientes']),
+                    'familias'              => $this->paramsService->getFamilies($session['CDFILIAL']),
+                    'consumidores'          => $result['consumidores'],
+                    'vendedores'            => $this->handleVendedores($result['vendedores']),
+                    'cardapio'              => $cardapio,
+                    'grupoRecebimentos'     => $this->handleGrupoRecebimentos($result['grupoRecebimentos'], $result['recebimentos']),
+                    'recebimentos'          => $result['recebimentos'],
+                    'impressoras'           => $this->handleImpressoras($result['impressoras']),
+                    'mensObservacao'        => $this->handleMensObservacao($result['mensObservacao']),
+                    'mensCancelamento'      => $this->handleMensCancelamento($result['mensCancelamento']),
+                    'mensProducao'          => $this->handleMensProducao($result['mensProducao']),
+                    'parametros'            => $this->handleParametros($result['parametros']),
+                    'ALL_THE_OBSERVATIONS'  => $result['observacoes'],
+                    'nextUpdateTime'        => $this->util->getNextUpdateTime($result['horarioDePrecos']),
+                    'smartPromoProducts'    => $result['smartPromoProducts'],
+                    'mensDescontoObs'       => $this->handleMensDescontoObs($result['mensDescontoObs']),
+					'produtosSugestaoVenda' => $this->paramsService->getProdSugestaoVenda($session['CDFILIAL'], $session['NRCONFTELA'], $cardapio),
+					'lojas'					=> $this->paramsService->getLojas($session['CDFILIAL'])
+				);
 
                 $return = array(
                     'error' => false,
@@ -105,7 +107,8 @@ class Params extends \Zeedhi\Framework\Controller\Simple {
 				'CDGRUPO' => $grupo['grupo']['CODIGO'],
 				'NMGRUPO' => $grupo['grupo']['DESC'],
 				'COLOR'  => "#" . $this->util->intToHexa($grupo['grupo']['COLOR']),
-				'PRODUTOS' => $grupo['produtos']
+				'PRODUTOS' => $grupo['produtos'],
+				'DSENDEIMG' => $grupo['grupo']['DSENDEIMG']
 			));
 		}
 		return $grupos;
@@ -196,7 +199,10 @@ class Params extends \Zeedhi\Framework\Controller\Simple {
 					'CDCSTICMS'   	 => $produto['CDCSTICMS'],
 					'CDCSTPISCOF'    => $produto['CDCSTPISCOF'],
 					'VRALIQPIS'   	 => $produto['VRALIQPIS'],
-					'VRALIQCOFINS'   => $produto['VRALIQCOFINS']
+					'VRALIQCOFINS'   => $produto['VRALIQCOFINS'],
+                    'CAMPANHA'       => $produto['CAMPANHA'],
+                    'DTINIVGCAMPCG'  => $produto['DTINIVGCAMPCG'],
+                    'QTCOMPGANHE'    => $produto['QTCOMPGANHE']
 				));
 			}
 		}
@@ -229,13 +235,14 @@ class Params extends \Zeedhi\Framework\Controller\Simple {
 			// caixa com IDCOLETOR === 'C' traz somente recebimentos vinculado a transação eletrônica
 			if ($IDCOLETOR !== 'C' || (in_array($recebimento['IDTIPORECE'], array('1', '2')) && $IDCOLETOR === 'C')) {
 				array_push($retorno, array(
-					'CDTIPORECE' => $recebimento['CDTIPORECE'],
-					'IDTIPORECE' => $recebimento['IDTIPORECE'],
-					'IDDESABTEF' => $recebimento['IDDESABTEF'],
-					'DSBUTTON'   => $recebimento['DSBUTTON'],
-					'NRBUTTON'   => $recebimento['NRBUTTON'],
-					'COLOR'      => "#" . $this->util->intToHexa($recebimento['NRCOLORBACK']),
-					'CDGRUPO'    => $recebimento['NRBUTTONAUX']
+					'CDTIPORECE'     => $recebimento['CDTIPORECE'],
+					'IDTIPORECE'     => $recebimento['IDTIPORECE'],
+					'IDDESABTEF'     => $recebimento['IDDESABTEF'],
+					'DSBUTTON'       => $recebimento['DSBUTTON'],
+					'NRBUTTON'       => $recebimento['NRBUTTON'],
+					'COLOR'          => "#" . $this->util->intToHexa($recebimento['NRCOLORBACK']),
+					'CDGRUPO'        => $recebimento['NRBUTTONAUX'],
+					'IDUTCONTRREPIQ' => $recebimento['IDUTCONTRREPIQ']
 				));
 			}
 		}
@@ -401,8 +408,8 @@ class Params extends \Zeedhi\Framework\Controller\Simple {
 		if(is_array($mensDescontoObs)){
 			foreach ($mensDescontoObs as $observacao) {
 				array_push($retorno, array(
-					'CDOCORR' => $observacao['codigo'],
-					'DSOCORR' => $observacao['mensagem']
+					'CDOCORR' => $observacao['CODIGO'],
+					'DSOCORR' => $observacao['MENSAGEM']
 				));
 			}
 		}

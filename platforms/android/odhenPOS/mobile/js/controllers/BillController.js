@@ -116,8 +116,23 @@ function BillController(AccountController, OperatorRepository, BillService, Scre
 
 	this.prepareBillList = function(widgetToShow) {
 		this.getBills(function(data) {
-			widgetToShow.dataSource.data = data;
-			ScreenService.openPopup(widgetToShow);
+			BillService.selectGroupBills().then(function (groupBills){
+				for (i = 0; i < data.length; i++) {
+					for (j = 0; j < groupBills.length; j++) {
+						if (data[i].DSCOMANDA == groupBills[j].DSCOMANDAPRI) {
+							if (!('AGRUPAMENTO' in data[i])) {
+								data[i].AGRUPAMENTO = 'AGRUPAMENTO ';
+							}
+							data[i].AGRUPAMENTO += groupBills[j].DSCOMANDA + ', ';
+						}
+					}
+					if ('AGRUPAMENTO' in data[i]) {
+						data[i].AGRUPAMENTO = data[i].AGRUPAMENTO.substr(0, data[i].AGRUPAMENTO.length - 2);
+					}
+				}
+				widgetToShow.dataSource.data = data;
+				ScreenService.openPopup(widgetToShow);
+			});
 		});
 	};
 

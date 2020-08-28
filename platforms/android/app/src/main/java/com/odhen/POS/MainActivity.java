@@ -21,7 +21,9 @@ package com.odhen.POS;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
+import com.getnet.posdigital.PosDigital;
 import com.odhen.deviceintegrationfacade.Interfaces.DeviceIntegrationListener;
 
 import org.apache.cordova.*;
@@ -30,6 +32,19 @@ public class MainActivity extends CordovaActivity
 {
 
     private DeviceIntegrationListener deviceIntegrationListener = null;
+
+    private PosDigital.BindCallback bindCallback = new PosDigital.BindCallback(){
+        @Override
+        public void onError(Exception e) { Log.d("TAGG","error"); }
+        @Override
+        public void onConnected() {
+            Log.d("TAGG","blyat");
+        }
+        @Override
+        public void onDisconnected() {
+            Log.d("TAGG","disco");
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -42,9 +57,14 @@ public class MainActivity extends CordovaActivity
         if (extras != null && extras.getBoolean("cdvStartInBackground", false)) {
             moveTaskToBack(true);
         }
+        connectPosDigitalService();
 
         // Set by <content src="index.html" /> in config.xml
         loadUrl(launchUrl);
+    }
+
+    private void connectPosDigitalService() {
+        PosDigital.register(this, bindCallback);
     }
 
     @Override
@@ -59,5 +79,18 @@ public class MainActivity extends CordovaActivity
 
     public void setDeviceIntegrationListener(DeviceIntegrationListener deviceIntegrationListener) {
         this.deviceIntegrationListener = deviceIntegrationListener;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            Log.d("TAGG","destroy");
+            if (PosDigital.getInstance().isInitiated()) {
+                PosDigital.unregister(this);
+            }
+        } catch (Exception e) {
+            Log.e("TAGG", "Erro de exception no Destroy da Activity");
+        }
     }
 }

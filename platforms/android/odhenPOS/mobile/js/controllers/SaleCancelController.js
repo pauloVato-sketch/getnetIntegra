@@ -10,8 +10,6 @@ function SaleCancelController(AccountService, OperatorRepository, PermissionServ
 					saleCancelResult = saleCancelResult[0];
 					if (!saleCancelResult.error) {
 						self.clearScreen(widget);
-
-
 						UtilitiesService.backMainScreen();		
 						ScreenService.showMessage(saleCancelResult.message, 'success').then(function(){
 							self.handleSaleCancel(saleCancelResult.data);
@@ -69,15 +67,14 @@ function SaleCancelController(AccountService, OperatorRepository, PermissionServ
 
 	this.handleTransactionRefound = function(saleCancelResult){
 		var dataTEF = saleCancelResult.dataTEF;
-		console.log(dataTEF);
 		dataTEF = _.filter(dataTEF, function(tiporece) {
 			return PaymentService.checkIfMustCallIntegration(tiporece);
-
 		}.bind(this));
+
 		OperatorRepository.findOne().then(function(operatorData){
 			if (!_.isEmpty(dataTEF) && operatorData.IDUTILTEF === 'T' && (!!window.cordova || !!window.ZhCieloAutomation)){
 				self.tefRefound(dataTEF, operatorData);
-			}
+			}				
 		});
 	};
 
@@ -85,26 +82,24 @@ function SaleCancelController(AccountService, OperatorRepository, PermissionServ
 		// monta dados para estorno
 		dataTEF = _.map(dataTEF, function(tiporece){
 			tiporece.IDTPTEF = operatorData.IDTPTEF;
-			console.log(tiporece);
 			var transactionDate;
 			switch(tiporece.IDTPTEF) {
-				case '2':{
+				case '2':
 					tiporece.AUTHKEY = IntegrationCappta.getAUTHKEY(operatorData.AMBIENTEPRODUCAO);
 					break;
-				}
-				case '5':{
-					tiporece.DSENDIPSITEF = operatorData.DSENDIPSITEF;
+				case '5':
+					tiporece.DSENDIPSITEF = operatorData.DSENDIPSITEF; 
 					tiporece.CDLOJATEF = operatorData.CDLOJATEF;
 					tiporece.CDTERTEF = operatorData.CDTERTEF;
 					transactionDate = tiporece.DTHRINCMOV.split(" ")[0].replace('-', '').replace('-', '');
 					tiporece.TRANSACTIONDATE = transactionDate.slice(6, 8) + transactionDate.slice(4, 6) + transactionDate.substring(0, 4);
-				} break;
-				case '8':{
+					break;
+				case '8':
 					transactionDate = tiporece.DTHRINCMOV.split(" ")[0].replace('-', '').replace('-', '');
 					tiporece.TRANSACTIONDATE = transactionDate.slice(6, 8) + transactionDate.slice(4, 6) + transactionDate.substring(0, 4);
-                } break;
-
+                    break;
 			}
+
 			return tiporece;
 		}.bind(self));
 

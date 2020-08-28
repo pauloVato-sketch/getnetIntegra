@@ -1,4 +1,4 @@
-function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, PrinterGertec,PrinterGetnet,WindowService) {
+function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, PrinterGertec, PrinterGetnet, WindowService) {
 
 	var self = this;
 
@@ -7,7 +7,7 @@ function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, Print
 		'25': PrinterGertec,
 		'26': PrinterPoynt,
 		'27': PrinterCieloLio,
-		'28': PrinterGetnet
+		'38': PrinterGetnet
 	};
 
 	var COMMANDS_NOT_FOUND = 'Comandos de impressora não foram adicionados.';
@@ -44,7 +44,7 @@ function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, Print
 		return OperatorRepository.findOne().then(function(operatorData) {
 			if (!_.isEmpty(self.printerCommands)){
 				PrinterClass = self.choosePrinter(operatorData.IDMODEIMPRES);
-				console.log(PrinterClass);
+
 				if (PrinterClass){
 					return new Promise(function(resolve){
 						self.callRecursivePrintCommands = _.bind(self.printCommands, self, resolve, PrinterClass);
@@ -69,9 +69,9 @@ function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, Print
 	this.printCommands = function(impressionResolved, PrinterClass){
 		// função recursiva utilizada para chamar as funções de impressão
 		var currentPrinterCommand = self.printerCommands.shift();		
+
 		new Promise(function(resolve){
-		    console.log("currentprintercommand  =   "+currentPrinterCommand);
-			window.returnPrintResult = _.bind(PrinterClass.printResult, PrinterClass, resolve);
+			window.returnPrintResult = _.bind(PrinterClass.printResult, PrinterClass, resolve);					
 			PrinterClass[currentPrinterCommand.type](currentPrinterCommand.parameter);
 		}.bind(this)).then(function(resolved){
 			if (!resolved.error) {
@@ -86,7 +86,6 @@ function PrinterService(OperatorRepository, PrinterPoynt, PrinterCieloLio, Print
 				// erro ao realizar impressão
 				resolved.message = PRINT_ERROR + resolved.message;
 				impressionResolved(resolved);
-
 			}
 		}.bind(this));
 	};

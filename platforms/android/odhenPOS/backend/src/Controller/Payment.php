@@ -73,13 +73,29 @@ class Payment extends \Zeedhi\Framework\Controller\Simple {
 	public function preparePayAccount(Request\Filter $request, Response $response){
         $params = $request->getFilterCriteria()->getConditions();
         $params = $this->util->getParams($params);
+
         $chave         = !empty($params['chave']) ? $params['chave'] : null;
-        $session 	   = $this->util->getSessionVars($chave);
-        $DELIVERY      = $params['DELIVERY'];
+		$session 	   = $this->util->getSessionVars($chave);
+		if(isset($params['IDMODULO'])){
+			$session['IDMODULO'] = $params['IDMODULO'];
+		}
+
+        $DELIVERY = $params['DELIVERY'];
+
         if ($DELIVERY){
         	// prepara parametros para vendas originadas no modo delivery
         	self::prepareDeliveryDataSale($params);
+		}
+
+        //Trata as bandeiras dos recebimentos realizados pela Cielo LIO.
+        if(!$DELIVERY){
+	        foreach ($params['TIPORECE'] as $indice => $paramUnit) {
+	        	if ($paramUnit['IDTPTEF'] === '7' || $paramUnit['IDTPTEF'] === '8' || $paramUnit['IDTPTEF'] === '9' || $paramUnit['IDTPTEF'] === '10') {
+		        	$params['TIPORECE'][$indice]['CDBANCARTCR'] = self::trataBandeirasCieloLio($paramUnit['CDBANCARTCR'], $paramUnit['IDTIPORECE']);
+		        }
+	        }
         }
+
         $TIPORECE      = $params['TIPORECE'];
         $ITEMVENDA     = $params['ITEMVENDA'];
         $ITVENDADES    = !empty($params['ITVENDADES']) ? $params['ITVENDADES'] : null;
@@ -107,7 +123,6 @@ class Payment extends \Zeedhi\Framework\Controller\Simple {
 		$DSOBSFINVEN = !empty($params['DSOBSFINVEN']) ? $params['DSOBSFINVEN'] : null;
 
 		$result = self::payAccount($TIPORECE, $ITEMVENDA, $DATASALE, $CDCLIENTE, $CDCONSUMIDOR, $NRMESA, $NRPESMESAVEN, $NRVENDAREST, $NRCOMANDA, $chave, $saleCode, $arrayPosicoes, $TIPODESCONTO, $NRINSCRCONS, $EMAIL, $NOMECONS, $logServico, $logDesconto, $supervisorServ, $supervisorDesc, $CDVENDEDOR, $session, $motivoDesconto, $CDGRPOCORDESC, $DSOBSFINVEN, $ITVENDADES, $DELIVERY, $PRODSENHAPED);
-
 		if(!$result['error']) {
 			$this->paymentService->handleRemovePayment($params, $session);
 		}
@@ -143,11 +158,7 @@ class Payment extends \Zeedhi\Framework\Controller\Simple {
 				// Verifica se a venda já foi realizada
 				// IDSTORDER = E - erro, C - concluído com sucesso, P - pendente (em processamento)
 				$saleCodeObject = $this->paymentService->checkSaleCode($session['CDFILIAL'], $NRVENDAREST, $NRCOMANDA, $saleCode);
-
-				if ($estadoCaixa['obrigaFechamento']) {
-					$result['error'] = true;
-					$result['message'] = 'Operação bloqueada. <br> É necessário realizar o fechamento do caixa para permitir a finalização das vendas.';
-				} else if ($saleCodeObject) {
+				if ($saleCodeObject) {
 					if ($saleCodeObject['IDSTORDER'] == 'P') {
 						$result['error'] = true;
 
@@ -210,12 +221,22 @@ class Payment extends \Zeedhi\Framework\Controller\Simple {
 					if ($NOMECONS != null && $NOMECONS != ""){
 						$NMCONSVEND = $NOMECONS;
 					}
-
 					$simulatePrinter = false;
 					$simulateSaleValidation = false;
 
 					if ($session['IDCOLETOR'] !== 'C'){
-						$moneyCurrency = $this->paymentService->getMoneyCurrency($CDFILIAL, $session['NRCONFTELA']);
+						$moneyCurrency = $this->paymentService->getMoneyCurrency($session['FILIALVIGENCIA'], $session['NRCONFTELA'], $session['DTINIVIGENCIA']);
+
+						// Trata de repique com parametrização para taxa de serviço por produto.
+						if (!empty($DATASALE['REPIQUE']) && $session['IDTRATTAXASERV'] === 'P' && $session['CDPRODTAXASERV'] !== null && $session['IDCOMISVENDA'] != 'N') {
+							if ($DATASALE['REPIQUE'] == $DATASALE['TROCO']) {
+								$DATASALE['TROCO'] = 0;
+							} else {
+								$DATASALE['TROCO'] = $DATASALE['TROCO'] - $DATASALE['REPIQUE'];
+							}
+							$DATASALE['TOTAL'] += $DATASALE['REPIQUE'];
+						}
+
 						$VRTROCOVEND = array(
 							'CDTIPORECE' => $moneyCurrency['CDTIPORECE'],
 							'VRMOVIVEND' => $DATASALE['TROCO']
@@ -232,7 +253,7 @@ class Payment extends \Zeedhi\Framework\Controller\Simple {
 							if($DELIVERY){
 								$tableData = $this->deliveryService->getInfoOrder($CDFILIAL, $NRVENDAREST);
 							}else{
-								$tableData = $this->tableService->getTablesButNotGrouped($CDFILIAL, $NRVENDAREST, $NRCOMANDA, $NRMESA, $NRORG);
+								$tableData = $this->tableService->getTablesButNotGrouped($CDFILIAL, $NRVENDAREST, $NRCOMANDA, $NRMESA, $NRORG, $session['IDMODULO']);
 							}
 							$VRACRCOMANDA = $this->deliveryService->getTaxaEntrega($CDFILIAL, $NRVENDAREST);
 
@@ -241,7 +262,7 @@ class Payment extends \Zeedhi\Framework\Controller\Simple {
 								$CDFILIAL,
 								$CDLOJA,
 								$CDCAIXA,
-								isset($tableData['CDVENDEDOR']) ? $tableData['CDVENDEDOR'] : $CDVENDEDOR,
+								isset($tableData[0]['CDVENDEDOR']) ? $tableData[0]['CDVENDEDOR'] : $CDVENDEDOR,
 								$session['CDOPERADOR'],
 								$openingDate,
 								$DTVENDA,
@@ -267,11 +288,12 @@ class Payment extends \Zeedhi\Framework\Controller\Simple {
                             	$CDGRPOCORDESC,
                             	$DSOBSFINVEN,
                             	$DELIVERY,
-                            	$VRACRCOMANDA
+                            	$VRACRCOMANDA,
+                            	isset($DATASALE['REPIQUE'])? $DATASALE['REPIQUE'] : null
 							);
 
 							if (!$result['error']) {
-							    $this->paymentService->updateTaxaServico($CDFILIAL, $CDLOJA, $NRVENDAREST, $NRCOMANDA);
+								$this->paymentService->updateTaxaServico($CDFILIAL, $CDLOJA, $NRVENDAREST, $NRCOMANDA);
 							}
 						} else {
 							$CDSENHAPED = !empty($PRODSENHAPED) ? $PRODSENHAPED : $this->utilAPI->generateCDSENHAPEDodhenPOS($NRORG, $CDLOJA, $CDFILIAL, $session['IDSENHACUP']);
@@ -308,11 +330,26 @@ class Payment extends \Zeedhi\Framework\Controller\Simple {
                             	$motivoDesconto,
                             	$CDGRPOCORDESC,
                             	$DSOBSFINVEN,
-                            	$ITVENDADES
+                            	$ITVENDADES,
+                            	isset($DATASALE['REPIQUE'])? $DATASALE['REPIQUE'] : null
 							);
+							if (!$result['error']){
+								if (!empty($result['paramsImpressora'])) {
+									$result['paramsImpressora'] = array($result['paramsImpressora']);
+								}
+							}
 
 							if (!$result['error'] && $session['IDIMPPEDPROD'] === 'S') {
-								$printOrderCupomResult = $this->paymentService->printOrderCupom($CDFILIAL, $CDLOJA, $ITEMVENDA, $CDVENDEDOR, $CDSENHAPED);
+								$printOrderCupomResult = $this->paymentService->printOrderCupom($CDFILIAL, $CDLOJA, $ITEMVENDA, $CDVENDEDOR, $CDSENHAPED, $result['NRSEQVENDA'], $session['CDCAIXA']);
+
+								if (isset($printOrderCupomResult['paramsImpressora']) && count($printOrderCupomResult['paramsImpressora']) > 0){
+									$result['paramsImpressora'] = array_merge($result['paramsImpressora'], $printOrderCupomResult['paramsImpressora']);
+								}
+
+								if (isset($printOrderCupomResult['PedidoSmart']['paramsImpressora']) && count($printOrderCupomResult['PedidoSmart']['paramsImpressora']) > 0){
+									$result['impressaoPedidoSmart'] = $printOrderCupomResult['PedidoSmart']['paramsImpressora'];
+								}
+
 								if ($printOrderCupomResult['error']) {
 									if (!empty($result['mensagemImpressao'])){
 										$result['mensagemImpressao'] .= '<br>';
@@ -333,6 +370,9 @@ class Payment extends \Zeedhi\Framework\Controller\Simple {
 
 							if (!empty($arrTiporece)){
 								$printTEFVoucherResult = $this->paymentService->printTEFVoucher($arrTiporece, $CDFILIAL, $CDCAIXA, $NRORG);
+								if(isset($printTEFVoucherResult['paramsImpressora'])&&count($printTEFVoucherResult['paramsImpressora'])>0){
+									$result['paramsImpressora'] = array_merge($result['paramsImpressora'], $printTEFVoucherResult['paramsImpressora']);
+								}
 								if ($printTEFVoucherResult['error']){
 									if (!empty($result['mensagemImpressao'])){
 										$result['mensagemImpressao'] .= '<br>';
@@ -441,7 +481,8 @@ class Payment extends \Zeedhi\Framework\Controller\Simple {
 	private function handleProducts($session, $ITEMVENDA, $CDFILIAL, $CDLOJA, $CDCLIENTE, $CDCONSUMIDOR, $CDVENDEDOR) {
 		$handledProducts = array();
 		$ordemImp = 1;
-		foreach ($ITEMVENDA as $ITEM) {
+        $voucherUsage = array();
+		foreach ($ITEMVENDA as $ITEM){
 			$newProduct = array();
 			$ITEM = self::fillEmptyProperties($ITEM);
 			$newProduct['NMPRODUTO'] = $ITEM['DSBUTTON'];
@@ -515,10 +556,36 @@ class Payment extends \Zeedhi\Framework\Controller\Simple {
 				$newItem['CDGRPOCORDESCIT'] = null;
 				$newItem['CDVENDEDOR'] = $CDVENDEDOR;
 
+                $newItem['VOUCHER'] = $this->checkVoucherUsage($currentComboItem, $voucherUsage);
+
+                $productDetails = $this->vendaAPI->getProductDetails($newItem['CDPRODUTO']);
+                $newItem['IDPESAPROD'] = $productDetails['IDPESAPROD'];
+                $newItem['IDIMPRODUVEZ'] = $productDetails['IDIMPRODUVEZ'];
+
 				array_push($comboItems, $newItem);
 
 				$ordemImpPromo += 0.01;
 			}
+
+            $newProduct['VOUCHER'] = $this->checkVoucherUsage($ITEM, $voucherUsage);
+
+            $productDetails = $this->vendaAPI->getProductDetails($newProduct['CDPRODUTO']);
+            $newProduct['IDPESAPROD'] = $productDetails['IDPESAPROD'];
+            $newProduct['IDIMPRODUVEZ'] = $productDetails['IDIMPRODUVEZ'];
+
+            if (!empty($ITEM['CAMPANHA'])){
+                $newProduct['CDCAMPCOMPGANHE'] = $ITEM['CAMPANHA'];
+                if ($this->util->databaseIsOracle()){
+                    $newProduct['DTINIVGCAMPCG'] = \DateTime::createFromFormat('Y-m-d H:i:s', $ITEM['DTINIVGCAMPCG']);
+                }
+                else {
+                    $newProduct['DTINIVGCAMPCG'] = \DateTime::createFromFormat('Y-m-d H:i:s.u', $ITEM['DTINIVGCAMPCG']);
+                }
+            }
+            else {
+                $newProduct['CDCAMPCOMPGANHE'] = null;
+                $newProduct['DTINIVGCAMPCG'] = null;
+            }
 
 			if (!empty($comboItems)){
 				// rotina específica do Madero
@@ -534,6 +601,21 @@ class Payment extends \Zeedhi\Framework\Controller\Simple {
 
 		return $handledProducts;
 	}
+
+    private function checkVoucherUsage($product, $voucherUsage){
+        if (empty($product['VOUCHER'])) return null;
+        else {
+            $voucher = $this->paymentService->validateVoucher($product['CDPRODUTO'], null, null, $product['VOUCHER']['CDCUPOMDESCFOS']);
+            // Verifica se o voucher já foi utilizado neste pedido.
+            if (in_array($product['VOUCHER']['CDCUPOMDESCFOS'], $voucherUsage)){
+                throw new \Exception("O voucher " . $product['VOUCHER']['CDCUPOMDESCFOS'] . " é de uso único, mas está sendo aplicado em mais de um produto. Certifique-se de que apenas um produto esteja com este voucher aplicado.");
+            }
+            else {
+                array_push($voucherUsage, $product['VOUCHER']['CDCUPOMDESCFOS']);
+            }
+            return $voucher;
+        }
+    }
 
 	private function fillEmptyProperties($item) {
 
@@ -772,7 +854,8 @@ class Payment extends \Zeedhi\Framework\Controller\Simple {
         	$session = $this->util->getSessionVars(null);
 
         	$result = $this->paymentService->savePayment($params, $session);
-			$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('SavePayment', $result));
+
+			$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('SavePayment', array()));
 		} catch (\Exception $e) {
 			Exception::logException($e);
 			$response->addMessage(new Message($e->getMessage()));
@@ -787,7 +870,7 @@ class Payment extends \Zeedhi\Framework\Controller\Simple {
 
         	$result = $this->paymentService->handleRemovePayment($params, $session);
 
-			$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('RemovePayment', $result));
+			$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('RemovePayment', array()));
 		} catch (\Exception $e) {
 			Exception::logException($e);
 			$response->addMessage(new Message($e->getMessage()));
@@ -808,5 +891,120 @@ class Payment extends \Zeedhi\Framework\Controller\Simple {
 			$response->addMessage(new Message($e->getMessage()));
 		}
 	}
+
+ 	public function trataBandeirasCieloLio($bandeira, $tipoRecebimento) {
+        //Utiliza o retorno de bandeira da Cielo LIO, GetNet, PagSeguro e transforma em código das bandeiras da SITEF.
+        $bandeirasIntegracoes = array(
+            'VISA'   		     => array ('1' => '00001','2' => '20002'), // Cielo lio / PagSeguro
+            'VISA CREDITO'       => array ('00001'), // Getnet
+            'VISA ELECTRON'      => array ('20002'), // Getnet
+            'MASTERCARD'         => array ('1' => '00002','2' => '20001'), // Cielo lio / Getnet
+            'MASTER'             => array ('1' => '00002','2' => '20001'), // PagSeguro
+            'ELO'    		     => array ('1' => '00031','2' => '20032'),
+            'ALELO'   	         => array ('F' => '10022','G' => '10021'),
+            'SODEXO'   	         => array ('F' => '10029','G' => '10028'),
+            'VR'   		         => array ('F' => '10048','G' => '10047'),
+            'HIPERCARD'          => array ('20037'), // Cielo lio
+            'HIPER'              => array ('1' => '00012', '2' => '20037'), // Getnet
+            'SOROCRED'           => array ('00015'),
+            'SOROCRED CREDITO'   => array ('00015'), // Getnet
+            'SOROCRED DEBITO'    => array ('20071'), // Getnet
+            'SOROCRED VOUCHER'   => array ('10037'), // Getnet
+            'BEN VISA VALE'      => array ('F' => '10141','G' => '10140'),
+            'AMEX'               => array ('00004'),
+            'DINERS'             => array ('00003'),
+            'SENFF'              => array ('1' => '10155','F' => '10169','G' => '10170'),
+            'GOODCARD'           => array ('1' => '00130','2' => '20131','F' => '10134', 'G' => '10133'), // Cielo lio
+            'GOOD CARD'          => array ('1' => '00130','2' => '20131','F' => '10134', 'G' => '10133'), // PagSeguro
+            'GOOD CARD FUEL'     => array ('10135'), // Getnet
+            'TICKET'             => array ('1' => '00072','2' => '20076','F' => '10025', 'G' => '10024'),
+            'TICKET RESTAURANTE' => array ('10024'),
+            'TICKET ALIMENTACAO' => array ('10025'),
+            'AURA'               => array ('00013'),
+            'AVISTA'             => array ('00045'),
+            'BANESCARD'          => array ('1' => '00035','2' => '20036'),
+            'BIQ F'              => array ('10144'),
+            'BNB CLUB'           => array ('1' => '00173','2' => '20145'),
+            'CABAL'              => array ('1' => '00030','2' => '20003'),
+            'CALCARD'            => array ('00090'),
+            'CREDSHOP'           => array ('00071'),
+            'CRED F'             => array ('10149'),
+            'DOTZ'               => array ('00182'),
+            'FORT BRASIL'        => array ('00137'),
+            'GREEN CARD'         => array ('F' => '10173','G' => '10174'),
+            'NUTRICASH'          => array ('10004'),
+            'PLANVALE'           => array ('F' => '10072','G' => '10073'),
+            'SAPORE BENEFICIOS'  => array ('10009'),
+            'SICRED'             => array ('1' => '00041','2' => '20042'),
+            'TIP CARD'           => array ('00223'),
+            'TRICARD'            => array ('00093'),
+            'VALECARD'           => array ('F' => '10237','G' => '10238'),
+            'VALE SHOP'          => array ('10158'),
+            'VERDE CARD'         => array ('1' => '00086','2' => '20152'),
+            'JCB'                => array ('00011'),
+            'CREDZ'              => array ('00070'),
+            'MAXXVAN'            => array ('1' => '00105','2' => '20106'),
+            'CALCARD'            => array ('00090'),
+            'BANRICOMPRAS'       => array ('1' => '00084','2' => '20085'),
+            'BENESE'             => array ('1' => '00091','2' => '20092','G' => '10192'),
+            'SIMCRED'            => array ('00218'),
+            'VEROCARD'           => array ('F' => '10176','G' => '10177'),
+            'VERDECARD'          => array ('1' => '00086','2' => '20152'), // PagSeguro
+            'UP BRASIL'          => array ('F' => '999999','G' => '999998'),
+            'ACCORD CARTOES'     => array ('F' => '999997','G' => '999996'),
+            'AGIPLAN'            => array ('999995'),
+            'AUTO EXPRESSO'      => array ('999994'),
+            'BANDES'             => array ('1' => '999993','2' => '999992'),
+            'BARIGUI FINANCEIRA' => array ('999991'),
+            'BONUS CBA'          => array ('999990'),
+            'CENTRAL CARD'       => array ('999989'),
+            'CHINA UNION PAY'    => array ('1' => '999988','2' => '999987'),
+            'CREDSHOP'           => array ('999986'),
+            'CREDSYSTEM'         => array ('999985'),
+            'CROMO UP'           => array ('999984'),
+            'DACASA FINANCEIRA'  => array ('999983'),
+            'E-CARDES'           => array ('999982'),
+            'ESPLANADA'          => array ('999981'),
+            'FACESP'             => array ('F' => '999980','G' => '999979'),
+            'MINAS CARD'         => array ('999978'),
+            'OBOE CARD'          => array ('999977'),
+            'PLENO CARD'         => array ('F' => '999976','G' => '999975'),
+            'REDECOMPRAS'        => array ('999974'),
+            'SPOT PROMO'         => array ('999973'),
+            'UNIK'               => array ('999972'),
+            'VILLELA BENEFICIO'  => array ('999971'),
+            'DISCOVER'           => array ('1' => '999970','2' => '999969'),
+            'REDE COMPRAS'       => array ('1' => '999968','2' => '999967'),
+            'OUROCARD'           => array ('1' => '999966','2' => '999965'),
+            'BANRICARD'          => array ('999964'), // PagSeguro
+            'GOODVALE'           => array ('999963') // Getnet
+        );
+
+		$bandeira = trim($bandeira);
+        if (!array_key_exists($bandeira, $bandeirasIntegracoes)) {
+            return $bandeira;
+        } else if (!array_key_exists($tipoRecebimento, $bandeirasIntegracoes[$bandeira])) {
+            if (!array_key_exists(0, $bandeirasIntegracoes[$bandeira])) {
+                return $bandeira;
+            } else {
+                return $bandeirasIntegracoes[$bandeira][0];
+            }
+        } else {
+            return $bandeirasIntegracoes[$bandeira][$tipoRecebimento];
+        }
+    }
+    public function validateVoucher(Request\Filter $request, Response $response){
+        try {
+            $params = $request->getFilterCriteria()->getConditions();
+            $params = $this->util->getParams($params);
+
+            $voucher = $this->paymentService->validateVoucher($params['CDPRODUTO'], $params['NRVENDAREST'], $params['NRCOMANDA'], $params['CDCUPOMDESCFOS']);
+
+            $response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('VoucherRepository', $voucher));
+        } catch (\Exception $e){
+            Exception::logException($e);
+            $response->addMessage(new Message($e->getMessage()));
+        }
+    }
 
 }

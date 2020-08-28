@@ -130,8 +130,9 @@
                     "showAsAction": "never",
                     "events": [
                         {
+                            "id": "92987010311921962761111",
                             "name": "ActionEvent",
-                            "code": "AccountController.openPayment(true);"
+                            "code": "AccountController.verificaSenhaProd(args.owner.widget.container.getWidget('checkOrder'), null);"
                         }
                     ]
                 }
@@ -402,7 +403,7 @@
                                 {
                                     "id": "68159823436425894821340",
                                     "name": "FieldOnChange",
-                                    "code": "AccountController.updateCart(args.owner.field.widget.container.getWidget('checkOrder'), args.owner.field.widget.container.getWidget('checkOrderStripe'));"
+                                    "code": "AccountController.checkForVouchers(args.owner.field.widget.container.getWidget('checkOrder'), args.owner.field.widget.container.getWidget('checkOrderStripe'));"
                                 }
                             ]
                         },
@@ -443,6 +444,27 @@
                                     "id": "92987010331851525261125",
                                     "name": "FieldOnChange",
                                     "code": "AccountController.updateCart(args.owner.field.widget.container.getWidget('checkOrder'), args.owner.field.widget.container.getWidget('checkOrderStripe'));"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "9298701036554741734321",
+                            "name": "voucher",
+                            "class": 6,
+                            "label": "Voucher",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/label-with-icon.html",
+                            "icon": "money-sign icon-black",
+                            "events": [
+                                {
+                                    "id": "1",
+                                    "name": "FieldOnClick",
+                                    "code": "AccountController.openVoucherPopup(args.row, args.owner.field.widget.container.getWidget('voucherPopup'), null);"
                                 }
                             ]
                         }
@@ -775,6 +797,19 @@
                             ]
                         },
                         {
+                            "label": "Voucher",
+                            "name": "btnVoucher",
+                            "isVisible": true,
+                            "icon": "money-sign",
+                            "showAsAction": "always||view",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "AccountController.openVoucherPopup(args.row, args.owner.widget.container.getWidget('voucherPopup'), args.owner.widget);"
+                                }
+                            ]
+                        },
+                        {
                             "id": "92987010318829538551157",
                             "label": "Alterar",
                             "name": "btnChange",
@@ -883,6 +918,55 @@
                             "template": "field/number-custom.html",
                             "type": "tel",
                             "dataSource": {}
+                        }
+                    ]
+                },
+                {
+                    "name": "voucherPopup",
+                    "label": "Código Promocional",
+                    "template": "widget/form.html",
+                    "isVisible": true,
+                    "actions": [
+                        {
+                            "label": "Voltar",
+                            "name": "btnBack",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Confirmar",
+                            "name": "btnConfirm",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "AccountController.confirmVoucher(args.row, args.owner.widget.container.getWidget('checkOrder'));"
+                                }
+                            ]
+                        }
+                    ],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "name": "CDCUPOMDESCFOS",
+                            "class": 12,
+                            "placeholder": "Informe o código",
+                            "readOnly": false,
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": false,
+                            "newLine": false,
+                            "defaultValue": null,
+                            "template": "field/text.html",
+                            "events": []
                         }
                     ]
                 }

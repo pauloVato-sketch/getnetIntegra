@@ -10,13 +10,18 @@ use Zeedhi\Framework\DB\StoredProcedure\Param;
 
 class Util extends \Zeedhi\Framework\Controller\Simple {
 	protected $entityManager;
+    protected $instanceManager;
 	protected $sessionService;
 	protected $session;
 
-    public function __construct(\Doctrine\ORM\EntityManager $entityManager, \Helpers\Environment $sessionService) {
+    public function __construct(\Doctrine\ORM\EntityManager $entityManager, \Zeedhi\Framework\DependencyInjection\InstanceManager $instanceManager, \Helpers\Environment $sessionService) {
         $this->entityManager = $entityManager;
+        $this->instanceManager = $instanceManager;
         $this->sessionService = $sessionService;
+        $this->tipoBanco = $this->instanceManager->getParameter('connection_params')['driver'];
     }
+
+    const ORACLE = 'oci8';
 
     public function getParams ($params) {
 
@@ -321,7 +326,7 @@ XML;
                     if (in_array($produto['CDPRODUTO'], $prodPromocao)){
                         $prodComDesconto[] = $produto;
                     } else {
-                        $prodSemDesconto[] = $produto;      
+                        $prodSemDesconto[] = $produto;
                     }
                 }
                 // valida se o desconto já não está rateado
@@ -329,7 +334,7 @@ XML;
                     $descontoAplicado = $this->aplicaDescontoDiferenciado($prodComDesconto, $prodSemDesconto, $propDesconto);
                     if ($descontoAplicado){
                         // merge dos produtos modificados
-                        $composicao = array_merge($prodComDesconto, $prodSemDesconto);                      
+                        $composicao = array_merge($prodComDesconto, $prodSemDesconto);
                     }
                 }
             }
@@ -343,13 +348,13 @@ XML;
         foreach ($prodSemDesconto as $produto) {
             $valorDesconto += $produto[$propDesconto];
         }
-        
+
         $vrProdComDesc = 0;
         foreach ($prodComDesconto as $produto) {
             $vrProdComDesc += round($this->calculaTotalItem($produto) - 0.01, 2);
         }
 
-        // valida se existe desconto a ser rateado e se o valor do desconto é menor que o valor permitido para rateio 
+        // valida se existe desconto a ser rateado e se o valor do desconto é menor que o valor permitido para rateio
         if ($valorDesconto > 0 && $vrProdComDesc >= $valorDesconto){
             foreach ($prodSemDesconto as &$produto) {
                 $produto[$propDesconto] = 0;
@@ -374,6 +379,10 @@ XML;
         } else {
             return false;
         }
+    }
+
+    public function databaseIsOracle() {
+        return $this->tipoBanco == self::ORACLE;
     }
 
 }

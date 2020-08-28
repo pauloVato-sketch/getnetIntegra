@@ -49,7 +49,7 @@ class Order {
 		// Buscando a mesa.
 		$valMesaOrigem = $this->tableService->dadosMesa($session['CDFILIAL'], $session['CDLOJA'], $NRCOMANDA, $NRVENDAREST, false);
 		$mesaOrigem = $valMesaOrigem['NRMESA'];
-		
+
         /* CHECK FOR ITEMS IN MOVCAIXADLV */
         $params = array(
             'CDFILIAL' => $session['CDFILIAL'],
@@ -82,47 +82,39 @@ class Order {
 
 		// ---
 
-		$CDFILIAL     = $session['CDFILIAL'];
+        $FILIALVIGENCIA = $session['FILIALVIGENCIA'];
 		$NRCONFTELA   = $session['NRCONFTELA'];
+        $DTINIVIGENCIA = new \DateTime($session['DTINIVIGENCIA']);
+		$CDFILIAL     = $session['CDFILIAL'];
 		$NRPRODCOMVEN = $dataset['produto']['NRPRODCOMVEN'];
 		$params = array(
-			$NRCONFTELA,
-			$CDFILIAL,
-			$NRCONFTELA,
-			$CDFILIAL,
-			$stNrComanda,
-			$stNrVendaRest,
-			$NRPRODCOMVEN,
-			$NRCONFTELA,
-			$CDFILIAL,
-			$NRCONFTELA,
-			$CDFILIAL,
-			$stNrComanda,
-			$stNrVendaRest,
-			$NRPRODCOMVEN
-		);
-		$itemSelecionado = $this->entityManager->getConnection()->fetchAll("SQL_SELECIONA_ITEM", $params);
+            'FILIALVIGENCIA' => $FILIALVIGENCIA,
+            'NRCONFTELA' => $NRCONFTELA,
+            'DTINIVIGENCIA' => $DTINIVIGENCIA,
+            'CDFILIAL' => $CDFILIAL,
+            'NRCOMANDA' => $stNrComanda,
+            'NRVENDAREST' => $stNrVendaRest,
+            'NRPRODCOMVEN' => $NRPRODCOMVEN
+        );
+        $types = array(
+            'DTINIVIGENCIA' => \Doctrine\DBAL\Types\Type::DATETIME
+        );
+		$itemSelecionado = $this->entityManager->getConnection()->fetchAll("SQL_SELECIONA_ITEM", $params, $types);
 		// Se item tiver sido dividido, deleta o item (integral)
 		if (!empty($itemSelecionado)) {
 			if ($itemSelecionado[0]["IDDIVIDECONTA"] == "S") {
 				$NRPRODCOMVEN = $itemSelecionado[0]["NRPRODORIG"];
 				$params = array(
-					$NRCONFTELA,
-					$CDFILIAL,
-					$NRCONFTELA,
-					$CDFILIAL,
-					$stNrComanda,
-					$stNrVendaRest,
-					$NRPRODCOMVEN,
-					$NRCONFTELA,
-					$CDFILIAL,
-					$NRCONFTELA,
-					$CDFILIAL,
-					$stNrComanda,
-					$stNrVendaRest,
-					$NRPRODCOMVEN
+                    'FILIALVIGENCIA' => $FILIALVIGENCIA,
+					'NRCONFTELA' => $NRCONFTELA,
+                    'DTINIVIGENCIA' => $DTINIVIGENCIA,
+					'CDFILIAL' => $CDFILIAL,
+					'NRCOMANDA' => $stNrComanda,
 				);
-				$item = $this->entityManager->getConnection()->fetchAll("SQL_ITENS_ORIGINAIS", $params);
+                $types = array(
+                    'DTINIVIGENCIA' => \Doctrine\DBAL\Types\Type::DATETIME
+                );
+				$item = $this->entityManager->getConnection()->fetchAll("SQL_ITENS_ORIGINAIS", $params, $types);
 				$codigo = $dataset['produto']['codigo'];
 				$dataset['produto'] = $item[0];
 				$dataset['produto']['codigo'] = $codigo;
@@ -502,11 +494,11 @@ class Order {
 		}
 
 		$this->util->logFOS($session['CDFILIAL'], $session['CDCAIXA'], 'CAN_GEN', $session['CDOPERADOR'], null, "Waiter - Cancelamento de produto", "Cancelamento do produto " . $dataset['produto']['codigo'] . ", referente à mesa " . $mesaOrigem  . ".");
-		
+
 		$result = array('funcao' => '1', 'message' => !empty($retornoImpressao['message']) ? $retornoImpressao['message'] : '');
-		
+
 		if(isset($retornoImpressao['saas'])&&$retornoImpressao['saas']){
-			$result = array('funcao' => '1', 'message' => !empty($retornoImpressao['message']) ? $retornoImpressao['message'] : '', 'paramsImpressora' => $retornoImpressao);	
+			$result = array('funcao' => '1', 'message' => !empty($retornoImpressao['message']) ? $retornoImpressao['message'] : '', 'paramsImpressora' => $retornoImpressao);
 		}
 
 		return $result;
@@ -514,69 +506,57 @@ class Order {
 
 	public function cancelaProdutosDivididos($dataset){
 		$connection = null;
-		try{
+		try {
 
-			$session        = $this->util->getSessionVars($dataset['chave']);
-			$CDFILIAL       = $session['CDFILIAL'];
-			$NRCONFTELA     = $session['NRCONFTELA'];
-			$NRVENDAREST    = $dataset["NRVENDAREST"];
-			$NRCOMANDA      = $dataset["NRCOMANDA"];
-			$NRPRODCOMVEN   = $dataset["NRPRODCOMVEN"];
-			$IDPRODPRODUZ   = $dataset["IDPRODPRODUZ"];
+            $connection = $this->entityManager->getConnection();
+            $connection->beginTransaction();
 
-			for($index = 0; $index < count($NRVENDAREST); $index++ ){
+			$session       = $this->util->getSessionVars($dataset['chave']);
+			$CDFILIAL      = $session['CDFILIAL'];
+			$NRVENDAREST   = $dataset["NRVENDAREST"];
+			$NRCOMANDA     = $dataset["NRCOMANDA"];
+			$selection     = $dataset["selection"];
 
-				$params = array(
-					$NRCONFTELA,
-					$CDFILIAL,
-					$NRCONFTELA,
-					$CDFILIAL,
-					$NRCOMANDA[$index],
-					$NRVENDAREST[$index],
-					$NRPRODCOMVEN[$index],
-					$NRCONFTELA,
-					$CDFILIAL,
-					$NRCONFTELA,
-					$CDFILIAL,
-					$NRCOMANDA[$index],
-					$NRVENDAREST[$index],
-					$NRPRODCOMVEN[$index]
-				);
-				$itens = $this->entityManager->getConnection()->fetchAll("SQL_ITENS_ORIGINAIS", $params);
+            $NRCOMANDA = $NRCOMANDA[0];
+            $NRVENDAREST = $NRVENDAREST[0];
 
+			foreach ($selection as $NRPRODORIG){
 				$params = array(
 					$CDFILIAL,
-					$NRVENDAREST[$index],
-					$NRCOMANDA[$index],
-					$NRPRODCOMVEN[$index]
+					$NRVENDAREST,
+					$NRCOMANDA,
+					$NRPRODORIG
 				);
+				$values = $this->entityManager->getConnection()->fetchAssoc("SQL_VALIDA_VALORES_ITEM", $params);
+				$originalValues = $this->entityManager->getConnection()->fetchAssoc("SQL_VALIDA_VALORES_ORIG", $params);
 
-				$values = $this->entityManager->getConnection()->fetchAll("SQL_VALIDA_VALORES_ITEM", $params);
+				if ($values["QTPRODCOMVEN"] != $originalValues["QTPRODCOMVEN"]){
+                    return array('funcao' => '0', 'error' => '454'); // 454 - Não foi possivel efetuar o cancelamento. Já houve o pagamento parcial do item.
+                }
 
-				$originalValues = $this->entityManager->getConnection()->fetchAll("SQL_VALIDA_VALORES_ORIG", $params);
+                $this->entityManager->getConnection()->executeQuery("SQL_DELETA_PRODUTOS_EST", $params);
+				$this->entityManager->getConnection()->executeQuery("SQL_DELETA_PRODUTOS", $params);
 
-				if($values[0]["QTPRODCOMVEN"] == $originalValues[0]["QTPRODCOMVEN"]){
-
-					$this->entityManager->getConnection()->executeQuery("SQL_DELETA_PRODUTOS", $params);
-					$params = array(
-						'CDFILIAL' => $CDFILIAL,
-						'NRVENDAREST' => $NRVENDAREST[$index],
-						'NRCOMANDA' => $NRCOMANDA[$index],
-						'NRPRODCOMVEN' => $NRPRODCOMVEN[$index],
-						'IDPRODPRODUZ' => $IDPRODPRODUZ
-					);
-					$this->entityManager->getConnection()->fetchAll("SQL_INSERE_ITEM_COMANDA", $params);
-					$this->entityManager->getConnection()->executeQuery("SQL_DELETA_CMD_VEN_ORIG", $params);
-
-				} else {
-					return array('funcao' => '0', 'error' => '454'); // 454 - Já houve o pagemento parcial do item
-				}
-
+                $params = array(
+                    'CDFILIAL' => $CDFILIAL,
+                    'NRVENDAREST' => $NRVENDAREST,
+                    'NRCOMANDA' => $NRCOMANDA,
+                    'NRPRODCOMVEN' => $NRPRODORIG,
+                    'IDPRODPRODUZ' => null
+                );
+                $this->entityManager->getConnection()->executeQuery("SQL_INSERE_ITEM_COMANDA", $params);
+                $this->entityManager->getConnection()->executeQuery("SQL_INSERE_ITEM_COMANDAEST", $params);
+                $this->entityManager->getConnection()->executeQuery("SQL_DELETA_CMD_EST_ORIG", $params);
+                $this->entityManager->getConnection()->executeQuery("SQL_DELETA_CMD_VEN_ORIG", $params);
 			}
 
+            $connection->commit();
 			return array('funcao' => '1');
 
 		} catch(\Exception $e){
+            if ($connection != null) {
+                $connection->rollback();
+            }
 			throw new \Exception ($e->getMessage(),1);
 		}
 	}

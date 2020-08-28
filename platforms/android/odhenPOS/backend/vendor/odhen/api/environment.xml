@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+	<parameters>
+        <parameter key="database_driver">sqlsrv</parameter>
+
+		<!-- DATABASE CONNECTION -->
+		<parameter key="connection_params" type="collection">
+            <!-- <parameter key="wrapperClass">\Odhen\API\Util\MultipleDatabaseConnection</parameter> -->
+            <parameter key="wrapperClass">\Odhen\API\Test\ConnectionMock</parameter>
+            <parameter key="driver">%database_driver%</parameter>
+	        <parameter key="user">teknisa</parameter>
+	        <parameter key="password">teknisa</parameter>
+	        <parameter key="host"></parameter>
+            <parameter key="dbname"></parameter>
+	        <parameter key="charset">UTF-8</parameter>
+            <parameter key="platform" type="service" id="sqlSrvPlatforn"></parameter>
+	    </parameter>
+
+        <!-- PARÂMETROS NFCE -->
+        <parameter key="NFCE_PATH">C:\TEKNISA\NFCE</parameter>
+        <parameter key="PROXY_IP">http://192.168.122.3</parameter>
+        <parameter key="PROXY_PORT">8080</parameter>
+        <parameter key="PROXY_USER">skype</parameter>
+        <parameter key="PROXY_PASSWORD">rosadesaron</parameter>
+
+	    <!-- PARÂMETROS SAT -->
+        <parameter key="PATH_NFCE_SAT">C:\TEKNISA\SAT</parameter>
+        <parameter key="URL_NODE_SERVER"></parameter>
+        <parameter key="CDATIVASAT">bema1234</parameter>
+
+		<!-- PARÂMETROS IMPRESSORA -->
+        <parameter key="PONTE_URL"></parameter>
+        <parameter key="UTILIZA_IMPRESSAO_PONTE">true</parameter>
+        <parameter key="UTILIZA_IMPRESSAO_PHP">false</parameter>
+
+    </parameters>
+
+    <services>
+    	<!-- Esta tag é necessária para conectar ao SQL Server. Remover em bancos ORACLE. -->
+        <service id="sqlSrvPlatforn" class="Odhen\API\DBAL\Platforms\SQLServer2008Platform"></service>
+        <service id="sessionInit" class="Doctrine\DBAL\Event\Listeners\SQLSessionInit">
+            <argument>SET DATEFORMAT dmy;</argument>
+        </service>
+    </services>
+
+</container>

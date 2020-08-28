@@ -13,6 +13,7 @@ class Table {
 	protected $paramsService;
 	protected $precoService;
 	protected $vendaAPI;
+    protected $caixaAPI;
 	protected $registerService;
 
 	const IDORIGEMVENDA_TABLE = 'MES_PKR';
@@ -27,6 +28,7 @@ class Table {
 		\Service\Params $paramsService,
 		\Odhen\API\Service\Preco $precoService,
 		\Odhen\API\Service\Venda $vendaAPI,
+        \Odhen\API\Service\Caixa $caixaAPI,
 		\Service\Register $registerService
 	){
 		$this->entityManager    = $entityManager;
@@ -36,6 +38,7 @@ class Table {
 		$this->paramsService    = $paramsService;
 		$this->precoService     = $precoService;
 		$this->vendaAPI         = $vendaAPI;
+        $this->caixaAPI         = $caixaAPI;
 		$this->registerService  = $registerService;
 	}
 
@@ -200,6 +203,12 @@ class Table {
 			$quantidade = $dataset['quantidade'];
 			$cliente = $dataset['CDCLIENTE'];
 			$consumidor = $dataset['CDCONSUMIDOR'];
+
+            // Valida se o caixa precisa ser fechado.
+            $estadoCaixa = $this->caixaAPI->getEstadoCaixa($session['CDFILIAL'], $session['CDCAIXA'], $session['NRORG']);
+            if ($session['IDCOLETOR'] !== 'C' && $estadoCaixa['obrigaFechamento']){
+                throw new \Exception("Operação bloqueada. <br> É necessário realizar o fechamento do caixa antes de continuar a operação.");
+            }
 
 			// Handles the consumer.
 			if (empty($consumidor)) {
@@ -431,7 +440,7 @@ class Table {
                 $this->entityManager->getConnection()->executeQuery("SQL_FIX_NOVOCODIGO", $params);
 
                 if ($comanda['NRVENDAREST'] != $comandaPrincipal['NRVENDAREST']){
-                    // Transfere todas as posições para e mesa principal.
+                    // Transfere todas as posições para a mesa principal.
                     $this->transferePosicao($cdFilial, $comanda['NRVENDAREST'], $comandaPrincipal['NRVENDAREST'], $positionIndex, $session['NRORG']);
 
                     // Verifica os itens consumidos na mesa de origem.
@@ -518,7 +527,8 @@ class Table {
                             'IDPRODREFIL'     => $itemComanda['IDPRODREFIL'],
                             'QTITEMREFIL'     => $itemComanda['QTITEMREFIL'] == null ? null : floatval($itemComanda['QTITEMREFIL']),
                             'DTHRINCOMVEN'    => new \DateTime($itemComanda['DTHRINCOMVEN']),
-                            'IDDIVIDECONTA'   => $itemComanda['IDDIVIDECONTA']
+                            'IDDIVIDECONTA'   => $itemComanda['IDDIVIDECONTA'],
+                            'CDCUPOMDESCFOS'  => $itemComanda['CDCUPOMDESCFOS']
                         );
                         $res = $this->insereItComandaVen($insereItemComandaParams);
                         if ($res["funcao"] == 0) {
@@ -769,7 +779,8 @@ class Table {
 			$NRVENDAREST,
 			$NRCOMANDA,
 			$NRMESA,
-			$session['NRORG']
+			$session['NRORG'],
+			$session['IDMODULO']
 		);
 		$openingDate = $this->registerService->getRegisterOpeningDate($session['CDFILIAL'], $session['CDCAIXA']);
 		$openingDate = new \DateTime($openingDate['DTABERCAIX']);
@@ -803,36 +814,40 @@ class Table {
 		);
 	}
 
-    public function getTablesButNotGrouped($CDFILIAL, $NRVENDAREST, $NRCOMANDA, $NRMESA, $NRORG){
+    public function getTablesButNotGrouped($CDFILIAL, $NRVENDAREST, $NRCOMANDA, $NRMESA, $NRORG, $MODO){
         $arrayTables = array();
         $params = array(
             'CDFILIAL' => $CDFILIAL,
             'NRMESA'   => $NRMESA
         );
 
-        $tableData = $this->entityManager->getConnection()->fetchAssoc("GET_NRVENDAREST_NRCOMANDA", $params);
+        $tableData = $this->entityManager->getConnection()->fetchAll("GET_NRVENDAREST_NRCOMANDA", $params);
+        $filtraComandas = $this->filtraMesasAgrupadas($MODO, $tableData, $NRVENDAREST, $NRCOMANDA);
+
         $arrayTables = array(array(
             'CDFILIAL' => $CDFILIAL,
             'NRVENDAREST' => $NRVENDAREST,
             'NRCOMANDA' => $NRCOMANDA,
             'NRMESA' => $NRMESA,
             'NRORG' => $NRORG,
-            'NRPESMESAVEN' => $tableData['NRPESMESAVEN'],
-            'CDVENDEDOR' => $tableData['CDVENDEDOR'],
-            'DSCOMANDA' => $tableData['DSCOMANDA'],
-            'DTHRMESAFECH' => $tableData['DTHRMESAFECH']
+            'NRPESMESAVEN' => $filtraComandas[0]['NRPESMESAVEN'],
+            'CDVENDEDOR' => $filtraComandas[0]['CDVENDEDOR'],
+            'DSCOMANDA' => $filtraComandas[0]['DSCOMANDA'],
+            'DTHRMESAFECH' => $filtraComandas[0]['DTHRMESAFECH']
         ));
         return $arrayTables;
     }
 
-	public function getTablesFromTableGrouping($CDFILIAL, $NRVENDAREST, $NRCOMANDA, $NRMESA, $NRORG){
+	public function getTablesFromTableGrouping($CDFILIAL, $NRVENDAREST, $NRCOMANDA, $NRMESA, $NRORG, $MODO){
 		$arrayTables = array();
 		$params = array(
 			'CDFILIAL' => $CDFILIAL,
 			'NRMESA'   => $NRMESA
 		);
 
-		$tableData = $this->entityManager->getConnection()->fetchAssoc("GET_NRVENDAREST_NRCOMANDA", $params);
+		$tableData = $this->entityManager->getConnection()->fetchAll("GET_NRVENDAREST_NRCOMANDA", $params);
+		$filtraComandas = $this->filtraMesasAgrupadas($MODO, $tableData, $NRVENDAREST, $NRCOMANDA);
+
 		$juncaoMesa = $this->entityManager->getConnection()->fetchAssoc("GET_JUNCAOMESA", $params);
 		if (!empty($juncaoMesa)) {
 			$paramsMesaJuncao = array(
@@ -855,10 +870,10 @@ class Table {
 				'NRCOMANDA' => $NRCOMANDA,
 				'NRMESA' => $NRMESA,
 				'NRORG' => $NRORG,
-				'NRPESMESAVEN' => $tableData['NRPESMESAVEN'],
-				'CDVENDEDOR' => $tableData['CDVENDEDOR'],
-				'DSCOMANDA' => $tableData['DSCOMANDA'],
-				'DTHRMESAFECH' => $tableData['DTHRMESAFECH']
+				'NRPESMESAVEN' => $filtraComandas[0]['NRPESMESAVEN'],
+				'CDVENDEDOR' => $filtraComandas[0]['CDVENDEDOR'],
+				'DSCOMANDA' => $filtraComandas[0]['DSCOMANDA'],
+				'DTHRMESAFECH' => $filtraComandas[0]['DTHRMESAFECH']
 			));
 		}
 		return $arrayTables;
@@ -969,23 +984,18 @@ class Table {
 
 		$session = $this->util->getSessionVars($dataset['chave']);
 		$params = array(
-			$session['CDFILIAL'],
-			$session['CDLOJA'],
-			$session['NRCONFTELA'],
-			$session['CDFILICONFTE'],
-			$session['NRCONFTELA'],
-			$session['CDFILIAL'],
-			$session['CDLOJA'],
-			$session['NRCONFTELA'],
-			$session['CDFILICONFTE'],
-			$session['NRCONFTELA'],
-			$session['CDFILIAL'],
-			$session['CDLOJA'],
-			$session['CDFILIAL'],
-			$session['CDLOJA']
+			'CDFILIAL' => $session['CDFILIAL'],
+			'CDLOJA' => $session['CDLOJA'],
+            'FILIALVIGENCIA' => $session['FILIALVIGENCIA'],
+			'NRCONFTELA' => $session['NRCONFTELA'],
+            'DTINIVIGENCIA' => new \DateTime($session['DTINIVIGENCIA']),
+			'CDFILICONFTE' => $session['CDFILICONFTE']
 		);
+        $types = array(
+            'DTINIVIGENCIA' => \Doctrine\DBAL\Types\Type::DATETIME
+        );
 
-		$consMesas = $this->entityManager->getConnection()->fetchAll("SQL_CONSULTA_MESA", $params);
+		$consMesas = $this->entityManager->getConnection()->fetchAll("SQL_CONSULTA_MESA", $params, $types);
 
 		$params = array(
 			$session['CDFILIAL'],
@@ -1271,7 +1281,8 @@ class Table {
 					'IDPRODREFIL'     => $itemComanda['IDPRODREFIL'],
 					'QTITEMREFIL'     => $itemComanda['QTITEMREFIL'] == null ? null : floatval($itemComanda['QTITEMREFIL']),
 					'DTHRINCOMVEN'    => new \DateTime($itemComanda['DTHRINCOMVEN']),
-					'IDDIVIDECONTA'   => $itemComanda['IDDIVIDECONTA']
+					'IDDIVIDECONTA'   => $itemComanda['IDDIVIDECONTA'],
+                    'CDCUPOMDESCFOS'  => $itemComanda['CDCUPOMDESCFOS']
 				);
 				$res = $this->insereItComandaVen($insereItemComandaParams);
 				if ($res["funcao"] == 0) {
@@ -1643,6 +1654,23 @@ class Table {
 				// separa mesa por mesa
 				$params = array($cdFilial, $cdLoja, $nrJuncaoMesa['NRJUNMESA'], $mesa);
 				$this->entityManager->getConnection()->executeQuery("SQL_SEPARA", $params);
+
+                $params = array(
+                    'CDFILIAL' => $session['CDFILIAL'],
+                    'CDLOJA' => $session['CDLOJA'],
+                    'NRMESA' => $mesa,
+                    'IDSTMESAAUX' => 'D',
+                    'NRORG' => $session['NRORG']
+                );
+                $tableData = $this->entityManager->getConnection()->fetchAssoc("GET_NRVENDAREST_NRCOMANDA", $params);
+                $params['NRVENDAREST'] = $tableData['NRVENDAREST'];
+                $params['NRCOMANDA'] = $tableData['NRCOMANDA'];
+
+                $this->entityManager->getConnection()->executeQuery("SQL_DELETA_ITCOMANDAVEN", $params);
+                $this->entityManager->getConnection()->executeQuery("SQL_DELETA_COMANDA_VEN", $params);
+                $this->entityManager->getConnection()->executeQuery("SQL_DELETA_VENDA_REST", $params);
+                $this->entityManager->getConnection()->executeQuery("SQL_DELETA_POS_VENDA_REST", $params);
+                $this->entityManager->getConnection()->executeQuery("SQL_MUDA_STATUS", $params);
 			}
 
 			// busca agrupamento
@@ -1959,7 +1987,8 @@ class Table {
 							   "IDPRODREFIL"    => $itemComanda['IDPRODREFIL'],
 							   "QTITEMREFIL"    => $itemComanda['QTITEMREFIL'] == null ? null : floatval($itemComanda['QTITEMREFIL']),
 							   "IDDIVIDECONTA"  => $itemComanda['IDDIVIDECONTA'],
-                               "CDSUPERVISOR"   => $dataset['CDSUPERVISOR']
+                               "CDSUPERVISOR"   => $dataset['CDSUPERVISOR'],
+                               "CDCUPOMDESCFOS" => $itemComanda['CDCUPOMDESCFOS']
 							);
 							$this->entityManager->getConnection()->executeQuery("SQL_INSERE_ITEM_COMANDA_VEN", $params);
 							$this->alteraComandaEst($itemComanda, $params, $r_dadosItemComanda[0]['NRPRODCOMVEN']);
@@ -2123,6 +2152,11 @@ class Table {
 		$session = $this->util->getSessionVars($dataset['chave']);
 		$IDSTMESAAUX = $dataset['tipo'];
 
+        $estadoCaixa = $this->caixaAPI->getEstadoCaixa($session['CDFILIAL'], $session['CDCAIXA'], $session['NRORG']);
+        if ($session['IDCOLETOR'] !== 'C' && $estadoCaixa['obrigaFechamento']){
+            throw new \Exception("Operação bloqueada. <br> É necessário realizar o fechamento do caixa antes de continuar a operação.");
+        }
+
         // Busca mesa agrupada e retorna a principal (menor NRVENDAREST).
         $mesaPrincipal = $this->buscaMesaPrincipal($session['CDFILIAL'], $session['CDLOJA'], $dataset['mesa']);
         if (!empty($mesaPrincipal)) $dataset['mesa'] = $mesaPrincipal['NRMESA'];
@@ -2150,6 +2184,13 @@ class Table {
 		}
 		$dadosMesa = $this->dadosMesa($session['CDFILIAL'], $session['CDLOJA'], $dados['NRCOMANDA'], $dados['NRVENDAREST'], false);
 
+        if ($this->util->databaseIsOracle()){
+            $DTHRABERMESA = \DateTime::createFromFormat('Y-m-d H:i:s', $dadosMesa['DTHRABERMESA']);
+        }
+        else {
+            $DTHRABERMESA = \DateTime::createFromFormat('Y-m-d H:i:s.u', $dadosMesa['DTHRABERMESA']);
+        }
+        $DTHRABERMESA = $DTHRABERMESA->getTimestamp();
 
 		$tipoFrontEnd = $dataset['tipo'];
 		if (count($dadosMesa) == 0){
@@ -2222,6 +2263,7 @@ class Table {
 		$result = array(
 			'error'         => false,
 			'retorno'       => $situacao,
+            'DTHRABERMESA'  => $DTHRABERMESA,
 			'NRPESMESAVEN'  => $dadosMesa['NRPESMESAVEN'],
 			'CDSALA'        => $dadosMesa['CDSALA'],
 			'NRMESA'        => $dataset['mesa'],
@@ -2333,7 +2375,8 @@ class Table {
 				'DSOBSPEDDIGCMD' => $dataset['DSOBSPEDDIGCMD'],
 				'IDPRODREFIL'    => $dataset['IDPRODREFIL'],
 				'QTITEMREFIL'    => $dataset['QTITEMREFIL'] == null ? null : floatval($dataset['QTITEMREFIL']),
-				'IDDIVIDECONTA'  => $dataset['IDDIVIDECONTA']
+				'IDDIVIDECONTA'  => $dataset['IDDIVIDECONTA'],
+                'CDCUPOMDESCFOS' => $dataset['CDCUPOMDESCFOS']
 			);
 			$this->entityManager->getConnection()->executeQuery("SQL_INSERE_ITEM_COMANDA_VEN", $insItemParams);
 
@@ -2502,7 +2545,8 @@ class Table {
 				return $dadosMesa['NRVENDAREST'] == $nrvendarest && $dadosMesa['NRCOMANDA'] == $nrcomanda;
 			}, ARRAY_FILTER_USE_BOTH);
 		}
-		return $mesasAgrupadas;
+		// Função array_values sempre irá mudar o indíce do array para 0.
+		return array_values($mesasAgrupadas);
 	}
 
 
@@ -2607,7 +2651,8 @@ class Table {
 				'IDPRODREFIL'     => 'N',
 				'QTITEMREFIL'     => null,
 				'DTHRINCOMVEN'    => new \DateTime(),
-				'IDDIVIDECONTA'  => 'N'
+				'IDDIVIDECONTA'   => 'N',
+                'CDCUPOMDESCFOS'  => null
 			);
 
 			$res = $this->insereItComandaVen($params);

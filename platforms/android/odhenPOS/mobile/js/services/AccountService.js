@@ -6,7 +6,7 @@ function AccountService(Query, AccountOrder, AccountCancelProduct, AccountGetAcc
                         ConsumerSearchRepository, ParamsMenuRepository, VerificaProdutosBloqueados, ParamsCardsRepository,
                         TransferCreditRepository, ConsumerBalanceRepository, FilterProducts, TransferPositionRepository,
                         ValidatePassword, SelectComandaProducts, UpdateComandaProducts, SetDiscountFidelity, ProdutosDesistencia,
-                        CalculaDescontoSubgrupo, UpdateServiceTax, OperatorLogout, GetPayments){
+                        CalculaDescontoSubgrupo, UpdateServiceTax, OperatorLogout, GetPayments, VoucherRepository){
 
     this.order = function (chave, mode, cartPool, nrvendarest, pedidos, orderCode, vendedorAut, saleProdPass) {
         var pedido = JSON.stringify(pedidos);
@@ -56,7 +56,9 @@ function AccountService(Query, AccountOrder, AccountCancelProduct, AccountGetAcc
         return AccountGetOriginalAccountItems.download(query);
     };
 
-    this.getAccountDetails = function (chave, modo, nrcomanda, nrvendarest, funcao, posicao) {
+    this.getAccountDetails = function (chave, modo, nrcomanda, nrvendarest, funcao, posicao, updateDiscount) {
+
+        if (updateDiscount == null) updateDiscount = false;
 
         var query = Query.build()
                         .where('chave').equals(chave)
@@ -64,7 +66,8 @@ function AccountService(Query, AccountOrder, AccountCancelProduct, AccountGetAcc
                         .where('nrcomanda').equals(nrcomanda)
                         .where('nrvendarest').equals(nrvendarest)
                         .where('funcao').equals(funcao)
-                        .where('posicao').equals(posicao);
+                        .where('posicao').equals(posicao)
+                        .where('updateDiscount').equals(updateDiscount);
 
         return AccountGetAccountDetails.download(query);
     };
@@ -359,6 +362,15 @@ function AccountService(Query, AccountOrder, AccountCancelProduct, AccountGetAcc
         var query = Query.build()
             .where('DATA').equals(accountData);
         return GetPayments.download(query);
+    };
+
+    this.checkVoucher = function(CDPRODUTO, NRVENDAREST, NRCOMANDA, CDCUPOMDESCFOS){
+        var query = Query.build()
+                        .where('CDPRODUTO').equals(CDPRODUTO)
+                        .where('NRVENDAREST').equals(NRVENDAREST)
+                        .where('NRCOMANDA').equals(NRCOMANDA)
+                        .where('CDCUPOMDESCFOS').equals(CDCUPOMDESCFOS);
+        return VoucherRepository.download(query);
     };
 
 }

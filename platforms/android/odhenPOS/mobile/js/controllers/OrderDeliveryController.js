@@ -20,6 +20,10 @@ function OrderDeliveryController(DeliveryService, ScreenService, WindowService, 
                 var cdfilial = currentRow.CDFILIAL; 
                 var status = currentRow.IDSTCOMANDA;
                 var nrcomanda = currentRow.DSCOMANDA;
+                var email = null;
+                if(currentRow.EMAIL){
+                    email = currentRow.EMAIL;
+                }
                 var saleCode = getLocalVar('saleCode');
                 self.getInfoFormasPagamento(widget.container.getWidget('formaPagamentoPopup'));
                 var datasale = widget.container.getWidget('formaPagamentoPopup').dataSource.data;
@@ -29,7 +33,7 @@ function OrderDeliveryController(DeliveryService, ScreenService, WindowService, 
                     ScreenService.openPopup(widget.container.getWidget('formaPagamentoPopup'));
                     ScreenService.showMessage('Informe a forma de pagamento');
                 }else{
-                    DeliveryService.generatePayment(cdfilial, nrvendarest, status, saleCode, datasale, nrcomanda).then(function(response){
+                    DeliveryService.generatePayment(cdfilial, nrvendarest, status, saleCode, datasale, nrcomanda, email).then(function(response){
                         if(!response[0].error){
                             WindowService.openWindow('DELIVERY_ORDERS_SCREEN').then(function(){
                                 var message = PAYMENT_COMPLETED;

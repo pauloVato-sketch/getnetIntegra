@@ -1,4 +1,4 @@
-function UtilitiesService(OperatorRepository, ScreenService, templateManager, ApplicationContext, eventAggregator, ConfigIpRepository, ZHPromise, PermissionService, WindowService, UtilitiesTest, UtilitiesRequestsRepository, Query, ValidationEngine, SaveLogin,AccountCart) {
+function UtilitiesService(OperatorRepository, ScreenService, templateManager, ApplicationContext, eventAggregator, ConfigIpRepository, ZHPromise, PermissionService, WindowService, UtilitiesTest, UtilitiesRequestsRepository, Query, ValidationEngine, SaveLogin, AccountCart) {
 
 	var self = this;
 
@@ -345,7 +345,7 @@ function UtilitiesService(OperatorRepository, ScreenService, templateManager, Ap
 
 	this.removeCurrency = function (value) {
 		if (typeof value == 'string') {
-			value = parseFloat(value.split('.').join('').replace(',', '.').replace('R$', ''));
+			value = parseFloat(value.replace(',', '.').replace('R$', ''));
 		}
 		return value;
 	};
@@ -450,7 +450,8 @@ function UtilitiesService(OperatorRepository, ScreenService, templateManager, Ap
 			'btnSendMessage',
 			'btnCancelProduct',
 			'btnTransferProductComanda',
-			'btnCloseAccount'
+			'btnCloseAccount',
+			'btnBillGrouping'
 		],
 		'B': [
 			'btnSendMessage',
@@ -784,7 +785,7 @@ function UtilitiesService(OperatorRepository, ScreenService, templateManager, Ap
 		});
 	};
 
-	 this.backAfterFinish = function () {
+	this.backAfterFinish = function () {
     	OperatorRepository.findOne().then(function (operatorData) {
     		if (operatorData.modoHabilitado === 'B') {
     			AccountCart.remove(Query.build());
@@ -793,6 +794,7 @@ function UtilitiesService(OperatorRepository, ScreenService, templateManager, Ap
            	self.backMainScreen();
     	});
     };
+    
 }
 
 Configuration(function (ContextRegister) {
@@ -920,8 +922,6 @@ function WaiterOrdersCatCtrl($scope, templateManager, ScreenService, $rootScope,
 		};
 
 		var that = this;
-
-
 	}
 
 	angular.element(document).ready(function () {
@@ -992,5 +992,4 @@ function WaiterGroupController($scope, ApplicationContext) {
 		ApplicationContext.TableController.setTheTable(selectedTableData.NRMESA, container);
 	};
 }
-
 

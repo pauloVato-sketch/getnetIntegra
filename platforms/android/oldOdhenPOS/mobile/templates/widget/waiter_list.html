@@ -1,0 +1,37 @@
+<section  ng-controller="WaiterGroupController" zh-widget-events>
+	<div class="row" data-ng-show="(widget.dataSource.data | filter:{NMMESA : searchList }).length == 0">
+		<div class="col-xs-12">
+			<p class="text-center zh-text-search-not-find " data-ng-show="(tableField.dataSource.data | filter:__getFilter(table):_strict_).length == 0" data-ng-bind="widget.noMatchText || 'nenhuma mesa encontrada'"> </p>
+		</div>
+	</div>
+
+	<div zh-scroller class="container table-list zh-dont-stop-propagation">
+		<div>
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="zh-container-search">
+						<input class="zh-input-search" type="text" placeholder="pesquisar" ng-model="searchList"/>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<nav class="col-xs-12 col-sm-12">
+					<ul class="wt-tables">
+						<li
+							ng-repeat="table in widget.dataSource.data | filter:{NMMESA : searchList }"
+							ng-click="selectTable(table, widget.container.getWidget('product').getField('positions'), widget.parent.container.getWidget('billOpeningWidget'))">
+							<a href="">
+								<img
+									data-ng-src="{{getImage(table.sprite)}}"
+									class="img-responsive">
+								<span class="title-tables" ng-bind="table.NMMESA"></span>
+								<span class="title-tables" ng-bind="table.NRJUNMESA"></span>
+								<img ng-src="{{getImage(table.checked)}}" class="wt-timer-table">
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+	</div>
+</section>

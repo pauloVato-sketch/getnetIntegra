@@ -55,6 +55,7 @@ class ImpressaoController: com.odhen.deviceintegrationfacade.Controllers.Impress
         printer?.defineFontFormat(this.textFontSize)
         Thread.sleep(350)
         printer?.addText(AlignMode.CENTER, texto)
+        printer?.addText(AlignMode.CENTER, "\n\n\n")
         printer?.print(printerListener)
         Thread.sleep(700)
         setCode(printer?.status)

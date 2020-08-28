@@ -200,22 +200,13 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 		return self.checkIfMustCallIntegration(currentRow.tiporece).then(function (mustCallIntegration) {
 			if (mustCallIntegration) {
 				// chama integração
-				console.log(IntegrationService);
 				return IntegrationService.integrationPayment(currentRow).then(function (integrationResult) {
-				    console.log("Resultado da integração:   ");
-				    console.log(integrationResult);
-				    if (!integrationResult.error) {
-				        try{
-					        return self.savePayment(integrationResult.data).then(function(){
-					            console.log("TTTTTTTT");
-					            console.log(integrationResult);
-						        // self.handlePrintPayment(integrationResult.data.eletronicTransacion.data).then(function(){
-							    return self.setPaymentSale(integrationResult.data);
-						        //}.bind(this));
-					        }.bind(this));
-				        }catch(e){
-                            console.log(e);
-				        }
+					 if (!integrationResult.error) {
+				        return self.savePayment(integrationResult.data).then(function(){
+					        //self.handlePrintPayment(integrationResult.data.eletronicTransacion.data).then(function(){
+						    	return self.setPaymentSale(integrationResult.data);
+					        //}.bind(this));
+				        }.bind(this));
 				    } else {
                         ApplicationContext.UtilitiesService.backAfterFinish();
 					    return integrationResult;
@@ -236,8 +227,6 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 
 	this.handlePrintPayment = function(dataPrinter) {
-		console.log("dataPrinter");
-	    console.log(dataPrinter);
 		return new Promise(function(resolve) {
 			var tefObject = {
 				TEFVOUCHER: [{
@@ -247,10 +236,9 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 			};
 
 			self.handlePrintReceipt(tefObject, false);
-
-            console.log("Message is up");
+			
 			ScreenService.confirmMessage(
-				'Deseja imprimir a via do cliente?', 'question',
+				'Deseja imprimir a via do cliente?', 'question', 
 				function(){
 					var tefPrintVoucher = tefObject.TEFVOUCHER[0];
 					tefPrintVoucher.STLPRIVIA = '';
@@ -287,8 +275,6 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 	this.setPaymentSale = function (currentRow) {
 		return PaymentRepository.findOne().then(function (payment) {
-		    console.log("Resultado da integração SETPAYMENSALE:   ");
-            console.log(payment);
 			// seta recebimento
 			self.formatPriceChart(payment.TIPORECE, currentRow);
 			// calcula valor pago no total da venda
@@ -353,7 +339,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 		DATASALE.VALORPAGO = amountPaid;
 		if (DATASALE.TOTALVENDA < amountPaid) {
-
+		
 			DATASALE.FALTANTE = 0;
 			DATASALE.REPIQUE = repique;
 			DATASALE.TROCO = parseFloat((amountPaid - DATASALE.TOTALVENDA).toFixed(2));
@@ -616,9 +602,9 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 
 							reversedPayment = {
 								'CDNSUHOSTTEF': reversedPayment.toRemove.CDNSUHOSTTEF,
-								'NRCONTROLTEF': reversedPayment.REVERSEDNRCONTROLTEF
+								'NRCONTROLTEF': reversedPayment.REVERSEDNRCONTROLTEF 
 							};
-							reversedPayments.push(reversedPayment);
+							reversedPayments.push(reversedPayment); 
 						});
 
 						return self.removePayment(reversedPayments).then(function(){
@@ -751,8 +737,6 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 	};
 
     this.handlePrintReceipt = function(dadosImpressao, delayPrint) {
-        console.log('Dados impressao handlePrintReceipt');
-        console.log(dadosImpressao);
     	if(_.isUndefined(delayPrint)) {
     		delayPrint = true;
     	}
@@ -760,8 +744,7 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
     	OperatorRepository.findOne().then(function(operatorData){
 			if (!_.isEmpty(dadosImpressao)){
 				if (_.get(dadosImpressao, 'TEXTOCUPOM1VIA')){
-                    
-
+					
 					PrinterService.printerCommand(PrinterService.TEXT_COMMAND, dadosImpressao.TEXTOCUPOM1VIA);
 					PrinterService.printerCommand(PrinterService.BARCODE_COMMAND, dadosImpressao.TEXTOCODIGOBARRAS);
 					PrinterService.printerCommand(PrinterService.QRCODE_COMMAND, dadosImpressao.TEXTOQRCODE);
@@ -787,8 +770,6 @@ function PaymentService(ApplicationContext, PaymentRepository, Query, PaymentPay
 				if (_.get(dadosImpressao, 'TEFVOUCHER')) {
 					dadosImpressao.TEFVOUCHER.forEach(function (tefVoucher) {
 						if (!_.isEmpty(tefVoucher.STLPRIVIA)) {
-
-						    console.log("??");
 							PrinterService.printerCommand(PrinterService.TEXT_COMMAND, tefVoucher.STLPRIVIA);
 						 	self.printerSpaceCommand(2);
 

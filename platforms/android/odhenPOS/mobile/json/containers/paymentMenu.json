@@ -142,6 +142,30 @@
                     }
                 },
                 {
+                    "name": "repiqueLabel",
+                    "label": "Repique",
+                    "class": 6,
+                    "isVisible": true,
+                    "template": "field/label-static.html"
+                },
+                {
+                    "name": "REPIQUE",
+                    "class": 6,
+                    "isVisible": true,
+                    "align": "right",
+                    "template": "field/text-edit.html",
+                    "mask": {
+                        "type": "currency",
+                        "params": {
+                            "showSymbol": false,
+                            "precision": 2,
+                            "thousands": "",
+                            "decimal": ",",
+                            "allowNegative": false
+                        }
+                    }
+                },
+                {
                     "id": "159953242317329495711607",
                     "name": "limitDebitoLabel",
                     "label": "Limite Débito Consumidor",
@@ -1314,6 +1338,91 @@
                     ],
                     "defaultValue": null,
                     "template": "field/text-number.html",
+                    "mask": {
+                        "type": "currency",
+                        "params": {
+                            "showSymbol": false,
+                            "precision": 2,
+                            "thousands": "",
+                            "decimal": ",",
+                            "allowNegative": false
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Repique",
+            "label": "Digite o valor do repique: ",
+            "isVisible": false,
+            "showAsModal": false,
+            "template": "widget/form.html",
+            "actions": [
+                {
+                    "name": "cancel",
+                    "label": "Cancelar",
+                    "showAsAction":"back",
+                    "isVisible": true,
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": "ScreenService.closePopup();"
+                        }
+                    ]
+                },
+                {
+                    "name": "confirm",
+                    "label": "Confirmar",
+                    "showAsAction":"never",
+                    "isVisible": true,
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": "PaymentController.alteraRepique(args.owner.widget);"
+                        }
+                    ]
+                }
+            ],
+            "dataSource": [
+                {
+                    "value": ""
+                }
+            ],
+            "fields": [
+                {                      
+                    "name": "valorRepique",
+                    "label": "",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": true,
+                    "sameLine": true,
+                    "class": "6 center-align-field",
+                    "fieldGroups": [
+                        {
+                            "name": "FIELDS_VALUE",
+                            "collapsible": false,
+                            "isVisible": true,
+                            "opened": true
+                        }
+                    ],
+                    "focused": true,
+                    "validations": {
+                        "required": {}
+                    },
+                    "range": {
+                        "max": null,
+                        "min": 0.01
+                    },
+                    "defaultValue": null,
+                    "template": "field/text-number.html",
+                    "events": [
+                        {
+                            "name": "FieldOnKeydown",
+                            "code": "PaymentController.handleEnterButton(args);"
+                        }
+                    ],
                     "mask": {
                         "type": "currency",
                         "params": {

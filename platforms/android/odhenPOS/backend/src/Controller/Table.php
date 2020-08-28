@@ -111,6 +111,7 @@ class Table extends \Zeedhi\Framework\Controller\Simple {
 
 				$result = $this->prepareActiveTableDataset(
 					$answerTable['retorno'],
+                    $answerTable['DTHRABERMESA'],
 					$answerTable['NRPESMESAVEN'],
 					$NRMESA,
 					$answerTable['retorno'],
@@ -143,7 +144,7 @@ class Table extends \Zeedhi\Framework\Controller\Simple {
 	}
 
 	private function prepareActiveTableDataset(
-		$IDSTMESAAUX, $NRPESMESAVEN, $NRMESA, $STATUS,
+		$IDSTMESAAUX, $DTHRABERMESA, $NRPESMESAVEN, $NRMESA, $STATUS,
 		$CDSALA, $NMMESA, $NRVENDAREST, $NRCOMANDA,
 		$NRJUNMESA, $posicoes, $CDCLIENTE, $NMRAZSOCCLIE,
 		$CDCONSUMIDOR, $NRCPFRESPCON, $NMCONSUMIDOR, $CDVENDEDOR,
@@ -152,6 +153,7 @@ class Table extends \Zeedhi\Framework\Controller\Simple {
 			return array(
 				array(
 					'IDSTMESAAUX'   => $IDSTMESAAUX,
+                    'DTHRABERMESA'  => $DTHRABERMESA,
 					'NRPESMESAVEN'  => $NRPESMESAVEN,
 					'NRMESA'        => $NRMESA,
 					'STATUS'        => $STATUS,
@@ -285,15 +287,29 @@ class Table extends \Zeedhi\Framework\Controller\Simple {
 				}
 
 				$dadosImpressao = array();
+				// Validação para impressão Front que vem como String, impressão Saas e Back vem como Array.
 				if (!empty($answer['dadosImpressao'])){
-					$dadosImpressao['dadosImpressao'] = $answer['dadosImpressao'];
+					if (!is_array($answer['dadosImpressao']) || !array_key_exists('impressaoBack', $answer['dadosImpressao'])){
+						$dadosImpressao['dadosImpressao'] = $answer['dadosImpressao'];
+					}
 				}
-				$paramsImpressora = isset($answer['paramsImpressora'])? $answer['paramsImpressora']:array();
+
+				if (!empty($answer['dadosImpressao'])){
+					if (!is_array($answer['dadosImpressao']) || !array_key_exists('impressaoBack', $answer['dadosImpressao']) || !$answer['dadosImpressao']['impressaoBack']['error']) {
+						//Parcial impressa com sucesso.
+						$response->addNotification(new \Zeedhi\Framework\DTO\Response\Notification($this->waiterMessage->getMessage('417'), \Zeedhi\Framework\DTO\Response\Notification::TYPE_SUCCESS));
+					} else {
+						//Erro na impressão da parcial de conta.
+						$response->addNotification(new \Zeedhi\Framework\DTO\Response\Notification('Não foi possível imprimir a parcial de conta. ' . $answer['dadosImpressao']['impressaoBack']['message'], \Zeedhi\Framework\DTO\Response\Notification::TYPE_ERROR));
+					}
+				}
+
+				$paramsImpressora = isset($answer['paramsImpressora']) ? $answer['paramsImpressora'] : array();
 
 				$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('nothing', array(array('nothing' => 'nothing'))));
 				$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('dadosImpressao', $dadosImpressao));
 				$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('paramsImpressora', $paramsImpressora));
-			
+
 			}
 			else {
 				$response->addMessage(new Message($this->waiterMessage->getMessage($answer['error'])));
@@ -337,7 +353,7 @@ class Table extends \Zeedhi\Framework\Controller\Simple {
 		}
 	}
 
-	public function split (Request\Filter $request, Response $response) {
+	public function split(Request\Filter $request, Response $response) {
 		try {
 
 			$params = $request->getFilterCriteria()->getConditions();
@@ -647,6 +663,7 @@ class Table extends \Zeedhi\Framework\Controller\Simple {
 
 				$result = $this->prepareActiveTableDataset(
 					$retorno,
+                    $answer['DTHRABERMESA'],
 					$answer['NRPESMESAVEN'],
 					$answer['NRMESA'],
 					$answer['retorno'],
@@ -887,36 +904,38 @@ class Table extends \Zeedhi\Framework\Controller\Simple {
 			$chave          = $params[0]["value"];
 			$NRVENDAREST    = $params[1]["value"];
 			$NRCOMANDA      = $params[2]["value"];
-			$NRPRODCOMVEN   = $params[3]["value"];
+			$NRPRODCOMVENS  = $params[3]["value"];
 			$NRLUGARMESA    = $params[4]["value"];
 
-
-			if(is_array($params[4]['value'])){
+			if (is_array($NRLUGARMESA)){
 				$NRLUGARMESA = array_map(
 					function($position){
 						return str_pad((string)$position, 2, '0', STR_PAD_LEFT);
-					},$params[4]['value']);
-			} else {
-				if ($params[4]['value'] != '')
+					}, $NRLUGARMESA);
+			}
+            else {
+				if ($NRLUGARMESA != ''){
 					$NRLUGARMESA = str_pad((string)$params[4]['value'], 2, '0', STR_PAD_LEFT);
-				else
+                }
+				else {
 					$NRLUGARMESA = $params[4]['value'];
+                }
 			}
 
-			$dataset = array (
+			$dataset = array(
 				"chave"         => $chave,
 				"NRVENDAREST"   => $NRVENDAREST,
 				"NRCOMANDA"     => $NRCOMANDA,
-				"NRPRODCOMVEN"  => $NRPRODCOMVEN,
+				"NRPRODCOMVENS" => $NRPRODCOMVENS,
 				"NRLUGARMESA"   => $NRLUGARMESA
 			);
-
 			$answer = $this->accountService->divideProdutos($dataset);
 
-			if ($answer['funcao'] == '1') {
+			if ($answer['funcao'] == '1'){
 				$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('nothing', array(array('nothing' => 'nothing'))));
 				$response->addMessage(new Message($this->waiterMessage->getMessage('459')));
-			} else {
+			}
+            else {
 				$response->addDataSet(new \Zeedhi\Framework\DataSource\DataSet('nothing', array(array('nothing' => 'nothing'))));
 				$response->addMessage(new Message($this->waiterMessage->getMessage($answer['error'])));
 			}
@@ -929,19 +948,17 @@ class Table extends \Zeedhi\Framework\Controller\Simple {
 	public function cancelSplitedProducts(Request\Filter $request, Response $response){
 		$params = $request->getFilterCriteria()->getConditions();
 
-		$chave          = $params[0]["value"];
-		$NRVENDAREST    = $params[1]["value"];
-		$NRCOMANDA      = $params[2]["value"];
-		$NRPRODCOMVEN   = $params[3]["value"];
+		$chave       = $params[0]["value"];
+		$NRVENDAREST = $params[1]["value"];
+		$NRCOMANDA   = $params[2]["value"];
+		$selection   = $params[3]["value"];
 
 		$dataset = array (
-			"chave"         => $chave,
-			"NRVENDAREST"   => $NRVENDAREST,
-			"NRCOMANDA"     => $NRCOMANDA,
-			"NRPRODCOMVEN"  => $NRPRODCOMVEN,
-			"IDPRODPRODUZ"  => null
+			"chave"       => $chave,
+			"NRVENDAREST" => $NRVENDAREST,
+			"NRCOMANDA"   => $NRCOMANDA,
+			"selection"   => $selection
 		);
-
 		$answer = $this->orderService->cancelaProdutosDivididos($dataset);
 
 		if ($answer['funcao'] == '1') {

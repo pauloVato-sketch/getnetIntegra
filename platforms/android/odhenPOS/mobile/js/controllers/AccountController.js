@@ -5,7 +5,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 	OperatorService, TotalCartRepository, AccountLastOrders, TimestampRepository, TransactionsService, PaymentService,
 	WindowService, WaiterNamedPositionsState, PermissionService, CartPool, ParamsPriceTimeRepository, metaDataFactory, PrinterService,
 	SubPromoGroups, SubPromoProds, SubPromoTray, PaymentRepository, ParamsMensDescontoObs, SellerControl, CarrinhoDesistencia, ProdutosDesistencia,
-	BillService, PerifericosService, ProdSenhaPed) {
+	BillService, PerifericosService, ProdSenhaPed, CampanhaFlag, CampanhaProducts){
 
 	var self = this;
 	var allObservations = [];
@@ -455,7 +455,12 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 											REFIL: produto.refilSet || false,
 											NRCOMANDA: produto.NRCOMANDA || null,
 											NRVENDAREST: produto.NRVENDAREST || null,
-											VRPRECCLCOMVEN: produto.VRPRECITEMCL || null
+											VRPRECCLCOMVEN: produto.VRPRECITEMCL || null,
+                                            VOUCHER: produto.VOUCHER || null,
+                                            VOUCHERDISCOUNT: produto.VOUCHERDISCOUNT || 0,
+                                            CAMPANHA: produto.CAMPANHA || null,
+                                            DTINIVGCAMPCG: produto.DTINIVGCAMPCG || null,
+                                            DESCCOMPGANHE: produto.DESCCOMPGANHE || null
 										};
 
 										produtos.push(produtoMontado);
@@ -676,8 +681,12 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 
 						product.PRECO = UtilitiesService.formatFloat(product.PRITOTITEM);
 					}
+                    totalOrderPrice += quantidade * product.PRITOTITEM;
+                    // Aplica o desconto do voucher.
+                    if (product.VOUCHER){
+                        totalOrderPrice = parseFloat((totalOrderPrice - product.VOUCHERDISCOUNT).toFixed(2));
+                    }
 
-					totalOrderPrice += quantidade * product.PRITOTITEM;
 					product.PRECO = parseFloat(product.PRITOTITEM).toFixed(2).replace('.', ',');
 					// Coloca a quantidade na frente do preço.
 					if (!(operatorData.modoHabilitado === 'O' || (product.QTPRODCOMVEN !== 1))) {
@@ -731,6 +740,19 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 		}.bind(this));
 	};
 
+    this.getVoucherDiscount = function(total, voucher, quantidade, precoReal){
+        var voucherDiscount = 0;
+        if (voucher.IDTIPODESC === "P"){
+             voucherDiscount = total * voucher.VRDESCCUPOM / 100;
+        }
+        else {
+            voucherDiscount = parseFloat(voucher.VRDESCCUPOM);
+        }
+        if (voucherDiscount >= precoReal) voucherDiscount = precoReal - 0.01 * quantidade;
+
+        return parseFloat(voucherDiscount.toFixed(2));
+    };
+
 	this.obsToText = function (observations, custom) {
 		var obss = [];
 		if (observations) {
@@ -773,7 +795,17 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 
                     var total = parseFloat((comboProduct.QTPRODCOMVEN * (comboProduct.PRECO + comboProduct.VRPRECITEMCL + comboProduct.VRACRITVEND - comboProduct.VRDESITVEND)).toFixed(2));
                     if (total < 0.01){
-                        throw comboProduct;
+                    	if (comboProduct.IDPESAPROD == 'S') {
+                    		total = 0.01;
+                    	} else {
+                        	throw comboProduct;
+                        }
+                    }
+                    // Aplica o desconto do voucher.
+                    if (comboProduct.VOUCHER){
+                        var precoReal = parseFloat((comboProduct.QTPRODCOMVEN * (comboProduct.PRECO + comboProduct.VRPRECITEMCL + comboProduct.VRACRITVEND)).toFixed(2));
+                        comboProduct.VOUCHERDISCOUNT = self.getVoucherDiscount(total, comboProduct.VOUCHER, comboProduct.QTPRODCOMVEN, precoReal);
+                        total = parseFloat((total - comboProduct.VOUCHERDISCOUNT).toFixed(2));
                     }
 
                     comboProdValue += total;
@@ -782,9 +814,14 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 
                 if (product.IDIMPPRODUTO === '1') {
                     prodValue = parseFloat((product.PRITEM + product.VRPRECITEMCL + product.VRACRITVEND - product.VRDESITVEND).toFixed(2));
+                    if (product.VOUCHER){
+                        var precoReal = parseFloat((product.QTPRODCOMVEN * (product.PRITEM + product.VRPRECITEMCL + product.VRACRITVEND)).toFixed(2));
+                        product.VOUCHERDISCOUNT = self.getVoucherDiscount(product.QTPRODCOMVEN * prodValue, product.VOUCHER, product.QTPRODCOMVEN, precoReal);
+                    }
                     prodSubsidy = product.VRPRECITEMCL;
                     qntProd = 1;
                 } else {
+                    product.PRITOTITEM = comboProdValue;
                     prodValue = comboProdValue;
                     prodSubsidy = comboProdSubsidy;
                     qntProd = product.PRODUTOS.length;
@@ -822,7 +859,11 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
                     }
                     comboProduct.TOTPRICE = UtilitiesService.floatFormat(comboProduct.PRICE * comboProduct.QTPRODCOMVEN);
                     if (comboProduct.TOTPRICE < 0.01){
-                        throw comboProduct;
+                    	if (comboProduct.IDPESAPROD == 'S') {
+                    		comboProduct.TOTPRICE = 0.01;
+                    	} else {
+	                        throw comboProduct;
+                        }
                     }
                     comboProdValue += comboProduct.TOTPRICE;
 
@@ -1007,6 +1048,16 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 													productValue = parseFloat(productValue.toFixed(2));
 												}
 											}
+                                            // Aplica o desconto do voucher.
+                                            if (product.VOUCHER){
+                                                if (product.VOUCHER.IDTIPODESC === "P"){
+                                                    productValue = parseFloat((productValue * (1 - product.VOUCHER.VRDESCCUPOM/100)).toFixed(2));
+                                                }
+                                                else {
+                                                    productValue = parseFloat((productValue - product.VOUCHER.VRDESCCUPOM).toFixed(2));
+                                                }
+                                                if (productValue < 0.01 * product.QTPRODCOMVEN) productValue = 0.01 * product.QTPRODCOMVEN;
+                                            }
 											vlrtotal += productValue;
 											totalSubsidy += Math.trunc(product.VRPRECITEMCL * product.QTPRODCOMVEN * 100) / 100;
 											numeroProdutos += product.numeroProdutos;
@@ -1233,80 +1284,81 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 	};
 
 	var isSmartPromo = function (product) {
-		return product.IDTIPOCOMPPROD == '3';
+		return product.IDTIPOCOMPPROD == '3' || product.IDTIPOCOMPPROD == '6';
 	};
 
-	var buildCartItem = function (product, position, refilSet) {
-		return self.getAccountData(function (accountData) {
-			return self.getOrderCodeProductID().then(function (id) {
-				var time = new Date();
-				var dscomanda = '';
+    this.buildCartItem = function(product, position, cartItems, refilSet, accountData){
+        var id = self.getOrderCodeProductID(cartItems);
+        var time = new Date();
+        var dscomanda = '';
 
-				if (!_.isEmpty(accountData)) {
-					dscomanda = accountData[0].LABELDSCOMANDA;
-				}
+        if (!_.isEmpty(accountData)){
+            dscomanda = accountData[0].LABELDSCOMANDA;
+        }
 
-				var cartItem = {
-					ID: id,
-					UNIQUEID: id,
-					GRUPO: product.NMGRUPO,
-					CDPRODUTO: product.CDPRODUTO,
-					DSBUTTON: product.DSBUTTON,
-					DSBUTTONSHOW: product.DSBUTTON,
-					POSITION: "posição " + position,
-					POS: position,
-					PRECO: product.PRECO,
-					PRITEM: product.PRITEM,
-					PRITOTITEM: parseFloat((product.PRITEM + product.VRPRECITEMCL + product.VRACRITVEND - product.VRDESITVEND).toFixed(2)),
-					VRPRECITEMCL: product.VRPRECITEMCL,
-					REALSUBSIDY: 0,
-					VRDESITVEND: product.VRDESITVEND,
-					VRACRITVEND: product.VRACRITVEND,
-					CDOCORR: [],
-					IDIMPPRODUTO: product.IDIMPPRODUTO,
-					IDTIPOCOMPPROD: product.IDTIPOCOMPPROD,
-					IDTIPCOBRA: product.IDTIPCOBRA,
-					IDPESAPROD: product.IDPESAPROD,
-					OBSERVATIONS: product.OBSERVATIONS,
-					IMPRESSORAS: product.IMPRESSORAS,
-					ATRASOPROD: "N",
-					TOGO: "N",
-					holdText: '',
-					toGoText: '',
-					PRODUTOS: Array(),
-					refilSet: refilSet,
-					NRQTDMINOBS: product.NRQTDMINOBS,
-					NRCOMANDA: _.get(accountData, '[0].NRCOMANDA') || null,
-					NRVENDAREST: _.get(accountData, '[0].NRVENDAREST') || null,
-					DSCOMANDA: dscomanda,
-					numeroProdutos: 1,
-					AGRUPAMENTO: '',
-					IDENTIFYKEY: time.getTime(),
-                    QTPRODCOMVEN: 1
-				};
-				if (refilSet) {
-					cartItem.PRECO = '0,00';
-					cartItem.PRITEM = 0;
-					cartItem.PRITOTITEM = 0;
-					cartItem.VRACRITVEND = 0;
-					cartItem.VRDESITVEND = 0;
-					cartItem.VRPRECITEMCL = 0;
-				}
-				return cartItem;
-			});
+        var cartItem = {
+            ID: id,
+            UNIQUEID: id,
+            GRUPO: product.NMGRUPO,
+            CDPRODUTO: product.CDPRODUTO,
+            DSBUTTON: product.DSBUTTON,
+            DSBUTTONSHOW: product.DSBUTTON,
+            POSITION: "posição " + position,
+            POS: position,
+            PRECO: product.PRECO,
+            PRITEM: product.PRITEM,
+            PRITOTITEM: parseFloat((product.PRITEM + product.VRPRECITEMCL + product.VRACRITVEND - product.VRDESITVEND).toFixed(2)),
+            VRPRECITEMCL: product.VRPRECITEMCL,
+            REALSUBSIDY: 0,
+            VRDESITVEND: product.VRDESITVEND,
+            VRACRITVEND: product.VRACRITVEND,
+            CDOCORR: [],
+            IDIMPPRODUTO: product.IDIMPPRODUTO,
+            IDTIPOCOMPPROD: product.IDTIPOCOMPPROD,
+            IDTIPCOBRA: product.IDTIPCOBRA,
+            IDPESAPROD: product.IDPESAPROD,
+            OBSERVATIONS: product.OBSERVATIONS,
+            IMPRESSORAS: product.IMPRESSORAS,
+            ATRASOPROD: "N",
+            TOGO: "N",
+            holdText: '',
+            toGoText: '',
+            PRODUTOS: Array(),
+            refilSet: refilSet,
+            NRQTDMINOBS: product.NRQTDMINOBS,
+            NRCOMANDA: _.get(accountData, '[0].NRCOMANDA') || null,
+            NRVENDAREST: _.get(accountData, '[0].NRVENDAREST') || null,
+            DSCOMANDA: dscomanda,
+            numeroProdutos: 1,
+            AGRUPAMENTO: '',
+            IDENTIFYKEY: time.getTime(),
+            QTPRODCOMVEN: 1,
+            VOUCHER: null,
+            VOUCHERDISCOUNT: 0,
+            CAMPANHA: product.CAMPANHA,
+            DTINIVGCAMPCG: product.DTINIVGCAMPCG,
+            QTCOMPGANHE: product.QTCOMPGANHE,
+            DESCCOMPGANHE: null
+        };
+        if (refilSet){
+            cartItem.PRECO = '0,00';
+            cartItem.PRITEM = 0;
+            cartItem.PRITOTITEM = 0;
+            cartItem.VRACRITVEND = 0;
+            cartItem.VRDESITVEND = 0;
+            cartItem.VRPRECITEMCL = 0;
+        }
+        return cartItem;
+    };
+
+	this.getOrderCodeProductID = function (cartItems){
+		var nextID = 0;
+		cartItems.forEach(function (item){
+			if (item.ID > nextID){
+				nextID = item.ID;
+			}
 		});
-	};
-
-	this.getOrderCodeProductID = function () {
-		return AccountCart.findAll().then(function (cartItems) {
-			var nextID = 0;
-			cartItems.forEach(function (item) {
-				if (item.ID > nextID) {
-					nextID = item.ID;
-				}
-			});
-			return nextID + 1;
-		});
+		return nextID + 1;
 	};
 
 	var restartDataSourceWidget = function (widget) {
@@ -1333,19 +1385,24 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 				ID: cartItem.ID,
 				IDPESAPROD: cartItem.IDPESAPROD,
 				NRSEQIMPRLOJA: [],
-				NMIMPRLOJA: ""
+				NMIMPRLOJA: "",
+                CAMPANHA: cartItem.CAMPANHA,
+                DTINIVGCAMPCG: cartItem.DTINIVGCAMPCG,
+                QTCOMPGANHE: cartItem.QTCOMPGANHE
 			};
 
 			var printersField = productWidget.getField('NRSEQIMPRLOJA');
-			printersField.dataSource.data = printers;
-			printersField.isVisible = printers.length > 1;
+            if (printersField){
+                printersField.dataSource.data = printers;
+                printersField.isVisible = printers.length > 1;
 
-			if (printers.length > 0) {
-				data.NRSEQIMPRLOJA.push(printers[0].NRSEQIMPRLOJA);
-				if (printers.length > 1) {
-					data.NMIMPRLOJA = getPrinterName(printers[0].NRSEQIMPRLOJA, printers);
-				}
-			}
+                if (printers.length > 0) {
+                    data.NRSEQIMPRLOJA.push(printers[0].NRSEQIMPRLOJA);
+                    if (printers.length > 1) {
+                        data.NMIMPRLOJA = getPrinterName(printers[0].NRSEQIMPRLOJA, printers);
+                    }
+                }
+            }
 
 			productWidget.setCurrentRow(data);
 			productWidget.container.restoreDefaultMode();
@@ -1456,27 +1513,36 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
         }.bind(this));
     };
 
+    this.defineCart = function(flagProduct){
+        if (_.isEmpty(flagProduct)) return AccountCart;
+        else return CampanhaProducts;
+    };
+
     var addItemToCart = function(productWidget, product, position, actionQtCart, innerCart, refilSet){
         if (product.IDPRODBLOQ === 'N'){
-            AccountCart.findAll().then(function(cart){
-                actionQtCart.hint = cart.length+1;
-                innerCart.hint = cart.length+1;
-                buildCartItem(product, position, refilSet).then(function (cartItem){
-                    restartDataSourceWidget(productWidget);
-                    prepareProductWidget(productWidget, cartItem).then(function (dataSource){
-                        productWidget.dataSource.data[0].IDPESAPROD = dataSource.IDPESAPROD;
-                        cartItem.IDPESAPROD    = dataSource.IDPESAPROD;
-                        cartItem.NRSEQIMPRLOJA = dataSource.NRSEQIMPRLOJA;
-                        cartItem.NMIMPRLOJA    = dataSource.NMIMPRLOJA;
-                        if (dataSource.IDPESAPROD === 'S') cartItem.QTPRODCOMVEN = null;
-                        else cartItem.QTPRODCOMVEN = 1;
-                        AccountCart.save(cartItem).then(function(){
-                            OperatorRepository.findOneInMemory().then(function (operatorData){
-                                updateWidgetLabel(operatorData, cartItem, productWidget);
+            self.getAccountData(function (accountData){
+                CampanhaFlag.findOne().then(function (flagProduct){
+                    var ProductRepository = self.defineCart(flagProduct);
+                    ProductRepository.findAll().then(function (cart){
+                        actionQtCart.hint = cart.length+1;
+                        innerCart.hint = cart.length+1;
+                        var cartItem = self.buildCartItem(product, position, cart, refilSet, accountData);
+                        restartDataSourceWidget(productWidget);
+                        prepareProductWidget(productWidget, cartItem).then(function (dataSource){
+                            productWidget.dataSource.data[0].IDPESAPROD = dataSource.IDPESAPROD;
+                            cartItem.IDPESAPROD    = dataSource.IDPESAPROD;
+                            cartItem.NRSEQIMPRLOJA = dataSource.NRSEQIMPRLOJA;
+                            cartItem.NMIMPRLOJA    = dataSource.NMIMPRLOJA;
+                            if (dataSource.IDPESAPROD === 'S') cartItem.QTPRODCOMVEN = null;
+                            else cartItem.QTPRODCOMVEN = 1;
+                            ProductRepository.save(cartItem).then(function(){
+                                OperatorRepository.findOneInMemory().then(function (operatorData){
+                                    updateWidgetLabel(operatorData, cartItem, productWidget);
+                                });
+                                updateFieldObservationsDataSource(productWidget.getField('CDOCORR'), product);
+                                productWidget.currentRow.QTPRODCOMVEN = "1";
+                                openProductPopUp(productWidget);
                             });
-                            updateFieldObservationsDataSource(productWidget.getField('CDOCORR'), product);
-                            productWidget.currentRow.QTPRODCOMVEN = "1";
-                            openProductPopUp(productWidget);
                         });
                     });
                 });
@@ -1487,32 +1553,38 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
     };
 
     var openProductPopUp = function(productWidget){
-        OperatorRepository.findOneInMemory().then(function (operatorData){
-            var parentWidget = productWidget.container.getWidget('menu') || productWidget.container.getWidget('smartPromo') || productWidget.container.getWidget('subPromo');
+        CampanhaFlag.findOne().then(function (flagProduct){
+            OperatorRepository.findOneInMemory().then(function (operatorData){
+                var parentWidget = productWidget.container.getWidget('menu') || productWidget.container.getWidget('smartPromo') || productWidget.container.getWidget('subPromo');
 
-            productWidget.getField('ATRASOPROD').isVisible = operatorData.NRATRAPADRAO > 0;
-            productWidget.getField('TOGO').isVisible = operatorData.IDCTRLPEDVIAGEM === 'S';
-            if (parentWidget.container.name !== 'menu' || operatorData.IDUTLQTDPED === 'S'){
-                productWidget.getField('QTPRODCOMVEN').isVisible = true;
-                productWidget.getField('QTPRODCOMVEN').spin = true;
-                productWidget.getField('QTPRODCOMVEN').label = "Quantidade (un)";
-                productWidget.getField('QTPRODCOMVEN').blockInputEdit = true;
-            }
-            else {
-                productWidget.getField('QTPRODCOMVEN').isVisible = false;
-            }
-            if (productWidget.currentRow.IDPESAPROD === 'S'){
-                productWidget.getField('QTPRODCOMVEN').isVisible = true;
-                productWidget.getField('QTPRODCOMVEN').spin = false;
-                productWidget.getField('QTPRODCOMVEN').label = "Quantidade (kg)";
-                productWidget.currentRow.QTPRODCOMVEN = "";
-                productWidget.getField('QTPRODCOMVEN').blockInputEdit = false;
-            }
-			ScreenService.openPopup(productWidget);
+                productWidget.getField('ATRASOPROD').isVisible = operatorData.NRATRAPADRAO > 0;
+                productWidget.getField('TOGO').isVisible = operatorData.IDCTRLPEDVIAGEM === 'S';
 
-			parentWidget.activate(); //To show the correct action on the button bar.
-			parentWidget.container.restoreDefaultMode();
-		});
+                if (parentWidget.container.name !== 'menu' || operatorData.IDUTLQTDPED === 'S'){
+                    productWidget.getField('QTPRODCOMVEN').isVisible = true;
+                    productWidget.getField('QTPRODCOMVEN').spin = true;
+                    productWidget.getField('QTPRODCOMVEN').label = "Quantidade (un)";
+                    productWidget.getField('QTPRODCOMVEN').blockInputEdit = true;
+                }
+                else {
+                    productWidget.getField('QTPRODCOMVEN').isVisible = false;
+                }
+                if (productWidget.currentRow.IDPESAPROD === 'S'){
+                    productWidget.getField('QTPRODCOMVEN').isVisible = true;
+                    productWidget.getField('QTPRODCOMVEN').spin = false;
+                    productWidget.getField('QTPRODCOMVEN').label = "Quantidade (kg)";
+                    productWidget.currentRow.QTPRODCOMVEN = "";
+                    productWidget.getField('QTPRODCOMVEN').blockInputEdit = false;
+                }
+                if (parentWidget.container.name === 'compreGanhe'){
+                    productWidget.getField('QTPRODCOMVEN').isVisible = false;
+                }
+                ScreenService.openPopup(productWidget);
+
+                parentWidget.activate(); //To show the correct action on the button bar.
+                parentWidget.container.restoreDefaultMode();
+            });
+        });
 	};
 
     /* - SMART PROMO MECHANICS - */
@@ -1539,7 +1611,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
             }, 0);
 
             if (currentGroupProducts < product.QTPRGRUPPROMOC){
-                product.quantity = 1;
+                //product.quantity = 1;
                 newTray.push(product);
             }
         });
@@ -1724,6 +1796,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
             DISPLAY:        currentCategory.NMGRUPROMOC,
             QTPRGRUPPROMOC: currentCategory.QTPRGRUPPROMOC,
             QTPRGRUPROMIN:  currentCategory.QTPRGRUPROMIN,
+            IDIMPGRPROMO:   currentCategory.IDIMPGRPROMO,
             CDGRUPMUTEX:    currentCategory.CDGRUPMUTEX,
             SELECTED:       false,
             DISABLED:       false
@@ -1762,6 +1835,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
             IDPRODBLOQ:      currentProduct.IDPRODBLOQ,
             QTPRGRUPPROMOC:  currentCategory.QTPRGRUPPROMOC,
             QTPRGRUPROMIN:   currentCategory.QTPRGRUPROMIN,
+            IDIMPGRPROMO:    currentCategory.IDIMPGRPROMO,
             CDGRUPMUTEX:     currentCategory.CDGRUPMUTEX,
             IMPRESSORAS:     currentProduct.IMPRESSORAS,
             IDPRODPRESELEC:  currentProduct.IDPRODPRESELEC,
@@ -1778,6 +1852,8 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
             VRDESITVEND:     currentProduct.VRDESITVEND,
             VRACRITVEND:     currentProduct.VRACRITVEND,
             VRPRECITEMCL:    currentProduct.VRPRECITEMCL,
+            VOUCHER:         null,
+            VOUCHERDISCOUNT: 0,
             quantity:        0
         };
     };
@@ -1803,24 +1879,27 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
                         groupCount++;
                         self.buildTrayItem(product, promoValues).then(function (trayItem){
                             PromoTray.save(trayItem).then(function (){
-                                AccountCart.findAll().then(function (cart){
-                                    if (productWidget.container.name === "smartPromo" && product.IDTIPOCOMPPROD == '3' && cart[0].CDPRODUTO != product.CDPRODUTO && product.IDIMPPRODUTO != '1'){
-                                        self.openPromoScreen(product, productWidget.container.getWidget('products'), true);
-                                    }
-                                    else {
-                                        product.quantity++;
-                                        self.updateGroupQuantityHeader(productWidget, groupCount);
-                                        if (!_.isEmpty(product.OBSERVATIONS)){
-                                            // Se não tiver observações, não abre o popup.
-                                            self.openPromoPopup(productWidget, product, promoValues);
+                                CampanhaFlag.findOne().then(function (flagProduct){
+                                    var ProductRepository = self.defineCart(flagProduct);
+                                    ProductRepository.findAll().then(function (cart){
+                                        if (productWidget.container.name === "smartPromo" && product.IDTIPOCOMPPROD == '3' && cart[0].CDPRODUTO != product.CDPRODUTO && product.IDIMPPRODUTO != '1'){
+                                            self.openPromoScreen(product, productWidget.container.getWidget('products'), true);
                                         }
                                         else {
-                                            PromoTray.findAll().then(function (newTray){
-                                                self.handleMutex(productWidget.container.getWidget('categories').dataSource.data, product.CDGRUPMUTEX, product.CDGRUPO, newTray);
-                                                self.advanceGroup(productWidget.container.getWidget('categories'), newTray);
-                                            });
+                                            product.quantity++;
+                                            self.updateGroupQuantityHeader(productWidget, groupCount);
+                                            if (!_.isEmpty(product.OBSERVATIONS) || product.IDPESAPROD === 'S'){
+                                                // Se não tiver observações, não abre o popup.
+                                                self.openPromoPopup(productWidget, product, promoValues);
+                                            }
+                                            else {
+                                                PromoTray.findAll().then(function (newTray){
+                                                    self.handleMutex(productWidget.container.getWidget('categories').dataSource.data, product.CDGRUPMUTEX, product.CDGRUPO, newTray);
+                                                    self.advanceGroup(productWidget.container.getWidget('categories'), newTray);
+                                                });
+                                            }
                                         }
-                                    }
+                                    });
                                 });
                             });
                         });
@@ -1925,6 +2004,11 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
             }
         }
 
+        if (product.IDIMPGRPROMO === 'S'){
+            discount = 0;
+            addition = 0;
+        }
+
         var strDesconto = '';
         if (discount > 0){
             if (product.IDPERVALORDES === 'P'){
@@ -1980,6 +2064,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
                 DSBUTTON: product.DSBUTTON,
                 IDAPLICADESCPR: product.IDAPLICADESCPR,
                 IDOBRPRODSELEC: product.IDOBRPRODSELEC,
+                IDIMPGRPROMO: product.IDIMPGRPROMO,
                 IDPERVALORDES: product.IDPERVALORDES,
                 VRDESPRODPROMOC: promoValues.discount,
                 PRECO: product.VRPRECITEM,
@@ -2010,6 +2095,8 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
                 VRDESCONTO: promoValues.originalDiscount,
                 IDPESAPROD: product.IDPESAPROD,
                 QTPRGRUPPROMOC: product.QTPRGRUPPROMOC,
+                VOUCHER: product.VOUCHER,
+                VOUCHERDISCOUNT: 0,
                 QTPRODCOMVEN: 1
             };
         });
@@ -2121,15 +2208,23 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
     };
 
     this.backSmartPromo = function(widget){
-        AccountCart.findAll().then(function (cart){
-            AccountCart.remove(Query.build()).then(function (){
-                var newCart = cart.filter(function (item){
-                    return item.ID !== cart[0].ID;
-                });
+        CampanhaFlag.findOne().then(function (flagProduct){
+            var ProductRepository = self.defineCart(flagProduct);
+            ProductRepository.findAll().then(function (cart){
+                ProductRepository.remove(Query.build()).then(function (){
+                    var newCart = cart.filter(function (item){
+                        return item.ID !== cart[0].ID;
+                    });
 
-                AccountCart.save(newCart).then(function (){
-                    self.resetGroupHighlight(widget);
-                    WindowService.openWindow('MENU_SCREEN');
+                    ProductRepository.save(newCart).then(function (){
+                        self.resetGroupHighlight(widget);
+                        if (_.isEmpty(flagProduct)){
+                            WindowService.openWindow('MENU_SCREEN');
+                        }
+                        else {
+                            WindowService.openWindow('COMPRE_GANHE_SCREEN');
+                        }
+                    });
                 });
             });
         });
@@ -2286,36 +2381,78 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
     };
 
     this.confirmSmartPromo = function(widget){
-        AccountCart.findAll().then(function (cart){
-            SmartPromoTray.findAll().then(function (tray){
-                if (validateGroupRequirements(widget.dataSource.data, tray, cart[0].IDTIPCOBRA)){
-                    handlePrintersProductForRoom(cart[0]).then(function (printers){
-                        cart[0].NRSEQIMPRLOJA = [];
-                        if (printers.length > 0){
-                            cart[0].NRSEQIMPRLOJA.push(printers[0].NRSEQIMPRLOJA);
-                        }
-                        self.trataCampanha(tray).then(function (tray){
-                            cart[0].PRODUTOS = tray;
-                            var calcResult = self.calcProductValue(cart[0]);
-                            if (calcResult == null){
-                                AccountCart.save(cart[0]).then(function (){
-                                    if (cart[0].IDIMPPRODUTO == '1'){
-                                        WindowService.openWindow('CHECK_PROMO_SCREEN');
+        CampanhaFlag.findOne().then(function (flagProduct){
+            var ProductRepository = self.defineCart(flagProduct);
+            ProductRepository.findAll().then(function (cart){
+                SmartPromoTray.findAll().then(function (tray){
+                    if (validateGroupRequirements(widget.dataSource.data, tray, cart[0].IDTIPCOBRA)){
+                        handlePrintersProductForRoom(cart[0]).then(function (printers){
+                            cart[0].NRSEQIMPRLOJA = [];
+                            if (printers.length > 0){
+                                cart[0].NRSEQIMPRLOJA.push(printers[0].NRSEQIMPRLOJA);
+                            }
+
+                            self.removeSeparateProducts(tray, cart, flagProduct).then(function (tray){
+                                self.trataCampanha(tray).then(function (tray){
+                                    cart[0].PRODUTOS = tray;
+                                    var calcResult = self.calcProductValue(cart[0]);
+                                    if (calcResult == null){
+                                        ProductRepository.save(cart[0]).then(function (){
+                                            if (cart[0].IDIMPPRODUTO == '1' || cart[0].IDTIPOCOMPPROD == '6'){
+                                                WindowService.openWindow('CHECK_PROMO_SCREEN');
+                                            }
+                                            else {
+                                                self.resetGroupHighlight(widget);
+                                                if (_.isEmpty(flagProduct)){
+                                                    WindowService.openWindow('MENU_SCREEN');
+                                                }
+                                                else {
+                                                    WindowService.openWindow('COMPRE_GANHE_SCREEN');
+                                                }
+                                            }
+                                        });
                                     }
                                     else {
-                                        self.resetGroupHighlight(widget);
-                                        WindowService.openWindow('MENU_SCREEN');
+                                        ScreenService.showMessage("O valor calculado para o produto " + calcResult.DSBUTTON + " ficou abaixo de R$0,01. Verifique a parametrização.");
                                     }
                                 });
-                            }
-                            else {
-                                ScreenService.showMessage("O valor calculado para o produto " + calcResult.DSBUTTON + " ficou abaixo de R$0,01. Verifique a parametrização.");
-                            }
+                            });
                         });
-                    });
-                }
+                    }
+                }.bind(this));
             }.bind(this));
         }.bind(this));
+    };
+
+    this.removeSeparateProducts = function(tray, cart, flagProduct){
+        return self.getAccountData(function (accountData){
+            var newTray = [];
+            var separateProducts = [];
+            if (_.isEmpty(flagProduct)){
+                tray.forEach(function (trayItem){
+                    if (trayItem.IDIMPGRPROMO === 'S'){
+                        trayItem.IDTIPCOBRA = null;
+                        trayItem.IDTIPOCOMPPROD = '1';
+                        trayItem.IMPRESSORAS = Array();
+                        var cartItem = self.buildCartItem(trayItem, cart[0].POS, cart, false, accountData);
+                        cartItem.NRSEQIMPRLOJA = Array();
+                        cartItem.CDOCORR = trayItem.CDOCORR;
+                        cartItem.TXPRODCOMVEN = trayItem.TXPRODCOMVEN;
+                        cartItem.QTPRODCOMVEN = trayItem.QTPRODCOMVEN;
+                        separateProducts.push(cartItem);
+                    }
+                    else {
+                        newTray.push(trayItem);
+                    }
+                });
+            }
+            else {
+                newTray = tray;
+            }
+            return AccountCart.save(separateProducts).then(function (){
+                return newTray;
+            });
+        });
     };
 
     this.confirmSubPromo = function(widget){
@@ -2615,36 +2752,47 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
     };
 
 	this.storeParentObservations = function(widget){
-		AccountCart.findAll().then(function (cart){
-			cart[0].CDOCORR = widget.currentRow.CDOCORR || [];
-			cart[0].DSOCORR_CUSTOM = widget.currentRow.DSOCORR_CUSTOM || null;
-			AccountCart.save(cart[0]).then(function (){
-				widget.setCurrentRow({'CDOCORR': [], 'DSOCORR_CUSTOM': null});
-				WindowService.openWindow('MENU_SCREEN');
-			});
-		}.bind(this));
+        CampanhaFlag.findOne().then(function (flagProduct){
+            var ProductRepository = self.defineCart(flagProduct);
+            ProductRepository.findAll().then(function (cart){
+                cart[0].CDOCORR = widget.currentRow.CDOCORR || [];
+                cart[0].DSOCORR_CUSTOM = widget.currentRow.DSOCORR_CUSTOM || null;
+                ProductRepository.save(cart[0]).then(function (){
+                    widget.setCurrentRow({'CDOCORR': [], 'DSOCORR_CUSTOM': null});
+                    if (_.isEmpty(flagProduct)){
+                        WindowService.openWindow('MENU_SCREEN');
+                    }
+                    else {
+                        WindowService.openWindow('COMPRE_GANHE_SCREEN');
+                    }
+                });
+            }.bind(this));
+        }.bind(this));
 	};
 
 	this.checkPromoDatasourceHandler = function (widget) {
 		delete widget.dataSource.data;
-		AccountCart.findAll().then(function (cart) {
-			SmartPromoTray.findAll().then(function (tray) {
-				tray.forEach(function (product) {
-					product.TXPRODCOMVEN = this.obsToText(product.CDOCORR, product.DSOCORR_CUSTOM);
-					if (product.ATRASOPROD === 'Y') product.holdText = 'SEGURA';
-					else product.holdText = '';
-					if (product.TOGO === 'Y') product.toGoText = 'PARA VIAGEM';
-					else product.toGoText = '';
-				}.bind(this));
-				widget.dataSource.data = tray;
+        CampanhaFlag.findOne().then(function (flagProduct){
+            var ProductRepository = self.defineCart(flagProduct);
+            ProductRepository.findAll().then(function (cart) {
+                SmartPromoTray.findAll().then(function (tray) {
+                    tray.forEach(function (product) {
+                        product.TXPRODCOMVEN = this.obsToText(product.CDOCORR, product.DSOCORR_CUSTOM);
+                        if (product.ATRASOPROD === 'Y') product.holdText = 'SEGURA';
+                        else product.holdText = '';
+                        if (product.TOGO === 'Y') product.toGoText = 'PARA VIAGEM';
+                        else product.toGoText = '';
+                    }.bind(this));
+                    widget.dataSource.data = tray;
 
-				// Prepares the parent product observation popup.
-				widget.widgets[1].getField('CDOCORR').dataSource.data = this.getObservations(cart[0].OBSERVATIONS);
-				widget.widgets[1].label = "Observações Adicionais - " + cart[0].DSBUTTON;
+                    // Prepares the parent product observation popup.
+                    widget.widgets[1].getField('CDOCORR').dataSource.data = this.getObservations(cart[0].OBSERVATIONS);
+                    widget.widgets[1].label = "Observações Adicionais - " + cart[0].DSBUTTON;
 
-				ScreenService.openPopup(widget.widgets[1]);
-			}.bind(this));
-		}.bind(this));
+                    ScreenService.openPopup(widget.widgets[1]);
+                }.bind(this));
+            }.bind(this));
+        }.bind(this));
 	};
 
 	this.getObservations = function (arrayCDOCORR) {
@@ -2679,6 +2827,27 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 			return array.indexOf(este) === i;
 		});
 	};
+
+    this.checkForVouchers = function(widget, stripe){
+        if (!_.isEmpty(widget.currentRow.PRODUTOS) && widget.currentRow.IDIMPPRODUTO == '2'){
+            var voucherCount = 0;
+            widget.currentRow.PRODUTOS.forEach(function (comboItem){
+                if (comboItem.VOUCHER){
+                    voucherCount++;
+                }
+            });
+            if (voucherCount > 0){
+                widget.currentRow.QTPRODCOMVEN = 1;
+                ScreenService.showMessage("Não é possível alterar a quantidade de promoções que possuem vouchers aplicados nos seus filhos.");
+            }
+            else {
+                self.updateCart(widget, stripe);
+            }
+        }
+        else {
+            self.updateCart(widget, stripe);
+        }
+    };
 
 	this.updateCart = function (widget, stripe) {
 		return new Promise(function (resolve) {
@@ -2794,33 +2963,36 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 	};
 
 	this.updateObservations = function (widget) {
-		return AccountCart.findAll().then(function (data) {
-			widget.currentRow.QTPRODCOMVEN = parseFloat(String(widget.currentRow.QTPRODCOMVEN).replace(',', '.'));
-			handleOneChoiceOnly(widget.currentRow, 'NRSEQIMPRLOJA');
-			data[0].CDOCORR = widget.currentRow.CDOCORR || [];
-			data[0].DSOCORR_CUSTOM = widget.currentRow.DSOCORR_CUSTOM || null;
-			data[0].ATRASOPROD = widget.currentRow.ATRASOPROD;
-			data[0].TOGO = widget.currentRow.TOGO;
-			data[0].holdText = (widget.currentRow.ATRASOPROD === 'Y') ? 'SEGURA' : '';
-			data[0].toGoText = (widget.currentRow.TOGO === 'Y') ? 'PARA VIAGEM' : '';
-			data[0].NRSEQIMPRLOJA = widget.currentRow.NRSEQIMPRLOJA || [];
-			data[0].TXPRODCOMVEN = self.obsToText(widget.currentRow.CDOCORR, widget.currentRow.DSOCORR_CUSTOM);
-			data[0].NMIMPRLOJA = getPrinterName(widget.currentRow.NRSEQIMPRLOJA[0], data[0].IMPRESSORAS);
-			if (widget.currentRow.IDPESAPROD === 'S') {
-				if (widget.currentRow.QTPRODCOMVEN !== null && !isNaN(widget.currentRow.QTPRODCOMVEN)) {
-					data[0].QTPRODCOMVEN = parseFloat(widget.currentRow.QTPRODCOMVEN.toFixed(3));
-				}
-				else {
-					widget.currentRow.QTPRODCOMVEN = "";
-					data[0].QTPRODCOMVEN = 1;
-				}
-			}
-			else {
-				data[0].QTPRODCOMVEN = parseInt(widget.currentRow.QTPRODCOMVEN);
-			}
-			self.calcProductValue(data[0]);
-			return AccountCart.save(data[0]);
-		}.bind(this));
+        return CampanhaFlag.findOne().then(function (flagProduct){
+            var ProductRepository = self.defineCart(flagProduct);
+            return ProductRepository.findAll().then(function (data) {
+                widget.currentRow.QTPRODCOMVEN = parseFloat(String(widget.currentRow.QTPRODCOMVEN).replace(',', '.'));
+                handleOneChoiceOnly(widget.currentRow, 'NRSEQIMPRLOJA');
+                data[0].CDOCORR = widget.currentRow.CDOCORR || [];
+                data[0].DSOCORR_CUSTOM = widget.currentRow.DSOCORR_CUSTOM || null;
+                data[0].ATRASOPROD = widget.currentRow.ATRASOPROD;
+                data[0].TOGO = widget.currentRow.TOGO;
+                data[0].holdText = (widget.currentRow.ATRASOPROD === 'Y') ? 'SEGURA' : '';
+                data[0].toGoText = (widget.currentRow.TOGO === 'Y') ? 'PARA VIAGEM' : '';
+                data[0].NRSEQIMPRLOJA = widget.currentRow.NRSEQIMPRLOJA || [];
+                data[0].TXPRODCOMVEN = self.obsToText(widget.currentRow.CDOCORR, widget.currentRow.DSOCORR_CUSTOM);
+                data[0].NMIMPRLOJA = getPrinterName(widget.currentRow.NRSEQIMPRLOJA[0], data[0].IMPRESSORAS);
+                if (widget.currentRow.IDPESAPROD === 'S') {
+                    if (widget.currentRow.QTPRODCOMVEN !== null && !isNaN(widget.currentRow.QTPRODCOMVEN)) {
+                        data[0].QTPRODCOMVEN = parseFloat(widget.currentRow.QTPRODCOMVEN.toFixed(3));
+                    }
+                    else {
+                        widget.currentRow.QTPRODCOMVEN = "";
+                        data[0].QTPRODCOMVEN = 1;
+                    }
+                }
+                else {
+                    data[0].QTPRODCOMVEN = parseInt(widget.currentRow.QTPRODCOMVEN);
+                }
+                self.calcProductValue(data[0]);
+                return ProductRepository.save(data[0]);
+            }.bind(this));
+        }.bind(this));
 	};
 
 	this.handleObservations = function (data, widget) {
@@ -2883,32 +3055,38 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 	};
 
 	this.undoOrder = function (product, cartAction) {
-		AccountCart.findAll().then(function (Cart) {
-			AccountCart.remove(Query.build()).then(function () {
-				var newCart = Cart.filter(function (item) {
-					return item.ID !== product.ID;
-				});
+        CampanhaFlag.findOne().then(function (flagProduct){
+            var ProductRepository = self.defineCart(flagProduct);
+            ProductRepository.findAll().then(function (Cart) {
+                ProductRepository.remove(Query.build()).then(function () {
+                    var newCart = Cart.filter(function (item) {
+                        return item.ID !== product.ID;
+                    });
 
-				AccountCart.save(newCart).then(function () {
-					ScreenService.closePopup();
-				});
+                    ProductRepository.save(newCart).then(function () {
+                        ScreenService.closePopup();
+                    });
 
-				cartAction.hint = cartAction.hint - 1;
-			});
-		});
+                    cartAction.hint = cartAction.hint - 1;
+                });
+            });
+        });
 	};
 
-	this.prepareMenu = function (widgets) {
-		ParamsGroupRepository.findAll().then(function (data) {
-			widgets[0].dataSource.data = data;
-			widgets[0].setCurrentRow(data[0]);
-			ParamsMenuRepository.findAll().then(function (data) {
-				widgets[1].dataSource.data = data;
-				widgets[1].setCurrentRow(data[0]);
-			});
-		});
-
-	};
+    this.prepareMenu = function (widgets) {
+        ParamsGroupRepository.findAll().then(function (data){
+            CampanhaProducts.remove(Query.build()).then(function (){
+                CampanhaFlag.remove(Query.build()).then(function (){
+                    widgets[0].dataSource.data = data;
+                    widgets[0].setCurrentRow(data[0]);
+                    ParamsMenuRepository.findAll().then(function (data){
+                        widgets[1].dataSource.data = data;
+                        widgets[1].setCurrentRow(data[0]);
+                    });
+                });
+            });
+        });
+    };
 
 	this.updateCancelObservations = function (row, callback) {
 		var CDOCORR = row.CDOCORR;
@@ -3365,7 +3543,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 
 	// esta função é utilizada na parcial do waiter
 	// usar quando o template for "waiter_position"
-	this.refreshAccountDetails = function (widgetsFilhos, position, forceRefresh) {
+	this.refreshAccountDetails = function (widgetsFilhos, position, forceRefresh, updateDiscount) {
 		// pega as duas tabs
 		var pageDetails = widgetsFilhos[0];
 		var pageItems = widgetsFilhos[1];
@@ -3385,7 +3563,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 
 			this.getAccountData(function (accountData) {
 				OperatorRepository.findAll().then(function (params) {
-					AccountService.getAccountDetails(params[0].chave, params[0].modoHabilitado, accountData[0].NRCOMANDA, accountData[0].NRVENDAREST, 'M', position).then(function (databack) {
+					AccountService.getAccountDetails(params[0].chave, params[0].modoHabilitado, accountData[0].NRCOMANDA, accountData[0].NRVENDAREST, 'M', position, updateDiscount).then(function (databack) {
 						var accountDetails = databack.AccountGetAccountDetails[0];
 
 						var dataset = {
@@ -3457,7 +3635,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 
 	// esta função é utilizada no pagamento do waiter
 	//Usar quando o template for "waiter_position_multiple"
-	this.refreshAccountDetailsMultiplePositions = function (widgetsFilhos, position, positionsField) {
+	this.refreshAccountDetailsMultiplePositions = function (widgetsFilhos, position, positionsField, updateDiscount) {
 		// pega as duas tabs
 		var pageDetails = widgetsFilhos[0];
 		var pageItems = widgetsFilhos[1];
@@ -3519,7 +3697,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 			if (position !== undefined && position.length > 0) {
 				this.getAccountData(function (accountData) {
 					OperatorRepository.findAll().then(function (params) {
-						AccountService.getAccountDetails(params[0].chave, params[0].modoHabilitado, accountData[0].NRCOMANDA, accountData[0].NRVENDAREST, 'M', position).then(function (databack) {
+						AccountService.getAccountDetails(params[0].chave, params[0].modoHabilitado, accountData[0].NRCOMANDA, accountData[0].NRVENDAREST, 'M', position, updateDiscount).then(function (databack) {
 							pageDetails.currentRow = databack.AccountGetAccountDetails[0];
 
 							if (pageItems.dataSource.data && pageItems.dataSource.data.length > 0) {
@@ -3917,7 +4095,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 	this.selectedProduct = {};
 
 	this.prepareCheckOrder = function (product, field, widget, listaFilhos, stripe) {
-		OperatorRepository.findAll().then(function (operatorData) {
+		OperatorRepository.findOne().then(function (operatorData) {
 			if (this.selectedProduct !== product) {
 				field.dataSource.data = this.getObservations(product.OBSERVATIONS);
 				widget.currentRow = product;
@@ -3934,13 +4112,13 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 				}
 
 				/* Define se será mostrado o checkbox de atraso de produtos. */
-				if (operatorData[0].modoHabilitado !== 'O') {
-					widget.getField('ATRASOPROD').isVisible = (operatorData[0].NRATRAPADRAO > 0);
+				if (operatorData.modoHabilitado !== 'O') {
+					widget.getField('ATRASOPROD').isVisible = (operatorData.NRATRAPADRAO > 0);
 				}
 
-				widget.getField('TOGO').isVisible = operatorData[0].IDCTRLPEDVIAGEM === 'S';
+				widget.getField('TOGO').isVisible = operatorData.IDCTRLPEDVIAGEM === 'S';
 
-				if (operatorData[0].IDUTLQTDPED === 'S') {
+				if (operatorData.IDUTLQTDPED === 'S' && product.IDTIPOCOMPPROD !== '6'){
 					widget.getField('QTPRODCOMVEN').isVisible = true;
 					widget.getField('QTPRODCOMVEN').spin = true;
 					widget.getField('QTPRODCOMVEN').label = "Quantidade (un)";
@@ -3960,6 +4138,20 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 					printersField.isVisible = printers.length > 1;
 					printersField.dataSource.data = printers;
 				});
+
+                if (operatorData.IDUTCUPOMDESC === 'S' && product.IDIMPPRODUTO == '1'){
+                    widget.getField('voucher').isVisible = true;
+                    if (_.isEmpty(product.VOUCHER)){
+                        widget.getField('voucher').label = "Voucher";
+                    }
+                    else {
+                        widget.getField('voucher').label = "Voucher: " + product.VOUCHER.CDCUPOMDESCFOS;
+                    }
+                }
+                else {
+                    widget.getField('voucher').isVisible = false;
+                }
+
 				templateManager.updateTemplate();
 			}
 		}.bind(this));
@@ -3970,6 +4162,19 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 			if (product) {
 				popup.fields[0].dataSource.data = this.getObservations(product.OBSERVATIONS);
 				popup.currentRow = product;
+                if (operatorData[0].IDUTCUPOMDESC === 'S' && popup.container.getWidget('checkOrder').currentRow.IDIMPPRODUTO == '1'){
+                    popup.getAction('btnVoucher').isVisible = false;
+                }
+                else {
+                    popup.getAction('btnVoucher').isVisible = true;
+                    if (_.isEmpty(product.VOUCHER)){
+                        popup.getAction('btnVoucher').label = "Voucher";
+                    }
+                    else {
+                        popup.getAction('btnVoucher').label = "Voucher: " + product.VOUCHER.CDCUPOMDESCFOS;
+                    }
+                }
+
 				ScreenService.openPopup(popup);
 			}
 		}.bind(this));
@@ -4105,42 +4310,17 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 					if (obsReturn.error) {
 						ScreenService.showMessage(obsReturn.message);
 					} else {
-						ScreenService.closePopup();
+                        // Se o produto fizer parte de uma campanha "Compre e Ganhe", abre a tela.
+                        if (widget.currentRow.CAMPANHA){
+                            CampanhaFlag.save(widget.currentRow).then(function (){
+                                WindowService.openWindow('COMPRE_GANHE_SCREEN');
+                            });
+                        }
+                        else {
+						  ScreenService.closePopup();
+                        }
 					}
 				}.bind(this));
-			}
-		});
-	};
-
-	this.handlePositionsFieldInit = function (widgetCloseAccount) {
-		var positionsField = widgetCloseAccount.getField('positionsField');
-		var radioTablePositions = widgetCloseAccount.getField('radioTablePositions');
-		widgetCloseAccount.setCurrentRow({});
-		radioTablePositions.applyDefaultValue();
-		self.setActionLabel(positionsField);
-	};
-
-	this.prepareAccountClosingWidget = function (widgetCloseAccount, formWidget, openFidelityPopup, fidelitySearch) {
-		var positionsField = widgetCloseAccount.getField('positionsField');
-		var radioTablePositions = widgetCloseAccount.getField('radioTablePositions');
-
-		OperatorRepository.findOne().then(function (operatorData) {
-			if ((operatorData.modoHabilitado === 'M') && (operatorData.IDLUGARMESA === 'S')) {
-				TableActiveTable.findOne().then(function (activeTable) {
-					var positionsObject = _.get(activeTable, 'posicoes', {});
-
-					WaiterNamedPositionsState.initializeTemplate();
-
-					positionsField.dataSource.data[0].NRPOSICAOMESA = activeTable.NRPOSICAOMESA;
-					positionsField.dataSource.data[0].clientMapping = ApplicationContext.TableController.buildClientMapping(positionsObject);
-					positionsField.dataSource.data[0].consumerMapping = ApplicationContext.TableController.buildConsumerMapping(positionsObject);
-					positionsField.dataSource.data[0].positionNamedMapping = ApplicationContext.TableController.buildPositionNamedMapping(positionsObject);
-					ApplicationContext.TableController.updatePositionsCopy(positionsField);
-
-					if (openFidelityPopup) {
-						self.openTableFidelity(formWidget, positionsField, radioTablePositions, fidelitySearch);
-					}
-				});
 			}
 		});
 	};
@@ -4160,7 +4340,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 				positionsField.isVisible = false;
 				$('.zh-widget-accountItemsTable').css('top', topMargin - 55 + 'px');
 				WaiterNamedPositionsState.unselectAllPositions();
-				this.refreshAccountDetails(widgetCloseAccount.widgets, '', positionsField, true);
+				this.refreshAccountDetails(widgetCloseAccount.widgets, '', true);
 			}
 			self.setActionLabel(positionsField);
 		}.bind(self));
@@ -4177,7 +4357,7 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 					}
 					else {
 						positionsField.widget.fields[0].setValue('M');
-						self.refreshAccountDetails(positionsField.widget.widgets, '', positionsField, true);
+						self.refreshAccountDetails(positionsField.widget.widgets, '', true);
 					}
 					self.setActionLabel(positionsField);
 				}
@@ -4236,64 +4416,6 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 			} else {
 				positionsField.isVisible = false;
 			}
-		});
-	};
-
-	this.handlePositionsRadioChangeAccount = function (widgetCloseAccount) {
-		var positionsField = widgetCloseAccount.getField('positionsField');
-		var radioTablePositions = widgetCloseAccount.getField('radioTablePositions');
-
-		var topMargin = parseInt($('.zh-widget-accountItemsTable').css('top'));
-
-		TableActiveTable.findOne().then(function (activeTable) {
-			if (radioTablePositions.value() === 'P') {
-				positionsField.isVisible = true;
-				positionsField.dataSource.data[0].NRPOSICAOMESA = activeTable.NRPOSICAOMESA;
-				$('.zh-widget-accountItemsTable').css('top', topMargin + 55 + 'px');
-			} else {
-				positionsField.isVisible = false;
-				$('.zh-widget-accountItemsTable').css('top', topMargin - 55 + 'px');
-				WaiterNamedPositionsState.unselectAllPositions();
-				this.refreshAccountDetails(widgetCloseAccount.widgets, '', positionsField, true);
-			}
-			self.setActionLabel(positionsField);
-		}.bind(self));
-	};
-
-	this.handleCloseTablePositionChange = function (positionsField) {
-		TableActiveTable.findOne().then(function (activeTable) {
-			TableService.positionControl(activeTable.NRVENDAREST, positionsField.newPosition + 1, !~positionsField.position.indexOf(positionsField.newPosition), positionsField.position).then(function (result) {
-				if (result[0].message == null) {
-					self.showPositionActions(positionsField);
-					if (positionsField.position.length > 0) {
-						positionsField.widget.fields[0].setValue('P');
-						self.refreshAccountDetailsMultiplePositions(positionsField.widget.widgets, positionsField.position, positionsField);
-					}
-					else {
-						positionsField.widget.fields[0].setValue('M');
-						self.refreshAccountDetails(positionsField.widget.widgets, '', positionsField, true);
-					}
-					self.setActionLabel(positionsField);
-				}
-				else {
-					positionsField._buttons[positionsField.newPosition].selected = false;
-					positionsField.position.pop(positionsField.newPosition);
-					if (positionsField.position.length == 0) {
-						self.hidePositionActions(positionsField);
-					}
-				}
-			});
-		});
-	};
-
-	this.showPositionActions = function (positionsField) {
-		OperatorRepository.findOne().then(function (operatorData) {
-			positionsField.widget.container.getWidget('accountDetailsTable').getAction('changePositions').isVisible = true;
-			positionsField.widget.container.getWidget('accountDetailsTable').getAction('pagar').isVisible = true;
-			positionsField.widget.container.getWidget('accountItemsTable').getAction('transfer').isVisible = true;
-			positionsField.widget.container.getWidget('accountItemsTable').getAction('pagar').isVisible = true;
-			positionsField.widget.container.getWidget('accountDetailsTable').getAction('partialPrint').isVisible = true;
-			positionsField.widget.container.getWidget('accountDetailsTable').getField('servicoBtn').isVisible = operatorData.IDCOMISVENDA == "S";
 		});
 	};
 
@@ -5243,47 +5365,109 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 
     this.handleSelectedProduct = function (widget, product, position){
         OperatorRepository.findOne().then(function (operatorData){
-            self.priceUpdate(product, function (result){
-                if (result){
-                    widget.reload();
-                    product = result[0];
-                }
-
-                product.HRINIVENPROD = !product.HRINIVENPROD ? 0 : product.HRINIVENPROD;
-                product.HRFIMVENPROD = !product.HRFIMVENPROD ? 0 : product.HRFIMVENPROD;
-
-                var validaProduto = self.validateProducts(product, operatorData.IDCOLETOR);
-                if (_.isEmpty(validaProduto)){
-                    if (product.GRUPOS){ // Produto do cardápio principal.
-                        if (!isSmartPromo(product) && product.IDTIPOCOMPPROD !== 'C'){
-                            /* - Produto Normal - */
-                            self.addToCart(widget.container.getWidget("addProduct"), product, position, widget.container.getWidget("addProduct").getAction("cart"), widget.container.getWidget("menu").getAction("cart"), false, false);
-                            ScreenService.closePopup();
+            CampanhaFlag.findOne().then(function (flagProduct){
+                CampanhaProducts.findAll().then(function (campanhaProducts){
+                    var ProductRepository = self.defineCart(flagProduct);
+                    self.priceUpdate(product, function (result){
+                        if (result){
+                            widget.reload();
+                            product = result[0];
                         }
-                        else {
-                            /* - Promoção Inteligente - */
-                            self.buildPromoItem(product, position, false, false, function (refil){
-                                buildCartItem(product, position, refil).then(function (cartItem){
-                                    // Fixa a quantidade do produto.
-                                    cartItem.QTPRODCOMVEN = 1;
-                                    // Adiciona o produto pai no carrinho.
-                                    AccountCart.save(cartItem).then(function (){
-                                        self.openPromoScreen(product, widget, false);
+
+                        product.HRINIVENPROD = !product.HRINIVENPROD ? 0 : product.HRINIVENPROD;
+                        product.HRFIMVENPROD = !product.HRFIMVENPROD ? 0 : product.HRFIMVENPROD;
+
+                        var validaProduto = self.validateProducts(product, operatorData.IDCOLETOR);
+                        if (_.isEmpty(validaProduto)){
+                            if (product.GRUPOS){ // Produto do cardápio principal.
+                                if (_.isEmpty(flagProduct) || campanhaProducts.length < flagProduct.QTCOMPGANHE){
+                                    if (!isSmartPromo(product) && product.IDTIPOCOMPPROD !== 'C'){
+                                        /* - Produto Normal - */
+                                        self.addToCart(widget.container.getWidget("addProduct"), product, position, widget.container.getWidget("addProduct").getAction("cart"), widget.container.getWidget("menu").getAction("cart"), false, false);
                                         ScreenService.closePopup();
-                                    });
-                                });
-                            });
+                                    }
+                                    else {
+                                        /* - Promoção Inteligente - */
+                                        TableActiveTable.findOne().then(function (tableData){
+                                            ProductRepository.findAll().then(function (cart){
+                                                var rodizio = product.IDTIPOCOMPPROD === '6';
+                                                // Validação de produtos rodízio.
+                                                var rodizioValidation;
+                                                if (rodizio){
+                                                    rodizioValidation = self.validateRodizio(product, cart, position, tableData.DTHRABERMESA, operatorData.HRTEMPOROD);
+                                                }
+                                                if (!rodizio || (rodizio && rodizioValidation.result)){
+                                                    self.getAccountData(function (accountData){
+                                                        self.buildPromoItem(product, position, false, false, function (refil){
+                                                            var cartItem = self.buildCartItem(product, position, cart, refil, accountData);
+                                                            // Fixa a quantidade do produto.
+                                                            cartItem.QTPRODCOMVEN = 1;
+                                                            // Adiciona o produto pai no carrinho.
+                                                            ProductRepository.save(cartItem).then(function (){
+                                                                self.openPromoScreen(product, widget, false);
+                                                                ScreenService.closePopup();
+                                                            });
+                                                        });
+                                                    });
+                                                }
+                                                else {
+                                                    ScreenService.showMessage(rodizioValidation.rodizioMessage);
+                                                }
+                                            });
+                                        });
+                                    }
+                                }
+                                else {
+                                    ScreenService.showMessage("Quantidade de brindes excedida.");
+                                }
+                            }
+                            else { // Produto dentro de uma promoção.
+                                self.addToTray(widget.container.getWidget("addProduct"), product);
+                                ScreenService.closePopup();
+                            }
+                        } else {
+                            ScreenService.showMessage(validaProduto);
                         }
-                    }
-                    else { // Produto dentro de uma promoção.
-                        self.addToTray(widget.container.getWidget("addProduct"), product);
-                        ScreenService.closePopup();
-                    }
-                } else {
-                    ScreenService.showMessage(validaProduto);
-                }
+                    });
+                });
             });
         });
+    };
+
+    this.validateRodizio = function(product, cart, position, DTHRABERMESA, HRTEMPOROD){
+        var rodizioValidation;
+        var rodizioMessage;
+        var tempoRodizio;
+
+        var tempoAtual = Date.now();
+        if (HRTEMPOROD == null){
+            tempoRodizio = DTHRABERMESA + 1000;
+        }
+        else {
+            tempoRodizio = DTHRABERMESA + 3600 * parseInt(HRTEMPOROD.substr(0, 2)) + 60 * parseInt(HRTEMPOROD.substr(2));
+        }
+        if (tempoRodizio * 1000 > tempoAtual){
+            rodiziosPosicao = _.filter(cart, function (cartItem){
+                return cartItem.IDTIPOCOMPPROD === '6' && cartItem.POS === position && cartItem.CDPRODUTO === product.CDPRODUTO;
+            });
+            if (!_.isEmpty(rodiziosPosicao)){
+                rodizioValidation = false;
+                rodizioMessage = "Apenas um produto rodízio pode ser pedido por posição.";
+            }
+            else {
+                rodizioValidation = true;
+                rodizioMessage = "";
+            }
+        }
+        else {
+            rodizioValidation = false;
+            rodizioMessage = "O tempo de duração do rodízio está esgotado.";
+        }
+
+        return {
+            "result": rodizioValidation,
+            "rodizioMessage": rodizioMessage
+        };
     };
 
     this.validateProducts = function(product, IDCOLETOR){
@@ -5297,20 +5481,22 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
             if (product.VRPRECITEM == 0)
                 return "Produto sem preço.";
 
-            if (IDCOLETOR !== 'C'){
-                var message = 'Produto não pode ser vendido, pois não possui ';
-                var validate = {
-                    'CDCLASFISC': "NCM",
-                    'CDCFOPPFIS': "CFOP",
-                    'CDCSTICMS': "CST do ICMS",
-                    'VRALIQPIS': "Aliquota do PIS",
-                    'CDCSTPISCOF': "CST do PIS/COFINS",
-                    'VRALIQCOFINS': "Aliquota do COFINS"
-                };
+            if (!(isSmartPromo(product) && product.IDIMPPRODUTO == '2')){
+                if (IDCOLETOR !== 'C'){
+                    var message = 'Produto não pode ser vendido, pois não possui ';
+                    var validate = {
+                        'CDCLASFISC': "NCM",
+                        'CDCFOPPFIS': "CFOP",
+                        'CDCSTICMS': "CST do ICMS",
+                        'VRALIQPIS': "Aliquota do PIS",
+                        'CDCSTPISCOF': "CST do PIS/COFINS",
+                        'VRALIQCOFINS': "Aliquota do COFINS"
+                    };
 
-                for (var indexVaL in validate){
-                    if (_.isEmpty(product[indexVaL])) {
-                        return message + validate[indexVaL] + ' parametrizado.';
+                    for (var indexVaL in validate){
+                        if (_.isEmpty(product[indexVaL])) {
+                            return message + validate[indexVaL] + ' parametrizado.';
+                        }
                     }
                 }
             }
@@ -5368,14 +5554,22 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 						}
 					}
 					else {
-						var products = search.dataset.FilterProducts;
-						if (products.length == 1) {
-							popup.currentRow = products[0];
-							popup.getField('selectProducts').setValue(products[0].DSBUTTON);
-						} else if (products.length > 1) {
-							delete field.selectWidget;
-							field.openField();
-						}
+                        CampanhaFlag.findOne().then(function (flagProduct){
+                            var products = search.dataset.FilterProducts;
+                            if (!_.isEmpty(flagProduct)){
+                                delete field.selectWidget;
+                                field.openField();
+                            }
+                            else {
+                                if (products.length == 1){
+                                    popup.currentRow = products[0];
+                                    popup.getField('selectProducts').setValue(products[0].DSBUTTON);
+                                } else if (products.length > 1){
+                                    delete field.selectWidget;
+                                    field.openField();
+                                }
+                            }
+                        });
 					}
 				}
 			}.bind(this));
@@ -5503,10 +5697,10 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 							if (positionsField.position.length > 0) {
 								positionsField._isStatusChanged = true;
 								positionsField.widget.fields[0].setValue('P');
-								self.refreshAccountDetailsMultiplePositions(positionsField.widget.widgets, positionsField.position, positionsField);
+								self.refreshAccountDetailsMultiplePositions(positionsField.widget.widgets, positionsField.position, positionsField, true);
 							} else {
 								positionsField.widget.fields[0].setValue('M');
-								self.refreshAccountDetails(positionsField.widget.widgets, '', positionsField, true);
+								self.refreshAccountDetails(positionsField.widget.widgets, '', true, true);
 							}
 							ScreenService.closePopup(true);
 							widget.container.getWidget('accountDetailsTable').activate();
@@ -5821,6 +6015,226 @@ function AccountController(ZHPromise, OperatorRepository, AccountCart, AccountGe
 			}
 		});
 	};
+
+    this.openVoucherPopup = function(row, voucherPopup, widget){
+        if (row.VOUCHER || (widget && widget.currentRow.VOUCHER)){
+            ScreenService.showMessage("Não é possível adicionar mais de um voucher no mesmo produto. Favor retirá-lo da bandeja e adicione-o novamente caso necessário remover ou alterar o voucher.");
+        }
+        else {
+            if (widget && widget.container.getWidget('checkOrder').currentRow.QTPRODCOMVEN > 1){
+                ScreenService.showMessage("Não é possível adicionar voucher em filhos de promoções que possuem quantidade maior que 1.");
+            }
+            else {
+                if (widget) voucherPopup.currentRow.PROMOPRODUCT = widget.currentRow;
+                else voucherPopup.currentRow.PROMOPRODUCT = null;
+                voucherPopup.currentRow.CDCUPOMDESCFOS = null;
+                ScreenService.openPopup(voucherPopup);
+            }
+        }
+
+    };
+
+    this.confirmVoucher = function(row, widget){
+        if (!_.isEmpty(row.CDCUPOMDESCFOS)){
+            var CDPRODUTO = null;
+            if (_.isEmpty(row.PROMOPRODUCT)){
+                CDPRODUTO = widget.currentRow.CDPRODUTO;
+            }
+            else {
+                CDPRODUTO = row.PROMOPRODUCT.CDPRODUTO;
+            }
+            AccountService.checkVoucher(CDPRODUTO, widget.currentRow.NRVENDAREST, widget.currentRow.NRCOMANDA, row.CDCUPOMDESCFOS).then(function (voucherData){
+                AccountCart.findAll().then(function (cart){
+                    if (voucherData[0].IDUSOUNICO === "N" || self.checkVoucherUsage(voucherData[0], cart)){
+                        // Acha o produto no carrinho.
+                        var selectedProduct = _.find(cart, function (cartItem){
+                            if (cartItem.IDENTIFYKEY == widget.currentRow.IDENTIFYKEY){
+                                return cartItem;
+                            }
+                        });
+
+                        if (_.isEmpty(row.PROMOPRODUCT)){ // Produtos normais.
+                            widget.container.getWidget('addProduct').getField('voucher').label = "Voucher: " + voucherData[0].CDCUPOMDESCFOS;
+                            selectedProduct.VOUCHER = voucherData[0];
+                            widget.currentRow.VOUCHER = voucherData[0];
+                        }
+                        else { // Promoções.
+                            // Acha o produto filho dentro da promoção.
+                            widget.container.getWidget('changeSmartPromoObservations').getAction('btnVoucher').label = "Voucher: " + voucherData[0].CDCUPOMDESCFOS;
+                            var selectedPromoItem = _.find(selectedProduct.PRODUTOS, function (promoItem){
+                                if (promoItem.ID == row.PROMOPRODUCT.ID){
+                                    return promoItem;
+                                }
+                            });
+                            selectedPromoItem.VOUCHER = voucherData[0];
+                            row.PROMOPRODUCT.VOUCHER = voucherData[0];
+                        }
+
+                        AccountCart.remove(Query.build()).then(function (){
+                            AccountCart.save(cart).then(function (){
+                                self.updateCart(widget, widget.container.getWidget('checkOrderStripe')).then(function (){
+                                    ScreenService.closePopup();
+                                });
+                            });
+                        });
+
+                    }
+                    else {
+                        ScreenService.showMessage("Este voucher é de uso único e já está sendo aplicado em outro produto deste pedido.");
+                    }
+                });
+            });
+        }
+        else {
+            ScreenService.showMessage("Favor informar o código do voucher.");
+        }
+    };
+
+    this.checkVoucherUsage = function(voucherData, cart){
+        // Verifica se o voucher já foi aplicado em algum outro produto do carrinho.
+        for (var i in cart){
+            if (cart[i].VOUCHER){
+                if (cart[i].VOUCHER.CDCUPOMDESCFOS == voucherData.CDCUPOMDESCFOS){
+                    return false;
+                }
+            }
+        }
+        return true;
+    };
+
+    this.loadCompreGanhe = function(widget){
+        CampanhaFlag.findOne().then(function (flagProduct){
+            if (flagProduct.QTCOMPGANHE == 1){
+                widget.getField('labelCampanha').label = "Escolha " + flagProduct.QTCOMPGANHE + " produto.";
+            }
+            else {
+                widget.getField('labelCampanha').label = "Escolha " + flagProduct.QTCOMPGANHE + " produtos.";
+            }
+            self.refreshCampanhaProducts(widget);
+        });
+    };
+
+    this.refreshCampanhaProducts = function(widget){
+        var productsField = widget.getField('product');
+        CampanhaProducts.findAll().then(function (products) {
+            productsField.dataSource.checkedRows = [];
+            for (var i in products){
+                if (products[i].quantidade != 1) {
+                    products[i].DSBUTTON = products[i].DSBUTTON;
+                }
+            }
+            productsField.dataSource.data = products;
+        });
+    };
+
+    this.cancelCompreGanhe = function(widget){
+        CampanhaProducts.remove(Query.build()).then(function (){
+            CampanhaFlag.remove(Query.build()).then(function (){
+                AccountCart.findAll().then(function (cart){
+                    AccountCart.remove(Query.build()).then(function (){
+                        var newCart = cart.filter(function (item){
+                            return item.ID !== cart[0].ID;
+                        });
+                        AccountCart.save(newCart).then(function (){
+                            widget.container.getWidget('menu').getField('product').dataSource.data = [];
+                            WindowService.openWindow('MENU_SCREEN');
+                        });
+                    });
+                });
+            });
+        });
+    };
+
+    this.confirmCompreGanhe = function(widget){
+        AccountCart.findAll().then(function (cart){
+            CampanhaFlag.findOne().then(function (flagProduct){
+                CampanhaProducts.findAll().then(function (products){
+                    var qtBrindes = 0;
+                    products.forEach(function (campanhaProduct){
+
+                        // Define o ID.
+                        campanhaProduct.ID = self.getOrderCodeProductID(cart);
+
+                        // Coloca os preços dos brindes como 1 centavo.
+                        if (_.isEmpty(campanhaProduct.PRODUTOS) || campanhaProduct.IDIMPPRODUTO === "1"){
+                            // Produtos normais e promoções pai.
+                            var precoMin = 0.01;
+                            var quant = 1;
+                            if (!_.isEmpty(campanhaProduct.PRODUTOS)){
+                                quant = campanhaProduct.PRODUTOS.length;
+                                precoMin = quant * 0.01;
+                            }
+
+                            campanhaProduct.PRECO = precoMin.toString().replace('.', ',');
+                            campanhaProduct.PRITEM = precoMin;
+                            campanhaProduct.PRITOTITEM = precoMin;
+                            campanhaProduct.VRPRECITEMCL = 0;
+                            campanhaProduct.VRACRITVEND = 0;
+                            campanhaProduct.VRDESITVEND = 0;
+
+                            qtBrindes += quant;
+                        }
+                        else {
+                            // Promoções onde os filhos são cobrados.
+                            campanhaProducts.PRODUTOS.forEach(function (promoProducts){
+                                promoProducts.PRECO = 0.01;
+                                promoProducts.PRICE = 0.01;
+                                promoProducts.PRITEM = 0.01;
+                                promoProducts.TOTPRICE = 0.01;
+                                promoProducts.REALPRICE = 0.01;
+
+                                promoProducts.VRPRECITEMCL = 0;
+
+                                promoProducts.ADDITION = 0;
+                                promoProducts.VRACRITVEND = 0;
+
+                                promoProducts.DISCOUNT = 0;
+                                promoProducts.VRDESCONTO = 0;
+                                promoProducts.VRDESITVEND = 0;
+                                promoProducts.VRDESPRODPROMOC = 0;
+                            });
+
+                            qtBrindes += campanhaProducts.PRODUTOS.length;
+                        }
+
+                        campanhaProduct.CAMPANHA = flagProduct.CAMPANHA;
+                        campanhaProduct.DTINIVGCAMPCG = flagProduct.DTINIVGCAMPCG;
+
+                        // Coloca o produto no carrinho.
+                        cart.push(campanhaProduct);
+                    });
+
+                    // Altera o preço do produto principal.
+                    var cartFlagProduct = cart.filter(function (cartItem){
+                        return cartItem.ID == flagProduct.ID;
+                    });
+                    var adjustedPrice = parseFloat(cartFlagProduct[0].PRITOTITEM - 0.01 * qtBrindes);
+                    if (adjustedPrice <= 0.01 * cartFlagProduct[0].QTPRODCOMVEN){
+                        adjustedPrice = 0.01 * cartFlagProduct[0].QTPRODCOMVEN;
+                    }
+
+                    cartFlagProduct[0].PRECO = adjustedPrice.toString().replace('.', ',');
+                    cartFlagProduct[0].PRICE = adjustedPrice;
+                    cartFlagProduct[0].PRITEM = adjustedPrice;
+                    cartFlagProduct[0].PRITOTITEM = adjustedPrice;
+                    cartFlagProduct[0].DESCCOMPGANHE = 0.01 * qtBrindes;
+
+                    cartFlagProduct[0].CAMPANHA = null;
+                    cartFlagProduct[0].DTINIVGCAMPCG = null;
+
+                    AccountCart.remove(Query.build()).then(function (){
+                        AccountCart.save(cart).then(function (){
+                            CampanhaProducts.remove(Query.build()).then(function (){
+                                CampanhaFlag.remove(Query.build()).then(function (){
+                                    WindowService.openWindow('MENU_SCREEN');
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    };
 
 }
 

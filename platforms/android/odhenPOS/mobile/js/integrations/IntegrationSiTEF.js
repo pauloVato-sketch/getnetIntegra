@@ -283,7 +283,9 @@ function IntegrationSiTEF(FiliaisLogin, PaymentRepository, Query, HomologacaoSit
                 window.hideUserInterfaces = self.hideUserInterfaces;
                 window.showCancelButton = self.showCancelButton;
 
+                // QRCode Mercado Pago
                 if (params.paymentType == 122){
+                	sitefWidget.getAction("btnBack").isVisible = true;
                     if (operatorData.CDURLQRCODE){
                         var qrcode = new QRCode($(".sitef-field")[0], {
                             width : 150,

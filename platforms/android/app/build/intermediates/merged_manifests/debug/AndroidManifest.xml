@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.odhen.POS"
     android:hardwareAccelerated="true"
-    android:versionCode="60807"
-    android:versionName="6.0.8.0.7" >
+    android:versionCode="60903"
+    android:versionName="6.0.9.0.3" >
 
     <uses-sdk
         android:minSdkVersion="22"

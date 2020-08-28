@@ -1,0 +1,132 @@
+{
+    "id": "206294933527707299101459",
+    "name": "orderLogin",
+    "showHeader": false,
+    "showMenu": true,
+    "label": "Login",
+    "showBack": false,
+    "events": [],
+    "showFooter": false,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "widgets": [
+        {
+            "id": "1159999497968257871460",
+            "name": "orderMenu",
+            "label": "OrderMenu",
+            "template": "widget/form-login.html",
+            "isVisible": true,
+            "actions": [],
+            "events": [
+                {
+                    "id": "11599994916844803431468",
+                    "name": "WidgetOnEnter",
+                    "code": "OrderController.checkPermission();"
+                }
+            ],
+            "dataSource": {},
+            "fields": [
+                {
+                    "id": "1159999494023141991461",
+                    "name": "logo-waiter",
+                    "label": "logo-waiter",
+                    "source": "bower_components/zeedhi-frontend/assets/images/icons/marca-vermelho.png",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "sameLine": false,
+                    "defaultValue": null,
+                    "template": "field/image-static.html",
+                    "events": []
+                },
+                {
+                    "id": "11599994939598474471462",
+                    "name": "lblEmpty",
+                    "label": "",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "showOnList": true,
+                    "breakline": true,
+                    "newLine": false,
+                    "defaultValue": " ",
+                    "template": "field/label.html",
+                    "events": []
+                },
+                {
+                    "id": "11599994938537819011463",
+                    "name": "acessosolicitado",
+                    "label": "O seu acesso foi solicitado.",
+                    "class": "12 center-text",
+                    "icon": "block icon-black",
+                    "readOnly": true,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "newLine": true,
+                    "defaultValue": null,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "1159999491788501181464",
+                    "name": "aguardegarcon",
+                    "label": "Por favor aguarde a autorização do garçon.",
+                    "class": "12 center-text",
+                    "icon": "block icon-black",
+                    "readOnly": true,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "newLine": true,
+                    "defaultValue": null,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "1159999499052425261465",
+                    "name": "timeRegressiveLabel",
+                    "label": "",
+                    "class": 6,
+                    "icon": "block icon-black",
+                    "readOnly": true,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "newLine": true,
+                    "defaultValue": null,
+                    "template": "field/label-static.html",
+                    "events": []
+                },
+                {
+                    "id": "11599994935524483151466",
+                    "name": "cancelRequest",
+                    "label": "Cancelar",
+                    "class": 8,
+                    "readOnly": true,
+                    "isVisible": false,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": true,
+                    "newLine": true,
+                    "sameLine": false,
+                    "defaultValue": null,
+                    "template": "field/button.html",
+                    "events": [
+                        {
+                            "id": "11599994926354353551467",
+                            "name": "FieldOnClick",
+                            "code": "OrderController.cancelRequest();"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

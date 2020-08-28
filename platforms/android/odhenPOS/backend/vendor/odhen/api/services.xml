@@ -1,0 +1,260 @@
+<?xml version="1.0"?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <!-- PATH DO SISTEMA (TEKNISA) -->
+        <parameter key="SYSTEM_PATH">../../../</parameter>
+    </parameters>
+
+    <services>
+
+        <service id="connection" class="\Odhen\API\Util\MultipleDatabaseConnection"
+                factory-class="Doctrine\DBAL\DriverManager"
+                factory-method="getConnection">
+            <argument>%connection_params%</argument>
+            <argument id="oracleDecrypt">rt6hHy8jajjaA</argument>
+            <argument type="service" id="entityMetaDataConfig"/>
+            <argument type="service" id="eventManager"/>
+            <call method="setDataBaseDriver">
+                <argument>%database_driver%</argument>
+            </call>
+        </service>
+
+        <!-- UTILITIES -->
+        <service id="\Odhen\API\Util\Util" class="\Odhen\API\Util\Util">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="instanceManager" />
+        </service>
+        <service id="\Odhen\API\Util\Date" class="\Odhen\API\Util\Date" />
+        <service id="\Odhen\API\Util\GetParametro" class="\Odhen\API\Util\GetParametro">
+            <argument type="service" id="entityManager" />
+        </service>
+        <service id="\Odhen\API\Util\Database" class="\Odhen\API\Util\Database">
+            <argument type="service" id="\Odhen\API\Util\Util" />
+        </service>
+        <service id="\Odhen\API\Util\EvoluiSaldo" class="\Odhen\API\Util\EvoluiSaldo">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Util\Database" />
+        </service>
+
+        <!-- CONTROLLERS -->
+        <service id="\Odhen\API\Controller\PaymentService" class="\Odhen\API\Controller\PaymentService">
+        </service>
+
+        <service id="\Odhen\API\Controller\Rest" class="\Odhen\API\Controller\Rest">
+        </service>
+
+        <service id="\Odhen\API\Controller\Parametros" class="\Odhen\API\Controller\Parametros">
+            <argument type="service" id="\Odhen\API\Service\Parametros" />
+        </service>
+
+        <!-- LIBS -->
+        <service id="\Odhen\API\Lib\SatXml" class="\Odhen\API\Lib\SatXml">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+        </service>
+
+        <service id="curlRequest" class="Zeedhi\Framework\Remote\cURLRequest">
+        	<argument>http://ponte.odhen.com</argument>
+        </service>
+
+        <service id="\Odhen\API\Remote\Printer\Printer" class="\Odhen\API\Remote\Printer\Printer">
+        </service>
+
+        <service id="\Odhen\API\Remote\SAT\SAT" class="\Odhen\API\Remote\SAT\SAT">
+            <argument type="service" id="\Odhen\API\Util\Util" />
+        </service>
+
+        <service id="\Odhen\API\Remote\TEF\TEF" class="\Odhen\API\Remote\TEF\TEF">
+            <argument type="service" id="curlRequest" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="instanceManager" />
+        </service>
+
+        <service id="\Odhen\API\Lib\ImpressaoDelphi" class="\Odhen\API\Lib\ImpressaoDelphi">
+        </service>
+
+        <service id="\Odhen\API\Lib\ImpressaoUtil" class="\Odhen\API\Lib\ImpressaoUtil">
+        	<argument type="service" id="\Odhen\API\Util\Util" />
+        	<argument type="service" id="instanceManager" />
+        	<argument type="service" id="\Odhen\API\Remote\Printer\Printer" />
+        	<argument type="service" id="\Odhen\API\Lib\ImpressaoDelphi" />
+            <argument type="service" id="entityManager"/>
+        </service>
+
+        <!-- SERVICES -->
+        <service id="\Odhen\API\Service\Consumidor" class="\Odhen\API\Service\Consumidor">
+            <argument type="service" id="entityManager"/>
+            <argument type="service" id="\Odhen\API\Util\Util"/>
+            <argument type="service" id="\Odhen\API\Lib\Impressaoutil" />
+            <argument type="service" id="\Odhen\API\Util\Database" />
+            <argument type="service" id="\Odhen\API\Util\EvoluiSaldo" />
+            <argument type="service" id="\Odhen\API\Service\Extratocons" />
+        </service>
+
+        <service id="\Odhen\API\Service\Client" class="\Odhen\API\Service\Client">
+            <argument type="service" id="entityManager" />
+        </service>
+
+        <service id="\Odhen\API\Service\Caixa" class="\Odhen\API\Service\Caixa">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+            <argument type="service" id="\Odhen\API\Util\Database" />
+            <argument type="service" id="\Odhen\API\Lib\ImpressaoUtil" />
+            <argument type="service" id="\Odhen\API\Service\ImpressaoSAT" />
+            <argument type="service" id="\Odhen\API\Remote\SAT\SAT" />
+            <argument type="service" id="\Odhen\API\Service\NotaFiscal" />
+            <argument type="service" id="instanceManager" />
+        </service>
+
+        <service id="\Odhen\API\Service\Estoque" class="\Odhen\API\Service\Estoque">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+        </service>
+
+        <service id="\Odhen\API\Service\NotaFiscal" class="\Odhen\API\Service\NotaFiscal">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+            <argument type="service" id="\Odhen\API\Util\Database" />
+            <argument type="service" id="\Odhen\API\Service\ImpressaoNFCE" />
+            <argument type="service" id="instanceManager" />
+        </service>
+
+        <service id="\Odhen\API\Service\Parametros" class="\Odhen\API\Service\Parametros">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Util\Date" />
+            <argument type="service" id="\Odhen\API\Service\Preco" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+            <argument type="service" id="\Odhen\API\Util\Database" />
+        </service>
+
+        <service id="\Odhen\API\Service\Login" class="\Odhen\API\Service\Login">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+        </service>
+
+        <service id="\Odhen\API\Service\Operador" class="\Odhen\API\Service\Operador">
+            <argument type="service" id="entityManager" />
+        </service>
+
+        <service id="\Odhen\API\Service\SAT" class="\Odhen\API\Service\SAT">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+            <argument type="service" id="\Odhen\API\Lib\SatXml" />
+            <argument type="service" id="\Odhen\API\Remote\SAT\SAT" />
+            <argument type="service" id="\Odhen\API\Util\Database" />
+            <argument type="service" id="\Odhen\API\Service\ImpressaoSAT" />
+        </service>
+
+        <service id="\Odhen\API\Service\ImpressaoSAT" class="\Odhen\API\Service\ImpressaoSAT">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Lib\ImpressaoUtil" />
+            <argument type="service" id="\Odhen\API\Util\Database" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+            <argument type="service" id="\Odhen\API\Service\PainelSenha" />
+        </service>
+
+        <service id="\Odhen\API\Service\ImpressaoNFCE" class="\Odhen\API\Service\ImpressaoNFCE">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Lib\ImpressaoUtil" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+            <argument type="service" id="instanceManager" />
+            <argument type="service" id="\Odhen\API\Service\PainelSenha" />
+        </service>
+
+        <service id="\Odhen\API\Service\ImpressaoPedido" class="\Odhen\API\Service\ImpressaoPedido">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Lib\ImpressaoUtil" />
+            <argument type="service" id="instanceManager" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+        </service>
+
+        <service id="\Odhen\API\Service\ImpressaoPedidoSmart" class="\Odhen\API\Service\ImpressaoPedidoSmart">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Lib\ImpressaoUtil" />
+            <argument type="service" id="instanceManager" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+        </service>
+
+        <service id="\Odhen\API\Service\TEF" class="\Odhen\API\Service\TEF">
+            <argument type="service" id="entityManager" />
+        	<argument type="service" id="\Odhen\API\Lib\ImpressaoUtil" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+            <argument type="service" id="instanceManager" />
+        </service>
+
+        <service id="\Odhen\API\Service\ClientSitef" class="\Odhen\API\Service\ClientSitef">
+            <argument type="service" id="entityManager" />
+        	<argument type="service" id="\Odhen\API\Lib\ImpressaoUtil" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+            <argument type="service" id="instanceManager" />
+        </service>
+
+        <service id="\Odhen\API\Service\Preco" class="\Odhen\API\Service\Preco">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+            <argument type="service" id="\Odhen\API\Util\Date" />
+        </service>
+
+        <service id="\Odhen\API\Service\Fidelidade" class="\Odhen\API\Service\Fidelidade">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Util\Database" />
+        </service>
+
+        <service id="\Odhen\API\Service\Comanda" class="\Odhen\API\Service\Comanda">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+            <argument type="service" id="\Odhen\API\Service\Consumidor" />
+            <argument type="service" id="\Odhen\API\Service\Preco" />
+        </service>
+
+        <service id="\Odhen\API\Service\VendaValidacao" class="\Odhen\API\Service\VendaValidacao">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Service\Consumidor" />
+        </service>
+
+        <service id="\Odhen\API\Service\VendaNormalizacao" class="\Odhen\API\Service\VendaNormalizacao">
+            <argument type="service" id="entityManager" />
+        </service>
+
+        <service id="\Odhen\API\Service\Venda" class="\Odhen\API\Service\Venda">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Service\NotaFiscal" />
+            <argument type="service" id="\Odhen\API\Service\Estoque" />
+            <argument type="service" id="\Odhen\API\Util\GetParametro" />
+            <argument type="service" id="\Odhen\API\Util\Util" />
+            <argument type="service" id="\Odhen\API\Service\SAT" />
+            <argument type="service" id="\Odhen\API\Util\Database" />
+            <argument type="service" id="\Odhen\API\Service\Preco" />
+            <argument type="service" id="\Odhen\API\Service\Comanda" />
+            <argument type="service" id="\Odhen\API\Service\VendaValidacao" />
+            <argument type="service" id="\Odhen\API\Service\VendaNormalizacao" />
+            <argument type="service" id="\Odhen\API\Service\Consumidor" />
+            <argument type="service" id="\Odhen\API\Service\Extratocons" />
+            <argument type="service" id="\Odhen\API\Service\ImpressaoDelivery" />
+            <argument type="service" id="instanceManager" />
+        </service>
+
+        <service id="\Odhen\API\Service\SoftwareExpress" class="\Odhen\API\Service\SoftwareExpress">
+        </service>
+
+        <service id="\Odhen\API\Service\Extratocons" class="\Odhen\API\Service\Extratocons">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="instanceManager" />
+            <argument type="service" id="\Helpers\Environment" />
+        </service>
+
+        <service id="\Odhen\API\Service\ImpressaoDelivery" class="\Odhen\API\Service\ImpressaoDelivery">
+            <argument type="service" id="entityManager" />
+            <argument type="service" id="\Odhen\API\Lib\ImpressaoUtil" />
+        </service>
+
+        <service id="\Odhen\API\Service\PainelSenha" class="\Odhen\API\Service\PainelSenha">
+            <argument type="service" id="instanceManager" />
+        </service>
+
+    </services>
+</container>

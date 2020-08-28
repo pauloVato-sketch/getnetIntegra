@@ -18,11 +18,11 @@ function IntegrationCielo(PaymentRepository){
                 // cria nova Ordem caso não existir pagamento por integração na venda
                 if(_.isEmpty(_.find(payment.TIPORECE, Array('TRANSACTION.status', true)))){
                     newOrder.create = true;
-                    newOrder.accountValue = (payment.DATASALE.TOTALVENDA) * 100;
+                    newOrder.accountValue = parseFloat((payment.DATASALE.TOTALVENDA * 100).toFixed(2));
                 }
                 newOrder = JSON.stringify(newOrder);
                 
-                var paymentValue = (currentRow.VRMOVIVEND.toFixed(2)) * 100;
+                var paymentValue = parseFloat((currentRow.VRMOVIVEND * 100).toFixed(2));
                 
                 ZhCieloAutomation.payment(newOrder, paymentValue, currentRow.tiporece.IDTIPORECE);
             });

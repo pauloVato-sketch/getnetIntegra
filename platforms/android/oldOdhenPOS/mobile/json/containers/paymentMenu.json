@@ -1,0 +1,1331 @@
+{
+    "id": 1,
+    "name": "paymentMenu",
+    "label": "Recebimentos",
+    "events": [
+        {
+            "id": "159953242322432009341603",
+            "name": "ContainerAfterinit",
+            "code": "PaymentService.setIsOnSale(true); UtilitiesService.setHeader(args.owner);"
+        },
+        {
+            "id": "159953242322432009341604",
+            "name": "ContainerAfterClose",
+            "code": "PaymentService.setIsOnSale(false);"
+        }
+    ],
+    "showHeader": true,
+    "showMenu": false,
+    "showFooter": true,
+    "showBack": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "popup": "component/popup.html",
+    "template": "container/window.html",
+    "widgets": [
+        {
+            "id": "159953242322432009341600",
+            "name": "paymentStripe",
+            "template": "widget/stripe.html",
+            "isVisible": true,
+            "events": [
+                {
+                    "id": 1,
+                    "name": "WidgetOnEnter",
+                    "code": "PaymentController.handleConsumerPopup(args.owner.container.getWidget('setConsumerPopUp')); AccountController.limpaDesconto(args.owner.container.getWidget('discountPopup'));"
+                }
+            ],
+            "dataSource": [],
+            "fields": [
+                {
+                    "id": "159953242318259381551601",
+                    "name": "totalyPayment",
+                    "label": "Recebimento Total",
+                    "class": 6,
+                    "isVisible": true,
+                    "template": "field/label-static.html"
+                },
+                {
+                    "id": "15995324237436954691602",
+                    "name": "TOTALVENDA",
+                    "class": 6,
+                    "isVisible": true,
+                    "align": "right",
+                    "template": "field/text-edit.html",
+                    "mask": {
+                        "type": "currency",
+                        "params": {
+                            "showSymbol": false,
+                            "precision": 2,
+                            "thousands": "",
+                            "decimal": ",",
+                            "allowNegative": false
+                        }
+                    }
+                },
+                {
+                    "id": "15995324231387678301603",
+                    "name": "amountPaid",
+                    "label": "Valor Pago",
+                    "class": 6,
+                    "isVisible": true,
+                    "template": "field/label-static.html"
+                },
+                {
+                    "id": "159953242311905662661604",
+                    "name": "VALORPAGO",
+                    "class": 6,
+                    "isVisible": true,
+                    "align": "right",
+                    "template": "field/text-edit.html",
+                    "mask": {
+                        "type": "currency",
+                        "params": {
+                            "showSymbol": false,
+                            "precision": 2,
+                            "thousands": "",
+                            "decimal": ",",
+                            "allowNegative": false
+                        }
+                    }
+                },
+                {
+                    "id": "159953242333748053961605",
+                    "name": "missing",
+                    "label": "Restante a Receber",
+                    "class": 6,
+                    "isVisible": true,
+                    "template": "field/label-static.html"
+                },
+                {
+                    "id": "159953242330547795421606",
+                    "name": "FALTANTE",
+                    "class": 6,
+                    "isVisible": true,
+                    "align": "right",
+                    "template": "field/text-edit.html",
+                    "mask": {
+                        "type": "currency",
+                        "params": {
+                            "showSymbol": false,
+                            "precision": 2,
+                            "thousands": "",
+                            "decimal": ",",
+                            "allowNegative": false
+                        }
+                    }
+                },
+                {
+                    "id": "159953242317329495711607",
+                    "name": "change",
+                    "label": "Troco",
+                    "class": 6,
+                    "isVisible": true,
+                    "template": "field/label-static.html"
+                },
+                {
+                    "id": "159953242312057914461608",
+                    "name": "TROCO",
+                    "class": 6,
+                    "isVisible": true,
+                    "align": "right",
+                    "template": "field/text-edit.html",
+                    "mask": {
+                        "type": "currency",
+                        "params": {
+                            "showSymbol": false,
+                            "precision": 2,
+                            "thousands": "",
+                            "decimal": ",",
+                            "allowNegative": false
+                        }
+                    }
+                },
+                {
+                    "id": "159953242317329495711607",
+                    "name": "limitDebitoLabel",
+                    "label": "Limite Débito Consumidor",
+                    "class": 6,
+                    "isVisible": true,
+                    "template": "field/label-static.html"
+                },
+                {
+                    "id": "159953242312057914461608",
+                    "name": "limitDebito",
+                    "class": 6,
+                    "isVisible": true,
+                    "align": "right",
+                    "template": "field/text-edit.html",
+                    "mask": {
+                        "type": "currency",
+                        "params": {
+                            "showSymbol": false,
+                            "precision": 2,
+                            "thousands": "",
+                            "decimal": ",",
+                            "allowNegative": false
+                        }
+                    }
+                },
+                {
+                    "id": "159953242317329495711607",
+                    "name": "limitCreditoLabel",
+                    "label": "Saldo Crédito Pessoal",
+                    "class": 6,
+                    "isVisible": true,
+                    "template": "field/label-static.html"
+                },
+                {
+                    "id": "159953242312057914461608",
+                    "name": "limitCredito",
+                    "class": 6,
+                    "isVisible": true,
+                    "align": "right",
+                    "template": "field/text-edit.html",
+                    "mask": {
+                        "type": "currency",
+                        "params": {
+                            "showSymbol": false,
+                            "precision": 2,
+                            "thousands": "",
+                            "decimal": ",",
+                            "allowNegative": false
+                        }
+                    }
+                }
+            ],
+            "widgets": []
+        },
+        {
+            "id": "159953242328991185161609",
+            "name": "paymentMenu",
+            "label": "",
+            "template": "waiter#widget/waiter_orders.html",
+            "isVisible": true,
+            "events": [
+                {
+                    "id": "159953242335179636571620",
+                    "name": "WidgetOnEnter",
+                    "code": "PaymentController.attStripeData(args.owner); PaymentController.initButtons(args.owner.container); PaymentController.handlePaymentScreen(args.owner.container.getWidget('paymentList'), 'paymentMenu'); PaymentController.prepareCPFPopup(args.owner.container.getWidget('consumerCPFPopup'));"
+                }
+            ],
+            "actions": [
+                {
+                    "id": "1",
+                    "label": "Voltar",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "hideIcon": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "ActionEvent",
+                            "code": "PaymentController.cancelForSale(args.owner.widget);"
+                        }
+                    ]
+                },
+                {
+                    "id": "2",
+                    "label": "",
+                    "name": "info",
+                    "isVisible": true,
+                    "icon": "information",
+                    "showAsAction": "always",
+                    "activeOnMode": null,
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "ActionEvent",
+                            "code": "PaymentController.prepareCPFPopup(args.owner.widget.container.getWidget('consumerCPFPopup'));"
+                        }
+                    ]
+                },
+                {
+                    "id": "3",
+                    "label": "",
+                    "name": "setconsumer",
+                    "isVisible": true,
+                    "icon": "person",
+                    "showAsAction": "always",
+                    "activeOnMode": null,
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "ActionEvent",
+                            "code": "PaymentController.openConsumerPopup(args.owner.widget.container.getWidget('setConsumerPopUp'));"
+                        }
+                    ]
+                },
+                {
+                    "id": "4",
+                    "label": "",
+                    "name": "desconto",
+                    "isVisible": true,
+                    "icon": "money-sign",
+                    "showAsAction": "always",
+                    "activeOnMode": null,
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "ActionEvent",
+                            "code": "PaymentController.openDiscount(args.owner.widget);"
+                        }
+                    ]
+                },
+                {
+                    "id": "5",
+                    "label": "Avançar",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "ActionEvent",
+                            "code": "PaymentController.handleShowPaymentList(args.owner.widget);"
+                        }
+                    ]
+                }
+            ],
+            "fields": [],
+            "widgets": [
+                {
+                    "id": "15995324231173915161610",
+                    "colorProperty": "COLOR",
+                    "labelProperty": "NMGRUPO",
+                    "categoryProperty": "CDGRUPO",
+                    "lines": 3,
+                    "sameLine": true,
+                    "isVisible": true,
+                    "readOnly": false,
+                    "events": [
+                        {
+                            "id": "159953242325482306091611",
+                            "name": "FieldAfterMoveRow",
+                            "code": "ScreenService.filterWidget(args.owner, args.owner.parent.widgets)"
+                        }
+                    ],
+                    "fields": [],
+                    "name": "categories",
+                    "class": "col-md-3",
+                    "readOnly": false,
+                    "template": "waiter#field/waiter-categories.html",
+                    "valueField": "CDGRUPO",
+                    "dataSource": {
+                        "name": "/GroupPriceChart",
+                        "memoryStorage": true
+                    },
+                    "widgets": []
+                },
+                {
+                    "id": "15995324239639440221612",
+                    "colorProperty": "COLOR",
+                    "labelProperty": "DSBUTTON",
+                    "name": "pricechart",
+                    "fields": [],
+                    "class": "",
+                    "sameLine": true,
+                    "isVisible": true,
+                    "readOnly": false,
+                    "template": "waiter#field/waiter-products.html",
+                    "events": [
+                        {
+                            "id": "159953242323433945981613",
+                            "name": "FieldAfterMoveRow",
+                            "code": "PaymentController.receivePayment(args.owner.widget, args.row)"
+                        }
+                    ],
+                    "dataSource": {
+                        "name": "/PriceChart",
+                        "memoryStorage": true
+                    }
+                }
+            ]
+        },
+        {
+            "name": "paymentList",
+            "label": "",
+            "template": "waiter#widget/list-payments.html",
+            "isVisible": false,
+            "allowSelectOnLongTap": true,
+            "detailPriceProp": "VRMOVIVEND",
+            "detailDescProp": "DSBUTTON",
+            "orderDate": "DTHRINCOMVEN",
+            "addDisplay": "",
+            "events": [
+                {
+                    "name": "WidgetOnEnter",
+                    "code": "PaymentController.attPaymentList(args.owner)"
+                },
+                {
+                    "name": "WidgetAfterMoveRow",
+                    "code": "PaymentController.setPaymentRow(args.owner)"
+                }
+            ],
+            "actions": [
+                {
+                    "label": "Voltar",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "hideIcon": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": "PaymentController.handlePaymentScreen(args.owner.widget, 'paymentMenu');"
+                        }
+                    ]
+                },
+                {
+                    "label": "",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "showAsAction": "always",
+                    "icon": "information",
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": "ScreenService.openPopup(args.owner.widget.container.getWidget('consumerCPFPopup'));"
+                        }
+                    ]
+                },
+                {
+                    "label": "",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "showAsAction": "always",
+                    "icon": "money-charge",
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": "PaymentController.accountAddition(args.owner.widget);"
+                        }
+                    ]
+                },
+                {
+                    "label": "Finalizar",
+                    "isVisible": true,
+                    "showOnForm": true,
+                    "showOnList": true,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": "PaymentController.verifyFinishPayment(args.owner.widget);"
+                        }
+                    ]
+                }
+            ],
+            "dataSource": {
+                "memoryStorage": true,
+                "name": "/EmptyRepository"
+            },
+            "fields": [],
+            "widgets": [
+                {
+                    "id": "49733165111722830421080",
+                    "name": "cancelPayment",
+                    "label": "",
+                    "template": "widget/form-without-scroller.html",
+                    "isVisible": true,
+                    "actions": [],
+                    "events": [],
+                    "dataSource": {},
+                    "fields": [
+                        {
+                            "name": "removePayment",
+                            "label": "Cancelar Pagamento",
+                            "isVisible": true,
+                            "isVisibleForm": true,
+                            "isVisibleGrid": true,
+                            "template": "field/label-with-icon.html",
+                            "icon": "trash icon-black",
+                            "events": [
+                                {
+                                    "name": "FieldOnClick",
+                                    "code": "PaymentController.removePayment(args.owner.field.widget)"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "159953242329569687541621",
+            "name": "paymentPopup",
+            "label": "",
+            "template": "widget/form.html",
+            "showAsModal": false,
+            "isVisible": false,
+            "actions": [
+                {
+                    "id": "1599532423563725701630",
+                    "label": "Cancelar",
+                    "name": "btnBack",
+                    "isVisible": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "159953242322243347421631",
+                            "name": "ActionEvent",
+                            "code": "ScreenService.closePopup();"
+                        }
+                    ]
+                },
+                {
+                    "id": "15995324236028567361634",
+                    "label": "Confirmar",
+                    "name": "pagar",
+                    "isVisible": true,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "id": "15995324232638265091635",
+                            "name": "ActionEvent",
+                            "code": "PaymentController.handleConsumerDebit(args.owner.widget);",
+                            "events": []
+                        }
+                    ]
+                }
+            ],
+            "events": [],
+            "dataSource": {},
+            "fieldGroups": [
+                {
+                    "id": "159953242328381143361636",
+                    "name": "FIELDS_VALUE",
+                    "collapsible": false,
+                    "isVisible": true,
+                    "opened": true
+                }
+            ],
+            "fields": [
+                {
+                    "id": "159953242313425399691629",
+                    "name": "VRMOVIVEND",
+                    "label": "Valor",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": true,
+                    "sameLine": true,
+                    "class": "6 center-align-field",
+                    "fieldGroup": "FIELDS_VALUE",
+                    "focused": true,
+                    "validations": {
+                        "required": {}
+                    },
+                    "range": {
+                        "max": null,
+                        "min": 0.01
+                    },
+                    "defaultValue": null,
+                    "template": "field/text-number.html",
+                    "events": [
+                        {
+                            "id": "15995324232638265591635",
+                            "name": "FieldOnKeydown",
+                            "code": "PaymentController.handleEnterButton(args);"
+                        }
+                    ],
+                    "mask": {
+                        "type": "currency",
+                        "params": {
+                            "showSymbol": false,
+                            "precision": 2,
+                            "thousands": "",
+                            "decimal": ",",
+                            "allowNegative": false
+                        }
+                    }
+                },
+                {
+                    "name": "CDNSUHOSTTEF",
+                    "label": "Código NSU",
+                    "class": 6,
+                    "template": "field/text-number.html",
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": true,
+                    "sameLine": true,
+                    "fieldGroup": "FIELDS_VALUE",
+                    "validations": {
+                        "required": {}
+                    },
+                    "defaultValue": null,
+                    "events": [
+                        {
+                            "name": "FieldOnInput",
+                            "code": "UtilitiesService.toNumber(args.owner.field);"
+                        }
+                    ]
+                }
+            ],
+            "widgets": [
+                {
+                    "id": "159953242326954545631622",
+                    "name": "popupEmail",
+                    "label": "Transação aceita!",
+                    "isVisible": true,
+                    "template": "widget/form.html",
+                    "fields": [
+                        {
+                            "id": "159953242335933403511623",
+                            "label": "Comprovante",
+                            "name": "RECEIPT",
+                            "template": "field/textarea.html",
+                            "readOnly": true,
+                            "textRows": 13
+                        },
+                        {
+                            "id": "15995324236898885841624",
+                            "label": "E-mail",
+                            "name": "DSEMAILCLI",
+                            "showOnList": true,
+                            "template": "field/text-edit.html"
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "id": "159953242338885070681625",
+                            "label": "Enviar",
+                            "name": "sendEmail",
+                            "isVisible": true,
+                            "showAsAction": "never",
+                            "events": [
+                                {
+                                    "id": "159953242338834565911626",
+                                    "name": "ActionEvent",
+                                    "code": "AccountController.sendTransactionEmail(args.owner.widget, args)"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "159953242342353925511627",
+                            "label": "Cancelar",
+                            "name": "btnCancelEmail",
+                            "isVisible": true,
+                            "showAsAction": "back",
+                            "events": [
+                                {
+                                    "id": "159953242342485463191628",
+                                    "name": "ActionEvent",
+                                    "code": "ScreenService.closePopup();"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "159953242321643900801637",
+            "name": "discountPopup",
+            "label": "Desconto",
+            "fieldGroup": "FIELDS_DISCOUNT",
+            "template": "widget/form.html",
+            "isVisible": false,
+            "actions": [
+                {
+                    "id": "1599532423563725701630",
+                    "label": "Voltar",
+                    "name": "btnBack",
+                    "isVisible": true,
+                    "hideIcon": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "159953242322243347421631",
+                            "name": "ActionEvent",
+                            "code": "ScreenService.closePopup();"
+                        }
+                    ]
+                },
+                {
+                    "id": "15995324238476042151642",
+                    "name": "btnBack",
+                    "isVisible": true,
+                    "icon": "trash",
+                    "showAsAction": "always",
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": "PaymentController.cancelDiscount(args.owner.widget);"
+                        }
+                    ]
+                },
+                {
+                    "id": "159953242340508629891644",
+                    "label": "Aplicar",
+                    "name": "aplDesconto",
+                    "isVisible": true,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "id": "159953242319991492601645",
+                            "name": "ActionEvent",
+                            "code": "PaymentController.setDiscount(args.owner.widget);",
+                            "events": []
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "id": "159953242336693488381646",
+                    "name": "WidgetOnEnter",
+                    "code": "PaymentController.getDiscount(args.owner);"
+                }
+            ],
+            "dataSource": {},
+            "fieldGroups": [
+                {
+                    "name": "FIELDS_DISCOUNT",
+                    "collapsible": false,
+                    "isVisible": true,
+                    "opened": true
+                },
+                {
+                    "name": "FIELDS_OBSERVATION",
+                    "label": "Motivo do Desconto",
+                    "collapsible": true,
+                    "isVisible": true,
+                    "opened": true
+                }
+            ],
+            "fields": [
+                {
+                    "id": "159953242312586394731638",
+                    "name": "TIPODESCONTO",
+                    "fieldGroup": "FIELDS_DISCOUNT",
+                    "label": "Tipo de desconto",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": true,
+                    "sameLine": true,
+                    "class": 6,
+                    "focused": true,
+                    "validations": {
+                        "required": true
+                    },
+                    "defaultOption": 0,
+                    "valueField": "value",
+                    "descriptionField": "name",
+                    "template": "field/radio-group.html",
+                    "events": [
+                        {
+                            "id": "159953242322155315081639",
+                            "name": "FieldOnChange",
+                            "code": "PaymentController.handleDiscountRadioChange(args.owner.widget);"
+                        }
+                    ],
+                    "dataSource": {
+                        "name": "tipoDescontos",
+                        "rest": false,
+                        "localStorage": false,
+                        "data": [
+                            {
+                                "name": "Percentual",
+                                "value": "P"
+                            },
+                            {
+                                "name": "Valor",
+                                "value": "V"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "159953242317057581971640",
+                    "name": "VRDESCONTO",
+                    "fieldGroup": "FIELDS_DISCOUNT",
+                    "label": "Valor",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": true,
+                    "sameLine": true,
+                    "class": 6,
+                    "focused": true,
+                    "validations": {
+                        "required": {}
+                    },
+                    "range": {
+                        "max": null,
+                        "min": 0.01
+                    },
+                    "events": [
+                        {
+                            "id": "15995324232638265591636",
+                            "name": "FieldOnKeydown",
+                            "code": "PaymentController.handleEnterButton(args);"
+                        }
+                    ],
+                    "defaultValue": null,
+                    "template": "field/text-number.html",
+                    "mask": {
+                        "type": "currency",
+                        "params": {
+                            "showSymbol": false,
+                            "precision": 2,
+                            "thousands": "",
+                            "decimal": ",",
+                            "allowNegative": false
+                        }
+                    }
+                },
+                {
+                    "name": "CDOCORR",
+                    "valueField": "CDOCORR",
+                    "label": "DSOCORR",
+                    "fieldGroup": "FIELDS_OBSERVATION",
+                    "color": "NRCORSINAL",
+                    "complement": "NRCORSINALC",
+                    "class": 12,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": false,
+                    "template": "field/observations.html",
+                    "events": [
+                        {
+                            "name": "FieldOnChange",
+                            "code": "AccountController.handleShowObsDesc(args);"
+                        }
+                    ],
+                    "dataSource": {
+                        "memoryStorage": true,
+                        "name": "/ParamsMensDescontoObs",
+                        "lazyLoad": false
+                    }
+                },
+                {
+                    "name": "MOTIVODESCONTO",
+                    "label": "Descrição",
+                    "fieldGroup": "FIELDS_OBSERVATION",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": true,
+                    "sameLine": true,
+                    "class": 12,
+                    "focused": true,
+                    "events": [],
+                    "defaultValue": null,
+                    "template": "field/textarea.html",
+                    "textRows": 1
+                }
+            ]
+        },
+        {
+            "id": "159953242335133004971647",
+            "name": "consumerCPFPopup",
+            "label": "Dados do Consumidor",
+            "template": "widget/form.html",
+            "isVisible": false,
+            "showAsModal": false,
+            "actions": [
+                {
+                    "id": "159953242336038853041652",
+                    "label": "Cancelar",
+                    "name": "btnBack",
+                    "isVisible": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "159953242326489675641653",
+                            "name": "ActionEvent",
+                            "code": "ScreenService.closePopup();"
+                        }
+                    ]
+                },
+                {
+                    "id": "159953242318342494761650",
+                    "label": "Confirmar",
+                    "name": "pagar",
+                    "isVisible": true,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "id": "159953242319780169341651",
+                            "name": "ActionEvent",
+                            "code": "PaymentController.setConsumerInfo(args.owner.widget)"
+                        }
+                    ]
+                }
+            ],
+            "events": [],
+            "dataSource": {},
+            "fields": [
+                {
+                    "id": "1",
+                    "name": "NRINSCRCONS",
+                    "label": "CPF/CNPJ (somente números)",
+                    "isVisible": true,
+                    "class": "12 center-align-field center-text-align-field",
+                    "template": "field/text-number.html",
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "FieldOnInput",
+                            "code": "UtilitiesService.toNumber(args.owner.field);"
+                        }
+                    ],
+                    "maxlength": 14
+                },
+                {
+                    "id": "2",
+                    "name": "EMAIL",
+                    "label": "E-mail a receber Nota Fiscal Eletrônica",
+                    "isVisible": true,
+                    "breakline": true,
+                    "class": "12 center-align-field center-text-align-field",
+                    "template": "field/email.html",
+                    "events": [
+                        {
+                            "id": "15995324232638265591646",
+                            "name": "FieldOnKeydown",
+                            "code": "PaymentController.handleEnterButton(args);"
+                        }
+                    ]
+                },
+                {
+                    "id": "3",
+                    "name": "NOMECONS",
+                    "label": "Nome do consumidor",
+                    "isVisible": true,
+                    "breakline": true,
+                    "class": "12 center-align-field center-text-align-field",
+                    "template": "field/text-edit.html",
+                    "events": [],
+                    "maxlength": 30
+                },
+                {
+                    "name": "NMFANVEN",
+                    "label": "Selecionar Vendedor",
+                    "isVisible": true,
+                    "itemsPerPage": 30,
+                    "class": "12 center-align-field center-text-align-field",
+                    "template": "field/select.html",
+                    "valueField": "CDVENDEDOR",
+                    "descriptionField": "NMFANVEN",
+                    "showSelectAs": "grid",
+                    "dataSource": {
+                        "name": "/SelectVendedores",
+                        "rest": true,
+                        "memoryStorage": false,
+                        "lazyLoad": true
+                     },
+                    "fields": [
+                        {
+                            "name": "CDVENDEDOR",
+                            "label": "Código",
+                            "isVisible": true,
+                            "showOnList": true,
+                            "template": "field/text-edit.html",
+                            "events": []
+                        },
+                        {
+                            "name": "NMFANVEN",
+                            "label": "Nome",
+                            "isVisible": true,
+                            "showOnList": true,
+                            "template": "field/text-edit.html",
+                            "events": []
+                        }
+                    ],
+                    "events": []
+                },
+                {
+                    "id": "4",
+                    "name": "DSOBSFINVEN",
+                    "label": "Observação",
+                    "isVisible": false,
+                    "class": "12 center-align-field center-text-align-field",
+                    "template": "field/text-edit.html",
+                    "events": [],
+                    "maxlength": 255
+                }
+            ]
+        },
+        {
+            "id": "681598234380351365468769",
+            "name": "setConsumerPopUp",
+            "label": "Informe o consumidor",
+            "template": "widget/form.html",
+            "isVisible": false,
+            "events": [],
+            "actions": [
+                {
+                    "id": "1",
+                    "name": "desfazer",
+                    "label": "Cancelar",
+                    "showAsAction": "back",
+                    "hideIcon": true,
+                    "isVisible": true,
+                    "icon": "undo",
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "ActionEvent",
+                            "code": "ScreenService.closePopup(); args.owner.widget.container.getWidget('paymentMenu').activate();"
+                        }
+                    ]
+                },
+                {
+                    "id": "2",
+                    "name": "clearConsumer",
+                    "isVisible": true,
+                    "icon": "trash",
+                    "showAsAction": "always",
+                    "activeOnMode": null,
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "ActionEvent",
+                            "code": "PaymentController.setAccountConsumer(args.owner.widget, true);"
+                        }
+                    ]
+                },
+                {
+                    "id": "3",
+                    "name": "qrcode",
+                    "isVisible": true,
+                    "icon": "qrcode",
+                    "showAsAction": "always",
+                    "activeOnMode": null,
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "ActionEvent",
+                            "code": "PaymentController.openQRScanner(args.owner.widget);"
+                        }
+                    ]
+                },
+                {
+                    "id": "4",
+                    "name": "fidelity",
+                    "isVisible": true,
+                    "icon": "price-tag",
+                    "showAsAction": "always",
+                    "activeOnMode": null,
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "ActionEvent",
+                            "code": "AccountController.openBalconyFidelity(args.owner.widget);"
+                        }
+                    ]
+                },
+                {
+                    "id": "5",
+                    "label": "Confirmar",
+                    "name": "ok",
+                    "isVisible": true,
+                    "icon": "",
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "ActionEvent",
+                            "code": "PaymentController.setAccountConsumer(args.owner.widget, false);"
+                        }
+                    ]
+                }
+            ],
+            "dataSource": {},
+            "fields": [
+                {
+                    "id": "1",
+                    "class": 12,
+                    "name": "NMRAZSOCCLIE",
+                    "label": "Cliente",
+                    "isVisible": true,
+                    "readOnly": false,
+                    "required": true,
+                    "valueField": "CDCLIENTE",
+                    "descriptionField": "NMRAZSOCCLIE",
+                    "outData": {
+                        "NMRAZSOCCLIE": "NMRAZSOCCLIE",
+                        "CDCLIENTE": "CDCLIENTE"
+                    },
+                    "template": "field/select.html",
+                    "showSelectAs": "grid",
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "FieldOnChange",
+                            "code": "PaymentController.prepareCustomers(args.row, args.owner.field);"
+                        }
+                    ],
+                    "dataSource": {
+                        "memoryStorage": true,
+                        "name": "/ParamsClientRepository"
+                    },
+                    "fields": [
+                        {
+                            "id": "1",
+                            "name": "NMRAZSOCCLIE",
+                            "label": "Nome",
+                            "isVisible": true,
+                            "showOnList": true,
+                            "template": "field/text-edit.html"
+                        }
+                    ]
+                },
+                {
+                    "id": "2",
+                    "name": "consumerSearch",
+                    "label": "Busca",
+                    "class": 3,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "defaultValue": null,
+                    "template": "field/text.html",
+                    "events": [
+                        {
+                            "id": "68159823438229374221344",
+                            "name": "FieldOnInput",
+                            "code": "PaymentController.consumerSearch();"
+                        },
+                        {
+                            "id": "15995324232638265591637",
+                            "name": "FieldOnKeydown",
+                            "code": "PaymentController.handleEnterButton(args);"
+                        }
+                    ]
+                },
+                {
+                    "id": "3",
+                    "name": "NMCONSUMIDOR",
+                    "label": "Consumidor",
+                    "class": 9,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "required": true,
+                    "itemsPerPage": 30,
+                    "defaultValue": null,
+                    "descriptionField": "NMCONSUMIDOR",
+                    "valueField": "CDCONSUMIDOR",
+                    "dataSource": {
+                        "name": "/ParamsCustomerRepository",
+                        "lazyLoad": true,
+                        "rest": true,
+                        "timeout": 90000
+                    },
+                    "dataSourceFilter": [
+                        {
+                            "name": "CDCLIENTE",
+                            "value": "",
+                            "operator": "="
+                        }
+                    ],
+                    "template": "field/select.html",
+                    "showSelectAs": "grid",
+                    "outData": {
+                        "CDCLIENTE": "CODCLIE",
+                        "NMRAZSOCCLIE": "NOMCLIE",
+                        "NMCONSUMIDOR": "NMCONSUMIDOR",
+                        "CDCONSUMIDOR": "CDCONSUMIDOR",
+                        "IDSITCONSUMI": "IDSITCONSUMI",
+                        "IDSOLSENHCONS": "IDSOLSENHCONS",
+                        "CDSENHACONS": "CDSENHACONS"
+                    },
+                    "events": [
+                        {
+                            "name": "FieldOnClick",
+                            "code": "PaymentController.modifyConsumerPopup(args.owner.field);"
+                        },
+                        {
+                            "name": "FieldBeforeSelectOpen",
+                            "code": "PaymentController.handleConsumerField(args.owner.field);"
+                        },
+                        {
+                            "name": "FieldOnChange",
+                            "code": "PaymentController.handleConsumerChange(args.owner.field.widget);"
+                        }
+                    ],
+                    "fields": [
+                        {
+                            "id": "1",
+                            "name": "NMRAZSOCCLIE",
+                            "label": "Cliente",
+                            "isVisible": true,
+                            "showOnList": true,
+                            "template": "field/text-edit.html"
+                        },
+                        {
+                            "id": "2",
+                            "name": "NMCONSUMIDOR",
+                            "label": "Consumidor",
+                            "isVisible": true,
+                            "showOnList": true,
+                            "template": "field/text-edit.html"
+                        },
+                        {
+                            "id": "3",
+                            "name": "CDIDCONSUMID",
+                            "label": "Cód. Crachá",
+                            "isVisible": true,
+                            "showOnList": true,
+                            "template": "field/text-edit.html"
+                        },
+                        {
+                            "id": "4",
+                            "name": "NRCPFRESPCON",
+                            "label": "CPF",
+                            "isVisible": true,
+                            "showOnList": true,
+                            "template": "field/text-edit.html"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "additionPopup",
+            "label": "Alterar Gorjeta",
+            "template": "widget/form.html",
+            "isVisible": false,
+            "showAsModal": false,
+            "actions": [
+                {
+                    "label": "Cancelar",
+                    "name": "btnBack",
+                    "isVisible": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": "ScreenService.closePopup();"
+                        }
+                    ]
+                },
+                {
+                    "label": "Alterar",
+                    "name": "alter",
+                    "isVisible": true,
+                    "showAsAction": "never",
+                    "events": [
+                        {
+                            "name": "ActionEvent",
+                            "code": ""
+                        }
+                    ]
+                }
+            ],
+            "events": [],
+            "dataSource": {},
+            "fields": []
+        },
+        {
+            "name": "fidelityPopup",
+            "label": "Crédito Fidelidade",
+            "isVisible": false,
+            "template": "widget/form.html",
+            "actions": [
+                {
+                    "id": "1",
+                    "label": "Cancelar",
+                    "name": "btnBack",
+                    "isVisible": true,
+                    "showAsAction": "back",
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "ActionEvent",
+                            "code": "ScreenService.closePopup();"
+                        }
+                    ]
+                },
+                {
+                    "id": "2",
+                    "label": "Confirmar",
+                    "name": "btnConfirm",
+                    "showAsAction": "never",
+                    "isVisible": true,
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "ActionEvent",
+                            "code": "AccountController.confirmBalconyFidelity(args.owner.widget);"
+                        }
+                    ]
+                }
+            ],
+            "events": [],
+            "dataSource": {},
+            "fields": [
+                {
+                    "id": "1",
+                    "name": "VSALDODISP",
+                    "label": "Saldo disponível",
+                    "readOnly": true,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": true,
+                    "sameLine": true,
+                    "class": 6,
+                    "focused": true,
+                    "events": [],
+                    "defaultValue": null,
+                    "template": "field/text-number.html"
+                },
+                {
+                    "id": "2",
+                    "name": "SALDOAPLICADO",
+                    "label": "Aplicar saldo",
+                    "readOnly": false,
+                    "isVisible": true,
+                    "isVisibleForm": true,
+                    "isVisibleGrid": false,
+                    "newLine": true,
+                    "sameLine": true,
+                    "class": 6,
+                    "focused": true,
+                    "validations": {
+                        "required": {}
+                    },
+                    "range": {
+                        "max": null,
+                        "min": 0.00
+                    },
+                    "events": [
+                        {
+                            "id": "1",
+                            "name": "FieldOnKeydown",
+                            "code": "PaymentController.handleEnterButton(args);"
+                        }
+                    ],
+                    "defaultValue": null,
+                    "template": "field/text-number.html",
+                    "mask": {
+                        "type": "currency",
+                        "params": {
+                            "showSymbol": false,
+                            "precision": 2,
+                            "thousands": "",
+                            "decimal": ",",
+                            "allowNegative": false
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

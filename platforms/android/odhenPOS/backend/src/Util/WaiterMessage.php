@@ -146,7 +146,7 @@ class WaiterMessage {
         '451' => 'Este e-mail já se encontra cadastrado no sistema.',
         '452' => 'Login e/ou senha inválidos.',
         '453' => 'Serviço de pagamento não encontrado.',
-        '454' => 'Não foi possivel efetuar o cancelamento. Já houve o pagemento parcial do item.',
+        '454' => 'Não foi possivel efetuar o cancelamento. Já houve o pagamento parcial do item.',
         '455' => 'Não é possível realizar o pagamento. Não há tipo de recebimento cadastrado.',
         '456' => 'Erro ao alterar Cliente/Consumidor por posição.',
         '457' => 'Cliente/Consumidor alterado com sucesso.',

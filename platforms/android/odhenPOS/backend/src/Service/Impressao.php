@@ -302,7 +302,7 @@ class Impressao {
         }
         $produtosParcial = $produtosAgrupados;
 
-		$arrPosicoes = array_filter(array_unique(array_column($produtosParcial,'NRLUGARMESA'))); 
+		$arrPosicoes = array_filter(array_unique(array_column($produtosParcial,'NRLUGARMESA')));
 		$arrNmPosicao = $this->buscaNomePorPosicao($cdfilial, $nrvendarest, $arrPosicoes);
 
 
@@ -319,7 +319,7 @@ class Impressao {
 		if ($modo === "C") $strImprimir .= "Comanda: $dscomanda". $printerParams['comandoEnter'];
 
 		$strImprimir .= "Mesa   : $nrmesa". $printerParams['comandoEnter'];
-				
+
 		$strImprimir .= "Garcom : ".$this->util->removeAcentos($session["NMFANVEN"]). $printerParams['comandoEnter'];//nome do Garcom
 		$strImprimir .= 'Emissao: '.$this->date->getDataAtual()->format(\Util\Date::FORMATO_BRASILEIRO_DATAHORA). $printerParams['comandoEnter'];
 
@@ -330,7 +330,7 @@ class Impressao {
 			$posicaoMesa = $produtoParcial["NRLUGARMESA"];
 			if (($session["IDLUGARMESA"] === "S") && ($modo === "M")){
 				if ($posicaoAtual != $posicaoMesa){
-					$strImprimir .= $this->impressaoUtilAPI->imprimeLinha($printerParams, $strImprimir);
+					$strImprimir .= $this->impressaoUtilAPI->imprimeLinha($printerParams);
 					if ($firstBlank) $firstBlank = false;
 					else $strImprimir .=  $printerParams['comandoEnter'];
 					$strImprimir .= "Posicao ".$posicaoMesa;
@@ -384,7 +384,7 @@ class Impressao {
 		$vrcomisvenda1 = floatval($session["VRCOMISVENDA"]);
 		if ($impPosicao == '' && $nrpessoas > 1 && $session["IDLUGARMESA"] == "S" && $modo == "M") {
 			$porcentServico = isset($dadosComissao['VRCOMISPOR']) ? $dadosComissao['VRCOMISPOR']: $vrcomisvenda1;
-			$strImprimir .= $this->impressaoUtilAPI->imprimeLinha($printerParams, $strImprimir);
+			$strImprimir .= $this->impressaoUtilAPI->imprimeLinha($printerParams);
 			$params = array(
 				'CDFILIAL' => $cdfilial,
 				'NRVENDAREST' => $stVendaRests,
@@ -411,7 +411,7 @@ class Impressao {
 		}
 
 		// lista produtos
-		$strImprimir .= $this->impressaoUtilAPI->imprimeLinha($printerParams, $strImprimir);
+		$strImprimir .= $this->impressaoUtilAPI->imprimeLinha($printerParams);
 		$texto        = "Total Produtos";
 
         if ($session['IDMOSTRADESPARC'] === "S" && $totalDesconto > 0) {
@@ -443,7 +443,7 @@ class Impressao {
 		}
 		$strImprimir = $this->impressaoUtilAPI->formataMp20($valImpreLoja['IDMODEIMPRES'], $strImprimir);
 		$comandos->text($strImprimir, $printerParams);
-		
+
 
 		$printerParams['bold'] = true;
 		$strImprimir = !$printerParams['impressaoFront'] ? '' : $strImprimir;
@@ -452,7 +452,7 @@ class Impressao {
 		$strImprimir = $this->impressaoUtilAPI->formataMp20($valImpreLoja['IDMODEIMPRES'], $strImprimir);
 		$comandos->text($strImprimir, $printerParams);
 
-        
+
 		$printerParams['bold'] = false;
 		$strImprimir = !$printerParams['impressaoFront'] ? '' : $strImprimir;
 		if ($session['IDCOMISVENDA'] === 'S' && $prodCobTax > 0) {
@@ -461,7 +461,7 @@ class Impressao {
 	        $vrcomisvenda3 = !empty(floatval($session["VRCOMISVENDA3"])) ? floatval($session["VRCOMISVENDA3"]) : null;
 
 			if (($vrcomisvenda1 !== null && $vrcomisvenda2 !== null)  || ($vrcomisvenda1 !== null && $vrcomisvenda3 !== null) || ($vrcomisvenda2 !== null && $vrcomisvenda3 !== null)){
-	            $strImprimir .= $this->impressaoUtilAPI->imprimeLinha($printerParams, $strImprimir);
+	            $strImprimir .= $this->impressaoUtilAPI->imprimeLinha($printerParams);
 				$texto = "Gorjeta Sugerida";
 
 	            if ($vrcomisvenda1 !== null) {
@@ -480,16 +480,16 @@ class Impressao {
 	    }
 
 		if ($nrpessoas > 1) {
-			$strImprimir .= $this->impressaoUtilAPI->imprimeLinha($printerParams, $strImprimir);
+			$strImprimir .= $this->impressaoUtilAPI->imprimeLinha($printerParams);
 			if ($impPosicao == ''){
 				$strImprimir .= "$nrpessoas PESSOA(S) - " . $this->util->formataPreco($totalPorPessoa) . " POR PESSOA".$printerParams['comandoEnter'];
 			}
 		} else {
-			$strImprimir .= $this->impressaoUtilAPI->imprimeLinha($printerParams, $strImprimir);
+			$strImprimir .= $this->impressaoUtilAPI->imprimeLinha($printerParams);
 		}
 
 		$strImprimir .= "Tempo de permanencia - $horas:$minutos:$segundos". $printerParams['comandoEnter'];
-		$strImprimir .= $this->impressaoUtilAPI->imprimeLinha($printerParams, $strImprimir);
+		$strImprimir .= $this->impressaoUtilAPI->imprimeLinha($printerParams);
         $strImprimir .= $this->impressaoUtilAPI->centraliza($printerParams, 'Teknisa Software - www.teknisa.com') . $printerParams['comandoEnter'];
 		$strImprimir .= $printerParams['comandoEnter'];
 		$strImprimir = $this->impressaoUtilAPI->formataMp20($valImpreLoja['IDMODEIMPRES'], $strImprimir);
@@ -511,6 +511,12 @@ class Impressao {
 					'error'     => false);
 			} else{
 				$result = $this->impressaoUtilAPI->requisicaoPonte($valImpreLoja, $comandos);
+				$result['message'] = !empty($result['message']) ? $result['message'] : '';
+				$dadosImpressao = [];
+				$dadosImpressao['impressaoBack'] = array(
+					'error'   => $result['error'],
+					'message' => array_key_exists('message', $result) ? $result['message'] : null
+                );
 			}
 		} else {
 			$dadosImpressao = $strImprimir;
@@ -540,11 +546,11 @@ class Impressao {
                 $receipt .= $this->impressaoUtilAPI->centraliza($printerParams, 'IM: ' . $filialDetails['CDINSCMUNI']) . $printerParams['comandoEnter'];
             }
 
-            $receipt .= $this->impressaoUtilAPI->imprimeLinha($printerParams, $receipt);
+            $receipt .= $this->impressaoUtilAPI->imprimeLinha($printerParams);
             $receipt .= $this->impressaoUtilAPI->centraliza($printerParams, 'COMPRA DE CREDITO') . $printerParams['comandoEnter'];
             $data = new \DateTime('NOW');
             $receipt .= $this->impressaoUtilAPI->centraliza($printerParams, 'DATA: ' . $data->format('d/m/Y H:i:s')) . $printerParams['comandoEnter'];
-            $receipt .= $this->impressaoUtilAPI->imprimeLinha($printerParams, $receipt);
+            $receipt .= $this->impressaoUtilAPI->imprimeLinha($printerParams);
 
             $receipt .= 'Nr. Deposito: ' . $NRDEPOSICONS . $printerParams['comandoEnter'] . $printerParams['comandoEnter'];
             $receipt .= 'Consumidor..: ' . $creditDetails['NMCONSUMIDOR'] . $printerParams['comandoEnter'];
@@ -565,7 +571,7 @@ class Impressao {
             }
             $receipt .= 'Saldo Final : R$ ' . $this->impressaoUtilAPI->formataNumero(floatval($creditDetails['VRSALDCONEXT']), 2) . $printerParams['comandoEnter'];
 
-            $receipt .= $this->impressaoUtilAPI->imprimeLinha($printerParams, $receipt);
+            $receipt .= $this->impressaoUtilAPI->imprimeLinha($printerParams);
 
             if (!$printerParams['impressaoFront']){
                 $comandos = new Command();
@@ -619,11 +625,11 @@ class Impressao {
                 $receipt .= $this->impressaoUtilAPI->centraliza($printerParams, 'IM: ' . $filialDetails['CDINSCMUNI']) . $printerParams['comandoEnter'];
             }
 
-            $receipt .= $this->impressaoUtilAPI->imprimeLinha($printerParams, $receipt);
+            $receipt .= $this->impressaoUtilAPI->imprimeLinha($printerParams);
             $receipt .= $this->impressaoUtilAPI->centraliza($printerParams, 'CANCELAMENTO DE CREDITO') . $printerParams['comandoEnter'];
             $data = new \DateTime('NOW');
             $receipt .= $this->impressaoUtilAPI->centraliza($printerParams, 'DATA: ' . $data->format('d/m/Y H:i:s')) . $printerParams['comandoEnter'];
-            $receipt .= $this->impressaoUtilAPI->imprimeLinha($printerParams, $receipt);
+            $receipt .= $this->impressaoUtilAPI->imprimeLinha($printerParams);
 
             $receipt .= 'Nr. Deposito: ' . $NRDEPOSICONS . $printerParams['comandoEnter'] . $printerParams['comandoEnter'];
             $receipt .= 'Consumidor..: ' . $cancelDetails['NMCONSUMIDOR'] . $printerParams['comandoEnter'];
@@ -631,7 +637,7 @@ class Impressao {
             $receipt .= 'Valor.......: R$ ' . $this->impressaoUtilAPI->formataNumero(floatval($VRMOVEXTCONS), 2) . $printerParams['comandoEnter'];
             $receipt .= 'Saldo Final : R$ ' . $this->impressaoUtilAPI->formataNumero(floatval($cancelDetails['VRSALDCONEXT']), 2) . $printerParams['comandoEnter'];
 
-            $receipt .= $this->impressaoUtilAPI->imprimeLinha($printerParams, $receipt);
+            $receipt .= $this->impressaoUtilAPI->imprimeLinha($printerParams);
 
             if (!$printerParams['impressaoFront']){
                 $comandos = new Command();

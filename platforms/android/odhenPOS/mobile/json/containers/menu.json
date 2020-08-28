@@ -742,7 +742,7 @@
                                     "name": "btnTransferProductComanda",
                                     "label": "Transferir Produtos",
                                     "class": 4,
-                                    "icon": "duplicate",
+                                    "icon": "transfer",
                                     "readOnly": false,
                                     "isVisible": true,
                                     "isVisibleForm": false,
@@ -764,7 +764,27 @@
                                             "code": "MenuFunctionsController.selectComandaProducts(args.owner.field.widget.container.getWidget('transferProductComanda').getField('selectComandaProducts'));"
                                         }
                                     ]
+                                },
+                                {
+                                    "name": "btnBillGrouping",
+                                    "label": "Agrupar/Desagrupar Comandas",
+                                    "class": 4,
+                                    "icon": "duplicate",
+                                    "readOnly": false,
+                                    "isVisible": true,
+                                    "isVisibleForm": false,
+                                    "isVisibleGrid": false,
+                                    "newLine": false,
+                                    "defaultValue": null,
+                                    "template": "field/big-button.html",
+                                    "events": [
+                                        {
+                                            "name": "FieldOnClick",
+                                            "code": "ScreenService.openPopup(args.owner.field.widget.container.getWidget('BillGrouping'));"
+                                        }
+                                    ]
                                 }
+                                
                             ]
                         },
                         {
@@ -1473,6 +1493,166 @@
                                     "type": "tel",
                                     "dataSource": {}
                                 }
+                            ]
+                        },
+                        {
+                            "name": "BillGrouping",
+                            "label": "Agrupamento/Desagrupamento de Comandas",
+                            "template": "widget/tabbedWidget.html",
+                            "isVisible": true,
+                            "actions": [
+                                {
+                                    "label": "Voltar",
+                                    "name": "btnBack",
+                                    "isVisible": true,
+                                    "showAsAction": "back",
+                                    "hideIcon": true,
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "MenuFunctionsController.eraseGroupBillData(args.owner.widget); ScreenService.closePopup();"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "label": "Confirmar",
+                                    "name": "btnConfirmGroup",
+                                    "isVisible": true,
+                                    "showAsAction": "never",
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "MenuFunctionsController.groupDisgroupBills(args.owner.widget);"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "widgets": [
+                                {
+                                    "name": "group",
+                                    "label": "Agrupar Comandas",
+                                    "template": "widget/form.html",
+                                    "isVisible": true,
+                                    "events": [],
+                                    "fields": [
+                                        {
+                                            "name": "mainBill",
+                                            "label": "Selecione a comanda principal",
+                                            "isVisible": true,
+                                            "itemsPerPage": 30,
+                                            "class": 12,
+                                            "template": "field/select.html",
+                                            "showSelectAs": "grid",
+                                            "dataSource": {},
+                                            "valueField": "LABELDSCOMANDA",
+                                            "outData":{
+                                                "LABELDSCOMANDA": "mainBill",
+                                                "DSCOMANDA": "MAINDSCOMANDA",
+                                                "NRVENDAREST": "MAINNRVENDAREST",
+                                                "NRCOMANDA": "MAINNRCOMANDA"
+                                            },
+                                            "validations": {
+                                                "required": {}
+                                            },
+                                            "fields": [
+                                                {
+                                                    "name": "LABELDSCOMANDA",
+                                                    "label": "Comanda",
+                                                    "isVisible": true,
+                                                    "showOnList": true,
+                                                    "template": "field/text-edit.html",
+                                                    "events": []
+                                                }
+                                            ],
+                                            "events": [
+                                                {
+                                                    "name": "FieldOnClick",
+                                                    "code": "MenuFunctionsController.selectToGroupBills(args.owner.field);"
+                                                },
+                                                {
+                                                    "name": "FieldOnChange",
+                                                    "code": "MenuFunctionsController.handleSelectBills(args.owner.field, args.owner.field.getParent().getField('selectBillsToGroup'));"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "selectBillsToGroup",
+                                            "label": "Selecione as comandas a serem agrupadas",
+                                            "readOnly": true,
+                                            "skipPreference": true,
+                                            "hasPagination": true,
+                                            "searchWithPagination": true,
+                                            "template": "field/select-multiple.html",
+                                            "dataSource": {
+                                               
+                                            },
+                                            "showOnList": true,
+                                            "showOnForm": true,
+                                            "isVisible": true,
+                                            "order": "DSCOMANDA",
+                                            "descriptionField": "LABELDSCOMANDA",
+                                            "valueField": "LABELDSCOMANDA",
+                                            "class": 12,
+                                            "validations": {
+                                                "required": {}
+                                            },
+                                            "outData": {
+                                                "LABELDSCOMANDA": "selectBillsToGroup",
+                                                "DSCOMANDA": "TOGROUPDSCOMANDA",
+                                                "NRVENDAREST": "TOGROUPNRVENDAREST",
+                                                "NRCOMANDA": "TOGROUPNRCOMANDA"
+                                            },
+                                            "events": [],
+                                            "fields": [
+                                                {
+                                                    "name": "LABELDSCOMANDA",
+                                                    "label": "Comandas",
+                                                    "class": 6,
+                                                    "isVisible": true,
+                                                    "showOnList": true,
+                                                    "template": "field/text-edit.html"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "ungroup",
+                                    "label": "Desagrupar Comandas",
+                                    "template": "widget/grid.html",
+                                    "showCheckbox": true,
+                                    "allowMultiSelect": false,
+                                    "isVisible": true,
+                                    "valueField": "LABELDSCOMANDA",
+                                    "descriptionField": "LABELDSCOMANDA",
+                                    "dataSource": {},
+                                    "floatingControl": false,
+                                    "events": [
+                                        {
+                                            "name": "WidgetOnEnter",
+                                            "code": "MenuFunctionsController.selectToUngroupBills(args.owner);"
+                                        }
+                                    ],
+                                    "fields": [
+                                        {
+                                            "name": "DSCOMANDAPRI",
+                                            "label": "Agrupamento",
+                                            "isVisible": true,
+                                            "showOnList": true,
+                                            "class": "6 odh-account-font",
+                                            "template": "field/text.html"
+                                        },
+                                        {
+                                            "name": "LABELDSCOMANDA",
+                                            "label": "Comanda",
+                                            "isVisible": true,
+                                            "showOnList": true,
+                                            "class": "6 odh-account-font",
+                                            "template": "field/text.html"
+                                        }
+                                    ]
+                                }
+
                             ]
                         }
                     ]

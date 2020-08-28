@@ -1,0 +1,48 @@
+{
+    "name": "odhen/api",
+    "description": "Odhen API",
+    "version": "1.0.0",
+    "keywords": ["odhen", "api"],
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Marcus Soares",
+            "email": "marcus.soares@live.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Hugo Souza",
+            "email": "hugo.souza@teknisa.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Luiz Baldi",
+            "email": "luiz.baldi@teknisa.com",
+            "role": "Developer"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://cdn.zeedhi.com/composer"
+        },
+        {
+            "packagist": false
+        }
+    ],
+    "minimum-stability" : "dev",
+    "require": {
+        "zeedhi/framework": "2.3.4",
+        "nfephp-org/sped-nfe": "v5.0.89",
+        "phpunit/phpunit": "5.7"
+    },
+    "config": {
+        "secure-http": false
+    },
+    "autoload": {
+        "psr-4": {
+            "Odhen\\API\\": "src"
+        }
+    }
+}

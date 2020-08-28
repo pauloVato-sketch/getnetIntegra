@@ -1,0 +1,1065 @@
+{
+    "name": "delivery",
+    "label": "Delivery",
+    "showHeader": true,
+    "showMenu": true,
+    "showFooter": true,
+    "showBack": true,
+    "showNotifications": true,
+    "footer": "component/footer.html",
+    "template": "container/window.html",
+    "popup": "component/popup.html",
+    "events": [],
+    "widgets": [
+        {
+            "name": "orders",
+            "template": "widget/tabbedWidget.html",
+            "formTemplate": "widget/tabbedWidget.html",
+            "label": "",
+            "isVisible": true,
+            "events": [],
+            "fields": [],
+            "actions": [],
+            "widgets": [
+                {
+                    "name": "deliveryOrders",
+                    "label": "Pedidos Delivery",
+                    "template": "widget/grid.html",
+                    "isVisible": true,
+                    "floatingControl": false,
+                    "dataSource": {},
+                    "events": [
+                        {
+                            "name":"WidgetOnEnter",
+                            "code": "DeliveryController.setDataSource(args.owner)"
+                        },
+                        {
+                            "name": "WidgetAfterMoveRow",
+                            "code": "DeliveryController.openDeliveryDetail(args.owner)"
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "name": "adicionar",
+                            "label": "Realizar Pedido",
+                            "isVisible": false,
+                            "icon": "plus",
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "always",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "DeliveryController.newOrder();"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "reloadDelivery",
+                            "label": "",
+                            "isVisible": true,
+                            "icon": "loading",
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "always",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "DeliveryController.setDataSource(args.owner.widget)"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Pendente",
+                            "label": "",
+                            "isVisible": true,
+                            "condition": "row.IDSTCOMANDA == 1",
+                            "icon": "cell no-border",
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "grid-left",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "DeliveryController.nothing()"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Em Produção",
+                            "label": "",
+                            "isVisible": true,
+                            "condition": "row.IDSTCOMANDA == 2",
+                            "icon": "loading no-border",
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "grid-left",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "DeliveryController.nothing()"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Produzido",
+                            "label": "",
+                            "isVisible": true,
+                            "condition": "row.IDSTCOMANDA == 3",
+                            "icon": "silverware no-border",
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "grid-left",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "DeliveryController.nothing()"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Impresso",
+                            "label": "",
+                            "isVisible": true,
+                            "condition": "row.IDSTCOMANDA == 'P'",
+                            "icon": "paste no-border",
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "grid-left",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "DeliveryController.nothing()"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Cancelado",
+                            "label": "",
+                            "isVisible": true,
+                            "condition": "row.IDSTCOMANDA == 4",
+                            "icon": "close-x2 no-border",
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "grid-left",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "DeliveryController.nothing()"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "p/ Entregar",
+                            "label": "",
+                            "isVisible": true,
+                            "condition": "row.IDSTCOMANDA == 5",
+                            "icon": "motorcycle no-border",
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "grid-left",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "DeliveryController.nothing()"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "To Go",
+                            "label": "",
+                            "isVisible": true,
+                            "condition": "row.IDSTCOMANDA == 6",
+                            "icon": "file-next no-border",
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "grid-left",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "DeliveryController.nothing()"
+                                }
+                            ]
+                        }
+                    ],
+                    "fields": [
+                        {
+                            "name": "IDSTCOMANDA",
+                            "label": "Status",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "showOnView": true,
+                            "valueField": "IDSTCOMANDA",
+                            "descriptionField": "DSSTCOMANDA",
+                            "template": "field/select-native.html",
+                            "events": [],
+                            "dataSource": {
+                                "data": [
+                                    {
+                                        "IDSTCOMANDA": "1",
+                                        "DSSTCOMANDA": "Pendente"
+                                    },
+                                    {
+                                        "IDSTCOMANDA": "2",
+                                        "DSSTCOMANDA": "Em Produção"
+                                    },
+                                    {
+                                        "IDSTCOMANDA": "3",
+                                        "DSSTCOMANDA": "Produzido"
+                                    },
+                                    {
+                                        "IDSTCOMANDA": "P",
+                                        "DSSTCOMANDA": "Impresso"
+                                    },
+                                    {
+                                        "IDSTCOMANDA": "4",
+                                        "DSSTCOMANDA": "Cancelado"
+                                    },
+                                    {
+                                        "IDSTCOMANDA": "5",
+                                        "DSSTCOMANDA": "p/ Entregar"
+                                    },
+                                    {
+                                        "IDSTCOMANDA": "6",
+                                        "DSSTCOMANDA": "To Go"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "DTHRABERMESA",
+                            "label": "Data/Hora",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "showOnView": true,
+                            "template": "field/text.html",
+                            "events": [],
+                            "dataSource": {}
+                        },
+                        {
+                            "name": "NRVENDARESTAUX",
+                            "label": "Pedido (Site)",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "showOnView": true,
+                            "defaultValue": null,
+                            "template": "field/text.html",
+                            "events": [],
+                            "dataSource": {}
+                        },
+                        {
+                            "name": "DSCOMANDA",
+                            "label": "Pedido",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "showOnView": true,
+                            "template": "field/text.html",
+                            "events": [],
+                            "dataSource": {}
+                        },
+                        {
+                            "name": "NMCONSUMIDOR",
+                            "label": "Consumidor",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "showOnView": true,
+                            "template": "field/text.html",
+                            "events": [],
+                            "dataSource": {}
+                        },
+                        {
+                            "name": "IDORGCMDVENDA",
+                            "label": "Origem",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "showOnView": true,
+                            "valueField": "IDORGCMDVENDA",
+                            "descriptionField": "DSORGCMDVENDA",
+                            "template": "field/select-native.html",
+                            "events": [],
+                            "dataSource": {
+                                "data": [
+                                    {
+                                        "IDORGCMDVENDA": "DLV_IFO",
+                                        "DSORGCMDVENDA": "IFOOD"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "DLV_PJA",
+                                        "DSORGCMDVENDA": "PEDJA"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "DLV_SIT",
+                                        "DSORGCMDVENDA": "SITE"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "DLV_CAL",
+                                        "DSORGCMDVENDA": "CALL"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "DLV_INT",
+                                        "DSORGCMDVENDA": "INTEG"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "DLV_APP",
+                                        "DSORGCMDVENDA": "APP"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "DLV_FOS",
+                                        "DSORGCMDVENDA": "FOS"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "DLV_FNC",
+                                        "DSORGCMDVENDA": "FOS"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "DLV_SAT",
+                                        "DSORGCMDVENDA": "FOS"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "DLV_TAA",
+                                        "DSORGCMDVENDA": "TAA"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "TGO_APP",
+                                        "DSORGCMDVENDA": "TGAPP"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "BGR_APP",
+                                        "DSORGCMDVENDA": "BGAPP"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "TGO_TAA",
+                                        "DSORGCMDVENDA": "TGTAA"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "BGR_TAA",
+                                        "DSORGCMDVENDA": "BGTAA"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "DLV_ABF",
+                                        "DSORGCMDVENDA": "ABRAFOOD"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "DLV_SPO",
+                                        "DSORGCMDVENDA": "SPOON"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "DLV_ADR",
+                                        "DSORGCMDVENDA": "ANDROID"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "DLV_IOS",
+                                        "DSORGCMDVENDA": "IOS"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "DLV_ONY",
+                                        "DSORGCMDVENDA": "ONYO"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "DLV_WZP",
+                                        "DSORGCMDVENDA": "WPP"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "DLV_YAN",
+                                        "DSORGCMDVENDA": "YANDEH"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "DLV_UBR",
+                                        "DSORGCMDVENDA": "UBER"
+                                    },
+                                    {
+                                        "IDORGCMDVENDA": "DLV_RAP",
+                                        "DSORGCMDVENDA": "RAPPI"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "IDRETBALLOJA",
+                            "label": "Ret. Balcão",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "showOnView": true,
+                            "valueField": "IDRETBALLOJA",
+                            "descriptionField": "DSRETBALLOJA",
+                            "template": "field/select-native.html",
+                            "events": [],
+                            "dataSource": {
+                                "data": [
+                                    {
+                                        "IDRETBALLOJA": "S",
+                                        "DSRETBALLOJA": "Sim"
+                                    },
+                                    {
+                                        "IDRETBALLOJA": "N",
+                                        "DSRETBALLOJA": "Não"
+                                    }
+                                    
+                                ]
+                            }
+                        },
+                        {
+                            "name": "DTENTREGA",
+                            "label": "Dt. Entrega",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": false,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "showOnView": true,
+                            "template": "field/text.html",
+                            "events": [],
+                            "dataSource": {}
+                        },
+                        {
+                            "name": "PRODUTOS",
+                            "label": "Dt. Entrega",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": false,
+                            "showOnList": false,
+                            "showOnForm": false,
+                            "showOnView": false,
+                            "template": "field/select.html",
+                            "events": [],
+                            "dataSource": {}
+                        },
+                        {
+                            "name": "DATASALE",
+                            "label": "Dt. Entrega",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": false,
+                            "showOnList": false,
+                            "showOnForm": false,
+                            "showOnView": false,
+                            "template": "field/select.html",
+                            "events": [],
+                            "dataSource": {}
+                        }        
+                    ]
+                },
+                {
+                    "name": "ordersControl",
+                    "label": "Controle de Entrega",
+                    "template": "widget/grid.html",
+                    "isVisible": true,
+                    "floatingControl": false,
+                    "actions": [
+                        {
+                            "name": "saidaPedido",
+                            "label": "",
+                            "icon": "motorcycle",
+                            "isVisible": true,
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "checked_rows_list",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "DeliveryController.saidaPedidos(args.owner.widget);"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "voltaEntregador",
+                            "label": "",
+                            "icon": "before",
+                            "isVisible": true,
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "always",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "DeliveryController.chegadaEntregador(args.owner.widget);"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "imprimeEntrega",
+                            "label": "",
+                            "isVisible": true,
+                            "icon": "printer",
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "checked_rows_list",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "DeliveryController.printDelivery(args.owner.widget)"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "reprintNotaFiscal",
+                            "label": "",
+                            "isVisible": true,
+                            "icon": "file-ok",
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "checked_rows_list",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "DeliveryController.reprintDeliveryCupomFiscal(args.owner.widget)"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "reloadEntregas",
+                            "label": "",
+                            "isVisible": true,
+                            "icon": "loading",
+                            "showOnForm": true,
+                            "showOnList": true,
+                            "showAsAction": "always",
+                            "events": [
+                                {
+                                    "name": "ActionEvent",
+                                    "code": "DeliveryController.setDataSourceControl(args.owner.widget)"
+                                }
+                            ]
+                        }
+                    ],
+                    "dataSource": {},
+                    "showCheckbox": true,
+                    "events": [
+                        {
+                            "name":"WidgetOnEnter",
+                            "code": "DeliveryController.setDataSourceControl(args.owner)"
+                        }
+                    ],
+                    "fields": [
+                        {
+                            "name": "DSCOMANDA",
+                            "label": "Pedido",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "showOnView": true,
+                            "template": "field/text.html",
+                            "events": [],
+                            "dataSource": {}
+                        },
+                        {
+                            "name": "DTVENDA",
+                            "label": "Hora Venda",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "showOnView": true,
+                            "template": "field/text.html",
+                            "events": [],
+                            "dataSource": {}
+                        },
+                        {
+                            "name": "DTSAIDAVENDA",
+                            "label": "Data/Hora Saida",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "showOnView": true,
+                            "template": "field/text.html",
+                            "events": [],
+                            "dataSource": {}
+                        },
+                        {
+                            "name": "NMFANVEN",
+                            "label": "Entregador",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "showOnView": true,
+                            "template": "field/text.html",
+                            "events": [],
+                            "dataSource": {}
+                        },
+                        {
+                            "name": "NMREGIAOMUNI",
+                            "label": "Região",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "showOnView": true,
+                            "template": "field/text.html",
+                            "events": [],
+                            "dataSource": {}
+                        },
+                        {
+                            "name": "NMBAIRRO",
+                            "label": "Bairro",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "showOnView": true,
+                            "template": "field/text.html",
+                            "events": [],
+                            "dataSource": {}
+                        },
+                        {
+                            "name": "IDSTCOMANDA",
+                            "label": "Status do Pedido",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": false,
+                            "showOnList": false,
+                            "showOnForm": false,
+                            "showOnView": false,
+                            "template": "field/text.html",
+                            "events": [],
+                            "dataSource": {}
+                        },
+                        {
+                            "name": "NRSEQVENDA",
+                            "label": "Numero da Venda",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": false,
+                            "showOnList": false,
+                            "showOnForm": false,
+                            "showOnView": false,
+                            "template": "field/text.html",
+                            "events": [],
+                            "dataSource": {}
+                        },
+                        {
+                            "name": "NRVENDAREST",
+                            "label": "Numero da Venda Rest",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": false,
+                            "showOnList": false,
+                            "showOnForm": false,
+                            "showOnView": false,
+                            "template": "field/text.html",
+                            "events": [],
+                            "dataSource": {}
+                        },
+                        {
+                            "name": "CDLOJA",
+                            "label": "Codigo da Loja",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": false,
+                            "showOnList": false,
+                            "showOnForm": false,
+                            "showOnView": false,
+                            "template": "field/text.html",
+                            "events": [],
+                            "dataSource": {}
+                        },
+                        {
+                            "name": "NRNOTAFISCALCE",
+                            "label": "Numero da nota fiscal",
+                            "class": 4,
+                            "readOnly": true,
+                            "isVisible": false,
+                            "showOnList": false,
+                            "showOnForm": false,
+                            "showOnView": false,
+                            "template": "field/text.html",
+                            "events": [],
+                            "dataSource": {}
+                        }
+                    ],
+                    "widgets":[
+                        {
+                            "name": "popupEntregadorSaida",
+                            "label": "Informe o Entregador",
+                            "sameLine": true,
+                            "isVisible": true,
+                            "readOnly": false,
+                            "template": "widget/form.html",
+                            "events": [],
+                            "dataSource": {},
+                            "actions": [
+                                {
+                                    "label": "Voltar",
+                                    "isVisible": true,
+                                    "showOnForm": true,
+                                    "showOnList": true,
+                                    "showAsAction": "back",
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "ScreenService.closePopup();"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "label": "Confirmar Entregador",
+                                    "name": "functions",
+                                    "isVisible": true,
+                                    "showAsAction": "never",
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "DeliveryController.entregarPedidos(args.owner.widget);"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "fields": [
+                                {
+                                    "label": "Entregador",
+                                    "name": "NMFANVEN",
+                                    "class": 12,
+                                    "template": "field/select.html",
+                                    "descriptionField": "NMFANVEN",
+                                    "valueField": "CDVENDEDOR",
+                                    "showSelectAs": "grid",
+                                    "dataSource": {
+                                        "name": "/DeliveryServiceVendedoresRepository",
+                                        "rest": true,
+                                        "lazyLoad": false
+                                    },
+                                    "validations": {
+                                        "required": true
+                                    },
+                                    "fields": [
+                                        {
+                                            "name": "CDVENDEDOR",
+                                            "label": "Código do Entregador",
+                                            "isVisible": true,
+                                            "template": "field/text-edit.html",
+                                            "showOnList": true
+                                        },
+                                        {
+                                            "name": "NMFANVEN",
+                                            "label": "Nome do Entregador",
+                                            "isVisible": true,
+                                            "template": "field/text-edit.html",
+                                            "showOnList": true
+                                        }
+                                    ],
+                                    "events": [
+                                        {
+                                            "name": "FieldOnClick",
+                                            "code": "args.owner.field.reload();"
+                                        }
+                                    ],
+                                    "dataSourceFilter": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "popupEntregadorChegada",
+                            "label": "Informe o Entregador",
+                            "sameLine": true,
+                            "isVisible": true,
+                            "readOnly": false,
+                            "template": "widget/form.html",
+                            "events": [],
+                            "dataSource": {},
+                            "actions": [
+                                {
+                                    "label": "Voltar",
+                                    "isVisible": true,
+                                    "showOnForm": true,
+                                    "showOnList": true,
+                                    "showAsAction": "back",
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "ScreenService.closePopup();"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "label": "Confirmar Entregador",
+                                    "name": "functions",
+                                    "isVisible": true,
+                                    "showAsAction": "never",
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "DeliveryController.getPedidosEntregues(args.owner.widget);"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "fields": [
+                                {
+                                    "label": "Entregador",
+                                    "name": "NMFANVEN",
+                                    "class": 12,
+                                    "template": "field/select.html",
+                                    "descriptionField": "NMFANVEN",
+                                    "valueField": "CDVENDEDOR",
+                                    "showSelectAs": "grid",
+                                    "dataSource": {
+                                        "name": "/DeliveryServiceVendedoresChegadaRepository",
+                                        "rest": true,
+                                        "lazyLoad": false
+                                    },
+                                    "validations": {
+                                        "required": true
+                                    },
+                                    "fields": [
+                                        {
+                                            "name": "CDVENDEDOR",
+                                            "label": "Código do Entregador",
+                                            "isVisible": true,
+                                            "template": "field/text-edit.html",
+                                            "showOnList": true
+                                        },
+                                        {
+                                            "name": "NMFANVEN",
+                                            "label": "Nome do Entregador",
+                                            "isVisible": true,
+                                            "template": "field/text-edit.html",
+                                            "showOnList": true
+                                        }
+                                    ],
+                                    "events": [
+                                        {
+                                            "name": "FieldOnClick",
+                                            "code": "args.owner.field.reload();"
+                                        }
+                                    ],
+                                    "dataSourceFilter": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "popUpChegadaPedidos",
+                            "label": "Chegada dos Pedidos:",
+                            "sameLine": true,
+                            "isVisible": true,
+                            "readOnly": false,
+                            "floatingControl": false,
+                            "template": "widget/grid.html",
+                            "events": [],
+                            "dataSource": {},
+                            "actions": [
+                                {
+                                    "label": "Voltar",
+                                    "isVisible": true,
+                                    "showOnForm": true,
+                                    "showOnList": true,
+                                    "showAsAction": "back",
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "ScreenService.closePopup();"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "label": "Confirmar Chegada",
+                                    "name": "functions",
+                                    "isVisible": true,
+                                    "showAsAction": "never",
+                                    "events": [
+                                        {
+                                            "name": "ActionEvent",
+                                            "code": "DeliveryController.chegadaPedidos(args.owner.widget);"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "fields": [
+                                {
+                                    "name": "NRCOMANDA",
+                                    "label": "Número do Pedido",
+                                    "class": 4,
+                                    "readOnly": true,
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "showOnForm": true,
+                                    "showOnView": true,
+                                    "template": "field/text.html",
+                                    "events": [],
+                                    "dataSource": {}
+                                },
+                                {
+                                    "name": "NMCONSUMIDOR",
+                                    "label": "Consumidor",
+                                    "class": 4,
+                                    "readOnly": true,
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "showOnForm": true,
+                                    "showOnView": true,
+                                    "template": "field/text.html",
+                                    "events": [],
+                                    "dataSource": {}
+                                },
+                                {
+                                    "name": "IDORGCMDVENDA",
+                                    "label": "Origem",
+                                    "class": 4,
+                                    "readOnly": true,
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "showOnForm": true,
+                                    "showOnView": true,
+                                    "valueField": "IDORGCMDVENDA",
+                                    "descriptionField": "DSORGCMDVENDA",
+                                    "template": "field/select-native.html",
+                                    "events": [],
+                                    "dataSource": {
+                                        "data": [
+                                            {
+                                                "IDORGCMDVENDA": "DLV_IFO",
+                                                "DSORGCMDVENDA": "IFOOD"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "DLV_PJA",
+                                                "DSORGCMDVENDA": "PEDJA"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "DLV_SIT",
+                                                "DSORGCMDVENDA": "SITE"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "DLV_CAL",
+                                                "DSORGCMDVENDA": "CALL"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "DLV_INT",
+                                                "DSORGCMDVENDA": "INTEG"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "DLV_APP",
+                                                "DSORGCMDVENDA": "APP"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "DLV_FOS",
+                                                "DSORGCMDVENDA": "FOS"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "DLV_FNC",
+                                                "DSORGCMDVENDA": "FOS"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "DLV_SAT",
+                                                "DSORGCMDVENDA": "FOS"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "DLV_TAA",
+                                                "DSORGCMDVENDA": "TAA"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "TGO_APP",
+                                                "DSORGCMDVENDA": "TGAPP"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "BGR_APP",
+                                                "DSORGCMDVENDA": "BGAPP"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "TGO_TAA",
+                                                "DSORGCMDVENDA": "TGTAA"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "BGR_TAA",
+                                                "DSORGCMDVENDA": "BGTAA"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "DLV_ABF",
+                                                "DSORGCMDVENDA": "ABRAFOOD"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "DLV_SPO",
+                                                "DSORGCMDVENDA": "SPOON"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "DLV_ADR",
+                                                "DSORGCMDVENDA": "ANDROID"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "DLV_IOS",
+                                                "DSORGCMDVENDA": "IOS"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "DLV_ONY",
+                                                "DSORGCMDVENDA": "ONYO"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "DLV_WZP",
+                                                "DSORGCMDVENDA": "WPP"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "DLV_YAN",
+                                                "DSORGCMDVENDA": "YANDEH"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "DLV_UBR",
+                                                "DSORGCMDVENDA": "UBER"
+                                            },
+                                            {
+                                                "IDORGCMDVENDA": "DLV_RAP",
+                                                "DSORGCMDVENDA": "RAPPI"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "NMFANVEN",
+                                    "label": "Entregador",
+                                    "class": 4,
+                                    "readOnly": true,
+                                    "isVisible": true,
+                                    "showOnList": true,
+                                    "showOnForm": true,
+                                    "showOnView": true,
+                                    "template": "field/text.html",
+                                    "events": [],
+                                    "dataSource": {}
+                                },
+                                {
+                                    "name": "NRSEQVENDA",
+                                    "label": "",
+                                    "class": 4,
+                                    "readOnly": true,
+                                    "isVisible": false,
+                                    "showOnList": false,
+                                    "showOnForm": false,
+                                    "showOnView": false,
+                                    "template": "field/text.html",
+                                    "events": [],
+                                    "dataSource": {}
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

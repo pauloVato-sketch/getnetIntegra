@@ -115,6 +115,10 @@ class Operator {
 				);
 			}
 
+            // CONFIGURAÇÃO DE TELA
+            $confTelaCheck = $this->utilAPI->checkConfTela();
+            $NRCONFTELA = $this->entityManager->getConnection()->fetchAssoc("GET_CONFTELA_CAIXA", array($cdFilial, $cdCaixa));
+
 			try {
 				self::devModeActivation($cdFilial, $cdCaixa, $cdOperador, $senha, self::getIDHABCAIXAVENDAfromMode($currentMode));
 			} catch (\Exception $e){
@@ -132,8 +136,7 @@ class Operator {
 				$vendedor = $this->entityManager->getConnection()->fetchAssoc("SQL_BUSCA_VENDEDOR_OPERADOR", $params);
                 if (!$vendedor) return array('error' => true, 'message' => 'Operador sem vendedor associado.');
 
-				$params = array($cdFilial, $cdCaixa);
-				$r_dados_caixa = $this->entityManager->getConnection()->fetchAssoc("SQL_DADOS_CAIXA", $params);
+				$r_dados_caixa = $this->entityManager->getConnection()->fetchAssoc("SQL_DADOS_CAIXA", array($cdFilial, $cdCaixa));
 
 				if ($r_dados_caixa['IDCOLETOR'] !== 'C') {
 					$checaEstadoFiscal = $this->caixaAPI->checaEstadoFiscal($cdFilial, $cdCaixa, $r_dados_caixa['NRORG']);
@@ -203,7 +206,7 @@ class Operator {
                         $sessao['CDFILIAL'] = $r_dados_caixa['CDFILIAL'];
                         $sessao['NRMINSEMCONS'] = $r_dados_caixa['NRMINSEMCONS'];
                         $sessao['CDFILICONFTE'] = $r_dados_caixa['CDFILICONFTE'];
-                        $sessao['NRCONFTELA'] = $r_dados_caixa['NRCONFTELA'];
+                        $sessao['NRCONFTELA'] = $NRCONFTELA['NRCONFTELA'];
                         $sessao['IDPOSOBSPED'] = $r_dados_caixa['IDPOSOBSPED'];
                         $sessao['IDCONTROPROD'] = $r_dados_caixa['IDCONTROPROD'];
                         $sessao['IDTIPOIMPNF'] = $r_dados_caixa['IDTIPOIMPNF'];
@@ -225,6 +228,7 @@ class Operator {
                         $sessao['IDEXTCONSONLINE'] = $filialDetails['IDEXTCONSONLINE'];
                         $sessao['CDURLWSEXTCONS'] = $filialDetails['CDURLWSEXTCONS'];
                         $sessao['IDCTRLPEDVIAGEM'] = $filialDetails['IDCTRLPEDVIAGEM'];
+                        $sessao['HRTEMPOROD'] = $filialDetails['HRTEMPOROD'];
                         $sessao['CDCLIENTE'] = $r_cliente_padrao['CDCLIENTE'];
                         $sessao['IDTPEMISSAOFOS'] = $r_dados_caixa['IDTPEMISSAOFOS'];
                         $sessao['IDTIPCOBRA'] = $r_dados_caixa['IDTIPCOBRA'];
@@ -244,6 +248,18 @@ class Operator {
                         $sessao['IDHABCAIXAVENDA'] = $r_dados_caixa['IDHABCAIXAVENDA'];
                         $sessao['IDUTCXDRIVETHU'] = $r_dados_caixa['IDUTCXDRIVETHU'];
                         $sessao['IDSENHACUP'] = $r_dados_caixa['IDSENHACUP'];
+                        $sessao['IDTRATTAXASERV'] = $r_dados_caixa['IDTRATTAXASERV'];
+                        $sessao['CDPRODTAXASERV'] = $r_dados_caixa['CDPRODTAXASERV'];
+
+                        // Vigência para configuração de tela.
+                        if ($this->databaseUtil->databaseIsOracle()){
+                            $DTINIVIGENCIA = \DateTime::createFromFormat('Y-m-d H:i:s', $NRCONFTELA['DTINIVIGENCIA'])->format('Y-m-d H:i:s');
+                        }
+                        else {
+                            $DTINIVIGENCIA = \DateTime::createFromFormat('Y-m-d H:i:s.u', $NRCONFTELA['DTINIVIGENCIA'])->format('Y-m-d H:i:s.u');
+                        }
+                        $sessao['DTINIVIGENCIA'] = $DTINIVIGENCIA;
+                        $sessao['FILIALVIGENCIA'] = $NRCONFTELA['CDFILIAL'];
 
                         if (!Empty($r_dados_caixa['CDPRODCOUVER']) && $r_dados_caixa['IDCOUVERART'] === 'S'){
                             $sessao['CDPRODCOUVER'] = $r_dados_caixa['CDPRODCOUVER'];
@@ -278,6 +294,9 @@ class Operator {
                         // verifica se existem campanhas promocionais parametrizadas
                         $campanha = $this->entityManager->getConnection()->fetchAll("SQL_CAMPANHA", array());
                         $utilizaCampanha = empty($campanha) ? false : true;
+
+                        // Verifica se serão utilizados vouchers/cupons promocionais.
+                        $IDUTCUPOMDESC = $this->entityManager->getConnection()->fetchAssoc("SQL_IDUTCUPOMDESC", array());
 
                         // busca dados do operador
                         $params = array(
@@ -347,6 +366,7 @@ class Operator {
                             'UTLCAMPANHA'        => $utilizaCampanha,
                             'CDCAIXA'            => $r_dados_caixa['CDCAIXA'],
                             'PRECOCOUVERT'       => isset($sessao['PRECOCOUVERT']) ? $sessao['PRECOCOUVERT'] : null,
+                            'HRTEMPOROD'         => $filialDetails['HRTEMPOROD'],
                             // parâmetro que define se hambiente está em produção ou homologação
                             'AMBIENTEPRODUCAO'   => $this->instanceManager->getParameter('AMBIENTE_PRODUCAO'),
                             'CDTERTEF'           => $r_dados_caixa['CDTERTEF'],
@@ -358,11 +378,16 @@ class Operator {
                             'IDTPTELAVE'         => $r_dados_caixa['IDTPTELAVE'],
                             'IDSOLICITACPF'      => $r_dados_caixa['IDSOLICITACPF'],
                             'IDLEITURAQRCODE'    => $r_dados_caixa['IDLEITURAQRCODE'],
+                            'CDURLQRCODE'        => $r_dados_caixa['CDURLQRCODE'],
+                            'IDTPCONTRREPIQ'     => $r_dados_caixa['IDTPCONTRREPIQ'],
+                            'VRPEMAXREPIQVND'     => $r_dados_caixa['VRPEMAXREPIQVND'],
+
                             'mensagemFiscal'     => isset($checaEstadoFiscal['mensagemFiscal']) ? $checaEstadoFiscal['mensagemFiscal'] : null,
                             'mensagemImpressora' => isset($checaEstadoFiscal['mensagemImpressora']) ? $checaEstadoFiscal['mensagemImpressora'] : null,
                             'CDLOJA'			 => isset($r_dados_caixa['CDLOJA']) ? $r_dados_caixa['CDLOJA'] : null,
                             'CDCLIENTE'          => $r_cliente_padrao['CDCLIENTE'],
                             'NMFANTCLIE'         => $r_cliente_padrao['NMFANTCLIE'],
+                            'IDUTCUPOMDESC'      => $IDUTCUPOMDESC['IDUTCUPOMDESC'],
                             'paramsImpressora'   => isset($checaEstadoFiscal['paramsImpressora'])? $checaEstadoFiscal['paramsImpressora'] : null
                         );
                     } else {
@@ -481,11 +506,25 @@ class Operator {
     public function getUserByMailAndPassword($email, $password) {
         $params = array(
             'DSEMAILOPER' => $email,
-            'CDSENHAOPERWEB' => md5($password)
+            'CDSENHAOPERWEB' => md5($password),
+            'CDOPERADOR' => STR_PAD($email, 12, "0", STR_PAD_LEFT)
         );
         $connection = $this->entityManager->getConnection();
         // Verificar a necessidade de alterar para o arquivo query
-        return current($connection->fetchAll('SELECT CDOPERADOR, NRORG FROM OPERADOR WHERE DSEMAILOPER = :DSEMAILOPER AND CDSENHAOPERWEB = :CDSENHAOPERWEB', $params));
+        return current($connection->fetchAll
+        ('SELECT CDOPERADOR, NRORG
+            FROM OPERADOR
+                WHERE  (
+                    (
+                        DSEMAILOPER = :DSEMAILOPER
+                            AND CDSENHAOPERWEB = :CDSENHAOPERWEB
+                    ) OR
+                    (
+                        CDOPERADOR = :CDOPERADOR
+                            AND CDSENHAOPERWEB = :CDSENHAOPERWEB
+                    )
+                )
+                    ', $params));
     }
 
     public function findPendingPayments($session) {

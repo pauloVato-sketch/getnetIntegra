@@ -23,7 +23,12 @@
             "isVisible": true,
             "floatingControl": false,
             "dataSource": {},
-            "events": [],
+            "events": [
+                {
+                    "name": "WidgetOnEnter",
+                    "code": "args.owner.edit();"
+                }
+            ],
             "actions": [
                 {
                     "label": "Voltar",
@@ -45,7 +50,7 @@
                     "showOnForm": true,
                     "showOnList": true,
                     "icon": "error",
-                    "showAsAction": "view",
+                    "showAsAction": "view|edit",
                     "events": [
                         {
                             "name": "ActionEvent",
@@ -60,7 +65,7 @@
                     "showOnForm": true,
                     "showOnList": true,
                     "icon": "file-ok",
-                    "showAsAction": "view",
+                    "showAsAction": "view|edit",
                     "events": [
                         {
                             "name": "ActionEvent",
@@ -80,19 +85,6 @@
                         {
                             "name": "ActionEvent",
                             "code": "OrderDeliveryController.geraNotaFiscal(args.owner.widget);"
-                        }
-                    ]
-                },
-                {
-                    "name": "saveOrder",
-                    "label": "Salvar Pedido",
-                    "icon": "",
-                    "isVisible": true,
-                    "showAsAction": "never_edit",
-                    "events": [
-                        {
-                            "name": "ActionEvent",
-                            "code": ""
                         }
                     ]
                 },
@@ -158,7 +150,7 @@
                     "name": "NMCONSUMIDOR",
                     "label": "Nome",
                     "class": 8,
-                    "readOnly": false,
+                    "readOnly": true,
                     "isVisible": true,
                     "showOnList": true,
                     "showOnForm": true,
@@ -171,7 +163,7 @@
                     "name": "NRCEPCONSCOMAND",
                     "label": "CEP",
                     "class": 4,
-                    "readOnly": false,
+                    "readOnly": true,
                     "isVisible": true,
                     "showOnList": true,
                     "showOnForm": true,
@@ -184,7 +176,7 @@
                     "name": "DSENDECONSCOMAN",
                     "label": "Endereço",
                     "class": 4,
-                    "readOnly": false,
+                    "readOnly": true,
                     "isVisible": true,
                     "showOnList": true,
                     "showOnForm": true,
@@ -197,7 +189,7 @@
                     "name": "NRENDECONSCOMAN",
                     "label": "Número",
                     "class": 4,
-                    "readOnly": false,
+                    "readOnly": true,
                     "isVisible": true,
                     "showOnList": true,
                     "showOnForm": true,
@@ -210,7 +202,7 @@
                     "name": "DSCOMPLENDCOCOM",
                     "label": "Compl.",
                     "class": 4,
-                    "readOnly": false,
+                    "readOnly": true,
                     "isVisible": true,
                     "showOnList": true,
                     "showOnForm": true,
@@ -223,7 +215,7 @@
                     "name": "DSBAIRRO",
                     "label": "Bairro",
                     "class": 4,
-                    "readOnly": false,
+                    "readOnly": true,
                     "isVisible": true,
                     "showOnList": true,
                     "showOnForm": true,
@@ -236,7 +228,7 @@
                     "name": "NMMUNICIPIO",
                     "label": "Cidade",
                     "class": 4,
-                    "readOnly": false,
+                    "readOnly": true,
                     "isVisible": true,
                     "showOnList": true,
                     "showOnForm": true,
@@ -249,7 +241,7 @@
                     "name": "IDRETBALLOJA",
                     "label": "Retirar no Balcão da Loja",
                     "class": 4,
-                    "readOnly": false,
+                    "readOnly": true,
                     "isVisible": true,
                     "showOnList": true,
                     "showOnForm": true,
@@ -264,7 +256,7 @@
                     "name": "DSENDECONSVENDA",
                     "label": "Resid.",
                     "class": 4,
-                    "readOnly": false,
+                    "readOnly": true,
                     "isVisible": true,
                     "showOnList": true,
                     "showOnForm": true,
@@ -277,7 +269,7 @@
                     "name": "",
                     "label": "Comercial",
                     "class": 4,
-                    "readOnly": false,
+                    "readOnly": true,
                     "isVisible": true,
                     "showOnList": true,
                     "showOnForm": true,
@@ -290,7 +282,7 @@
                     "name": "NRTELECONS",
                     "label": "Celular",
                     "class": 4,
-                    "readOnly": false,
+                    "readOnly": true,
                     "isVisible": true,
                     "showOnList": true,
                     "showOnForm": true,
@@ -303,7 +295,7 @@
                     "name": "DSREFENDCONSCOM",
                     "label": "Ref.",
                     "class": 8,
-                    "readOnly": false,
+                    "readOnly": true,
                     "isVisible": true,
                     "showOnList": true,
                     "showOnForm": true,
@@ -316,7 +308,7 @@
                     "name": "NRCOMANDAEXT",
                     "label": "iFood",
                     "class": 4,
-                    "readOnly": false,
+                    "readOnly": true,
                     "isVisible": false,
                     "showOnList": true,
                     "showOnForm": true,
@@ -329,7 +321,7 @@
                     "name": "SPOONROCKET",
                     "label": "SpoonRocket",
                     "class": 12,
-                    "readOnly": false,
+                    "readOnly": true,
                     "isVisible": false,
                     "showOnList": true,
                     "showOnForm": true,
@@ -342,7 +334,7 @@
                     "name": "IDSTCOMANDA",
                     "label": "Status do Pedido",
                     "class": 12,
-                    "readOnly": false,
+                    "readOnly": true,
                     "isVisible": false,
                     "showOnList": false,
                     "showOnForm": false,
@@ -382,6 +374,19 @@
                             "code": "ScreenService.openPopup(args.owner.field.widget.container.getWidget('formaPagamentoPopup'));"
                         }
                     ]
+                },
+                {
+                    "name": "EMAIL",
+                    "label": "E-mail para recebimento de Cupom Fiscal (Opcional)",
+                    "class": 8,
+                    "readOnly": false,
+                    "isVisible": true,
+                    "showOnList": true,
+                    "showOnForm": true,
+                    "showOnView": true,
+                    "template": "field/text.html",
+                    "events": [],
+                    "dataSource": {}
                 }
             ],
             "widgets": [

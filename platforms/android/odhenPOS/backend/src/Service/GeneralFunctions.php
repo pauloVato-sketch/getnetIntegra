@@ -108,39 +108,53 @@ class GeneralFunctions {
 	public function selectUnblockedProducts($session, $filter, $FIRST, $LAST){
 		$CDFILIAL = $session['CDFILIAL'];
 		$NRORG = $session['NRORG'];
+        $FILIALVIGENCIA = $session['FILIALVIGENCIA'];
 		$NRCONFTELA = $session['NRCONFTELA'];
+        $DTINIVIGENCIA = new \DateTime($session['DTINIVIGENCIA']);
 		$CDLOJA = $session['CDLOJA'];
 
 		$params = array(
 			'CDFILIAL' => $CDFILIAL,
 			'NRORG' => $NRORG,
+            'FILIALVIGENCIA' => $FILIALVIGENCIA,
 			'NRCONFTELA' => $NRCONFTELA,
+            'DTINIVIGENCIA' => $DTINIVIGENCIA,
 			'CDLOJA' => $CDLOJA,
 			'FILTER' => $filter['value'],
 			'FIRST' => $FIRST,
 			'LAST' => $LAST
 		);
-		return $this->entityManager->getConnection()->fetchAll('GET_PRODUTOS_DESBLOQUEADOS', $params);
+        $types = array(
+            'DTINIVIGENCIA' => \Doctrine\DBAL\Types\Type::DATETIME
+        );
+		return $this->entityManager->getConnection()->fetchAll('GET_PRODUTOS_DESBLOQUEADOS', $params, $types);
 	}
 
 	public function selectBlockedProducts($session, $filter, $FIRST, $LAST){
 		$CDFILIAL = $session['CDFILIAL'];
 		$NRORG = $session['NRORG'];
+        $FILIALVIGENCIA = $session['FILIALVIGENCIA'];
 		$NRCONFTELA = $session['NRCONFTELA'];
+        $DTINIVIGENCIA = new \DateTime($session['DTINIVIGENCIA']);
 		$CDLOJA = $session['CDLOJA'];
 		$CDOPERADOR = $session['CDOPERADOR'];
 
 		$params = array(
 			'CDFILIAL' => $CDFILIAL,
 			'NRORG' => $NRORG,
+            'FILIALVIGENCIA' => $FILIALVIGENCIA,
 			'NRCONFTELA' => $NRCONFTELA,
+            'DTINIVIGENCIA' => $DTINIVIGENCIA,
 			'CDLOJA' => $CDLOJA,
 			'CDOPERADOR' => $CDOPERADOR,
 			'FILTER' => $filter['value'],
 			'FIRST' => $FIRST,
 			'LAST' => $LAST
 		);
-		return $this->entityManager->getConnection()->fetchAll('GET_PRODUTOS_BLOQUEADOS', $params);
+        $types = array(
+            'DTINIVIGENCIA' => \Doctrine\DBAL\Types\Type::DATETIME
+        );
+		return $this->entityManager->getConnection()->fetchAll('GET_PRODUTOS_BLOQUEADOS', $params, $types);
 	}
 
 	public function blockProducts($session, $arrProducts){

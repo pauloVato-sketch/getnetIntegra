@@ -555,7 +555,20 @@
                             "template": "field/text-edit.html",
                             "valueField": "DSCOMANDA",
                             "descriptionField": "DSCOMANDA"
+                        },
+                        {
+                            "name": "AGRUPAMENTO",
+                            "class": 12,
+                            "sameLine": false,
+                            "isVisible": true,
+                            "readOnly": true,
+                            "showOnList": true,
+                            "showOnForm": true,
+                            "template": "field/text-edit.html",
+                            "valueField": "DSCOMANDA",
+                            "descriptionField": "DSCOMANDA"
                         }
+
                     ],
                     "widgets": []
                 }

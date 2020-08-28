@@ -1,4 +1,4 @@
-function BillService(Query, BillRepository, BillOpenBill, BillValidateBill, SetTableRepository, BillCancelOpen){
+function BillService(Query, BillRepository, BillOpenBill, BillValidateBill, SetTableRepository, BillCancelOpen, SelectGroupBills, GroupBills, UngroupBills){
 
 	this.getBills = function (chave){
 		var query = Query.build()
@@ -41,6 +41,24 @@ function BillService(Query, BillRepository, BillOpenBill, BillValidateBill, SetT
 						.where('NRCOMANDA').equals(NRCOMANDA);
 		return BillCancelOpen.download(query);
 	};
+
+	this.selectGroupBills = function() {
+        var query = Query.build();
+        return SelectGroupBills.download(query);
+    };
+
+    this.groupBills = function (mainBill, toGroupBills) {
+    	var query = Query.build()
+    					.where('mainBill').equals(mainBill)
+    					.where('toGroupBills').equals(toGroupBills);
+    	return GroupBills.download(query);
+    };
+
+    this.ungroupBills = function (billsToUngroup) {
+    	var query = Query.build()
+    					.where('billsToUngroup').equals(billsToUngroup);
+    	return UngroupBills.download(query);
+    };
 
 }
 

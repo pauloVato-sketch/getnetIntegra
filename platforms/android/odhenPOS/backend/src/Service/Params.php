@@ -311,8 +311,9 @@ class Params {
 
         $observacoesIndexadasPorProduto = $this->parametrosAPI->montaObservacoes($session['CDFILIAL'], $session['CDLOJA']);
 
-        $cardapio = $this->parametrosAPI->montaCardapio($session['CDFILIAL'], $session['NRCONFTELA'], $session['CDLOJA'], $session['CDCLIENTE'], $precosIndexadosPorProduto, $observacoesIndexadasPorProduto);
-        $smartPromoProducts = $this->parametrosAPI->montaPromocoes($session['CDFILIAL'], $session['NRCONFTELA'], $session['CDLOJA'], $precosIndexadosPorProduto, $observacoesIndexadasPorProduto);
+        $DTINIVIGENCIA = \DateTime::createFromFormat('Y-m-d H:i:s.u', $session['DTINIVIGENCIA']);
+        $cardapio = $this->parametrosAPI->montaCardapio($session['CDFILIAL'], $session['FILIALVIGENCIA'], $session['NRCONFTELA'], $DTINIVIGENCIA, $session['CDLOJA'], $session['CDCLIENTE'], $precosIndexadosPorProduto, $observacoesIndexadasPorProduto, null, $session['NRORG']);
+        $smartPromoProducts = $this->parametrosAPI->montaPromocoes($session['CDFILIAL'], $session['FILIALVIGENCIA'], $session['NRCONFTELA'], $DTINIVIGENCIA, $session['CDLOJA'], $precosIndexadosPorProduto, $observacoesIndexadasPorProduto);
 
         return array(
             'cardapio' => $cardapio['cardapio'],
@@ -326,6 +327,21 @@ class Params {
 		$params = array($session['CDFILIAL'], $session['CDLOJA']);
 
 		return $this->entityManager->getConnection()->fetchAll("GET_DISCOUNT_OBSERVATIONS", $params);
+	}
+
+	public function getProdSugestaoVenda($CDFILIAL, $NRCONFTELA, $cardapio){
+		$produtos = array();
+		foreach($cardapio as $item){
+			array_push($produtos, $item['CDPRODUTO']);
+		}
+		$responseAPI = $this->parametrosAPI->montaSugestaoVenda($CDFILIAL, $NRCONFTELA, $produtos);
+		return $responseAPI;
+	}
+
+	public function getLojas($CDFILIAL){
+		$params = array('CDFILIAL' => $CDFILIAL);
+		$lojas = $this->entityManager->getConnection()->fetchAll("GET_LOJAS_FILIAL", $params);
+		return $lojas;
 	}
 
 }

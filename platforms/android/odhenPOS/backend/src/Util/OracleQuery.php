@@ -86,7 +86,9 @@ class OracleQuery {
 			'GET_DELIVERY_ORDERS_CONTROL'              => self::GET_DELIVERY_ORDERS_CONTROL,
 			'GET_ORDER_PARAMS_DLV'					   => self::GET_ORDER_PARAMS_DLV,
 			'GET_PRODUTOS_PEDIDODLV'				   => self::GET_PRODUTOS_PEDIDODLV,
-    		'UPDATE_VRCOMISVENDE'                      => self::UPDATE_VRCOMISVENDE
+    		'UPDATE_VRCOMISVENDE'                      => self::UPDATE_VRCOMISVENDE,
+            'SQL_VALIDA_VOUCHER'                       => self::SQL_VALIDA_VOUCHER,
+    		'GET_COMANDAS_AGRUPAMENTO'                 => self::GET_COMANDAS_AGRUPAMENTO
 		);
 
 		const SQL_INSERE_VENDA_REST = "
@@ -215,18 +217,20 @@ class OracleQuery {
 					ITCOMANDAVEN IT LEFT JOIN ITMENUCONFTE IM
 								 ON (IT.CDPRODUTO = IM.CDIDENTBUTON
 										AND IT.CDFILIAL = IM.CDFILIAL
-								AND IM.NRCONFTELA = ?
+								AND IM.NRCONFTELA = :NRCONFTELA
+                                AND IM.DTINIVIGENCIA = :DTINIVIGENCIA
 								AND IM.IDTPBUTTON = '1')
 													LEFT JOIN (SELECT DSBUTTON, (NRPGCONFTELA + NRBUTTON) AS CDGRUPO
 																			 FROM ITMENUCONFTE
 																			WHERE IDTPBUTTON = '2'
-																				AND CDFILIAL = ?
-																				AND NRCONFTELA = ?) GROUPS
+																				AND CDFILIAL = :CDFILIAL
+																				AND NRCONFTELA = :NRCONFTELA
+                                                                                AND DTINIVIGENCIA = :DTINIVIGENCIA) AS GROUPS
 																 ON ((IM.NRPGCONFTAUX + IM.NRBUTTONAUX) = GROUPS.CDGRUPO)
-				WHERE (IT.CDFILIAL = ?)
-					AND (IT.NRCOMANDA = ?)
-					AND (IT.NRVENDAREST = ?)
-					AND (IT.NRPRODCOMVEN = ?)
+				WHERE (IT.CDFILIAL = :CDFILIAL)
+					AND (IT.NRCOMANDA = :NRCOMANDA)
+					AND (IT.NRVENDAREST = :NRVENDAREST)
+					AND (IT.NRPRODCOMVEN = :NRPRODCOMVEN)
 					AND (IT.CDPRODUTO = PR.CDPRODUTO)
 					AND ((IT.IDSTPRCOMVEN NOT IN ('6','7')) or ('T' = 'X'))
 					AND (IT.CDPRODUTO <> 'X')
@@ -257,18 +261,20 @@ class OracleQuery {
 					ITCOMANDAVEN IT LEFT JOIN ITMENUCONFTE IM
 								 ON (IT.CDPRODUTO = IM.CDIDENTBUTON
 										AND IT.CDFILIAL = IM.CDFILIAL
-								AND IM.NRCONFTELA = ?
+								AND IM.NRCONFTELA = :NRCONFTELA
+                                AND IM.DTINIVIGENCIA = :DTINIVIGENCIA
 								AND IM.IDTPBUTTON = '1')
 													LEFT JOIN (SELECT DSBUTTON, (NRPGCONFTELA + NRBUTTON) AS CDGRUPO
 																			 FROM ITMENUCONFTE
 																			WHERE IDTPBUTTON = '2'
-																				AND CDFILIAL = ?
-																				AND NRCONFTELA = ?) GROUPS
+																				AND CDFILIAL = :CDFILIAL
+																				AND NRCONFTELA = :NRCONFTELA
+                                                                                AND DTINIVIGENCIA = :DTINIVIGENCIA) AS GROUPS
 																 ON ((IM.NRPGCONFTAUX + IM.NRBUTTONAUX) = GROUPS.CDGRUPO)
-				WHERE (IT.CDFILIAL = ?)
-					AND (IT.NRCOMANDA = ?)
-					AND (IT.NRVENDAREST = ?)
-					AND (IT.NRPRODCOMVEN = ?)
+				WHERE (IT.CDFILIAL = :CDFILIAL)
+					AND (IT.NRCOMANDA = :NRCOMANDA)
+					AND (IT.NRVENDAREST = :NRVENDAREST)
+					AND (IT.NRPRODCOMVEN = :NRPRODCOMVEN)
 					AND (IT.CDPRODUTO = PR.CDPRODUTO)
 					AND ((IT.IDSTPRCOMVEN NOT IN ('6','7')) or ('T' = 'X'))
 					AND (IT.CDPRODUTO <> 'X')
@@ -300,18 +306,20 @@ class OracleQuery {
 					ITCOMANDAVEN IT LEFT JOIN ITMENUCONFTE IM
 								 ON (IT.CDPRODUTO = IM.CDIDENTBUTON
 										AND IT.CDFILIAL = IM.CDFILIAL
-								AND IM.NRCONFTELA = ?
+								AND IM.NRCONFTELA = :NRCONFTELA
+                                AND IM.DTINIVIGENCIA = :DTINIVIGENCIA
 								AND IM.IDTPBUTTON = '1')
 													LEFT JOIN (SELECT DSBUTTON, (NRPGCONFTELA + NRBUTTON) AS CDGRUPO
 																			 FROM ITMENUCONFTE
 																			WHERE IDTPBUTTON = '2'
-																				AND CDFILIAL = ?
-																				AND NRCONFTELA = ?) GROUPS
+																				AND CDFILIAL = :CDFILIAL
+																				AND NRCONFTELA = :NRCONFTELA
+                                                                                AND DTINIVIGENCIA = :DTINIVIGENCIA) GROUPS
 																 ON ((IM.NRPGCONFTAUX + IM.NRBUTTONAUX) = GROUPS.CDGRUPO)
-				WHERE (IT.CDFILIAL = ?)
-					AND (IT.NRCOMANDA = ?)
-					AND (IT.NRVENDAREST = ?)
-					AND (IT.NRPRODCOMVEN = ?)
+				WHERE (IT.CDFILIAL = :CDFILIAL)
+					AND (IT.NRCOMANDA = :NRCOMANDA)
+					AND (IT.NRVENDAREST = :NRVENDAREST)
+					AND (IT.NRPRODCOMVEN = :NRPRODCOMVEN)
 					AND (IT.CDPRODUTO = PR.CDPRODUTO)
 					AND ((IT.IDSTPRCOMVEN NOT IN ('6','7')) or ('T' = 'X'))
 					AND (IT.CDPRODUTO <> 'X')
@@ -342,18 +350,20 @@ class OracleQuery {
 					ITCOMANDAVEN IT LEFT JOIN ITMENUCONFTE IM
 								 ON (IT.CDPRODUTO = IM.CDIDENTBUTON
 										AND IT.CDFILIAL = IM.CDFILIAL
-								AND IM.NRCONFTELA = ?
+								AND IM.NRCONFTELA = :NRCONFTELA
+                                AND IM.DTINIVIGENCIA = :DTINIVIGENCIA
 								AND IM.IDTPBUTTON = '1')
 													LEFT JOIN (SELECT DSBUTTON, (NRPGCONFTELA + NRBUTTON) AS CDGRUPO
 																			 FROM ITMENUCONFTE
 																			WHERE IDTPBUTTON = '2'
-																				AND CDFILIAL = ?
-																				AND NRCONFTELA = ?) GROUPS
+																				AND CDFILIAL = :CDFILIAL
+																				AND NRCONFTELA = :NRCONFTELA
+                                                                                AND DTINIVIGENCIA = :DTINIVIGENCIA) GROUPS
 																 ON ((IM.NRPGCONFTAUX + IM.NRBUTTONAUX) = GROUPS.CDGRUPO)
-				WHERE (IT.CDFILIAL = ?)
-					AND (IT.NRCOMANDA = ?)
-					AND (IT.NRVENDAREST = ?)
-					AND (IT.NRPRODCOMVEN = ?)
+				WHERE (IT.CDFILIAL = :CDFILIAL)
+					AND (IT.NRCOMANDA = :NRCOMANDA)
+					AND (IT.NRVENDAREST = :NRVENDAREST)
+					AND (IT.NRPRODCOMVEN = :NRPRODCOMVEN)
 					AND (IT.CDPRODUTO = PR.CDPRODUTO)
 					AND ((IT.IDSTPRCOMVEN NOT IN ('6','7')) or ('T' = 'X'))
 					AND (IT.CDPRODUTO <> 'X')
@@ -649,8 +659,8 @@ class OracleQuery {
 											 NULL AS NMVENDEDORABERT
 									FROM MESA MS, MESARESERVA RV, RESERVAMESA RM, SALA SL,
 											 ITMENUCONFTE IT
-								 WHERE MS.CDFILIAL     = ?
-									 AND MS.CDLOJA       = ?
+								   WHERE MS.CDFILIAL     = :CDFILIAL
+									 AND MS.CDLOJA       = :CDLOJA
 									 AND MS.CDFILIAL     = RV.CDFILIAL
 									 AND MS.CDLOJA       = RV.CDLOJA
 									 AND MS.NRMESA       = RV.NRMESA
@@ -661,15 +671,17 @@ class OracleQuery {
 									 AND MS.CDFILIAL     = SL.CDFILIAL
 									 AND MS.CDSALA       = SL.CDSALA
 									 AND MS.CDFILIAL     = IT.CDFILIAL
-									 AND IT.NRCONFTELA   = ?
+									 AND IT.NRCONFTELA   = :NRCONFTELA
+                                     AND IT.DTINIVIGENCIA = :DTINIVIGENCIA
 									 AND IT.CDIDENTBUTON = SL.CDSALA
 									 AND IT.IDTPBUTTON   = '4'
 									 AND (TO_CHAR(RM.DTRESMESA, 'DD/MM/YYYY') = TO_CHAR(SYSDATE,'HH24:MI:SS'))
 									 AND MS.NRMESA IN (SELECT CDIDENTBUTON
 																			 FROM ITMENUCONFTE
-																			WHERE CDFILIAL   = ?
-																				AND NRCONFTELA = ?
-																				AND IDTPBUTTON = '3')
+																			WHERE CDFILIAL   = :CDFILIAL
+																		   	  AND NRCONFTELA = :NRCONFTELA
+                                                                              AND DTINIVIGENCIA = :DTINIVIGENCIA
+																			  AND IDTPBUTTON = '3')
 
 								UNION
 
@@ -683,27 +695,29 @@ class OracleQuery {
 																							AND MS.NRMESA   = VR.NRMESA
 									LEFT JOIN VENDEDOR VD
 										ON VR.CDVENDEDOR = VD.CDVENDEDOR
-								 WHERE MS.CDFILIAL     = ?
-									 AND MS.CDLOJA       = ?
+								   WHERE MS.CDFILIAL     = :CDFILIAL
+									 AND MS.CDLOJA       = :CDLOJA
 									 AND MS.CDFILIAL     = SL.CDFILIAL
 									 AND MS.CDSALA       = SL.CDSALA
 									 AND MS.CDFILIAL     = IT.CDFILIAL
-									 AND IT.NRCONFTELA   = ?
+									 AND IT.NRCONFTELA   = :NRCONFTELA
+                                     AND IT.DTINIVIGENCIA = :DTINIVIGENCIA
 									 AND IT.CDIDENTBUTON = SL.CDSALA
 									 AND IT.IDTPBUTTON   = '4'
 									 AND MS.NRMESA IN (SELECT CDIDENTBUTON
 																			 FROM ITMENUCONFTE
-																			WHERE CDFILIAL   = ?
-																				AND NRCONFTELA = ?
+																			WHERE CDFILIAL   = :CDFILIAL
+																				AND NRCONFTELA = :NRCONFTELA
+                                                                                AND DTINIVIGENCIA = :DTINIVIGENCIA
 																				AND IDTPBUTTON = '3')
 									 AND MS.NRMESA NOT IN (SELECT NVL(NRMESAPADRAO, '')
 																					 FROM LOJA
-																					WHERE CDFILIAL = ?
-																						AND CDLOJA = ?)
+																					WHERE CDFILIAL = :CDFILIAL
+																						AND CDLOJA = :CDLOJA)
 									 AND MS.NRMESA NOT IN (SELECT RV.NRMESA
 																					 FROM MESARESERVA RV, RESERVAMESA RM
-																					WHERE RV.CDFILIAL    = ?
-																						AND RV.CDLOJA      = ?
+																					  WHERE RV.CDFILIAL    = :CDFILIAL
+																						AND RV.CDLOJA      = :CDLOJA
 																						AND RV.CDFILIAL    = RM.CDFILIAL
 																						AND RV.CDLOJA      = RM.CDLOJA
 																						AND RV.NRRESMESA   = RM.NRRESMESA
@@ -841,23 +855,25 @@ class OracleQuery {
 					ITCOMANDAVEN IT LEFT JOIN ITMENUCONFTE IM
 								 ON (IT.CDPRODUTO = IM.CDIDENTBUTON
 										AND IT.CDFILIAL = IM.CDFILIAL
-								AND IM.NRCONFTELA = ?
+								AND IM.NRCONFTELA = :NRCONFTELA
+                                AND IM.DTINIVIGENCIA = :DTINIVIGENCIA
 								AND IM.IDTPBUTTON = '1')
 													LEFT JOIN (SELECT DSBUTTON, (NRPGCONFTELA + NRBUTTON) AS CDGRUPO
 																			 FROM ITMENUCONFTE
 																			WHERE IDTPBUTTON = '2'
-																				AND CDFILIAL = ?
-																				AND NRCONFTELA = ?) GROUPS
+																				AND CDFILIAL = :CDFILIAL
+																				AND NRCONFTELA = :NRCONFTELA
+                                                                                AND DTINIVIGENCIA = :DTINIVIGENCIA) GROUPS
 																 ON ((IM.NRPGCONFTAUX + IM.NRBUTTONAUX) = GROUPS.CDGRUPO)
-				WHERE (IT.CDFILIAL = ?)
-					AND (INSTR(?, IT.NRCOMANDA) > 0)
+				WHERE (IT.CDFILIAL = :CDFILIAL)
+					AND (INSTR(:NRCOMANDA, IT.NRCOMANDA) > 0)
 					AND (IT.CDPRODUTO = PR.CDPRODUTO)
 					AND ((IT.IDSTPRCOMVEN NOT IN ('6','7')) or ('T' = 'X'))
 					AND (IT.CDPRODUTO <> 'X')
 					AND (IT.CDFILIAL    = V.CDFILIAL)
 					AND (IT.NRVENDAREST = V.NRVENDAREST)
 					AND (PR.IDPESAPROD = 'N')
-					AND ((INSTR(?, IT.NRLUGARMESA) > 0)  or ('T' = ?))
+					AND ((INSTR(:NRLUGARMESA, IT.NRLUGARMESA) > 0)  or ('T' = :IMPPOSICAO))
 					AND IT.CDPRODPROMOCAO IS NULL
 					AND IT.IDPRODREFIL = 'N'
 				GROUP BY
@@ -884,23 +900,25 @@ class OracleQuery {
 					ITCOMANDAVEN IT LEFT JOIN ITMENUCONFTE IM
 								 ON (IT.CDPRODUTO = IM.CDIDENTBUTON
 										AND IT.CDFILIAL = IM.CDFILIAL
-								AND IM.NRCONFTELA = ?
+								AND IM.NRCONFTELA = :NRCONFTELA
+                                AND IM.DTINIVIGENCIA = :DTINIVIGENCIA
 								AND IM.IDTPBUTTON = '1')
 													LEFT JOIN (SELECT DSBUTTON, (NRPGCONFTELA + NRBUTTON) AS CDGRUPO
 																			 FROM ITMENUCONFTE
 																			WHERE IDTPBUTTON = '2'
-																				AND CDFILIAL = ?
-																				AND NRCONFTELA = ?) GROUPS
+																				AND CDFILIAL = :CDFILIAL
+																				AND NRCONFTELA = :NRCONFTELA
+                                                                                AND DTINIVIGENCIA = :DTINIVIGENCIA) GROUPS
 																 ON ((IM.NRPGCONFTAUX + IM.NRBUTTONAUX) = GROUPS.CDGRUPO)
-				WHERE (IT.CDFILIAL = ?)
-					AND (INSTR(?, IT.NRCOMANDA) > 0)
+				WHERE (IT.CDFILIAL = :CDFILIAL)
+					AND (INSTR(:NRCOMANDA, IT.NRCOMANDA) > 0)
 					AND (IT.CDPRODUTO = PR.CDPRODUTO)
 					AND ((IT.IDSTPRCOMVEN NOT IN ('6','7')) or ('T' = 'X'))
 					AND (IT.CDPRODUTO <> 'X')
 					AND (IT.CDFILIAL    = V.CDFILIAL)
 					AND (IT.NRVENDAREST = V.NRVENDAREST)
 					AND (PR.IDPESAPROD = 'S')
-					AND ((INSTR(?, IT.NRLUGARMESA) > 0)  or ('T' = ?))
+					AND ((INSTR(:NRLUGARMESA, IT.NRLUGARMESA) > 0)  or ('T' = :IMPPOSICAO))
 					AND ((IM.NRPGCONFTAUX + IM.NRBUTTONAUX) = GROUPS.CDGRUPO)
 					AND IT.CDPRODPROMOCAO IS NULL
 					AND IT.IDPRODREFIL = 'N'
@@ -924,11 +942,11 @@ class OracleQuery {
 					IT.NRPRODORIG, VE.NRMESA, IT.VRPRECCLCOMVEN, IT.IDORIGEMVENDA
 				FROM
 					PRODUTO PR, VENDAREST VE, ITCOMANDAVEN IT LEFT JOIN ITMENUCONFTE IM ON IM.CDIDENTBUTON = IT.CDPRODUTO
-				WHERE IT.CDFILIAL = ?
-					AND (INSTR(?, IT.NRCOMANDA) > 0)
+				WHERE IT.CDFILIAL = :CDFILIAL
+					AND (INSTR(:NRCOMANDA, IT.NRCOMANDA) > 0)
 					AND IT.CDPRODPROMOCAO IS NOT NULL
 					AND IT.CDPRODUTO = PR.CDPRODUTO
-					AND ((INSTR(?, IT.NRLUGARMESA) > 0)  or ('T' = ?))
+					AND ((INSTR(:NRLUGARMESA, IT.NRLUGARMESA) > 0)  or ('T' = :IMPPOSICAO))
 					AND ((IT.IDSTPRCOMVEN NOT IN ('6','7')) or ('T' = 'X'))
 					AND IT.CDFILIAL = VE.CDFILIAL
 					AND IT.NRVENDAREST = VE.NRVENDAREST
@@ -1042,7 +1060,7 @@ class OracleQuery {
 							 LJ.VRCOMISVENDA3, CX.IDPERCOMVENCPDC, LJ.IDSOLOBSDESC, CX.IDSOLTPSANGRIACX,
 							 CX.IDCAIXAEXCLUSIVO, LJ.IDSOLOBSFINVEN,LJ.IDMOSTRADESPARC, LJ.VRMAXDESCONTO,
 							 LJ.IDSOLOBSCAN, CX.IDIMPPEDPROD, CX.IDSINCCAIXADLV, CX.IDUTCXDRIVETHU,
-							 CX.IDSENHACUP
+							 CX.IDSENHACUP, CX.CDURLQRCODE, CX.IDTPCONTRREPIQ, , CX.VRPEMAXREPIQVND, LJ.IDTRATTAXASERV, LJ.CDPRODTAXASERV
 					FROM LOJA LJ,
 							 CAIXA CX LEFT JOIN IMPRLOJA IL
 															 ON CX.CDFILIAL = IL.CDFILIAL
@@ -1178,23 +1196,25 @@ class OracleQuery {
 					ITCOMANDAVEN IT LEFT JOIN ITMENUCONFTE IM
 								 ON (IT.CDPRODUTO = IM.CDIDENTBUTON
 										AND IT.CDFILIAL = IM.CDFILIAL
-								AND IM.NRCONFTELA = ?
+								AND IM.NRCONFTELA = :NRCONFTELA
+                                AND IM.DTINIVIGENCIA = :DTINIVIGENCIA
 								AND IM.IDTPBUTTON = '1')
 													LEFT JOIN (SELECT DSBUTTON, (NRPGCONFTELA + NRBUTTON) AS CDGRUPO
 																			 FROM ITMENUCONFTE
 																			WHERE IDTPBUTTON = '2'
-																				AND CDFILIAL = ?
-																				AND NRCONFTELA = ?) GROUPS
+																				AND CDFILIAL = :CDFILIAL
+																				AND NRCONFTELA = :NRCONFTELA
+                                                                                AND DTINIVIGENCIA = :DTINIVIGENCIA) GROUPS
 																 ON ((IM.NRPGCONFTAUX + IM.NRBUTTONAUX) = GROUPS.CDGRUPO)
-				WHERE (IT.CDFILIAL = ?)
-					AND (INSTR(?, IT.NRCOMANDA) > 0)
+				WHERE (IT.CDFILIAL = :CDFILIAL)
+					AND (INSTR(:NRCOMANDA, IT.NRCOMANDA) > 0)
 					AND (IT.CDPRODUTO = PR.CDPRODUTO)
 					AND ((IT.IDSTPRCOMVEN NOT IN ('6','7')) or ('T' = 'X'))
 					AND (IT.CDPRODUTO <> 'X')
 					AND (IT.CDFILIAL    = V.CDFILIAL)
 					AND (IT.NRVENDAREST = V.NRVENDAREST)
 					AND (PR.IDPESAPROD = 'N')
-					AND ((INSTR(?, NRLUGARMESA) > 0) or ('T' = ?))
+					AND ((INSTR(:NRLUGARMESA, NRLUGARMESA) > 0) or ('T' = :IMPPOSICAO))
 					AND IT.CDPRODPROMOCAO IS NULL
 					AND IT.IDDIVIDECONTA = 'N'
 				GROUP BY
@@ -1221,23 +1241,25 @@ class OracleQuery {
 					ITCOMANDAVEN IT LEFT JOIN ITMENUCONFTE IM
 								 ON (IT.CDPRODUTO = IM.CDIDENTBUTON
 										AND IT.CDFILIAL = IM.CDFILIAL
-								AND IM.NRCONFTELA = ?
+								AND IM.NRCONFTELA = :NRCONFTELA
+                                AND IM.DTINIVIGENCIA = :DTINIVIGENCIA
 								AND IM.IDTPBUTTON = '1')
 													LEFT JOIN (SELECT DSBUTTON, (NRPGCONFTELA + NRBUTTON) AS CDGRUPO
 																			 FROM ITMENUCONFTE
 																			WHERE IDTPBUTTON = '2'
-																				AND CDFILIAL = ?
-																				AND NRCONFTELA = ?) GROUPS
+																				AND CDFILIAL = :CDFILIAL
+																				AND NRCONFTELA = :NRCONFTELA
+                                                                                AND DTINIVIGENCIA = :DTINIVIGENCIA) GROUPS
 																 ON ((IM.NRPGCONFTAUX + IM.NRBUTTONAUX) = GROUPS.CDGRUPO)
-				WHERE (IT.CDFILIAL = ?)
-					AND (INSTR(?, IT.NRCOMANDA) > 0)
+				WHERE (IT.CDFILIAL = :CDFILIAL)
+					AND (INSTR(:NRCOMANDA, IT.NRCOMANDA) > 0)
 					AND (IT.CDPRODUTO = PR.CDPRODUTO)
 					AND ((IT.IDSTPRCOMVEN NOT IN ('6','7')) or ('T' = 'X'))
 					AND (IT.CDPRODUTO <> 'X')
 					AND (IT.CDFILIAL    = V.CDFILIAL)
 					AND (IT.NRVENDAREST = V.NRVENDAREST)
 					AND (PR.IDPESAPROD = 'S')
-					AND ((INSTR(?, NRLUGARMESA) > 0) or ('T' = ?))
+					AND ((INSTR(:NRLUGARMESA, NRLUGARMESA) > 0) or ('T' = :IMPPOSICAO))
 					AND ((IM.NRPGCONFTAUX + IM.NRBUTTONAUX) = GROUPS.CDGRUPO)
 					AND IT.CDPRODPROMOCAO IS NULL
 					AND IT.IDDIVIDECONTA = 'N'
@@ -1264,16 +1286,18 @@ class OracleQuery {
 					ITCMDVENORIG IT LEFT JOIN ITMENUCONFTE IM
 								 ON (IT.CDPRODUTO = IM.CDIDENTBUTON
 										AND IT.CDFILIAL = IM.CDFILIAL
-								AND IM.NRCONFTELA = ?
+								AND IM.NRCONFTELA = :NRCONFTELA
+                                AND IM.DTINIVIGENCIA = :DTINIVIGENCIA
 								AND IM.IDTPBUTTON = '1')
 													LEFT JOIN (SELECT DSBUTTON, (NRPGCONFTELA + NRBUTTON) AS CDGRUPO
 																			 FROM ITMENUCONFTE
 																			WHERE IDTPBUTTON = '2'
-																				AND CDFILIAL = ?
-																				AND NRCONFTELA = ?) GROUPS
+																				AND CDFILIAL = :CDFILIAL
+																				AND NRCONFTELA = :NRCONFTELA
+                                                                                AND DTINIVIGENCIA = :DTINIVIGENCIA) GROUPS
 																 ON ((IM.NRPGCONFTAUX + IM.NRBUTTONAUX) = GROUPS.CDGRUPO)
-				WHERE IT.CDFILIAL         = ?
-						AND (INSTR(?, IT.NRCOMANDA) > 0)
+				WHERE IT.CDFILIAL         = :CDFILIAL
+						AND (INSTR(:NRCOMANDA, IT.NRCOMANDA) > 0)
 					AND (IT.CDPRODUTO = PR.CDPRODUTO)
 					AND ((IT.IDSTPRCOMVEN NOT IN ('6','7')) or ('T' = 'X'))
 					AND (IT.CDPRODUTO <> 'X')
@@ -1304,16 +1328,18 @@ class OracleQuery {
 					ITCMDVENORIG IT LEFT JOIN ITMENUCONFTE IM
 								 ON (IT.CDPRODUTO = IM.CDIDENTBUTON
 										AND IT.CDFILIAL = IM.CDFILIAL
-								AND IM.NRCONFTELA = ?
+								AND IM.NRCONFTELA = :NRCONFTELA
+                                AND IM.DTINIVIGENCIA = :DTINIVIGENCIA
 								AND IM.IDTPBUTTON = '1')
 													LEFT JOIN (SELECT DSBUTTON, (NRPGCONFTELA + NRBUTTON) AS CDGRUPO
 																			 FROM ITMENUCONFTE
 																			WHERE IDTPBUTTON = '2'
-																				AND CDFILIAL = ?
-																				AND NRCONFTELA = ?) GROUPS
+																				AND CDFILIAL = :CDFILIAL
+																				AND NRCONFTELA = :NRCONFTELA
+                                                                                AND DTINIVIGENCIA = :DTINIVIGENCIA) GROUPS
 																 ON ((IM.NRPGCONFTAUX + IM.NRBUTTONAUX) = GROUPS.CDGRUPO)
-				WHERE IT.CDFILIAL       = ?
-					AND (INSTR(?, IT.NRCOMANDA) > 0)
+				WHERE IT.CDFILIAL       = :CDFILIAL
+					AND (INSTR(:NRCOMANDA, IT.NRCOMANDA) > 0)
 					AND (IT.CDPRODUTO = PR.CDPRODUTO)
 					AND ((IT.IDSTPRCOMVEN NOT IN ('6','7')) or ('T' = 'X'))
 					AND (IT.CDPRODUTO <> 'X')
@@ -1378,9 +1404,9 @@ class OracleQuery {
 																					 ON M.CDTIPORECE = T.CDTIPORECE
 																		LEFT JOIN ITMENUCONFTE I
 																					 ON I.CDIDENTBUTON = T.CDTIPORECE
-																				 JOIN CAIXA C
+																				 JOIN CONFTELACAIXA C
 																					 ON C.CDCAIXA = M.CDCAIXA
-																					AND C.CDFILIAL = M.CDFILIAL
+																					AND C.CDFILICAIXA = M.CDFILIAL
 																		LEFT JOIN VENDA V
 																					 ON V.CDCAIXA = M.CDCAIXA
 																					AND V.CDFILIAL = M.CDFILIAL
@@ -1391,6 +1417,7 @@ class OracleQuery {
 											 AND M.CDFILIAL = ?
 											 AND M.CDCAIXA = ?
 											 AND I.NRCONFTELA = C.NRCONFTELA
+                                             AND I.DTINIVIGENCIA = C.DTINIVIGENCIA
 								) D
 						) A
 				WHERE A.N BETWEEN ? AND ?
@@ -1512,7 +1539,7 @@ class OracleQuery {
 							 V.CDLOJA, V.NRMESA, C.VRDESCOMANDA, C.VRCOMISVENDE,
 							 C.VRACRCOMANDA, V.CDVENDEDOR, V.CDCLIENTE, V.CDCONSUMIDOR, CO.NMCONSUMIDOR,
 							 C.DSCOMANDA || (CASE WHEN NVL(C.DSCONSUMIDOR, CO.NMCONSUMIDOR) IS NULL THEN '' ELSE ' - ' END) ||
-							 NVL(NVL(C.DSCONSUMIDOR, CO.NMCONSUMIDOR), '') AS LABELDSCOMANDA
+							 NVL(NVL(C.DSCONSUMIDOR, CO.NMCONSUMIDOR), '') AS LABELDSCOMANDA, C.IDSTCOMANDA, C.DSCOMANDAPRI
 					FROM COMANDAVEN C JOIN VENDAREST V
 															ON C.CDFILIAL    = V.CDFILIAL
 														 AND C.NRVENDAREST = V.NRVENDAREST
@@ -1523,7 +1550,6 @@ class OracleQuery {
 				WHERE C.CDFILIAL = :CDFILIAL
 					AND C.DSCOMANDA = :DSCOMANDA
 					AND C.CDLOJA = :CDLOJA
-					AND C.IDSTCOMANDA <> '4'
 		";
 
 
@@ -1581,6 +1607,7 @@ class OracleQuery {
 																ON P.CDPRODUTO = I.CDIDENTBUTON
 															AND I.CDFILIAL = :CDFILIAL
 															AND I.NRCONFTELA = :NRCONFTELA
+                                                            AND I.DTINIVIGENCIA = :DTINIVIGENCIA
 															AND I.IDTPBUTTON = '1'
 				WHERE P.CDPRODUTO = :CDPRODUTO
 		";
@@ -1739,6 +1766,7 @@ class OracleQuery {
 													 LEFT JOIN ITMENUCONFTE IM
 														 ON IM.CDFILIAL = PA.CDFILIAL
 														 AND IM.NRCONFTELA = :NRCONFTELA
+                                                         AND IM.DTINIVIGENCIA = :DTINIVIGENCIA
 														 AND IM.CDIDENTBUTON = PR.CDPRODUTO
 													 INNER JOIN ALIQIMPFIS AL
 														 ON AL.CDFILIAL = PA.CDFILIAL
@@ -1750,7 +1778,8 @@ class OracleQuery {
 																											AM.DSENDEIMG
 																								FROM ITMENUCONFTE AM
 																								WHERE AM.CDFILIAL   = :CDFILIAL
-																									AND AM.NRCONFTELA = :NRCONFTELA) MESA,
+																									AND AM.NRCONFTELA = :NRCONFTELA
+                                                                                                    AND AM.DTINIVIGENCIA = :DTINIVIGENCIA) MESA,
 																					PARAMGERAL P
 																				WHERE IDTPBUTTON = '2') G
 														 ON G.NRPGCONFTELA = IM.NRPGCONFTAUX
@@ -2003,5 +2032,56 @@ class OracleQuery {
             AND CDV.NRVENDAREST = :NRVENDAREST
             AND CDV.NRCOMANDA = :NRCOMANDA
     ";
+
+    const SQL_VALIDA_VOUCHER = "
+        SELECT CDCUPOMDESCFOS, DSCUPOMDESCFOS, IDTIPODESC, VRDESCCUPOM,
+               DTINIVIGENCIA, DTFIMVIGENCIA, IDUSOUNICO
+          FROM CUPOMDESCFOS
+         WHERE CDCUPOMDESCFOS = :CDCUPOMDESCFOS
+           AND TRUNC(SYSDATE) >= TRUNC(DTINIVIGENCIA)
+           AND TRUNC(SYSDATE) <= TRUNC(DTFIMVIGENCIA)
+    ";
+
+    const GET_COMANDAS_AGRUPAMENTO = "
+        SELECT C.DSCOMANDA, C.NRVENDAREST, C.NRCOMANDA, C.DSCOMANDA || (CASE WHEN NVL(C.DSCONSUMIDOR, O.NMCONSUMIDOR) IS NULL THEN '' ELSE ' - ' END) || NVL(NVL(C.DSCONSUMIDOR, O.NMCONSUMIDOR), '') AS LABELDSCOMANDA, C.DSCOMANDAPRI
+           FROM COMANDAVEN C JOIN VENDAREST V
+                 ON C.CDFILIAL = V.CDFILIAL
+                 AND C.CDLOJA = V.CDLOJA
+                AND C.NRVENDAREST = V.NRVENDAREST
+            LEFT JOIN CONSUMIDOR CO
+                 ON V.CDCLIENTE = CO.CDCLIENTE
+                AND V.CDCONSUMIDOR = CO.CDCONSUMIDOR
+          WHERE C.CDFILIAL = :CDFILIAL
+            AND C.CDLOJA = :CDLOJA
+            AND (SUBSTRING(C.DSCOMANDA,1,4) <> 'RES_')
+            AND (SUBSTRING(C.DSCOMANDA,1,4) <> 'PKR_')
+            AND (SUBSTRING(C.DSCOMANDA,1,4) <> 'DLV_')
+            AND C.IDSTCOMANDA <> '4'
+            AND C.DSCOMANDAPRI IS NULL
+            AND C.DSCOMANDA IN (SELECT DISTINCT(DSCOMANDAPRI)
+                               FROM COMANDAVEN C
+                              WHERE CDFILIAL = :CDFILIAL
+                                AND CDLOJA = :CDLOJA
+                                AND IDSTCOMANDA = '4'
+                                AND DSCOMANDAPRI IS NOT NULL)
+        UNION 
+        SELECT C.DSCOMANDA, C.NRVENDAREST, C.NRCOMANDA, C.DSCOMANDA || (CASE WHEN NVL(C.DSCONSUMIDOR, O.NMCONSUMIDOR) IS NULL THEN '' ELSE ' - ' END) || NVL(NVL(C.DSCONSUMIDOR, O.NMCONSUMIDOR), '') AS LABELDSCOMANDA, C.DSCOMANDAPRI
+           FROM COMANDAVEN C JOIN VENDAREST V
+                 ON C.CDFILIAL = V.CDFILIAL
+                 AND C.CDLOJA = V.CDLOJA
+                AND C.NRVENDAREST = V.NRVENDAREST
+            LEFT JOIN CONSUMIDOR CO
+                 ON V.CDCLIENTE = CO.CDCLIENTE
+                AND V.CDCONSUMIDOR = CO.CDCONSUMIDOR
+          WHERE C.CDFILIAL = :CDFILIAL
+            AND C.CDLOJA = :CDLOJA
+            AND (SUBSTRING(C.DSCOMANDA,1,4) <> 'RES_')
+            AND (SUBSTRING(C.DSCOMANDA,1,4) <> 'PKR_')
+            AND (SUBSTRING(C.DSCOMANDA,1,4) <> 'DLV_')
+            AND C.IDSTCOMANDA = '4'
+            AND C.DSCOMANDAPRI IS NOT NULL
+        ORDER BY C.DSCOMANDA
+    ";
+
 
 }

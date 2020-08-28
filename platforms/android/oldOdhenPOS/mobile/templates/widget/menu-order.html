@@ -1,0 +1,22 @@
+<div ng-include src="templateManager.templateUrl+'component/actionsForm.html'" class="zh-actions"></div>
+<div id="form_products" class="form_body" zh-widget-events zh-scroller id="1235367">
+    <ul class="groups">
+        <li ng-repeat="(category, data) in widget.dataSource.data | groupBy:widget.fields[0].name:widget" data-ng-show="filtered.length > 0" zh-update-scroller="250">
+            <div class="group-header" data-group-id="{{data[0][widget.fields[4].name]}}">
+                <div class="group-img"><img ng-src="{{data[0]['IMGGRUPO']}}"></div>
+                <div class="group-desc">{{category}}</div>
+            </div>
+            <div class="products-container">
+                <ul class="products">
+                    <li ng-repeat="row in filtered = (data | filter:searchInput)" zh-grid-row>
+                        <div data-ng-if="row[widget.fields[1].name]" class="product-img">
+                            <img ng-src="{{row[widget.fields[1].name]}}">
+                        </div>
+                        <div class="product-desc">{{row[widget.fields[2].name]}}</div>
+                        <div class="product-price">{{row[widget.fields[3].name]}}</div>
+                    </li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+</div>

@@ -876,5 +876,36 @@
 		"controller": "\\Controller\\Payment",
 		"controllerMethod": "getPayments",
 		"methods": ["POST"]
-	}
+	},
+	{
+        "uri": "/AllDeliveryRepository",
+        "controller": "\\Controller\\Delivery",
+        "controllerMethod": "getAllDeliveryOrders",
+        "methods": ["POST"]
+    },
+    {
+        "uri": "/VoucherRepository",
+        "controller": "\\Controller\\Payment",
+        "controllerMethod": "validateVoucher",
+        "methods": ["POST"]
+    },
+    {
+    	"uri": "/SelectGroupBills",
+        "controller": "\\Controller\\Bill",
+        "controllerMethod": "getGroupBills",
+        "methods": ["POST"]
+    },
+    {
+    	"uri": "/GroupBills",
+    	"controller": "\\Controller\\Bill",
+    	"controllerMethod": "groupBills",
+    	"methods": ["POST"]
+    },
+    {
+    	"uri": "/UngroupBills",
+    	"controller": "\\Controller\\Bill",
+    	"controllerMethod": "ungroupBills",
+    	"methods": ["POST"]
+    }
+
 ]
